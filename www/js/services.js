@@ -367,7 +367,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return jpushServiceFactory;
 }])
-
+//照相机服务 LRZ
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
@@ -501,7 +501,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 })
 
-
+//用户类LRZ 调用DATA 主要负责和服务器互动 会改
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
   var self = this;
 
@@ -537,4 +537,189 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
     return self;
+}])
+
+//大师兄的弹窗业务service 可以随便调用
+.factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
+  return {
+    message: function (_msg, _time, _title) {
+      var messagePopup = $ionicPopup.alert({
+        title: _title || '消息',  // String. The title of the popup.
+        // cssClass: '',  // String, The custom CSS class name.
+        // subTitle: '',  // String (optional). The sub-title of the popup.
+        template: _msg,  // String (optional). The html template to place in the popup body.
+        // templateUrl: '',  // String (optional). The URL of an html template to place in the popup   body.
+        okText: '确认',  // String (default: 'OK'). The text of the OK button.
+        okType: 'button-energized'  // String (default: 'button-positive'). The type of the OK button.
+      });
+
+      if (_time) {
+        $timeout(function () {
+          messagePopup.close('Timeout!');
+        }, _time);
+      }
+
+      // messagePopup.then(function(res) {
+      //   console.log(res);
+      // });
+
+      // 这里返回Popup实例, 便于在调用的地方编程执行messagePopup.close()关闭alert; 需要的话还可以执行messagePopup.then(callback).
+      return messagePopup;
+    },
+    confirm: function (_msg, _title) {
+      var confirmPopup = $ionicPopup.confirm({
+        title: _title,
+        // cssClass: '',
+        // subTitle: '',
+        template: _msg,
+        // templateUrl: '',
+        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
+        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
+        okText: '确定',
+        okType: 'button-energized'
+      });
+
+      // confirmPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
+      //   console.log(res);
+      // });
+      
+      // 这里返回Popup实例, 便于在调用的地方执行confirmPopup.then(callback).
+      return confirmPopup;  
+    },
+    prompt: function (_msg, _title) {
+      var promptPopup = $ionicPopup.prompt({
+        title: _title,
+        // cssClass: '',
+        // subTitle: '',
+        template: _msg,
+        // templateUrl: '',
+        inputType: 'password',  // String (default: 'text'). The type of input to use
+        inputPlaceholder: _msg,  // String (default: ''). A placeholder to use for the input.
+        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
+        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
+        okText: '确定',
+        okType: 'button-energized'
+      });
+
+      // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
+      //   console.log(res);
+      // });
+      
+      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
+      return promptPopup;  
+    },
+    selection: function (_msg, _title, _res, $scope) {
+      var selectionPopup = $ionicPopup.show({
+        title: _title,
+        // cssClass: '',
+        // subTitle: '',
+        template: _msg,
+        // templateUrl: '',
+        scope: $scope, // Scope (optional). A scope to link to the popup content. 这里的scope等于$scope, 可以通过$scope和popup页面的数据绑定
+        buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+          text: '取消',
+          type: 'button-default',
+          onTap: function(e) {
+            // e.preventDefault() will stop the popup from closing when tapped.
+            // e.preventDefault();
+            // 点击按钮的默认效果就是关闭popup, 只有加e.preventDefault()才会阻止关闭
+          }
+        }, {
+          text: '确定',
+          type: 'button-positive',
+          onTap: function(e) {
+            // Returning a value will cause the promise to resolve with the given value.
+            // console.log($scope.ince.selected);  // 这里不能单纯用$scope.ince, 必须用对象
+            // e.preventDefault();
+            return $scope[_res].selected;  // 这里必须使用$scope, 文档中用scope是不对的; 不能单纯用$scope.ince, 必须用对象
+          }
+        }]
+      });
+
+      // selectionPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
+      //   console.log(res);
+      // });
+      
+      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
+      return selectionPopup;  
+    },
+    viewer: function ($scope, images, $index) {
+      $ionicModal.fromTemplateUrl('partials/modal/viewer.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+        $scope.viewerModal = modal;
+        $scope.viewerModal.show();
+
+        $timeout(function () {  // 在这里初始化, 加$timeout在.show()完成后再初始化; 也可以放到'modal.shown'监听事件中初始化
+          // $ionicSlideBoxDelegate.$getByHandle('viewer').slide($index);  // 用ion-slide-box的active-slide代替
+          $scope.currentIndex = $index;
+          $scope.slidesCount = $ionicSlideBoxDelegate.$getByHandle('viewer').slidesCount();
+          // $ionicSlideBoxDelegate.$getByHandle('viewer').update();
+          
+          // console.log(tapTimeStamp);
+        });  // 放在这里就不需要设置延时时间了
+      });
+
+      // console.log(tapTimeStamp);
+
+      $scope.actions = $scope.actions || {};
+      $scope.error = $scope.error || {};
+      $scope.images = images;
+      $scope.zoomMin = 1;
+      $scope.zoomMax = 3;
+      var tapTimeStamp;
+      var exitTimeout;
+      var tapInterval = 300;
+
+      // Triggered in the modal to close it or zoom the image
+      $scope.actions.exit = function ($event) {
+        // console.log($event);
+        
+        if (tapTimeStamp && $event.timeStamp - tapTimeStamp < tapInterval) {
+          $timeout.cancel(exitTimeout);
+        }
+        else {
+          tapTimeStamp = $event.timeStamp;
+          exitTimeout = $timeout(function () {
+            $scope.viewerModal.remove()
+            .then(function () {
+              // $scope.viewerModal = null;
+              // console.log(tapTimeStamp);
+              // tapTimeStamp = null;
+              // exitTimeout = null;
+            });
+          }, tapInterval);
+        }
+      };
+
+      $scope.actions.zoom = function ($index) {
+        // console.log('double-tap');
+        var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle' + $index).getScrollPosition().zoom;
+        if (zoomFactor === $scope.zoomMax) {
+          $ionicScrollDelegate.$getByHandle('scrollHandle' + $index).zoomTo(1, true);  // 缩放到1
+        }
+        else {
+          $ionicScrollDelegate.$getByHandle('scrollHandle' + $index).zoomBy(2, true);  // 乘以2
+        }
+      };
+
+      $scope.actions.updateSlideStatus = function($index) {
+        var zoomFactor = $ionicScrollDelegate.$getByHandle('scrollHandle' + $index).getScrollPosition().zoom;
+        // console.log($ionicScrollDelegate.$getByHandle('scrollHandle' + $index).getScrollPosition());
+        if (zoomFactor === $scope.zoomMin) {
+          $ionicSlideBoxDelegate.enableSlide(true);
+        } else {
+          $ionicSlideBoxDelegate.enableSlide(false);
+        }
+      };
+
+      $scope.actions.getIndex = function () {
+        // $scope.slidesCount = $ionicSlideBoxDelegate.$getByHandle('viewer').slidesCount();
+        $scope.currentIndex = $ionicSlideBoxDelegate.$getByHandle('viewer').currentIndex();
+        // $scope.error.viewerError = '';
+        // console.log($scope.currentIndex, $scope.slidesCount);
+      };
+    }
+  };
 }]);

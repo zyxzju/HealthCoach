@@ -318,34 +318,62 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.phoneId = $stateParams.phoneId;
  }])
 
-.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users) { //LRZ
 
+//-----------------------------------lrz
+//-----------------------------------认证页面的controller state:
+    // .state('upload',{
+    //   url:'/upload',
+    //       templateUrl:'partials/individual/coach-idupload.html',
+    //       controller:'CoachIdUploadCtrl'  
+ 
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout) { //LRZ
+
+  // $scope.DtInfo = [
+  // { t:"单位",
+  //   v: "某三本大学"
+  // }, 
+  // { t:"职务",
+  //   v: "搬砖"
+  // }, 
+  // { t:"Level",
+  //   v: "233"
+  // }, 
+  // { t:"科室",
+  //   v: "217"
+  // }
+  // ];
+  //填表的预设数据 和需要填写的项目 是否封装进SERVICE config 里面?
   $scope.DtInfo = [
   { t:"单位",
-    v: "某三本大学"
+    c: ["普通医院","浙医一院","海军总医院"],
+    v: ""
+  },   
+  { t: "科室",
+    c: ["神经科","肛肠科","泌尿科","整形科"],
+    v: ""
+  },
+  { t: "职务",
+    c: ["行政","临床","基础"],
+    v: ""
   }, 
-  { t:"职务",
-    v: "搬砖"
-  }, 
-  { t:"Level",
-    v: "233"
-  }, 
-  { t:"科室",
-    v: "217"
+  { t: "等级",
+    c: ["医士","住院医师","主治医师","副主任医师","主任医师"],
+    v: ""
   }
-  ];
 
+  ];
+  //填表的预设数据 和需要填写的项目
   $scope.Info = {
     name: "叶良辰",
     gender: "男",
     birthday:"19980808",
     id: 1212
   }
-
+  //填表的预设数据 和需要填写的项目
   $scope.state = "未提交";
-  
-  $scope.imgURI = "img/Barot_Bellingham_tn.jpg"
+  //填表的预设数据 和需要填写的项目
+  // $scope.imgURI = "img/Barot_Bellingham_tn.jpg";
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
       $scope.state = "未提交";
@@ -410,14 +438,39 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     
     var temp = Users.myTrial2("ZXF");
 
-    var temp2 = Camera.uploadPicture($scope.imgURI);
+    // var temp2 = Camera.uploadPicture($scope.imgURI);
     // var temp2 = Camera.uploadPicture2($scope.imgURI);
-    console.log("返回的数据" + temp2 );
+    // console.log("返回的数据" + temp2 );
   };
     //-----------------------------------------------------------
 
-  $scope.onClickCamera = function($event){
-    $scope.openPopover($event);
+  $scope.onClickCamera = function(){
+    // $scope.openPopover($event);
+   // Show the action sheet
+   var hideSheet = $ionicActionSheet.show({
+     buttons: [
+       { text: '选择照相机' },
+       { text: '选择相册' }
+     ],
+     // destructiveText: 'Delete',
+     titleText: '上传认证照片',
+     cancelText: '取消',
+     cancel: function() {
+          // add cancel code..
+        },
+     buttonClicked: function(index) {
+      switch(index){
+        case 0 :  $scope.takePicture(); break;
+        case 1 :  $scope.choosePhotos();
+      }
+       return true;
+     }
+   });
+
+   // For example's sake, hide the sheet after two seconds
+   $timeout(function() {
+     hideSheet();
+   }, 2000);
   };
   
    $scope.onClickCameraCancel = function(){
@@ -511,7 +564,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 
-// Coach HomePage/Me Controller
+// Coach HomePage/Me Controller 主页的controller 主要负责从home状态跳转到 其他三个状态/读取localstorage的数据
 // ----------------------------------------------------------------------------------------
 .controller('CoachHomeCtrl', 
   ['$scope','$state','$stateParams','Storage',
@@ -550,41 +603,41 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //this controller is discarded me and home use CoachHomeController together
-.controller('CoachMeCtrl', 
-  ['$scope','$state','$stateParams','Storage',
-  function($scope,$state,$stateParams,Storage) { //LRZ
+// .controller('CoachMeCtrl', 
+//   ['$scope','$state','$stateParams','Storage',
+//   function($scope,$state,$stateParams,Storage) { //LRZ
    
-   // console.log($stateParams.info);
-   // console.log($stateParams.info.intro);
-   // $scope.items = $stateParams.info;
-   // $scope.state = $stateParams.state;
+//    // console.log($stateParams.info);
+//    // console.log($stateParams.info.intro);
+//    // $scope.items = $stateParams.info;
+//    // $scope.state = $stateParams.state;
 
    
-   $scope.state = Storage.get(13);
-   $scope.name = Storage.get(131);
-   $scope.company = Storage.get(132);
-   $scope.position = Storage.get(133);
-   $scope.selfintro = Storage.get(134);
-   $scope.imgURI = Storage.get(14);
-   // console.log($scope.infom);
+//    $scope.state = Storage.get(13);
+//    $scope.name = Storage.get(131);
+//    $scope.company = Storage.get(132);
+//    $scope.position = Storage.get(133);
+//    $scope.selfintro = Storage.get(134);
+//    $scope.imgURI = Storage.get(14);
+//    // console.log($scope.infom);
    
-  $scope.onClickPersonalInfo = function(){
-      $state.go('personalinfo');
-  };
+//   $scope.onClickPersonalInfo = function(){
+//       $state.go('personalinfo');
+//   };
 
-  $scope.onClickPersonalConfig = function(){
-      $state.go('config');
-  };
+//   $scope.onClickPersonalConfig = function(){
+//       $state.go('config');
+//   };
 
-  $scope.onClickPersonalSchedule = function(){
-      $state.go('schedule');
-  };
+//   $scope.onClickPersonalSchedule = function(){
+//       $state.go('schedule');
+//   };
 
-}])
+// }])
 
 
 
-// Coach Personal Config Controller
+// Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) { //LRZ
   $scope.onClickBackward = function(){
@@ -594,10 +647,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 
-// Coach Personal Infomation Controller
+// Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage',
-  function($scope,$state,$ionicHistory,Storage) { //LRZ
+.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users',
+  function($scope,$state,$ionicHistory,Storage,PageFunc,Users) {
    //获得信息
    // $scope.state = Storage.get(13);
    // $scope.name = Storage.get(131);
@@ -608,13 +661,36 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $scope.userInfo = JSON.parse(Storage.get("userInfo"));
 
   $scope.onClickBackward = function(){
-       $ionicHistory.goBack();
+      PageFunc.confirm("是否放弃修改","确认").then( 
+        function(res){
+          if(res){
+           // console.log("点了queren");
+          $state.go('coach.home');
+          }
+        });    
   };
+
+  $scope.onClickSave = function(){
+    PageFunc.confirm("是否上传新信息","确认").then( 
+        function(res){
+          if(res){
+           // console.log("点了queren");
+              // 这两个service里面还没有写好
+              // ----------------------------------------------------------
+              // Users.myTrial(userInfo.BasicInfo);
+              // Users.myTrial(userInfo.DtInfo);
+          }
+        });    
+  };
+
+  $scope.onClickEdit = function(_res){
+    PageFunc.selection("hehe","hhe",_res,$scope);
+  }
 
 }])
 
 
-// Coach Personal Schedule Controller
+// Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------
 .controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http',
   function($scope,$state,$ionicHistory,$http) { //LRZ

@@ -1,36 +1,50 @@
 <ion-view view-title="上传认证资料" hide-nav-bar="true">
 
-<ion-header-bar >
-  <h1 class="title">上传认证资料</h1>
-</ion-header-bar>
+  <ion-header-bar >
+    <h1 class="title">上传认证资料</h1>
+  </ion-header-bar>
 
 <ion-content>
 
 <ion-list class="list-inset">
-  <!-- <ion-item ng-repeat="item in items"> -->
+
   <label class="item item-input">
-    <input type="text" placeholder="姓名" ng-model="Info.name">
-    
+    <input type="text" placeholder="姓名" ng-model="Info.name">    
   </label>
-    <label class="item item-input">
-    <input type="text" placeholder="性别" ng-model="Info.gender">
-    
+
+
+  <label class="item item-input item-select">
+    <div class="input-label"  >
+      性别
+    </div>
+    <select ng-model="Info.gender">
+      <option>男</option>
+      <option>女</option>
+    </select>
   </label>
-    <label class="item item-input">
-    <input type="text" placeholder="生日" ng-model="Info.birthday">
-    
+
+
+  <label class="item item-input">
+    <input type="text" placeholder="生日" ng-model="Info.birthday">    
   </label>
 
     <div class="item item-divider">详细信息</div>
-    <label class="item item-input" collection-repeat="item in DtInfo">
-      <input type="text" placeholder=" {{item.t}}" ng-model="item.v">
-     <!--  {{item.v}} -->
+
+    <label class="item item-input item-select" ng-repeat="item in DtInfo">
+
+      <div class="input-label">
+        {{item.t}} 
+      </div>
+      <select ng-model="item.v" >
+        <option ng-repeat = "choice in item.c"> {{choice}} </option>
+      </select>
+
     </label>
-  <!-- </ion-item> -->
+
 </ion-list>
 
 <!-- <img ng-src="{{lastPhoto}}" style="max-width: 100%"> -->
-<img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}" height=100 width =100>
+<img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}"  style ="height=100 width =100 middle ">
 <img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/plus.png" height=100 width=100>
 
 <!--  {{"http://placehold.it/300?text=placehold.it+fuck!"}}
