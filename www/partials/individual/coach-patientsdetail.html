@@ -1,0 +1,19 @@
+<!-- <ion-header-bar class="bar-balanced">
+
+ <h2 class="title">More Info</h2>
+</ion-header-bar> -->
+
+<ion-view view-title = "More Info">
+  <ion-content>
+    <ion-list class="list-inset">
+      <ion-patient class="patient-text-wrap"
+        ng-repeat="patient in patients | filter: { shortname: whichartist }">
+         <img ng-src="img/{{patient.shortname}}_tn.jpg"
+            alt="{{ patient.name }} Photo">
+          <h2>{{ patient.name }}</h2>
+          <h3>{{ patient.reknown }}</h3>
+          <p>{{ patient.bio }}</p>
+      </ion-patient>
+    </ion-list>
+  </ion-content>
+</ion-view> 

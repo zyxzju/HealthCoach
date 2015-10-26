@@ -1,0 +1,22 @@
+      <ion-view title="注册">
+        <ion-nav-bar class="bar-stable nav-title-slide-ios7">
+          <ion-nav-back-button class="button-icon ion-arrow-left-c">
+          </ion-nav-back-button>       
+        </ion-nav-bar>
+        <ion-content padding="true">
+          <div class="list list-inset">
+            <label class="item item-input">
+              <span class="input-label">用户名</span>
+              <input type="text" ng-model="regi.username" >
+            </label>
+            <label class="item item-input">
+              <span class="input-label">密  码</span>
+              <input type="password" ng-model="regi.password" >
+            </label>
+          </div>
+          <p style="color:#c55e19">{{logStatus}}</p>
+            <button class="button button-block button-stable" ng-click="userRegister(regi)">
+              注册
+            </button>         
+        </ion-content>
+      </ion-view>

@@ -1,0 +1,26 @@
+      <ion-view title="PHONES">
+        <ion-nav-bar class="bar-stable nav-title-slide-ios7">
+
+          <ion-nav-back-button class="button-icon ion-arrow-left-c">
+          </ion-nav-back-button>
+
+        </ion-nav-bar>
+
+        <ion-content padding="true">
+          <ion-list>
+            <ion-item style="padding:0" ng-repeat="phone in phones track by $index"  href="#/tab/phones/{{phone.id}}"  class="item-thumbnail" >
+              <div class="row" >
+              <div class="col col-25" style=""><img style="max-height: 60px;max-width: 60px" ng-src="{{phone.imageUrl}}"></div>
+              
+              </div>
+              
+              <h2>{{phone.name}}</h2>
+              <p>{{phone.snippet}}</p>
+            </ion-item>
+          </ion-list>
+
+
+      
+
+        </ion-content>
+      </ion-view>

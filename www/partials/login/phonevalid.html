@@ -1,0 +1,27 @@
+<ion-view title="手机号验证">
+        <ion-nav-bar class="bar-dark nav-title-slide-ios7">
+          <ion-nav-back-button class="button-icon ion-arrow-left-c">
+          </ion-nav-back-button>
+        </ion-nav-bar>
+        <ion-content padding="true" >
+				<div class="list list-inset">
+          <label class="item item-input">
+            <input type="text" placeholder="手机号" ng-model="veriusername">
+          </label>
+          <label class="item item-input">
+            <input type="text" placeholder="输入验证码" ng-model="verifyCode">
+          </label>
+
+
+
+          <span style="color:white">00</span><span style="color:#c55e19">{{logStatus}}</span>
+          <button class="button button-block button-stable" ng-disabled="isable"  ng-click = "getcode(veriusername)">
+            {{veritext}}
+          </button>
+          <button class="button button-block button-stable" ng-click ="gotoReset(veriusername,verifyCode)">
+            下一步
+          </button>
+        </div>
+     
+        </ion-content>
+      </ion-view>

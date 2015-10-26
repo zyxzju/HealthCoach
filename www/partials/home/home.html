@@ -1,0 +1,29 @@
+<ion-view title="账户">
+<!--         <div class="bar bar-header">
+    <button class="button button-icon icon ion-navicon"></button>
+    <div class="h1 title">Header Buttons</div>
+    <button class="button button-clear button-positive">Edit</button>
+  </div> -->
+  <ion-nav-bar class="bar-stable nav-title-slide-ios7">
+    <!-- <button class="button button-icon icon ion-navicon"></button> -->
+     <!-- <ion-nav-back-button class="button-icon ion-navicon">  </ion-nav-back-button> -->
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-navicon " ng-click="doSomething()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons>
+
+  </ion-nav-bar>
+  <ion-content padding="true">
+    <h3><b>登录成功</b></h3>
+    <a class="button" ng-click="changePass()">修改密码</a>
+    <a class="button"  ng-click="QRgenerate()"  >生成二维码(没用，报错)</a>
+    <p>{{scandata}}</p>
+    <!-- <qrcode version="2" error-correction-level="M" size="250" data="http://www.baidu.com"></qrcode> -->
+    <!-- <qrcode version="2" error-correction-level="M" size="200" data="string"></qrcode> -->
+    <!-- <qr type-number="8" correction-level="M" size="200" input-mode="ALPHA_NUM" text="dfdfdfdfd" image="true"></qr> -->
+
+
+  </ion-content>
+</ion-view>
