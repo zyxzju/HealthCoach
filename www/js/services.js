@@ -79,8 +79,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			LogOn:{method:'POST',headers:{token:getToken()}, params:{route: 'LogOn'}, timeout: 10000},
 			Register:{method:'POST', params:{route: 'Register'}, timeout: 10000},
 			ChangePassword:{method:'POST',params:{route:'ChangePassword'},timeout: 10000},
-      myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
-      getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000}
+			Verification:{method:'POST',params:{route:'Verification'},timeout:10000},
+            myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+            getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
+			Activition:{method:'POST',params:{route:'Activition'},timeout:10000} //用户注册后激活
 		})
 	}
 	var Service = function(){
@@ -91,13 +93,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
 		})
 	}	
-	// var Service = function(){
-	// 	return $resource(CONFIG.baseUrl + ':path/:route?phoneNo=:phoneNo&smsType=:smsType',{
-	// 		path:'Service',
-	// 	},{
- //            sendSMS:{method:'POST', params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
-	// 	})
-	// }
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -113,28 +108,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){	 //XJZ
 	var serve = {};
-    var status = "";
-    //新的方法BEGIN
-    var returnMessage="";
-    serve.getMessage = function(){
-    	return returnMessage;
-    }
-
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-    var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
-    var passReg2=/^.[A-Za-z0-9]+$/;
+
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
         	return 7; 
         }
-        // if(logpass.length >18  ||  logpass.length<6){ //密码格式要求
-		// 	return 4;
-		// }else if(!passReg1.test(logpass)){
-		// 	return 5;
-		// }else if(!passReg2.test(logpass)){
-            // return 6;
-		// }
-
 		var deferred = $q.defer();   
         Data.Users.LogOn({PwType:_PwType, username:_username, password:_password, role: _role},
    		function(data,hearders,status){ 
@@ -163,7 +142,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         return deferred.promise;
     }
 
-    serve.verifySMS = function( _phoneNo,_smsType){
+    serve.sendSMS = function( _phoneNo,_smsType){
         if(!phoneReg.test(_phoneNo)){
         	return 7; 
         }
@@ -214,110 +193,41 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     	return deferred.promise;
     }
 
-    //新的方法END
-    
-	serve.userCheck = function(user){
-		if(user == username1){
-			return status=0;
-		}else{
-			return status=8;
-		}
-	}
-	serve.passCheck = function(pass){
-		var ispass=isPassValid(pass);
-		if(ispass!=0){
-			return 2;
-		}
-		if(pass == password1){
-			return status=0;
-		}else{
-			return status=2;
-		}
-	}
 
+    //var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
+    //var passReg2=/^.[A-Za-z0-9]+$/;
+	// var isPassValid = function(pass){
+		// if(pass.length >18  ||  pass.length<6){
+			// return 4;
+		// }else if(!passReg1.test(pass)){
+			// return 5;
+		// }else if(!passReg2.test(pass)){
+            // return 6;
+		// }else{
+			// return 0;
+		// }
+	// }
+	// serve.isTokenValid = function(){
+		// var isToken=Storage.get('token');
+		// if(isToken==null){
+			// return 0;
+		// }else{
+			// $http({
+				// method:'GET',
+				// url:'',
+				// headers:{token:isToken},
+			// })
+			// .success(function(data,status,headers,config){
 
-	var isPassValid = function(pass){
-		// var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/
-		// var passReg2=/^.[A-Za-z0-9]+$/
-		if(pass.length >18  ||  pass.length<6){
-			return 4;
-		}else if(!passReg1.test(pass)){
-			return 5;
-		}else if(!passReg2.test(pass)){
-            return 6;
-		}else{
-			return 0;
-		}
-	}
+			// })
+			// .error(function(data,status,headers,config){
 
-	serve.userregi = function(user,pass){
-		
-	}
-
-	serve.verifycodeCheck = function(vericode){
-		if(vericode == verifycode1){
-			return status=0;
-		}else{
-			return status=3;
-		}
-	}
-
-	serve.passReset = function(newpass){
-		var ispass=isPassValid(newpass);
-		if(ispass!=0){
-			return ispass;
-		}		
-		Storage.set('password1',newpass);
-		password1=Storage.get('password1');
-		return 0;
-	}
-
-	serve.isTokenValid = function(){
-		var isToken=Storage.get('token');
-		if(isToken==null){
-			return 0;
-		}else{
-			$http({
-				method:'GET',
-				url:'',
-				headers:{token:isToken},
-			})
-			.success(function(data,status,headers,config){
-
-			})
-			.error(function(data,status,headers,config){
-
-			});
-		}
-	}
+			// });
+		// }
+	// }
 
 	return serve;
 }])
-
-.factory('codeDefine',function(){ //XJZ
-	var serves={};
-	var codeMessage="";
-	var codes='';
-	serves.ctranslate = function(codes){
-
-		switch(codes){
-		    case 0:return errorMessage="";
-		    case 1:return errorMessage="";//登录失败
-		    case 2:return errorMessage="密码错误！";
-		    case 3:return errorMessage="验证码错误";
-		    case 4:return errorMessage="密码长度应为6-18位！";
-		    case 5:return errorMessage="密码应同时包括数字和字母！";
-		    case 6:return errorMessage="密码只能由数字和字母组成！";
-		    case 7:return errorMessage="手机号验证失败！";
-		    case 8:return errorMessage="该用户帐号不存在！";
-		    case 100:return errorMessage="未定义的错误";		    		    
-		    default:return errorMessage="未定义的错误";
-	    }
-	}
-
-	return serves;
-
-})
 
 //极光推送服务 TDY 20151026
 .factory('jpushService',['$http','$window',function($http,$window){ //TDY
