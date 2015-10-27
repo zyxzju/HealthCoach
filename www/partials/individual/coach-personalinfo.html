@@ -50,19 +50,19 @@ Dept
 
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit(0)" >
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','name'); " >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right">
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','birthday'); ">
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthday}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right">
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','gender'); ">
         <i class="icon ion-male"></i>
        {{userInfo.BasicInfo.gender}}
 <!--         <span class="item-note">

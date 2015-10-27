@@ -166,6 +166,38 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   })
 
+//临时的
+  .state('risk',{
+    url:'/risk',
+    // views:{
+    //   'coach-risk':{
+        templateUrl:'partials/individual/risk.html',
+        controller:'RiskCtrl'
+      // }
+    // }
+
+  })
+
+  .state('riskdetail',{
+    url:'/risk/:id',
+    // views:{
+    //   'coach-risk':{
+        templateUrl:'partials/individual/riskdetail.html',
+        controller:'RiskCtrl'
+      // }
+    // }
+
+  })
+  .state('riskquestion',{
+    url:'/risk/question',
+    // views:{
+    //   'coach-risk':{
+        templateUrl:'partials/modals/questions.html',
+        controller:'RiskCtrl'
+      // }
+    // }
+
+  })  
   .state('coach.patientsdetail', {
     url: '/patients/:aId',
     views: {
@@ -199,7 +231,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   });
     
    //$urlRouterProvider.otherwise('/signin');
-   $urlRouterProvider.otherwise('/starting');
+   $urlRouterProvider.otherwise('/risk');
 
 }])
 

@@ -80,6 +80,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			Register:{method:'POST', params:{route: 'Register'}, timeout: 10000},
 			ChangePassword:{method:'POST',params:{route:'ChangePassword'},timeout: 10000},
       myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+      postDoctorInfo:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+      postDoctorDetailInfo:{method:'POST',params:{route:'DoctorDtlInfo'}, timeout:10000},
       getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000}
 		})
 	}
@@ -91,6 +93,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
 		})
 	}	
+
+  var RiskInfo = function(){
+    return $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'RiskInfo',
+    },{
+        // insertEvalutionResult:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
+        postEvalutionResult:{method:'POST',params:{route: 'RiskResult'}, timeout: 10000},
+        getEvalutionInput:{method:'GET',params:{route:'RiskInput',UserId:'@UserId'},timeout:10000},
+        getEvalutionResult:{method:'GET',params:{route:'RiskResult',UserId:'@UserId'},timeout:10000},
+        getDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:10000}
+        // checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
+    })
+  }
 	// var Service = function(){
 	// 	return $resource(CONFIG.baseUrl + ':path/:route?phoneNo=:phoneNo&smsType=:smsType',{
 	// 		path:'Service',
@@ -104,10 +119,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         abort = $q.defer();
         serve.Users = Users(); 
         serve.Service = Service();
+        serve.RiskInfo = RiskInfo();
         }, 0, 1);  
 	}
     serve.Users = Users();
     serve.Service = Service();
+    serve.RiskInfo = RiskInfo();
     return serve;
 }])
 
@@ -434,7 +451,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             mimeType : "image/jpeg"
           };
           var q = $q.defer();
-          console.log("jinlaile");
+          // console.log("jinlaile");
           $cordovaFileTransfer.upload(uri,imgURI,options)
             .then( function(r){
               console.log("Code = " + r.responseCode);
@@ -471,13 +488,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   }
 
 
-}
+  }
   
 }])
 
 
 
-.factory('Patients',function(){ //LRZ
+.factory('Patients',['Data','$q',function(Data,$q){ //LRZ
   //get patients
   //remove certain patients
   //add  patients
@@ -497,9 +514,20 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         }
       }
       return null;
+    },
+    getEvalutionResult: function(userid){
+
+      var deferred = $q.defer();
+      Data.RiskInfo.getEvalutionInput({"UserId":userid}, function (data, headers) {
+        console.log("获得了数据"+data)
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
     }
-  };
-})
+    }
+}])
 
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
@@ -536,6 +564,26 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
 
+  self.postDoctorInfo = function(docInfo){
+    var deferred = $q.defer();
+    Data.Users.postDoctorInfo(docInfo, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+
+  self.postDoctorDetailInfo = function(docDtlInfo){
+    var deferred = $q.defer();
+    Data.Users.postDoctorDetailInfo(docDtlInfo, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+  
     return self;
 }])
 
@@ -607,7 +655,29 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       
       // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
       return promptPopup;  
-    },
+    }, 
+    edit: function (_msg, _title) {
+      var promptPopup = $ionicPopup.prompt({
+        title: _title,
+        // cssClass: '',
+        // subTitle: '',
+        template: _msg,
+        // templateUrl: '',
+        inputType: 'text',  // String (default: 'text'). The type of input to use
+        inputPlaceholder: _msg,  // String (default: ''). A placeholder to use for the input.
+        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
+        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
+        okText: '确定',
+        okType: 'button-energized'
+      });
+
+      // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
+      //   console.log(res);
+      // });
+      
+      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
+      return promptPopup;  
+    },     
     selection: function (_msg, _title, _res, $scope) {
       var selectionPopup = $ionicPopup.show({
         title: _title,

@@ -659,8 +659,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    // $scope.selfintro = Storage.get(134);
    $scope.imgURI = Storage.get(14);
    $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-
+   $scope.isEdited = false; // IS EDITED FLAG?
+   // $scope.flags = {isEdited: false, editedValue : undefined};
   $scope.onClickBackward = function(){
+    if($scope.isEdited == true)
       PageFunc.confirm("是否放弃修改","确认").then( 
         function(res){
           if(res){
@@ -671,24 +673,38 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 
   $scope.onClickSave = function(){
+    if($scope.isEdited == true)
     PageFunc.confirm("是否上传新信息","确认").then( 
         function(res){
           if(res){
-           // console.log("点了queren");
-              // 这两个service里面还没有写好
-              // ----------------------------------------------------------
-              // Users.myTrial(userInfo.BasicInfo);
-              // Users.myTrial(userInfo.DtInfo);
+              // console.log("点了queren");
+            console.log($scope.userInfo);
+            Storage.set("userInfo",$scope.userInfo);
+            // 上传的接口
+            // Users.postDoctorInfo(userInfo.BasicInfo);
+            // Users.postDoctorDetailInfo(userInfo.DtInfo);
           }
         });    
   };
 
-  $scope.onClickEdit = function(_res){
-    PageFunc.selection("hehe","hhe",_res,$scope);
+  $scope.onClickEdit = function(t1,_t2,_t3,_t4){
+    PageFunc.edit(t1,"修改").then(function(res){
+      if(res){
+        // console.log(res);
+        $scope.isEdited = true;
+        // $scope.flags.editedValue = res;
+        // console.log($scope.userInfo);
+        // console.log($scope.flags.isEdited);
+        // console.log($scope.flags.editedValue);
+        $scope[_t2][_t3][_t4] = res;
+        // return res;
+      }
+      else{
+      }
+    });
   }
 
 }])
-
 
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------
@@ -725,12 +741,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   });
 
 }])
-
+// Coach Personal Schedule Controller 个人信息 主要负责 
+// ----------------------------------------------------------------------------------------
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
 
-
+// Coach Personal Schedule Controller 病人管理 主要负责 
+// ----------------------------------------------------------------------------------------
 .controller('CoachPatientsCtrl', ['Patients','$scope','$http','$state',
   function(Patients,$scope,$http,$state){ //LRZ
   // $scope.chats = Chats.all(); 
@@ -771,7 +789,215 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 // .controller('CoachPatientsDetailController',function(){
 
 // })
+.controller('RiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate',function($state,$scope,Patients,$state,$ionicSlideBoxDelegate){
+  $scope.userid = "xxxxx";
+  // $scope.risks = Patients.getEvalutionResult($scope.userid);
+  // console.log($scope.risks);
+  $scope.patients = [{name:"1",shortname:"2",reknown:"3",bio:"4",diarisk:123},{name:"1",shortname:"2",reknown:"3",bio:"4"}];
+  // console.log($scope.patients);
+  $scope.data = { showDelete: false, showReorder: false };
+  $scope.dbtshow = false;
 
+var chart = AmCharts.makeChart("chartdiv", {
+  "type": "serial",
+  "theme": "light",
+    // "legend": {
+    //     "horizontalGap": 10,
+    //     "maxColumns": 1,
+    //     "position": "right",
+    // "useGraphSettings": true,
+    // "markerSize": 10
+    // },
+    "dataProvider": [{
+        "type": "收缩压",
+        "state1": 40,
+        "state2": 20,
+        "state3": 20,
+        "state4": 20,
+        "state5": 20
+
+    }, {
+        "type": "舒张压",
+        "state1": 20,
+        "state2": 20,
+        "state3": 20,
+        "state4": 20,
+        "state5": 20
+
+    }],
+    "valueAxes": [{
+        "stackType": "regular",
+        "axisAlpha": 0.3,
+        "gridAlpha": 0
+    }],
+    "graphs": [{
+        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+        "fillAlphas": 0.8,
+        //"labelText": "[[value]]",
+        "lineAlpha": 0.3,
+        "title": "很安全",
+        "type": "column",
+        "color": "#000000",
+        "valueField": "state1"
+    }, {
+        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+        "fillAlphas": 0.8,
+       // "labelText": "[[value]]",
+        "lineAlpha": 0.3,
+        "title": "正常",
+        "type": "column",
+        "color": "#000000",
+        "valueField": "state2"
+    }, {
+        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+        "fillAlphas": 0.8,
+        //"labelText": "[[value]]",
+        "lineAlpha": 0.3,
+        "title": "良好",
+        "type": "column",
+        "color": "#000000",
+        "valueField": "state3"
+    }, {
+        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+        "fillAlphas": 0.8,
+        //"labelText": "[[value]]",
+        "lineAlpha": 0.3,
+        "title": "很危险",
+        "type": "column",
+        "color": "#000000",
+        "valueField": "state4"
+    }, {
+        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+        "fillAlphas": 0.8,
+        //"labelText": "[[value]]",
+        "lineAlpha": 0.3,
+        "title": "极度危险",
+        "type": "column",
+        "color": "#000000",
+        "valueField": "state5"
+    }],
+    "categoryField": "type",
+    "categoryAxis": {
+        "gridPosition": "start",
+        "axisAlpha": 80,
+        "gridAlpha": 0,
+        "position": "left"
+    },
+    "export": {
+      "enabled": true
+     }
+
+});
+var chart2 = AmCharts.makeChart("chartdiv2", {
+  "type": "serial",
+  "theme": "light",
+  "marginRight": 70,
+  "dataProvider": [{
+    "country": "USA",
+    "visits": 3025,
+    "color": "#FF0F00"
+  }, {
+    "country": "China",
+    "visits": 1882,
+    "color": "#FF6600"
+  }, {
+    "country": "Japan",
+    "visits": 1809,
+    "color": "#FF9E01"
+  }, {
+    "country": "Germany",
+    "visits": 1322,
+    "color": "#FCD202"
+  }, {
+    "country": "UK",
+    "visits": 1122,
+    "color": "#F8FF01"
+  }, {
+    "country": "France",
+    "visits": 1114,
+    "color": "#B0DE09"
+  }, {
+    "country": "India",
+    "visits": 984,
+    "color": "#04D215"
+  }, {
+    "country": "Spain",
+    "visits": 711,
+    "color": "#0D8ECF"
+  }, {
+    "country": "Netherlands",
+    "visits": 665,
+    "color": "#0D52D1"
+  }, {
+    "country": "Russia",
+    "visits": 580,
+    "color": "#2A0CD0"
+  }, {
+    "country": "South Korea",
+    "visits": 443,
+    "color": "#8A0CCF"
+  }, {
+    "country": "Canada",
+    "visits": 441,
+    "color": "#CD0D74"
+  }],
+  "valueAxes": [{
+    "axisAlpha": 0,
+    "position": "left",
+    "title": "Visitors from country"
+  }],
+  "startDuration": 1,
+  "graphs": [{
+    "balloonText": "<b>[[category]]: [[value]]</b>",
+    "fillColorsField": "color",
+    "fillAlphas": 0.9,
+    "lineAlpha": 0.2,
+    "type": "column",
+    "valueField": "visits"
+  }],
+  "chartCursor": {
+    "categoryBalloonEnabled": false,
+    "cursorAlpha": 0,
+    "zoomable": false
+  },
+  "categoryField": "country",
+  "categoryAxis": {
+    "gridPosition": "start",
+    "labelRotation": 45
+  },
+  "export": {
+    "enabled": true
+  }
+
+});
+  
+  $scope.doRefresh = function(){
+    $scope.patients = [{name:"1",shortname:"2",reknown:"3",bio:"4"},{name:"1",shortname:"2",reknown:"3",bio:"4"}];
+    $scope.data = { showDelete: false, showReorder: false };
+    $scope.$broadcast('scroll.refreshComplete'); 
+  }
+  // $scope.onClickAdd();
+  $scope.onClickAdd = function(){
+      //open a new page to collect patient info  
+      $state.go("riskquestion");
+      // post
+
+      // get risk result
+
+      // get another result
+  }
+  $scope.slideHasChanged = function (_index){
+    console.log(_index);
+    // $ionicSlideBoxDelegate.currentIndex();
+    if(_index == 1) $scope.dbtshow = true;
+    else $scope.dbtshow = false;
+  }
+  $scope.onClickBackward = function(){
+      $state.go("risk");
+  }
+
+  
+}])
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------
 .controller('ChatsCtrl', function($scope, Chats) { //LRZ
@@ -799,7 +1025,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     enableFriends: true
   };
 
-  
   // $scope.
 });
 
