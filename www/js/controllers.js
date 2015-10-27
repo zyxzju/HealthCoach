@@ -9,17 +9,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //初始加载页面
 .controller('startingCtrl',['$scope', '$state', 'userservice', 'Storage', 'jpushService',function($scope, $state, userservice, Storage, jpushService){ //XJZ
   $scope.startnow = function(){
-    if(userservice.isTokenValid()==1){
-      $state.go('tabs.home');
-      var AutoLogOn = Storage.get();
-      window.plugins.jPushPlugin.setAlias();
-    }else{
-      $state.go('signin');
-    }
+    // if(userservice.isTokenValid()==1){
+      // $state.go('tabs.home');
+      // var AutoLogOn = Storage.get();
+      // window.plugins.jPushPlugin.setAlias();
+    // }else{
+      // $state.go('signin');
+    // }
+	$state.go('signin');
   }
 }])
 
-// --------登录注册、设置修改密码-熊佳臻---------------- 去掉了service里的codeDefine
+// --------登录注册、设置修改密码-熊佳臻---------------- 
 //登录  41-$state.go('tab.tasks')
 .controller('SignInCtrl', ['$scope','$state','$http', '$timeout','$window', 'userservice','Storage' , function($scope, $state,$http, $timeout ,$window, userservice, Storage) {
   if(Storage.get('USERNAME')!=null){
@@ -71,7 +72,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   } 
 }])
 
-//注册  101只传了userName  118-$state.go
+//注册 
 .controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage){
   $scope.birthday="点击设置";
   var datePickerCallback = function (val) {
@@ -86,7 +87,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.birthday=birthday;
     }
   };
-
   var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
   var weekDaysList=["日","一","二","三","四","五","六"];
   $scope.datepickerObject = {
@@ -113,7 +113,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   };  
   $scope.infoSetup = function(userName){
-
     // var activition = function(){
     //   var UIDpromise=userservice.UID('PhoneNo',$rootScope.userId);
     //   UIDpromise.then(function(data){
@@ -124,21 +123,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //   },function(data){
     //   });
     // }
-    console.log($rootScope.userId, userName, $rootScope.password);
     var promise=userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach");
     promise.then(function(data){
       $scope.logStatus=data.result;
       if(data.result=="注册成功"){
-        $timeout(function(){$state.go('tab.tasks');} , 500);
+        $timeout(function(){$state.go('coach.home');} , 500);
       }
-      //activition();
+      //activition();//帐号激活用
     },function(data){
       $scope.logStatus=data.data.result;
     });
     //以下临时跳转
     //$timeout(function(){$state.go('tab.tasks');} , 2000);
-
   }
+  
 }])
 
 //设置密码   153-$state.go('tab.tasks')
@@ -164,7 +162,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           promise.then(function(data,status){
             $scope.logStatus=data.result;
             if(data.result=='修改密码成功'){
-              $timeout(function(){$state.go('tab.tasks');} , 500);
+              $timeout(function(){$state.go('signin');} , 500);
             }
           },function(data){
             $scope.logStatus=data.data.result;
@@ -217,12 +215,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   }
 
-  $scope.nvGoback = function() {
-    $ionicHistory.goBack();
-  }
 }])
 
-//获取验证码  发送验证码userservice.sendSMS(原来好像是verifySMS)  根据Phone(正则判断)获取UID ——> UID是否存在（注册时应不存在） ——> 是否发送验证码sendSMS() ——> 下一步gotoReset()
+//获取验证码  
 .controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice', function($scope, $state,$interval,$rootScope,Storage,userservice) {
   var setPassState=Storage.get('setPasswordState');
   $scope.veriusername="" 
@@ -250,8 +245,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.getcode=function(veriusername){
     var operation=Storage.get('setPasswordState');
     var sendSMS = function(){  
-      var promiseSMS=userservice.sendSMS(veriusername,'verification');
-      promiseSMS.then(function(data){
+      userservice.sendSMS(veriusername,'verification').then(function(data){
           $scope.logStatus='您的验证码已发送';
       },function(data){
         $scope.logStatus=data.statusText;
@@ -299,6 +293,39 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         time--;
       }
     },1000);
+  }
+}])
+//二维码在这里，ngcordova的插件QRscan()
+.controller('HomeTabCtrl', ['$scope', '$state','$cordovaBarcodeScanner',function($scope, $state, $cordovaBarcodeScanner) {
+  $scope.changePass = function(){
+    $state.go('tabs.changePassword')
+  }
+  $scope.QRscan = function(){
+    $cordovaBarcodeScanner
+      .scan()
+      .then(function(data) {
+        // Success! Barcode data is here
+        var s = "Result: " + data.text + "<br/>" +
+      "Format: " + data.format + "<br/>" +
+      "Cancelled: " + data.cancelled;
+        $scope.scandata=s;
+      }, function(error) {
+        // An error occurred
+        $scope.scandata=error;
+      });
+  }
+//QRgenerate 好像没用
+  $scope.QRgenerate = function(){
+    // $state.go('qrcode');
+    $cordovaBarcodeScanner
+      .encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.baidu.com")
+      .then(function(success) {
+        // Success!
+        console.log(success);
+      }, function(error) {
+        // An error occurred
+        console.log(error);
+      });
   }
 }])
 
