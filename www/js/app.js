@@ -29,7 +29,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 	    controller: 'phonevalidCtrl'
     })
     .state('setpassword', {
-      cache:false,
+      //cache:false,
       url: '/setpassword',
       templateUrl: 'partials/login/setPassword.html',
       controller: 'setPasswordCtrl'

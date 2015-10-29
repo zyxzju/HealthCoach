@@ -254,11 +254,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var sendSMS = function(){  
       userservice.sendSMS(veriusername,'verification').then(function(data){
           $scope.logStatus='您的验证码已发送';
+          unablebutton();
       },function(data){
         $scope.logStatus=data.statusText;
       }) 
     }; 
-    // if(Storage.get('setPasswordState')!='register'){
+    var unablebutton = function(){      
+    //验证码BUTTON效果
+      $scope.isable=true;
+      $scope.veritext="180S再次发送"; 
+      var time = 179;
+      var timer;
+      timer = $interval(function(){
+        if(time==0){
+          $interval.cancel(timer);
+          timer=undefined;        
+          $scope.veritext="获取验证码";       
+          $scope.isable=false;
+        }else{
+          $scope.veritext=time+"S再次发送";
+          time--;
+        }
+      },1000);
+    }
     var promise=userservice.UID('PhoneNo',veriusername);
     if(promise==7){
       $scope.logStatus='手机号验证失败！';
@@ -284,23 +302,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.logStatus=data.statusText;
     })
 
-    //验证码BUTTON效果
-    $scope.isable=true;
-    $scope.veritext="180S再次发送"; 
-    var time = 179;
-    var timer;
-    timer = $interval(function(){
-      if(time==0){
-        $interval.cancel(timer);
-        timer=undefined;        
-        $scope.veritext="获取验证码";       
-        $scope.isable=false;
-      }else{
-        $scope.veritext=time+"S再次发送";
-        time--;
-      }
-    },1000);
   }
+
 }])
 //二维码在这里，ngcordova的插件QRscan()
 .controller('HomeTabCtrl', ['$scope', '$state','$cordovaBarcodeScanner',function($scope, $state, $cordovaBarcodeScanner) {
