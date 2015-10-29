@@ -112,7 +112,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       datePickerCallback(val);
     }
   };  
-  $scope.infoSetup = function(userName){
+  $scope.infoSetup = function(userName,userGender){
     // var activition = function(){
     //   var UIDpromise=userservice.UID('PhoneNo',$rootScope.userId);
     //   UIDpromise.then(function(data){
@@ -123,11 +123,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //   },function(data){
     //   });
     // }
+    $rootScope.NAME=userName;
+    $rootScope.GENDER=userGender;
+    $rootScope.BIRTHDAY=$scope.birthday;
     var promise=userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach");
     promise.then(function(data){
       $scope.logStatus=data.result;
       if(data.result=="注册成功"){
-        $timeout(function(){$state.go('coach.home');} , 500);
+        $timeout(function(){$state.go('upload');} , 500);
       }
       //activition();//帐号激活用
     },function(data){
@@ -180,7 +183,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //修改密码  192-$state.go('tab.tasks');  $scope.nvGoback李山加的，不明
-.controller('changePasswordCtrl',['$scope','$state','$timeout', 'userservice','Storage', '$ionicHistory', function($scope , $state,$timeout, userservice,Storage, $ionicHistory){
+.controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage', function($scope , $state,$timeout, $ionicHistory, userservice,Storage){
   $scope.ishide=true;
   $scope.change={oldPassword:"",newPassword:"",confirmPassword:""};
   $scope.passwordCheck = function(change){
@@ -197,11 +200,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.gotoChange = function(change){
     if((change.newPassword!="") && (change.confirmPassword!="")){
       if(change.newPassword == change.confirmPassword){
-        var promiseSet=userservice.changePassword(change.oldPassword,change.newPassword,Storage.get('UID'));
-        promiseSet.then(function(data){
+        userservice.changePassword(change.oldPassword,change.newPassword,Storage.get('UID'))
+        .then(function(data){
           $scope.logStatus2='修改成功';
           $timeout(function(){$scope.change={originalPassword:"",newPassword:"",confirmPassword:""};
-          $state.go('tab.tasks');
+          $state.go('coach.i');
           $scope.ishide=true;
           } , 500);
         },function(data){
@@ -214,6 +217,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.logStatus2="请输入两遍新密码"
     }
   }
+  $scope.onClickBackward = function(){
+    $ionicHistory.goBack();
+  }
+ 
 
 }])
 
@@ -298,7 +305,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //二维码在这里，ngcordova的插件QRscan()
 .controller('HomeTabCtrl', ['$scope', '$state','$cordovaBarcodeScanner',function($scope, $state, $cordovaBarcodeScanner) {
   $scope.changePass = function(){
-    $state.go('tabs.changePassword')
+    $state.go('changePassword')
   }
   $scope.QRscan = function(){
     $cordovaBarcodeScanner
@@ -314,7 +321,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.scandata=error;
       });
   }
-//QRgenerate 好像没用
+  //QRgenerate 好像没用
   $scope.QRgenerate = function(){
     // $state.go('qrcode');
     $cordovaBarcodeScanner
@@ -589,13 +596,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 }])
 
-
-
 // Coach HomePage/Me Controller 主页的controller 主要负责从home状态跳转到 其他三个状态/读取localstorage的数据
 // ----------------------------------------------------------------------------------------
 .controller('CoachHomeCtrl', 
-  ['$scope','$state','$stateParams','Storage',
-  function($scope,$state,$stateParams,Storage) { //LRZ
+  ['$scope','$state','$stateParams','$cordovaBarcodeScanner','Storage',
+  function($scope,$state,$stateParams,$cordovaBarcodeScanner,Storage) { //LRZ
    
    // console.log($stateParams.info);
    // console.log($stateParams.info.intro);
@@ -626,54 +631,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickPersonalSchedule = function(){
       $state.go('schedule');
   };
+  $scope.QRscan = function(){
+    $cordovaBarcodeScanner
+      .scan()
+      .then(function(data) {
+        // Success! Barcode data is here
+        var s = "Result: " + data.text + "<br/>" +
+      "Format: " + data.format + "<br/>" +
+      "Cancelled: " + data.cancelled;
+        alert(s);
+      }, function(error) {
+        // An error occurred
+        alert(error);
+      });
+  }
 
 }])
-
-//this controller is discarded me and home use CoachHomeController together
-// .controller('CoachMeCtrl', 
-//   ['$scope','$state','$stateParams','Storage',
-//   function($scope,$state,$stateParams,Storage) { //LRZ
-   
-//    // console.log($stateParams.info);
-//    // console.log($stateParams.info.intro);
-//    // $scope.items = $stateParams.info;
-//    // $scope.state = $stateParams.state;
-
-   
-//    $scope.state = Storage.get(13);
-//    $scope.name = Storage.get(131);
-//    $scope.company = Storage.get(132);
-//    $scope.position = Storage.get(133);
-//    $scope.selfintro = Storage.get(134);
-//    $scope.imgURI = Storage.get(14);
-//    // console.log($scope.infom);
-   
-//   $scope.onClickPersonalInfo = function(){
-//       $state.go('personalinfo');
-//   };
-
-//   $scope.onClickPersonalConfig = function(){
-//       $state.go('config');
-//   };
-
-//   $scope.onClickPersonalSchedule = function(){
-//       $state.go('schedule');
-//   };
-
-// }])
-
-
-
 // Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) { //LRZ
   $scope.onClickBackward = function(){
       $ionicHistory.goBack();
   };
+
+  $scope.onClickChangePassword = function(){
+    $state.go('changepassword');
+  }
 }])
-
-
-
 // Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users',
@@ -713,10 +697,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickEdit = function(_res){
     PageFunc.selection("hehe","hhe",_res,$scope);
   }
-
 }])
-
-
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------
 .controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http',
@@ -742,58 +723,212 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   $scope.doRefresh =function() {
-
       $http.get('js/data.json').success(function(data) {
       $scope.patients = data.calendar;
       $scope.$broadcast('scroll.refreshComplete');
-
     });
   }
   });
-
 }])
-
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
+.controller('myPatientCtrl', ['$scope', '$state', '$http','$timeout','$interval' ,'userINFO' ,function($scope, $state, $http,$timeout,$interval,userINFO){
+  var PIDlist=new Array();//PID列表
+  var PIDlistLength;//PID列表长度
+  var loaditems=0;//已加载条目
+  var PatientsList;
+  var PatientsBasic=new Array();//输出到页面的json 
+  var refreshing=0;//控制连续刷新时序            
+  $scope.patients=PatientsBasic;
+  $scope.moredata = true;  //控制上拉加载
+  var onePatientBasic= function(PID){
+    userINFO.BasicInfo(PID).then(function(data){
+      var str=JSON.stringify(data);
+      var str=JSON.parse(str);
+      //两个JSON拼数据,把PatientsList中的字段加到PatientsBasic
+      str.photoAddress = PatientsList[loaditems].photoAddress;
+      str.PlanNo = PatientsList[loaditems].PlanNo;
+      str.StartDate = PatientsList[loaditems].StartDate;
+      str.Process = PatientsList[loaditems].Process;
+      str.RemainingDays = PatientsList[loaditems].RemainingDays;
+      str.VitalSign = PatientsList[loaditems].VitalSign;
+      str.ComplianceRate = PatientsList[loaditems].ComplianceRate;
+      str.TotalDays = PatientsList[loaditems].TotalDays;
+      str.Status = PatientsList[loaditems].Status;
+      PatientsBasic.push(str);
+      loaditems++;
+    },function(data){
+    }); 
+  }
+  var getPatientsBasic=function(list){
+    // for(var p in list){        //3行无延时请求数据
+    //   onePatientBasic(list[p]);
+    // }  
+    var repeat=list.length;p=0;  
+    var timer;
+    timer = $interval(function(){
+      if(repeat==0){
+        $scope.patients=PatientsBasic;
+        $interval.cancel(timer);
+        timer=undefined;        
+      }else{
+      onePatientBasic(list[repeat-1]);
+      repeat--;
+      }
+    },50);
+  }
+  var firstget =function(){
+      if(PIDlistLength>=10){
+      getPatientsBasic(PIDlist.slice(0,10));
+      }else{
+      getPatientsBasic(PIDlist);
+      }
+      $timeout(function(){$scope.moredata = false;},5000);
+      $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+      refreshing=0;
+  }
 
+  var getPIDlist = function(){
+    userINFO.GetPatientsList('DOC201506180002','M1','0','0','0')
+    .then(function(data){
+      PatientsList=data.DT_PatientList; 
+      for(var i in PatientsList){
+        PIDlist.push(PatientsList[i].PatientId);
+      }
+      PIDlistLength=PIDlist.length; 
+      
+      firstget();
+    },function(data){
+    });
+  }
 
-.controller('CoachPatientsCtrl', ['Patients','$scope','$http','$state',
-  function(Patients,$scope,$http,$state){ //LRZ
-  // $scope.chats = Chats.all(); 
-  // $scope.remove = function(chat) {
-  //   Chats.remove(chat);
-  // };
-  // $scope.patients = Patients.all();
-  $http.get('js/data.json').success(function(data) {
-    $scope.patients = data.artists; 
-    $scope.whichartist= $state.params.aId;
-    // console.log($scope.whichartist);
-    $scope.data = { showDelete: false, showReorder: false };
+  getPIDlist();
 
-    $scope.moveItem = function(item, fromIndex, toIndex) {
-          $scope.patients.splice(fromIndex, 1);
-          $scope.patients.splice(toIndex, 0, item);
+  $scope.doRefresh =function() {
+    if(refreshing==0){
+      refreshing=1;
+      PatientsBasic=[];PIDlist=[];
+      loaditems=0;PIDlistLength=0;
+      getPIDlist();
     }
-
-    $scope.onItemDelete = function(item) {
-      $scope.patients.splice($scope.patients.indexOf(item), 1);
+  }
+  $scope.loadMore = function(){
+    if((PIDlistLength-loaditems)>10){
+        getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
+    }else if(loaditems>=10){
+      getPatientsBasic(PIDlist.slice(loaditems));
     }
-
-    $scope.toggleStar = function(item) {
-     item.star = !item.star;
-    }
-
-    $scope.doRefresh =function() {
-        $http.get('js/data.json').success(function(data) {
-        $scope.patients = data.artists;
-        $scope.$broadcast('scroll.refreshComplete'); 
-      });
-    }
-  });
-
-
+    if(PIDlistLength==loaditems && PIDlistLength!=0){
+      $scope.moredata=true;
+    }    
+   $scope.$broadcast('scroll.infiniteScrollComplete');
+  }  
+    $scope.setwidth=function(patient){
+      var divwidth=patient.Age + '%';
+      return {width:divwidth}; 
+    };
+    $scope.ishide=function(patient){
+      if(patient.Age>=50){
+        return false;
+      }else{
+        return true;
+      } 
+    };      
 }])
+.controller('newpatientsCtrl', ['$scope', '$state', '$http', '$interval','$timeout' ,'userINFO' ,function($scope, $state, $http, $interval,$timeout,userINFO){
+  var PIDlist=new Array();
+  var PIDlistLength;loaditems=0;
+  var PatientsList;
+  var PatientsBasic=new Array(); 
+  var refreshing=0;//控制连续刷新时序            
+  $scope.patients=PatientsBasic;
+  $scope.moredata = true;
+  var onePatientBasic= function(PID){     
+    userINFO.BasicInfo(PID).then(function(data){
+      var str=JSON.stringify(data);
+      var str=JSON.parse(str);
+      PatientsBasic.push(str);
+      loaditems++;
+    },function(data){
+    }); 
+  }
+  var getPatientsBasic=function(list){
+    // for(var p in list){        //3行无延时请求数据
+    //   onePatientBasic(list[p]);
+    // }  
+    var repeat=list.length;p=0;  
+    var timer;
+    timer = $interval(function(){
+      if(repeat==0){
+      $timeout(function(){$scope.moredata = false;},3000);
+        $scope.patients=PatientsBasic;
+        $interval.cancel(timer);
+        timer=undefined;        
+      }else{
+      onePatientBasic(list[repeat-1]);
+      repeat--;
+      }
+    },50);
+  }
+  var firstget =function(){
+      if(PIDlistLength>=10){
+      getPatientsBasic(PIDlist.slice(0,10));
+      }else{
+      getPatientsBasic(PIDlist);
+      }
+      
+      $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+      refreshing=0;
+  }
+
+  var getPIDlist = function(){
+    userINFO.GetPatientsList('DOC201506180002','M1','0','0','0')
+    .then(function(data){
+      PatientsList=data.DT_PatientList; 
+      for(var i in PatientsList){
+        PIDlist.push(PatientsList[i].PatientId);
+      }
+      PIDlistLength=PIDlist.length; 
+      
+      firstget();
+    },function(data){
+    });
+  }
+
+  getPIDlist();
+
+  $scope.doRefresh =function() {
+    if(refreshing==0){
+      refreshing=1;
+      PatientsBasic=[];PIDlist=[];
+      loaditems=0;PIDlistLength=0;
+      getPIDlist();
+    }
+
+  }
+  $scope.loadMore = function(){
+    if((PIDlistLength-loaditems)>10){
+        console.log(PIDlistLength-loaditems);
+        console.log(PIDlist.slice(loaditems,loaditems+10));
+        getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
+    }else{
+      //console.log(PIDlist.slice(loaditems));
+      getPatientsBasic(PIDlist.slice(loaditems));
+    }
+    if(PIDlistLength==loaditems && PIDlistLength!=0){
+      //console.log('END');
+      $scope.moredata=true;
+    }    
+   $scope.$broadcast('scroll.infiniteScrollComplete');
+  } 
+  $scope.onItemDelete = function(index) {
+    console.log(index);
+    $scope.patients.splice(index, 1);
+  } 
+}])
+
+
 
 // .controller('CoachPatientsDetailController',function(){
 

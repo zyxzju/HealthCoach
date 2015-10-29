@@ -34,6 +34,11 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       templateUrl: 'partials/login/setPassword.html',
       controller: 'setPasswordCtrl'
     })
+    .state('changepassword', {
+      url: '/changePassword',
+        templateUrl: 'partials/login/changePassword.html',
+        controller:'changePasswordCtrl' 
+    })
     .state('userdetail',{
       url:'/userdetail',
       templateUrl:'partials/login/userDetail.html',
@@ -57,16 +62,6 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
         }
       }
     })
-    .state('tabs.changePassword', {
-      url: '/changePassword',
-      views: {
-        'home-tab': {
-          templateUrl: 'partials/login/changePassword.html',
-          controller:'changePasswordCtrl'
-        }
-      }
-    })
-
     .state('tabs.phones', {
       url:'/phones',
       views: {
@@ -160,21 +155,32 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     views:{
       'coach-patients':{
         templateUrl:'partials/individual/coach-patients.html',
-        controller:'CoachPatientsCtrl'
+        controller:'myPatientCtrl'
       }
     }
 
   })
 
-  .state('coach.patientsdetail', {
-    url: '/patients/:aId',
-    views: {
-      'coach-patients' : {
-        templateUrl: 'partials/individual/coach-patientsdetail.html',
-        controller: 'CoachPatientsCtrl'
+  .state('coach.newpatients',{
+    url:'/newpatients',
+    views:{
+      'coach-newpatients':{
+        templateUrl:'partials/individual/coach-newpatients.html',
+        controller:'newpatientsCtrl'
       }
     }
+
   })
+
+  // .state('coach.patientsdetail', {
+  //   url: '/patients/:aId',
+  //   views: {
+  //     'coach-patients' : {
+  //       templateUrl: 'partials/individual/coach-patientsdetail.html',
+  //       controller: 'CoachPatientsCtrl'
+  //     }
+  //   }
+  // })
 
   .state('coach.message',{
     url:'/message',

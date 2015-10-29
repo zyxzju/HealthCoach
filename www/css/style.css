@@ -1,1 +1,36 @@
 /* Empty. Add your own CSS if you like */
+.item h3 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #417D9A;
+}
+.item h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  
+  
+}
+.item h1 {
+  font-size: 1rem;
+    color: #666666;
+    margin-top: 5.6px;
+}
+
+.item-thumbnail-left img {
+  border-radius: 10px;
+}
+.item-row{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -moz-flex;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 0px;
+  width: 100%;
+}
+
+.processbar{
+	background-color:#417D9A;
+	height:100%;
+}

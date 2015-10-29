@@ -82,7 +82,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			Verification:{method:'POST',params:{route:'Verification'},timeout:10000},
             myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
             getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
-			Activition:{method:'POST',params:{route:'Activition'},timeout:10000} //用户注册后激活
+			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsList',DoctorId:'@DoctorId',ModuleType:'@ModuleType',Plan:'@Plan',Compliance:'@Compliance',Goal:'@Goal'},timeout:20000},
+      BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000} 
 		})
 	}
 	var Service = function(){
@@ -228,7 +230,33 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return serve;
 }])
-
+.factory('userINFO',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){
+    var serve={};
+    serve.BasicInfo = function(_UserId){
+        var urltemp=_UserId+'/BasicInfo';
+        var deferred = $q.defer();   
+        Data.Users.BasicInfo({route:urltemp},
+        function(data,hearders,status){ 
+            deferred.resolve(data);
+        },
+        function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    serve.GetPatientsList = function(_DoctorId,_ModuleType,_Plan,_Compliance,_Goal){
+        var deferred = $q.defer();   
+        Data.Users.GetPatientsList({DoctorId:_DoctorId,ModuleType:_ModuleType,Plan:_Plan,Compliance:_Compliance,Goal:_Goal},
+        function(data,hearders,status){ 
+            deferred.resolve(data);
+        },
+        function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    return serve;
+}])
 //极光推送服务 TDY 20151026
 .factory('jpushService',['$http','$window',function($http,$window){ //TDY
 	var jpushServiceFactory={};
