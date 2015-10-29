@@ -59,28 +59,40 @@
 
 
 
-<ion-slide-box on-slide-changed="slideHasChanged($index)">
-  <ion-slide>
+    <ion-list class="list-inset">
+ <!--      <ion-item class="item-text-wrap"
+        collection-repeat="item in artists | filter: { shortname: whichartist }">
+          <img ng-src="img/{{item.shortname}}_tn.jpg"
+            alt="{{ item.name }} Photo">
+          <h2>{{ item.name }}</h2>
+          <h3>{{ item.reknown }}</h3>
+          <p>{{ item.bio }}</p>
+      </ion-item> -->
+    </ion-list>
+
+
+<ion-slide-box on-slide-changed="slideHasChanged($index)" ng-repeat ="item in risks | filter:{ SortNo : whichone} ">
+  <ion-slide ng-if = " item.AssessmentType == 'M1'">
     <div>
-  <div class="card">
+  <div class="card" >
   <div class="item item-divider">
-    <b>高血压风险描述</b>
+    <h2>高血压风险描述<h2>
   </div>
   <div class="item item-text-wrap">
-    {{ "高血压等级说明"}}
-    {{"blablabla"}}
+    <h3>高血压等级说明<h3>
+    <p>{{ item.Result }}</p>
   </div>
 </div>
 </div>
   </ion-slide>
-  <ion-slide>
-<div class="card">
+  <ion-slide >
+<div class="card" >
   <div class="item item-divider">
     <b>糖尿病风险描述</b>
   </div>
   <div class="item item-text-wrap">
       {{ "糖尿病等级说明"}}
-    {{"blablabla"}}
+      {{item.Result}}
   </div>
   </ion-slide>
 

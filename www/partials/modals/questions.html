@@ -1,12 +1,12 @@
 <ion-view title="慢病信息">
 	
-	<ion-nav-buttons side="right">
+<!-- 	<ion-nav-buttons side="right">
 		<a class="button icon ion-android-home" href='#/new/master'>
 		</a>
-	</ion-nav-buttons>
+	</ion-nav-buttons> -->
 
 	<ion-content scroll='true'>
-		<h4>患者建档进度：</h4><progress max="100" value="45"></progress>
+		<!-- <h4>患者建档进度：</h4><progress max="100" value="45"></progress> -->
 
 		<div class="row responsive-sm">
 			<div class="col">
@@ -14,7 +14,7 @@
 			</div>
 			<div class="col">		
 				<button class="button  icon-left ion-edit button-stable">编辑</button>
-				<button class="button icon-left ion-checkmark button-stable">保存</button>
+				<button class="button icon-left ion-checkmark button-stable" ng-click = "onClickSave()">保存</button>
 			</div>
 			<div class="col">
 				<a class="button  icon-left ion-checkmark button-stable"
@@ -33,10 +33,10 @@
 				<h4><b>既往史</b></h4>
 			</div>
 		</div>
-		<div class='row responsive-sm'>
+<!-- 		<div class='row responsive-sm'>
 			<div class='col col-25 col-offset-75'><a class="button button-stable"><b>从临床信息中同步数据</b></a>
 			</div>
-		</div>
+		</div> -->
 		<div class='row responsive-sm'>
 			<div class='col col-67 col-offset-33'>
 				<div class="list">

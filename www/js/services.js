@@ -98,12 +98,25 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return $resource(CONFIG.baseUrl + ':path/:route',{
       path:'RiskInfo',
     },{
-        // insertEvalutionResult:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
-        postEvalutionResult:{method:'POST',params:{route: 'RiskResult'}, timeout: 10000},
+        
+        // POST Api/v1/RiskInfo/RiskResult
+        postEvalutionResult:{method:'POST',params:{route: 'RiskResult'}, timeout: 20000},
+        // GET Api/v1/RiskInfo/RiskInput?UserId={UserId}
         getEvalutionInput:{method:'GET',params:{route:'RiskInput',UserId:'@UserId'},timeout:10000},
-        getEvalutionResult:{method:'GET',params:{route:'RiskResult',UserId:'@UserId'},timeout:10000},
-        getDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:10000}
-        // checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
+        // GET Api/v1/RiskInfo/RiskResults?UserId={UserId}
+        getEvalutionResults:{method:'GET',params:{route:'RiskResults',UserId:'@UserId'},isArray : true,timeout:10000},
+        // GET Api/v1/RiskInfo/RiskResult?UserId={UserId}&AssessmentType={AssessmentType}
+        getNewResult:{method:'GET',params:{route:'RiskResults',UserId:'@UserId',AssessmentType:'@AssessmentType'},timeout:10000},
+        // GET Api/v1/RiskInfo/GetDescription?SBP={SBP}
+        getSBPDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:10000},
+        // GET Api/v1/RiskInfo/Parameters?Indicators={Indicators}
+        getIndicators:{method:'GET',params:{route:'Parameters',Indicators:'@Indicators'},timeout:10000},
+        // POST Api/v1/RiskInfo/TreatmentIndicators
+        postTreatmentIndicators:{method:'POST',params:{route:'TreatmentIndicators'},timeout:20000},
+        // POST Api/v1/RiskInfo/PsParameters
+        postPsParameters:{method:'POST',params:{route:'PsParameters'},timeout:10000}, 
+        // GET Api/v1/RiskInfo/GetMaxSortNo?UserId={UserId}
+        getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
     })
   }
 	// var Service = function(){
@@ -492,9 +505,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   
 }])
 
-
-
-.factory('Patients',['Data','$q',function(Data,$q){ //LRZ
+.factory('Patients',['Data','$q','$resource','CONFIG',function(Data,$q,$resource,CONFIG){ //LRZ
   //get patients
   //remove certain patients
   //add  patients
@@ -515,18 +526,84 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       }
       return null;
     },
-    getEvalutionResult: function(userid){
+    getEvalutionResults: function(userid){
 
       var deferred = $q.defer();
-      Data.RiskInfo.getEvalutionInput({"UserId":userid}, function (data, headers) {
-        console.log("获得了数据"+data)
+      Data.RiskInfo.getEvalutionResults({"UserId":userid}, function (data, headers) {
+        // console.log(data);
         deferred.resolve(data);
       }, function (err) {
         deferred.reject(err);
       });
       return deferred.promise;        
+    },
+    getEvalutionInput: function(userid){
+      //获取填表所需输入 
+      var deferred = $q.defer();
+      Data.RiskInfo.getEvalutionInput({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
+    },
+    getSBPDescription: function(sbp){
+      //获取填表所需输入 
+      var deferred = $q.defer();
+      Data.RiskInfo.getSBPDescription({"SBP":sbp}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;        
+    },
+    getNewResult: function(userid){
+      var deferred = $q.defer();
+      Data.RiskInfo.getSBPDescription({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    postEvalutionResult:function(result){
+      console.log("uploading")
+      var deferred = $q.defer();
+        Data.RiskInfo.postEvalutionResult(result, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+        console.log(err);
+      });
+      return deferred.promise; 
+
+    },
+    postTreatmentIndicators: function(result){
+      var deferred = $q.defer();
+        Data.RiskInfo.postTreatmentIndicators(result, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    getMaxSortNo:function(userid){
+      var deferred = $q.defer();
+        Data.RiskInfo.getMaxSortNo({"UserId":userid}, function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;       
     }
-    }
+
+  }
 }])
 
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改

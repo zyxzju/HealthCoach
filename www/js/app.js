@@ -179,7 +179,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   })
 
   .state('riskdetail',{
-    url:'/risk/:id',
+    url:'/risk/:sortno',
     // views:{
     //   'coach-risk':{
         templateUrl:'partials/individual/riskdetail.html',
@@ -231,7 +231,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   });
     
    //$urlRouterProvider.otherwise('/signin');
-   $urlRouterProvider.otherwise('/risk');
+   // $urlRouterProvider.otherwise('/risk');
 
 }])
 

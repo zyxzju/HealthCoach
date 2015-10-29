@@ -1,12 +1,13 @@
 #chartdiv {#chartdiv {
   width   : 100%;
   height    : 350px;
-  font-size : 12px;
+  font-size : 15px;
   display: inline;
- 
+  background-color: #EEE8D6;
 } 
   width: 100%;
   height: 350px;
+  background-color: #F7F4EA;
  
 }
 
@@ -15,9 +16,11 @@
   width   : 100%;
   height    : 350px;
   font-size : 12px;
+  background-color: #EEE8D6;
 } 
   width: 100%;
   height: 350px;
+  background-color: #F7F4EA;
 }
 
 .item-divider {
@@ -25,4 +28,28 @@
   font-size: 1.0rem;
   font-weight: bold;
   color: #000000;
+}
+
+
+.star>.item-content {
+  background-color: #EEE8D6 !important;
+} 
+
+.item h2 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #000000;
+}
+
+.item h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #817D9A;
+}
+
+
+.item h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #06bee1;
 }

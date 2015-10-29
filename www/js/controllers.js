@@ -790,213 +790,406 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 // })
 .controller('RiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate',function($state,$scope,Patients,$state,$ionicSlideBoxDelegate){
-  $scope.userid = "xxxxx";
-  // $scope.risks = Patients.getEvalutionResult($scope.userid);
-  // console.log($scope.risks);
-  $scope.patients = [{name:"1",shortname:"2",reknown:"3",bio:"4",diarisk:123},{name:"1",shortname:"2",reknown:"3",bio:"4"}];
-  // console.log($scope.patients);
-  $scope.data = { showDelete: false, showReorder: false };
-  $scope.dbtshow = false;
-
-var chart = AmCharts.makeChart("chartdiv", {
-  "type": "serial",
-  "theme": "light",
-    // "legend": {
-    //     "horizontalGap": 10,
-    //     "maxColumns": 1,
-    //     "position": "right",
-    // "useGraphSettings": true,
-    // "markerSize": 10
-    // },
-    "dataProvider": [{
-        "type": "收缩压",
-        "state1": 40,
-        "state2": 20,
-        "state3": 20,
-        "state4": 20,
-        "state5": 20
-
-    }, {
-        "type": "舒张压",
-        "state1": 20,
-        "state2": 20,
-        "state3": 20,
-        "state4": 20,
-        "state5": 20
-
-    }],
-    "valueAxes": [{
-        "stackType": "regular",
-        "axisAlpha": 0.3,
-        "gridAlpha": 0
-    }],
-    "graphs": [{
-        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-        "fillAlphas": 0.8,
-        //"labelText": "[[value]]",
-        "lineAlpha": 0.3,
-        "title": "很安全",
-        "type": "column",
-        "color": "#000000",
-        "valueField": "state1"
-    }, {
-        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-        "fillAlphas": 0.8,
-       // "labelText": "[[value]]",
-        "lineAlpha": 0.3,
-        "title": "正常",
-        "type": "column",
-        "color": "#000000",
-        "valueField": "state2"
-    }, {
-        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-        "fillAlphas": 0.8,
-        //"labelText": "[[value]]",
-        "lineAlpha": 0.3,
-        "title": "良好",
-        "type": "column",
-        "color": "#000000",
-        "valueField": "state3"
-    }, {
-        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-        "fillAlphas": 0.8,
-        //"labelText": "[[value]]",
-        "lineAlpha": 0.3,
-        "title": "很危险",
-        "type": "column",
-        "color": "#000000",
-        "valueField": "state4"
-    }, {
-        "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-        "fillAlphas": 0.8,
-        //"labelText": "[[value]]",
-        "lineAlpha": 0.3,
-        "title": "极度危险",
-        "type": "column",
-        "color": "#000000",
-        "valueField": "state5"
-    }],
-    "categoryField": "type",
-    "categoryAxis": {
-        "gridPosition": "start",
-        "axisAlpha": 80,
-        "gridAlpha": 0,
-        "position": "left"
-    },
-    "export": {
-      "enabled": true
-     }
-
-});
-var chart2 = AmCharts.makeChart("chartdiv2", {
-  "type": "serial",
-  "theme": "light",
-  "marginRight": 70,
-  "dataProvider": [{
-    "country": "USA",
-    "visits": 3025,
-    "color": "#FF0F00"
-  }, {
-    "country": "China",
-    "visits": 1882,
-    "color": "#FF6600"
-  }, {
-    "country": "Japan",
-    "visits": 1809,
-    "color": "#FF9E01"
-  }, {
-    "country": "Germany",
-    "visits": 1322,
-    "color": "#FCD202"
-  }, {
-    "country": "UK",
-    "visits": 1122,
-    "color": "#F8FF01"
-  }, {
-    "country": "France",
-    "visits": 1114,
-    "color": "#B0DE09"
-  }, {
-    "country": "India",
-    "visits": 984,
-    "color": "#04D215"
-  }, {
-    "country": "Spain",
-    "visits": 711,
-    "color": "#0D8ECF"
-  }, {
-    "country": "Netherlands",
-    "visits": 665,
-    "color": "#0D52D1"
-  }, {
-    "country": "Russia",
-    "visits": 580,
-    "color": "#2A0CD0"
-  }, {
-    "country": "South Korea",
-    "visits": 443,
-    "color": "#8A0CCF"
-  }, {
-    "country": "Canada",
-    "visits": 441,
-    "color": "#CD0D74"
-  }],
-  "valueAxes": [{
-    "axisAlpha": 0,
-    "position": "left",
-    "title": "Visitors from country"
-  }],
-  "startDuration": 1,
-  "graphs": [{
-    "balloonText": "<b>[[category]]: [[value]]</b>",
-    "fillColorsField": "color",
-    "fillAlphas": 0.9,
-    "lineAlpha": 0.2,
-    "type": "column",
-    "valueField": "visits"
-  }],
-  "chartCursor": {
-    "categoryBalloonEnabled": false,
-    "cursorAlpha": 0,
-    "zoomable": false
-  },
-  "categoryField": "country",
-  "categoryAxis": {
-    "gridPosition": "start",
-    "labelRotation": 45
-  },
-  "export": {
-    "enabled": true
-  }
-
-});
   
+  // console.log("controller初始化的函数跑了一遍开始");
+  // console.log($scope.chart);
+  $scope.userid = "PID201506170002";
+  // console.log("controller初始化的函数跑了一遍");
+  Patients.getEvalutionResults($scope.userid).then(function(data){
+    
+    $scope.risks = data;
+    // 拆解字段
+    // console.log($scope.risks);
+    for (var i = $scope.risks.length - 1; i >= 0; i--) {
+      var temp = $scope.risks[i].Result.split("||",3);
+      $scope.risks[i].Result = temp[0];
+      $scope.risks[i].SBP = temp[1];
+      $scope.risks[i].DBP = temp[2];
+      switch ($scope.risks[i].AssessmentType){
+        case 'M1' : $scope.risks[i].AssessmentName = "高血压模块"; break;
+        case 'M2' : $scope.risks[i].AssessmentName = "糖尿病模块";
+      } 
+    };
+
+    // $scope.Result = $scope.risks[0]; //?????
+    // $scope.marker = 177;
+    $scope.whichone = $state.params.sortno;
+
+  // Patients.getEvalutionInput($scope.userid).then(function(data){
+  //     $scope.questions = data;
+  //     // console.log($scope.questions.SBP);
+  // });  
+  // console.log($scope.risks);
+
+  $scope.data = {showDelete: false, showReorder: false};
+  console.log($scope.data)
+  $scope.dbtshow = false;
+    // into service
+ 
+  });
+
+  if($scope.chart === undefined)
+  {
+    // console.log("又画图了");
+    $scope.data1 =  {
+      "type": "serial",
+      "theme": "light",
+        "dataProvider": [{
+            "type": "收缩压",
+            "state1": 40+80,
+            "state2": 20,
+            "state3": 20,
+            "state4": 20,
+            "state5": 20,
+            "now":177, //params
+            "target": 120               //params
+
+        }, {
+            "type": "舒张压",
+            "state1": 20+80,
+            "state2": 20,
+            "state3": 20,
+            "state4": 20,
+            "state5": 20,
+            "now": 118,         //params
+            "target": 100             //params
+        }],
+        "valueAxes": [{
+            "stackType": "regular",
+            "axisAlpha": 0.3,
+            "gridAlpha": 0,
+             "minimum" :80
+        }],
+        "graphs": [{
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><120 mmHg</b></span>",
+            "fillAlphas": 0.8,
+            //"labelText": "[[value]]",
+            "lineAlpha": 0.3,
+            "title": "很安全",
+            "type": "column",
+            "color": "#000000",
+            "valueField": "state1"
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
+            "fillAlphas": 0.8,
+           // "labelText": "[[value]]",
+            "lineAlpha": 0.3,
+            "title": "正常",
+            "type": "column",
+            "color": "#000000",
+            "valueField": "state2"
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
+            "fillAlphas": 0.8,
+            //"labelText": "[[value]]",
+            "lineAlpha": 0.3,
+            "title": "良好",
+            "type": "column",
+            "color": "#000000",
+            "valueField": "state3"
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
+            "fillAlphas": 0.8,
+            //"labelText": "[[value]]",
+            "lineAlpha": 0.3,
+            "title": "很危险",
+            "type": "column",
+            "color": "#000000",
+            "valueField": "state4"
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
+            "fillAlphas": 0.8,
+            //"labelText": "[[value]]",
+            "lineAlpha": 0.3,
+            "title": "极度危险",
+            "type": "column",
+            "color": "#000000",
+            "valueField": "state5"
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+            "fillAlphas": 0,
+            "columnWidth": 0.5,
+            "lineThickness": 5,
+            "labelText": "[[value]]"+" 目前",
+            "clustered": false,
+            "lineAlpha": 0.3,
+            "stackable": false,
+            "noStepRisers": true,
+            "title": "目前",
+            "type": "step",
+            "color": "#cc4488",
+            "valueField": "now"      
+        }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+            "fillAlphas": 0,
+            "columnWidth": 0.5,
+            "lineThickness": 0,
+            // "labelText": "[[value]]"+"目标",
+            "clustered": false,
+            "lineAlpha": 0.3,
+            "stackable": false,
+            "noStepRisers": true,
+            "title": "目标",
+            "type": "step",
+            "color": "#00FFCC",
+            "valueField": "target"      
+        }],
+        "categoryField": "type",
+        "categoryAxis": {
+            "gridPosition": "start",
+            "axisAlpha": 80,
+            "gridAlpha": 0,
+            "position": "left"
+        },
+        "export": {
+          "enabled": true
+         }
+    };
+     $scope.data2 = {
+        "type": "serial",
+        "theme": "light",
+        
+        "autoMargins": true,
+        "marginTop": 30,
+        "marginLeft": 80,
+        "marginBottom": 30,
+        "marginRight": 50,
+        "dataProvider": [{
+            "category": "Evaluation",
+            "excelent": 40+80,
+            "good": 20,
+            "average": 20,
+            "poor": 20,
+            "bad": 20,
+            "limit": 128,
+            "full": 200,
+            "bullet": 158
+        }],
+        "valueAxes": [{
+            "maximum": 200,
+            "stackType": "regular",
+            "gridAlpha": 0,
+            "offset":10,
+            "minimum" :80
+
+        }],
+        "startDuration": 1,
+        "graphs": [{
+            "columnWidth": 0.5,
+            "lineColor": "#880000",
+            "lineThickness": 3,
+            "noStepRisers": true,
+            "stackable": false,
+            "type": "step",
+            "valueField": "limit"
+        }, {
+            "fillAlphas": 0.8,
+            "lineColor": "#19d228",
+            "showBalloon": false,
+            "type": "column",
+            "valueField": "excelent"
+        }, {
+            "fillAlphas": 0.8,
+            "lineColor": "#b4dd1e",
+            "showBalloon": false,
+            "type": "column",
+            "valueField": "good"
+        }, {
+            "fillAlphas": 0.8,
+            "lineColor": "#f4fb16",
+            "showBalloon": false,
+            "type": "column",
+            "valueField": "average"
+        }, {
+            "fillAlphas": 0.8,
+            "lineColor": "#f6d32b",
+            "showBalloon": false,
+            "type": "column",
+            "valueField": "poor"
+        }, {
+            "fillAlphas": 0.8,
+            "lineColor": "#fb7116",
+            "showBalloon": false,
+            "type": "column",
+            "valueField": "bad"
+        }, {
+            "clustered": false,
+            "columnWidth": 0.5,
+            "noStepRisers": true,
+            "lineThickness": 3,
+            "fillAlphas": 0,
+            "lineColor": "#0080FF", 
+            "stackable": false,
+            "type": "step",
+            "valueField": "bullet"
+        }],
+        "rotate": false,
+        "columnWidth": 1,
+        "categoryField": "category",
+        "categoryAxis": {
+            "gridAlpha": 0,
+            "position": "left",
+           
+        }
+    };
+    $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
+    $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
+    
+    console.log("又画图了");
+  };
+  
+
   $scope.doRefresh = function(){
-    $scope.patients = [{name:"1",shortname:"2",reknown:"3",bio:"4"},{name:"1",shortname:"2",reknown:"3",bio:"4"}];
+    console.log("doing refreshing");
+    $scope.userid = "PID201506170002";
+    Patients.getEvalutionResults($scope.userid).then(function(data){
+      $scope.risks = data;
+    for (var i = $scope.risks.length - 1; i >= 0; i--) {
+      var temp = $scope.risks[i].Result.split("||",3);
+      $scope.risks[i].Result = temp[0];
+      $scope.risks[i].SBP = temp[1];
+      $scope.risks[i].DBP = temp[2];
+      switch ($scope.risks[i].AssessmentType){
+        case 'M1' : $scope.risks[i].AssessmentName = "高血压模块"; break;
+        case 'M2' : $scope.risks[i].AssessmentName = "糖尿病模块";
+      } 
+    };      
+    });
+    // console.log("in controller");
+    // console.log($scope.risks);
+
     $scope.data = { showDelete: false, showReorder: false };
+    $scope.dbtshow = false;
     $scope.$broadcast('scroll.refreshComplete'); 
   }
-  // $scope.onClickAdd();
-  $scope.onClickAdd = function(){
+
+  
+  $scope.onClickEvaluation = function(){
       //open a new page to collect patient info  
       $state.go("riskquestion");
-      // post
+      // ger question
+      // Patients.getEvalutionInput($scope.userid).then(function(data){
+      //     $scope.questions = data;
+      //     // console.log($scope.questions);
+      //     $scope.questions.SBP = 150;
+      //     $scope.questions.DBP = 134;
 
+      // });
       // get risk result
 
       // get another result
   }
+
+  $scope.onClickSave = function(){
+    //upload 
+    Patients.getMaxSortNo(123).then(function(dat){
+      var maxsortno = dat.body; 
+      console.log(dat);
+    })
+    // console.log($scope.userid);
+    //get sbp description 
+      // var date = new Date();
+      // console.log(date);
+      Patients.getSBPDescription(190).then(function(data){
+        // console.log(data.result);
+
+        var t = data.result + "||190||120";
+        // console.log(t);
+        var time2 = new Date();
+        var temp = {
+          "UserId": $scope.userid,
+          "SortNo": 233,
+          "AssessmentType": "M1",
+          "AssessmentName": "高血压",
+          "AssessmentTime": "2015-10-29T15:02:34.1988359+08:00",
+          "Result": t ,
+          "revUserId": "sample string 7",
+          "TerminalName": "sample string 8",
+          "TerminalIP": "sample string 9",
+          "DeviceType": 10
+        }
+      Patients.postTreatmentIndicators(temp);
+      var temp =  {
+        "UserId": $scope.userid,
+        "SortNo": 233,
+        "AssessmentType": "M2",
+        "AssessmentName": "糖尿病",
+        "AssessmentTime": "2015-10-29T15:01:36.2198371+08:00",
+        "Result": " 糖尿病不严重。||100||160",
+        "revUserId": "sample string 7",
+        "TerminalName": "sample string 8",
+        "TerminalIP": "sample string 9",
+        "DeviceType": 10
+      };
+      Patients.postTreatmentIndicators(temp);
+      //POST RESULT
+      // console.log($scope.description);
+      //
+      
+      
+    });
+    // console.log($scope.description);
+    $state.go('risk');
+    // console.log($scope.description);
+    // Patients.
+    //
+  }
+
   $scope.slideHasChanged = function (_index){
-    console.log(_index);
+    // console.log(_index);
     // $ionicSlideBoxDelegate.currentIndex();
     if(_index == 1) $scope.dbtshow = true;
     else $scope.dbtshow = false;
+    // console.log($scope.description);
   }
+
   $scope.onClickBackward = function(){
       $state.go("risk");
   }
 
-  
+  $scope.toggleStar = function(item) {
+   item.star = !item.star;
+  }
+
+  $scope.onChangeChartData = function(sbp,dbp){
+      $scope.marker = sbp;
+      if(sbp === undefined || dbp === undefined || $scope.chart === undefined) return;
+      console.log(sbp);
+      var temp1 = {
+          "type": "收缩压",
+          "state1": 40+80,
+          "state2": 20,
+          "state3": 20,
+          "state4": 20,
+          "state5": 20,
+          "now": parseInt(sbp), //params
+          "target": 120               //params
+
+      };
+      var temp2 = {
+          "type": "舒张压",
+          "state1": 20+80,
+          "state2": 20,
+          "state3": 20,
+          "state4": 20,
+          "state5": 20,
+          "now": parseInt(dbp), //params
+          "target": 100               //params
+
+      };
+      console.log("push");
+      $scope.chart.dataProvider.pop();
+      $scope.chart.dataProvider.pop();
+      $scope.chart.dataProvider.push(temp1);
+      $scope.chart.dataProvider.push(temp2);
+      // $scope.chart.dataProvider["now"] = sbp;
+      $scope.chart.validateData();
+      $scope.chart.validateNow();
+      // $scope.chart2.validateData();
+      console.log($scope.chart);
+  }
+   // console.log("controller初始化的函数跑了一遍结束"); 
+ 
 }])
 // Coach Identification Controller
 // ----------------------------------------------------------------------------------------

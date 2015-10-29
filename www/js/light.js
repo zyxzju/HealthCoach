@@ -7,7 +7,7 @@ AmCharts.themes.light = {
 	},
 
 	AmCoordinateChart: {
-		colors: ["#67b7dc", "#fdd400", "#84b761", "#cd82ad","#cc4748",  "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
+		colors: ["#67b7dc", "#84b761","#fdd400",  "#cd82ad","#cc4748",  "#2f4074", "#448e4d", "#b7b83f", "#b9783f", "#b93e3d", "#913167"]
 	},
 
 	AmStockChart: {
