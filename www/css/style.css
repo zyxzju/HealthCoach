@@ -34,3 +34,26 @@
 	background-color:#417D9A;
 	height:100%;
 }
+
+.markDisplay1
+{
+  display:block;
+}
+.markDisplay0
+{
+  display:none;
+}
+
+.markDisplaytrue
+{
+  display:block;
+}
+.markDisplayfalse
+{
+  display:none;
+}
+
+.markDisplay 
+{
+  display:none;
+}

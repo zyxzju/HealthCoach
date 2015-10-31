@@ -985,14 +985,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   });
 }])
 
-.controller('ModuleInfoListCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams, Storage, Users) {
+/*.controller('ModuleInfoListCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams, Storage, Users) {
   
  $scope.all={first:""};
 
   var UserId = Storage.get('UID');
   var Module = $stateParams.Module;
-  $scope.onClickBackward = function(){
-      $ionicHistory.goBack();
+  $scope.onClickBackward1 = function(){
+      $state.go('addpatient.ModuleInfo');
   };
 
 
@@ -1002,13 +1002,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   },function(data,status){
     $scope.getStatus = status;
   });
-}])
+}])*/
 
 .controller('ModuleInfoListDetailCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams',  '$timeout', '$ionicPopup', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams,  $timeout,$ionicPopup, Storage, Users) {
   
   var UserId = Storage.get('UID');
   var Module = $stateParams.Module;
-  var ListName = $stateParams.ListName;
+  if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
+  {
+    var ListName = $stateParams.ListName;
+  } 
   $scope.DietHabbitValue = "请选择饮食习惯";
   $scope.ListName = ListName;
   var i=1;
@@ -1018,8 +1021,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.DiabetesDrugArray = [{"ID":1,"Type":"","Name":""}];
   $scope.DiabetesDrugData = [{"ID":1,"Type":"","Name":""}];
   $scope.obj = [];
-  $scope.onClickBackward = function(){
-      $ionicHistory.goBack();
+  $scope.dflag = [];
+  $scope.onClickBackward1 = function(){
+      $state.go('addpatient.ModuleInfo');
+  };
+  $scope.onClickBackward2 = function(){
+      window.location.href="#/addpatient/ModuleInfo/" +Module;
   };
 
   // $http.get('partials/data.json').success(function(data) {
@@ -1091,46 +1098,73 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.Save = function(){
     for (var k=0; k<$scope.ModuleInfoListDetail.length;k++)
     {
-      if ($scope.ModuleInfoListDetail[k].Description != "")
-      {
-        if ($scope.ModuleInfoListDetail[k].Description.Type != "" && typeof($scope.ModuleInfoListDetail[k].Description.Type) != "undefined")
+      
+      if ($scope.ModuleInfoListDetail[k].ParentCode == ListName) {
+        if ($scope.ModuleInfoListDetail[k].Description != "")
         {
-          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          if ($scope.ModuleInfoListDetail[k].Description.Type != "" && typeof($scope.ModuleInfoListDetail[k].Description.Type) != "undefined")
+          {
+            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.dflag.push({"Flag":true});
+          }
+          else
+          {
+            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.dflag.push({"Flag":true});
+          }
+        }
+        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit" && $scope.DietHabbitValue != "" && $scope.DietHabbitValue != "请选择饮食习惯") {
+          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitValue, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          $scope.dflag.push({"Flag":true});
+        } 
+        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
+        {
+          for (var m = 0; m < i; m++)
+          {
+            if ($scope.HypertensionDrugData[m].Name.Type !="")
+            {
+              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m, "Value": $scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            }
+          }
+          $scope.dflag.push({"Flag":true});
+        }
+        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstDiabetesDrug")
+        {
+          for (var n = 0; n < j; n++)
+          {
+            if ($scope.DiabetesDrugData[m].Name.Type !="")
+            {
+              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n, "Value": $scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            }
+          }
+          $scope.dflag.push({"Flag":true});
         }
         else
         {
-          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          $scope.dflag.push({"Flag":false});
         }
+          
       }
-      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit" && $scope.DietHabbitValue != "" && $scope.DietHabbitValue != "请选择饮食习惯") {
-        $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitValue, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
-      } 
-      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
+      else
       {
-        for (var m = 0; m < i; m++)
-        {
-          if ($scope.HypertensionDrugData[m].Name.Type !="")
-          {
-            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m, "Value": $scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
-          }
-        }
+        $scope.dflag.push({"Flag":false});
       }
-      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstDiabetesDrug")
-      {
-        for (var n = 0; n < j; n++)
+      };
+      
+      Users.setPatientDetailInfo($scope.obj).then(function(data,status){
+        $scope.getStatus = data;
+        if (data.result == "数据插入成功")
         {
-          if ($scope.DiabetesDrugData[m].Name.Type !="")
-          {
-            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n, "Value": $scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
-          }
+          window.location.href="#/addpatient/ModuleInfo/" +Module;
         }
-      }
-    }
-    Users.setPatientDetailInfo($scope.obj).then(function(data,status){
-      $scope.getStatus = data;
-    },function(data,status){
-      $scope.getStatus = status;
-    });
+        else
+        {
+          alert(data.result);
+        }
+      },function(data,status){
+        $scope.getStatus = status;
+      });
+    
   };
 
   $scope.addDietHabbit = function(){
