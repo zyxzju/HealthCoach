@@ -1,0 +1,23 @@
+<ion-view title="慢病信息">
+<ion-header-bar>
+    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward()"></a>
+    <h2 class="title">慢病信息</h2>
+    <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
+</ion-header-bar>
+
+
+
+  
+  <ion-content>
+    <div>    
+      <ion-list>
+        <div collection-repeat='Module in ModuleInfo'>
+          <ion-item href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
+            <h2 >{{Module.ModuleName}}</h2>
+          </ion-item>
+        </div>
+      </ion-list>
+    </div>
+    <button ng-click="NextPage()" class="button button-block button-positive">下一步</button>
+  </ion-content>
+</ion-view>
