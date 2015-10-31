@@ -13,7 +13,7 @@
       <ion-list>
         <div collection-repeat='Module in ModuleInfo'>
           <ion-item href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
-            <h2 >{{Module.ModuleName}}</h2>
+            <a class="item item-icon-right" href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">{{Module.ModuleName}}</a>
           </ion-item>
         </div>
       </ion-list>

@@ -259,7 +259,7 @@ $stateProvider
   .state('addpatient.ModuleList',{
     url:'/ModuleInfo/:Module',
     templateUrl:'partials/addpatient/ModuleInfoList.html',
-    controller:'ModuleInfoListCtrl'
+    controller:'ModuleInfoListDetailCtrl'
   })
 
   .state('addpatient.ModuleListDetail',{
