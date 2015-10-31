@@ -166,7 +166,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   })
 
-//临时的
+//风险评估相关view---------------------------------------------------------------lrzlrzlrzlrzlrzlrzlrz
   .state('risk',{
     url:'/risk',
     // views:{
@@ -179,7 +179,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   })
 
   .state('riskdetail',{
-    url:'/risk/:sortno',
+    url:'/risk/:num',
     // views:{
     //   'coach-risk':{
         templateUrl:'partials/individual/riskdetail.html',
@@ -188,16 +188,36 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     // }
 
   })
-  .state('riskquestion',{
-    url:'/risk/question',
-    // views:{
-    //   'coach-risk':{
-        templateUrl:'partials/modals/questions.html',
-        controller:'RiskCtrl'
-      // }
-    // }
 
-  })  
+  .state('riskquestion',{
+    url:'/riskquestion',
+    templateUrl:'partials/modals/questions.html',
+    controller:'RiskQuestionCtrl'
+  })
+
+  // .state('riskquestion.diabetes',{
+  //   url:'/diabetes',
+  //   views:{
+  //     'riskquestion-diabetes':{
+  //       templateUrl:'partials/modals/diabetes.html',
+  //       controller:'RiskQuestionCtrl'
+  //     }
+  //   }
+
+  // })
+
+  // .state('riskquestion.hypertension',{
+  //   url:'/hypertension',
+  //   views:{
+  //     'riskquestion-hypertension':{
+  //       templateUrl:'partials/modals/hypertension.html',
+  //       controller:'RiskQuestionCtrl'
+  //     }
+  //   }
+
+  // })
+//风险评估相关view---------------------------------------------------------------lrzlrzlrzlrzlrzlrzlrz
+
   .state('coach.patientsdetail', {
     url: '/patients/:aId',
     views: {
@@ -231,7 +251,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   });
     
    //$urlRouterProvider.otherwise('/signin');
-   // $urlRouterProvider.otherwise('/risk');
+   $urlRouterProvider.otherwise('/risk');
 
 }])
 

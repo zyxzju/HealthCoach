@@ -99,7 +99,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       path:'RiskInfo',
     },{
         
-        // POST Api/v1/RiskInfo/RiskResult
+        // POST Api/v1/RiskInfo/RiskResult //这个不要了
         postEvalutionResult:{method:'POST',params:{route: 'RiskResult'}, timeout: 20000},
         // GET Api/v1/RiskInfo/RiskInput?UserId={UserId}
         getEvalutionInput:{method:'GET',params:{route:'RiskInput',UserId:'@UserId'},timeout:10000},
@@ -108,7 +108,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // GET Api/v1/RiskInfo/RiskResult?UserId={UserId}&AssessmentType={AssessmentType}
         getNewResult:{method:'GET',params:{route:'RiskResults',UserId:'@UserId',AssessmentType:'@AssessmentType'},timeout:10000},
         // GET Api/v1/RiskInfo/GetDescription?SBP={SBP}
-        getSBPDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:10000},
+        getSBPDescription:{method:'GET',params:{route:'GetDescription',SBP:'@SBP'},timeout:20000},
         // GET Api/v1/RiskInfo/Parameters?Indicators={Indicators}
         getIndicators:{method:'GET',params:{route:'Parameters',Indicators:'@Indicators'},timeout:10000},
         // POST Api/v1/RiskInfo/TreatmentIndicators
@@ -585,7 +585,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     postTreatmentIndicators: function(result){
       var deferred = $q.defer();
         Data.RiskInfo.postTreatmentIndicators(result, function (data, headers) {
-        // console.log(data);
+        console.log(data);
         deferred.resolve(data);
       }, function (err) {
         deferred.reject(err);

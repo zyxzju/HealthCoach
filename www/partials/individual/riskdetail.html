@@ -57,30 +57,26 @@
   </div>
 </div>
 
-
-
-    <ion-list class="list-inset">
- <!--      <ion-item class="item-text-wrap"
-        collection-repeat="item in artists | filter: { shortname: whichartist }">
-          <img ng-src="img/{{item.shortname}}_tn.jpg"
-            alt="{{ item.name }} Photo">
-          <h2>{{ item.name }}</h2>
-          <h3>{{ item.reknown }}</h3>
-          <p>{{ item.bio }}</p>
-      </ion-item> -->
-    </ion-list>
-
-
-<ion-slide-box on-slide-changed="slideHasChanged($index)" ng-repeat ="item in risks | filter:{ SortNo : whichone} ">
-  <ion-slide ng-if = " item.AssessmentType == 'M1'">
+<ion-slide-box on-slide-changed="slideHasChanged($index)"  ng-repeat ="item in newRisks | filter:{ num : whichone} ">
+  <ion-slide>
     <div>
   <div class="card" >
   <div class="item item-divider">
     <h2>高血压风险描述<h2>
   </div>
   <div class="item item-text-wrap">
-    <h3>高血压等级说明<h3>
-    <p>{{ item.Result }}</p>
+
+    <h3>高血压等级说明</h3>
+    <p>{{ item.M1.Result }}</p>
+    
+    
+    <h3>风险详情</h3>  
+    <p>高血压发病率  {{ item.M1.f1 }} </p>
+    <p>高血压五年死亡率   {{ item.M1.f2 }}</p>
+    <p>心血管疾病   {{ item.M1.f3 }}</p>
+    <p>中风十年发生率   {{ item.M1.f4 }}</p>
+    <p>心衰率   {{ item.M1.f5 }}</p>
+
   </div>
 </div>
 </div>
@@ -91,8 +87,9 @@
     <b>糖尿病风险描述</b>
   </div>
   <div class="item item-text-wrap">
-      {{ "糖尿病等级说明"}}
-      {{item.Result}}
+      <h3>糖尿病等级说明</h3>
+      {{item.M2.Result}}
+      {{item.M2.Period}}  {{item.M2.Glucose}} mmol/L
   </div>
   </ion-slide>
 

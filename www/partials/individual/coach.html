@@ -4,7 +4,7 @@ Each tab's child <ion-nav-view> directive will have its own
 navigation history that also transitions its views in and out.
 -->
 
-
+<ion-footer-bar>
 <ion-tabs class="tabs-icon-top tabs-color-active-positive">
 
   
@@ -30,12 +30,12 @@ navigation history that also transitions its views in and out.
 <!--   <ion-nav-view name="coach-config"></ion-nav-view>
   <ion-nav-view name="coach-personalinfo"></ion-nav-view>
   <ion-nav-view name="coach-schedule"></ion-nav-view> -->
-<ion-footer-bar>
+
   <ion-tab title="我的患者" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/coach/patients">
     <ion-nav-view name="coach-patients"></ion-nav-view>
   </ion-tab>  
 
-  <ion-tab title="新患者（点这里会挂）" icon-off="ion-android-person-add" icon-on="ion-android-person-add" href="#/coach/addpatients">
+  <ion-tab title="新患者" icon-off="ion-android-person-add" icon-on="ion-android-person-add" href="#/coach/addpatients">
     <ion-nav-view name="coach-addpatients"></ion-nav-view>
   </ion-tab>  
 
