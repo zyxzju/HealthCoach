@@ -1,0 +1,37 @@
+<ion-view title="基本信息">
+	
+	<!-- <ion-nav-buttons side="right">
+		<a class="button icon ion-android-home" href='#/new/master'>
+		</a>
+	</ion-nav-buttons> -->
+<ion-header-bar>
+    
+    <h2 class="title">账号注册</h2>
+    <a class="button icon-right ion-android-home" href='#/new/master'></a>
+    <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
+</ion-header-bar>
+	<ion-content>
+	<h4>患者建档进度：</h4><progress max="100" value="15"></progress>
+	
+	<div class="list">
+		<h4>手机号</h4>
+		<div class="item item-input-inset">
+    		<label class="item-input-wrapper">
+      		<input type="tel" ng-model="PhoneNo.pn">
+    		</label>
+    		<a class="button icon-left ion-checkmark button-dark"
+    			 ng-click="test()">注册</a>
+  		</div>
+  		<div class='row responsive-sm'>
+  			<div class='col col-20'></div>
+  			<div class='col col-20'></div>
+  			<div class='col col-20'>
+  				<p style="color:#FF0000">{{logStatus}}</p>
+  			</div>
+  		</div>
+  	</div>
+
+
+
+	</ion-content>
+</ion-view>

@@ -202,8 +202,72 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       }
     }
 
+  })
+
+  //新建患者
+$stateProvider
+  
+  .state('addpatient',{
+    url:'/addpatient',
+    abstract:true,
+    template:'<ion-view/><ion-nav-view/>'
+  })
+
+  .state('addpatient.newpatient',{
+    url:'/newpatient',
+    templateUrl:'partials/addpatient/newpatient.html',
+    controller:'newpatientCtrl'
+  })
+
+  .state('addpatient.basicinfo',{
+    url:'/newbasicinfo',
+    templateUrl:'partials/addpatient/basicinfo.html',
+    controller:'newbasicinfoCtrl'    
+  })  
+
+  .state('addpatient.clinicinfo', {
+    url: "/clinicinfo",
+    templateUrl: "partials/addpatient/clinicinfo.html",
+    controller:'datepickerCtrl',
+    cache:true
+  })
+
+  .state('addpatient.clinicinfo.examinationinfo', {//点击检查弹出modal页面
+    url: "/examinationinfo",
+    templateUrl: "partials/addpatient/examinationinfo.html",
+        // controller:'examinationinfoCtrl'
+  })
+
+  .state('addpatient.clinicinfo.druginfo', {//点击用药弹出modal页面
+    url: "/druginfo",
+    templateUrl: "partials/addpatient/druginfo.html",
+        // controller:'druginfoCtrl'
+  })
+
+  .state('addpatient.clinicinfo.DiagnosisInfo', {//点击诊断弹出modal页面
+    url: "/DiagnosisInfo",
+    templateUrl: "partials/addpatient/DiagnosisInfo.html",
+        // controller:'DiagnosisInfoCtrl'
+  })
+
+  .state('addpatient.ModuleInfo',{
+    url:'/ModuleInfo',
+    templateUrl:'partials/addpatient/ModuleInfo.html',
+    controller:'ModuleInfoCtrl'
+  })
+
+  .state('addpatient.ModuleList',{
+    url:'/ModuleInfo/:Module',
+    templateUrl:'partials/addpatient/ModuleInfoList.html',
+    controller:'ModuleInfoListCtrl'
+  })
+
+  .state('addpatient.ModuleListDetail',{
+    url:'/ModuleInfo/:Module/:ListName',
+    templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
+    controller:'ModuleInfoListDetailCtrl'   
   });
-    
+  
    //$urlRouterProvider.otherwise('/signin');
    $urlRouterProvider.otherwise('/starting');
 

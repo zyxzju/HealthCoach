@@ -647,8 +647,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         // An error occurred
         alert(error);
       });
-  }
+  };
 
+  $scope.addpatient = function(){
+      $state.go('addpatient.newpatient');
+  }
 }])
 // Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
@@ -966,5 +969,987 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   
   // $scope.
+})
+
+.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', function($scope,$state,$http, $ionicHistory, $stateParams, Storage) {
+  
+  var UserId = Storage.get('UID');
+  //var Module = $stateParams.Module;
+  $scope.onClickBackward = function(){
+      $ionicHistory.goBack();
+  };
+
+
+  $http.get('partials/data1.json').success(function(data) {
+      $scope.ModuleInfo = data;
+  });
+}])
+
+.controller('ModuleInfoListCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams, Storage, Users) {
+  
+ $scope.all={first:""};
+
+  var UserId = Storage.get('UID');
+  var Module = $stateParams.Module;
+  $scope.onClickBackward = function(){
+      $ionicHistory.goBack();
+  };
+
+
+  var promise=Users.getquestionnaire(UserId,Module);
+   promise.then(function(data,status){
+     $scope.ModuleInfoList = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+}])
+
+.controller('ModuleInfoListDetailCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams',  '$timeout', '$ionicPopup', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams,  $timeout,$ionicPopup, Storage, Users) {
+  
+  var UserId = Storage.get('UID');
+  var Module = $stateParams.Module;
+  var ListName = $stateParams.ListName;
+  $scope.DietHabbitValue = "请选择饮食习惯";
+  $scope.ListName = ListName;
+  var i=1;
+  var j=1;
+  $scope.HypertensionDrugArray = [{"ID":1,"Type":"","Name":""}];
+  $scope.HypertensionDrugData = [{"ID":1,"Type":"","Name":""}];
+  $scope.DiabetesDrugArray = [{"ID":1,"Type":"","Name":""}];
+  $scope.DiabetesDrugData = [{"ID":1,"Type":"","Name":""}];
+  $scope.obj = [];
+  $scope.onClickBackward = function(){
+      $ionicHistory.goBack();
+  };
+
+  // $http.get('partials/data.json').success(function(data) {
+  //     $scope.ModuleInfoList = data;
+  // });
+  Users.getquestionnaire(UserId,Module).then(function(data,status){
+    $scope.ModuleInfoList = data;
+    $scope.ModuleInfoListDetail = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
+  // $scope.YesNoType = [{"Type":"1","Name":"是"},{"Type":"2","Name":"否"},{"Type":"3","Name":"未知"}];
+  Users.getYesNoType().then(function(data,status){
+    $scope.YesNoType = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
+  $timeout(function() { 
+    Users.getHyperTensionDrugTypeName().then(function(data,status){
+        $scope.HypertensionDrugArray[0].Type = data;
+    },function(data,status){
+      $scope.getStatus = status;
+    }); 
+  }, 100);
+
+  $scope.getHyperTensionDrugNameByType = function(Type, $index){
+    Users.getHyperTensionDrugNameByType(Type.Type).then(function(data,status){
+      $scope.HypertensionDrugArray[$index].Name = data;
+    },function(data){
+     $scope.getStatus = status;
+    });
+  };
+  $timeout(function() {
+    Users.getDiabetesDrugTypeName().then(function(data,status){
+      $scope.DiabetesDrugArray[0].Type = data;
+    },function(data,status){
+      $scope.getStatus = status;
+    });
+  }, 100);
+
+  $scope.getDiabetesDrugNameByType = function(Type, $index){
+    Users.getDiabetesDrugNameByType(Type.Type).then(function(data,status){
+      $scope.DiabetesDrugArray[$index].Name = data;
+    },function(data){
+     $scope.getStatus = status;
+    });
+  };
+
+  $scope.getDiabetesdurgName = function(obj){
+    $scope.DiabetesDrugArray[0].Name = obj.Name;
+  };
+
+  Users.getDietHabbit().then(function(data,status){
+    $scope.DietHabbit = data;
+    $scope.CheckboxValue = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
+  Users.getDrinkFrequency().then(function(data,status){
+    $scope.DrinkFrequency = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
+  //[{Patient:Patient, CategoryCode:"M", ItemCode:ItemCode, ItemSeq:ItemSeq, Value:Value, Description: "", SortNo:ItemSeq, revUserId: "sample string 4",TerminalName: "sample string 5", TerminalIP: "sample string 6",DeviceType: 1}]
+  $scope.Save = function(){
+    for (var k=0; k<$scope.ModuleInfoListDetail.length;k++)
+    {
+      if ($scope.ModuleInfoListDetail[k].Description != "")
+      {
+        if ($scope.ModuleInfoListDetail[k].Description.Type != "" && typeof($scope.ModuleInfoListDetail[k].Description.Type) != "undefined")
+        {
+          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+        }
+        else
+        {
+          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+        }
+      }
+      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit" && $scope.DietHabbitValue != "" && $scope.DietHabbitValue != "请选择饮食习惯") {
+        $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitValue, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+      } 
+      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
+      {
+        for (var m = 0; m < i; m++)
+        {
+          if ($scope.HypertensionDrugData[m].Name.Type !="")
+          {
+            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m, "Value": $scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          }
+        }
+      }
+      else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstDiabetesDrug")
+      {
+        for (var n = 0; n < j; n++)
+        {
+          if ($scope.DiabetesDrugData[m].Name.Type !="")
+          {
+            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n, "Value": $scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          }
+        }
+      }
+    }
+    Users.setPatientDetailInfo($scope.obj).then(function(data,status){
+      $scope.getStatus = data;
+    },function(data,status){
+      $scope.getStatus = status;
+    });
+  };
+
+  $scope.addDietHabbit = function(){
+    if ($scope.DietHabbitValue == "请选择饮食习惯") {
+      $scope.DietHabbitValue="";
+    };
+    var myPopup = $ionicPopup.show({
+      template: '<li class="item item-checkbox" ng-repeat="DietHabbit in DietHabbit" ng-model="CheckboxValue"><label class="checkbox"><input type="checkbox" ng-change="DietChange(DietHabbit)" ng-model="DietHabbit.Type"></label>{{DietHabbit.Name}}</li>',
+      title: '请选择饮食习惯',
+      //subTitle: 'Please use normal things',
+      scope: $scope,
+      buttons: [
+          {
+            text: '<b>取消</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              if ($scope.DietHabbitValue == "")
+              {
+                $scope.DietHabbitValue = "请选择饮食习惯";
+              } 
+              return $scope.DietHabbitValue;        
+            }
+          },
+          {
+            text: '<b>确定</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              if ($scope.DietHabbitValue == "")
+              {
+                $scope.DietHabbitValue = "请选择饮食习惯";
+              } 
+              else if ($scope.DietHabbitValue.indexOf(',') == 0)
+              {
+                $scope.DietHabbitValue = $scope.DietHabbitValue.substr(1);
+              }
+              return $scope.DietHabbitValue;        
+            }
+          }
+        ]
+    });
+    myPopup.then(function(res) {
+    console.log('Tapped!', res);
+  });
+  };
+
+  $scope.DietChange = function(obj){
+     for(var i = 0; i < $scope.DietHabbit.length; i++)
+      {
+        if ($scope.DietHabbit[i].Name == obj.Name)
+        {
+            if (obj.Type == true) {
+              $scope.DietHabbitValue = $scope.DietHabbitValue + "," + obj.Name;
+            }
+            else if ($scope.DietHabbitValue.indexOf(obj.Name)) {
+              var check = $scope.DietHabbitValue.split(',');
+              $scope.DietHabbitValue = "";
+              for (var j=0; j<check.length;j++) {
+                if (check[j] == obj.Name)
+                  check[j] = "";
+              };
+              for (var j=0; j<check.length;j++) {
+                if (check[j] !="")
+                  $scope.DietHabbitValue = $scope.DietHabbitValue + "," +check[j];
+              };
+            };
+            break;
+        }
+      }
+  };
+
+  
+  $scope.addhyperdrug = function(){
+    i++;
+    $scope.HypertensionDrugArray.push({"ID":i,"Type":"","Name":""});
+    $scope.HypertensionDrugData.push({"ID":i,"Type":"","Name":""});
+    Users.getHyperTensionDrugTypeName().then(function(data,status){
+        $scope.HypertensionDrugArray[i-1].Type = data;
+    },function(data,status){
+      $scope.getStatus = status;
+    }); 
+  };
+  $scope.deletehyperdrug = function(){
+    if (i >1) {
+      i--;
+      $scope.HypertensionDrugArray.pop({"ID":i,"Type":"","Name":""});
+      $scope.HypertensionDrugData.pop({"ID":i,"Type":"","Name":""});
+    };
+  };
+  $scope.adddiabetesdrug = function(){
+    j++;
+    $scope.DiabetesDrugArray.push({"ID":j,"Type":"","Name":""});
+    $scope.DiabetesDrugData.push({"ID":j,"Type":"","Name":""});
+    Users.getDiabetesDrugTypeName().then(function(data,status){
+        $scope.DiabetesDrugArray[j-1].Type = data;
+    },function(data,status){
+      $scope.getStatus = status;
+    }); 
+    };
+  $scope.deletediabetesdrug = function(){
+    if (j >1) {
+      j--;
+      $scope.DiabetesDrugArray.pop({"ID":j,"Type":"","Name":""});
+      $scope.DiabetesDrugData.pop({"ID":j,"Type":"","Name":""});
+    };
+  };
+}])
+
+.controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicLoading){
+  
+  
+  // $scope.PhoneNo="";
+  $scope.PhoneNo={pn:''};
+  var loading = function() {
+      $ionicLoading.show({
+        template:'处理中......',
+      });
+    };
+
+    var hide = function() {
+        $ionicLoading.hide();
+    };
+
+    
+
+  $scope.test = function()
+  {
+    loading();
+    // console.log($scope.PhoneNo.pn);
+    // if($scope.PhoneNo.pn.length!=11) {
+    //  $scope.logStatus='请输入11位手机号';
+    //  hide()
+    // }
+    // else{
+    //  var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+    //  if(!phoneReg.test($scope.PhoneNo.pn)) $scope.logStatus='请输入正确的手机号';
+    //  else{Storage.set('phoneno',$scope.PhoneNo.pn);
+
+    //  var id='';
+    //  Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
+    //    function(data){
+    //      id=data.result;
+    //      console.log(id);
+    //      if(id == null) {
+    //        $scope.logStatus='未注册的手机号';
+    //        hide()
+    //      }
+    //      else{
+    //        Storage.set('UID',id);
+    //        hide();
+    //        $state.go('new.basicinfo') 
+    //      }
+    //    },function(e){
+    //      console.log(e);
+    //    });
+    //    } 
+    // }
+    var  phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+    if(!phoneReg.test($scope.PhoneNo.pn)) {
+      $scope.logStatus='请输入正确的手机号';
+      hide()
+    }
+    else{
+      Storage.set('phoneno',$scope.PhoneNo.pn);
+      var id='';
+      Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
+        function(data){
+          id=data.result;
+          console.log(id);
+          if(id == null) {
+            $scope.logStatus='正在注册';
+            Dict.GetNo('17','{TargetDate}').then(
+              function(data){
+                var UID=(data.result);
+                console.log(UID);
+                Storage.set('UID',UID);
+                hide();
+                $state.go('new.basicinfo')
+              },function(e){
+                console.log(e);
+              });     
+          }
+          else{
+            Storage.set('UID',id);
+            hide();
+            $state.go('new.basicinfo') 
+          }
+        },function(e){
+          console.log(e);
+        });     
+    }
+  }
+
+}])
+
+.controller('basicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading){
+  $scope.scrollBottom = function() {
+      $ionicScrollDelegate.scrollBottom(true);
+    };
+  $scope.scrollTop = function() {
+      $ionicScrollDelegate.scrollTop(true);
+    };
+
+    
+
+  $scope.PhoneNo=Storage.get('phoneno');
+  
+
+  // $scope.UserId,$scope.UserId,$scope.Birthday,$scope.Gender,$scope.BloodType,$scope.IDNo,$scope.DoctorId,$scope.InsuranceType
+  // $scope.Gender="";
+
+  // $scope.g=""
+  $scope.users={
+    "UserId": "",
+    "UserName": "",
+    "Birthday": "",
+    "Gender": "",
+    "BloodType": "",
+    "IDNo": "",
+    "DoctorId": "",
+    "InsuranceType": "",
+    "InvalidFlag": 9,
+    "piUserId": "lzn",
+    "piTerminalName": "sample string 11",
+    "piTerminalIP": "sample string 12",
+    "piDeviceType": 13
+    };
+    $scope.InsuranceTypes={
+      "Code":"",
+      "Name":"",
+      "InputCode":"",
+      "Redundance":""
+      };
+    Dict.GetInsuranceType().then(
+      function(data){
+        $scope.InsuranceTypes=data;
+        console.log($scope.InsuranceTypes);
+      },function(e){
+      console.log(e);
+    });
+  $scope.users.UserId=Storage.get('UID');
+  $scope.B="点击设置";
+      var datePickerCallback = function (val) {
+        if (typeof(val) === 'undefined') {
+          console.log('No date selected');
+        } else {
+        $scope.datepickerObject.inputDate=val;
+          var dd=val.getDate();
+          var mm=val.getMonth()+1;
+          var yyyy=val.getFullYear();
+          var birthday=yyyy+'/'+mm+'/'+dd; 
+          Storage.set('b', parseInt(yyyy*10000+mm*100+dd));
+          $scope.B=birthday;
+        }
+    };
+
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(1900, 1, 1),   //Optional
+    to: new Date(),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
+    $scope.HomeAddress={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact002_2",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.HomeAddress.Patient=Storage.get('UID');
+
+  $scope.PhoneNumber={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact002_1",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.PhoneNumber.Patient=Storage.get('UID');
+
+    $scope.Nationality={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact001_3",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.Nationality.Patient=Storage.get('UID');
+
+    $scope.Occupation={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact001_2",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.Occupation.Patient=Storage.get('UID');
+
+    $scope.EmergencyContact={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact002_3",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.EmergencyContact.Patient=Storage.get('UID');
+
+
+    $scope.EmergencyContactPhoneNumber={
+      "Patient":"",
+      "CategoryCode":"Contact",
+      "ItemCode":"Contact002_4",
+      "ItemSeq":1,
+      "Value":"",
+      "Description":"",
+      "SortNo":1,
+      "revUserId":"string",
+      "TerminalName":"string",
+      "TerminalIP":"string",
+      "DeviceType":1
+    };
+    $scope.EmergencyContactPhoneNumber.Patient=Storage.get('UID');
+  // var timeout = function() {
+  //  var Timeout = $ionicPopup.alert({
+    //    title: '连接超时',
+    //    template: '已超时,请检查您的网络',
+    //    okText: '关闭',           
+    //  });
+    //  Timeout.then(function(res) {
+    //    console.log('success');
+    //  });
+    //  $timeout(function(){
+    //    Timeout.close();
+    //  },5000)
+  // };
+  var detail = [$scope.HomeAddress,$scope.PhoneNumber,$scope.Nationality,$scope.Occupation,$scope.EmergencyContact,$scope.EmergencyContactPhoneNumber];
+  
+
+  
+  var loading = function() {
+      $ionicLoading.show({
+        template:'保存中,请稍候',
+      });
+      // $timeout(function() {
+      //  $ionicLoading.hide();
+      //  timeout();
+      // },10000);
+        
+    };
+
+    var hide = function() {
+        $ionicLoading.hide();
+    };
+    
+
+  $scope.save = function(){
+    $scope.users.InsuranceType = $scope.users.InsuranceType.Name;
+    loading();
+    // 男用1表示，女用0表示
+    if ($scope.users.Gender == '男') $scope.users.Gender=1;
+    if($scope.users.Gender == '女') $scope.users.Gender=0;
+
+    if($scope.users.BloodType == 'A型') $scope.users.BloodType=1;
+    if($scope.users.BloodType == 'B型') $scope.users.BloodType=2;
+    if($scope.users.BloodType == 'O型') $scope.users.BloodType=3;
+    if($scope.users.BloodType == 'AB型') $scope.users.BloodType=4;
+    if($scope.users.BloodType == '其他') $scope.users.BloodType=5;
+
+    var a = function(){
+      var alertS = $ionicPopup.alert({
+        title: '已保存',
+        template: '基本信息保存成功',
+        okText: '确定',           
+      });
+      alertS.then(function(res) {
+        console.log('success');
+
+      });
+      $timeout(function(){
+        alertS.close();
+      },5000)
+      
+    };
+    var b = function(){
+      var alertF = $ionicPopup.alert({
+        title: '保存失败',
+        template: '请按要求填选信息',
+        okText: '确定',
+      });
+      alertF.then(function(res){
+        console.log('failed');
+      });
+      
+    };
+    $scope.users.Birthday=Storage.get('b');
+
+  //  Users.BasicDtlInfo($scope.HomeAddress).then(
+  //    function(data){
+  //      console.log($scope.HomeAddress.Patient);
+  //      console.log($scope.HomeAddress.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+
+    // Users.BasicDtlInfo($scope.PhoneNumber).then(
+  //    function(data){
+  //      console.log($scope.PhoneNumber.Patient);
+  //      console.log($scope.PhoneNumber.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+
+    // Users.BasicDtlInfo($scope.Nationality).then(
+  //    function(data){
+  //      console.log($scope.Nationality.Patient);
+  //      console.log($scope.Nationality.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+
+    // Users.BasicDtlInfo($scope.Occupation).then(
+  //    function(data){
+  //      console.log($scope.Occupation.Patient);
+  //      console.log($scope.Occupation.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+
+    // Users.BasicDtlInfo($scope.EmergencyContact).then(
+  //    function(data){
+  //      console.log($scope.EmergencyContact.Patient);
+  //      console.log($scope.EmergencyContact.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+
+    // Users.BasicDtlInfo($scope.EmergencyContactPhoneNumber).then(
+  //    function(data){
+  //      console.log($scope.EmergencyContactPhoneNumber.Patient);
+  //      console.log($scope.EmergencyContactPhoneNumber.Value);
+  //    },function(e){
+  //      console.log(e);
+  //    });
+      Users.BasicDtlInfo(detail).then(
+      function(data){
+        console.log($scope.HomeAddress.Patient);
+        console.log($scope.HomeAddress.Value);
+
+        console.log($scope.PhoneNumber.Patient);
+        console.log($scope.PhoneNumber.Value);
+
+        console.log($scope.Nationality.Patient);
+        console.log($scope.Nationality.Value);
+
+        console.log($scope.Nationality.Patient);
+        console.log($scope.Nationality.Value);
+
+        console.log($scope.EmergencyContact.Patient);
+        console.log($scope.EmergencyContact.Value);
+
+        console.log($scope.EmergencyContactPhoneNumber.Patient);
+        console.log($scope.EmergencyContactPhoneNumber.Value);
+      
+        if(data.result=='数据插入成功'){
+          Users.BasicInfo($scope.users).then(
+          function(data){
+            console.log($scope.users.InsuranceType);
+            console.log($scope.users.Gender);
+            console.log($scope.users.BloodType);
+            console.log($scope.users.Birthday);
+            if(data.result=='数据插入成功'){
+              hide();
+              a();
+              $state.go('new.clinicinfo');
+            }
+          },function(e){
+            console.log($scope.users.InsuranceType);
+            console.log($scope.users.Gender);
+            console.log($scope.users.BloodType);
+            console.log($scope.users.Birthday);
+            console.log(e);
+          });
+        }
+      },function(e){
+        console.log(e);
+        hide();
+        b();
+      });
+  }
+
+  $scope.reset = function(){
+    $scope.users={
+      "UserId":Storage.get('UID'),
+      "UserName": "",
+      "Birthday": "",
+      "Gender": "",
+      "BloodType": "",
+      "IDNo": "",
+      "DoctorId": "",
+      "InsuranceType": "",
+      "InvalidFlag": 9,
+      "piUserId": "lzn",
+      "piTerminalName": "sample string 11",
+      "piTerminalIP": "sample string 12",
+      "piDeviceType": 13
+    };
+    $scope.HomeAddress={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact002_2",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+      $scope.PhoneNumber={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact002_1",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+      $scope.Nationality={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact001_3",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+      $scope.Occupation={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact001_2",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+      $scope.EmergencyContact={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact002_3",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+      $scope.EmergencyContactPhoneNumber={
+        "Patient":Storage.get('UID'),
+        "CategoryCode":"Contact",
+        "ItemCode":"Contact002_4",
+        "ItemSeq":1,
+        "Value":"",
+        "Description":"",
+        "SortNo":1,
+        "revUserId":"string",
+        "TerminalName":"string",
+        "TerminalIP":"string",
+        "DeviceType":1
+      };
+    $scope.B="点击设置";  
+  }
+  // $scope.Hospital="";
+  // $scope.DoctorId="";
+  // $scope.UserName="";
+  // $scope.Gender="";
+  // $scope.BloodType="";
+  // $scope.InsuranceType="";
+  // $scope.Birthday="";
+  // $scope.Height="";
+  // $scope.Weight="";
+  // $scope.HomeAddress="";
+  // $scope.IDNo="";
+  // $scope.PhoneNumber="";
+  // $scope.Nationality="";
+  // $scope.EmergencyContact="";
+  // $scope.EmergencyContactPhoneNumber="";
+}])
+
+//临床信息控制器 ZXF 20151031
+.controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
+  GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo) {
+  $scope.SyncInfo={"userid":"PID00009999"};
+  //$scope.SyncInfo={"userid":Storage.get('PatientID')};
+//根据userid获取就诊信息列表（展示时用）
+  // var a={UserId:$scope.SyncInfo.patientid};
+  var promise2=GetClinicalList.GetClinicalInfoListbyUID({UserId:$scope.SyncInfo.userid});
+  console.log($scope.SyncInfo.userid);
+  promise2.then(function(data){
+    $scope.cliniclist=data.DT_InPatientInfo;
+
+    console.log($scope.cliniclist);
+//点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
+$ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
+  scope: $scope,
+  animation: 'slide-in-up'
+}).then(function(modal) {
+  $scope.modalexam = modal;
+});
+$scope.onClickBackward = function(){
+  $ionicHistory.goBack();
+};
+$scope.openexaminfomodal = function(index) {
+  $scope.modalexam.show();
+  console.log(index);
+  console.log($scope.SyncInfo.userid);
+  console.log($scope.cliniclist[index].VisitId);
+  var promise1=Getexaminfo.Getexaminfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+  promise1.then(function(data1){
+    $scope.Examinationinfo=data1;
+    $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
+    console.log($scope.Examinationinfo);
+  }, function(data1) {  
+  });
+};
+
+$scope.closeexamModal = function() {
+  $scope.modalexam.hide();
+};
+$scope.$on('$destroy', function() {
+  $scope.modalexam.remove();
+});
+  //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
+  $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modaldiag = modal;
+  });
+
+  $scope.opendiaginfomodal = function(index) {
+    $scope.modaldiag.show();
+    var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+    promise0.then(function(data0){
+      $scope.Diagnosisinfo=data0;
+      $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
+
+      console.log($scope.Diagnosisinfo);
+    },
+    function(data0) {
+    }
+    )
+  };
+
+  $scope.closediagModal = function() {
+    $scope.modaldiag.hide();
+  };
+  $scope.$on('$destroy', function() {
+    $scope.modaldiag.remove();
+  });
+
+ // });
+//点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
+$ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
+  scope: $scope,
+  animation: 'slide-in-up'
+}).then(function(modal) {
+  $scope.modaldrug = modal;
 });
 
+$scope.opendruginfomodal = function(index) {
+  $scope.modaldrug.show();
+    // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
+    var promise1=Getdruginfo.Getdruginfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+    promise1.then(function(data2){
+      $scope.DrugRecordinfo=data2;
+      $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
+
+
+      console.log($scope.DrugRecordinfo);
+    }, function(data2) {  
+    }
+    )
+  };
+
+  $scope.closedrugModal = function() {
+    $scope.modaldrug.hide();
+  };
+  $scope.$on('$destroy', function() {
+    $scope.modaldrug.remove();
+  });
+ //  $scope.$on('modal.hidden', function() {
+ // });
+ //  $scope.$on('modal.removed', function() {
+ // });
+}, function(data) {
+});
+
+//datepicker函数
+var d=new Date();
+$scope.tt=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+var weekDaysList = ["日", "一", "二", "三", "四", "五", "六"];
+var monthList = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
+$scope.datepickerObject = {
+      titleLabel: '就诊日期',  //Optional
+      todayLabel: '今天',  //Optional
+      closeLabel: '关闭',  //Optional
+      setLabel: '设置',  //Optional
+      setButtonType : 'button-assertive',  //Optional
+      todayButtonType : 'button-assertive',  //Optional
+      closeButtonType : 'button-assertive',  //Optional
+      inputDate: new Date(),    //Optional
+      mondayFirst: true,    //Optional
+      // disabledDates: disabledDates, //Optional
+      weekDaysList: weekDaysList,   //Optional
+      monthList: monthList, //Optional
+      templateType: 'popup', //Optional
+      showTodayButton: 'true', //Optional
+      modalHeaderColor: 'bar-positive', //Optional
+      modalFooterColor: 'bar-positive', //Optional
+      from: new Date(1880, 8, 2),   //Optional
+      to: new Date(2018, 8, 25),    //Optional
+      callback: function (val) {    //Mandatory
+        datePickerCallback(val);
+      }
+    };
+    var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+    // var d=new Date(val);
+    $scope.tt=val.getFullYear()+'-'+(val.getMonth()+1)+'-'+val.getDate();
+    console.log('Selected date is : ', val)
+    console.log(val)
+  }
+};
+
+$scope.NextPage = function(){
+  $state.go('addpatient.ModuleInfo');
+};
+
+//这是同步的button事件根据pid拿到最近十条就诊记录
+$scope.synclinicinfo=function(){
+    // UserId:"@UserId",HospitalCode:'@HospitalCode'
+    var a={UserId:$scope.SyncInfo.userid,HospitalCode:'HJZYY'};
+    var promise=GetHZID.GetHUserIdByHCode(a);
+    promise.then(function(data){
+      //拿到海总的就诊号用于后续同步
+      $scope.HJZYYID=data.result;
+      console.log($scope.HJZYYID)
+//调用webservice
+
+
+
+}, function(data) {
+})
+  };  
+
+
+});
