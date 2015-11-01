@@ -29,10 +29,15 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 	    controller: 'phonevalidCtrl'
     })
     .state('setpassword', {
-      cache:false,
+      //cache:false,
       url: '/setpassword',
       templateUrl: 'partials/login/setPassword.html',
       controller: 'setPasswordCtrl'
+    })
+    .state('changepassword', {
+      url: '/changePassword',
+        templateUrl: 'partials/login/changePassword.html',
+        controller:'changePasswordCtrl' 
     })
     .state('userdetail',{
       url:'/userdetail',
@@ -57,16 +62,6 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
         }
       }
     })
-    .state('tabs.changePassword', {
-      url: '/changePassword',
-      views: {
-        'home-tab': {
-          templateUrl: 'partials/login/changePassword.html',
-          controller:'changePasswordCtrl'
-        }
-      }
-    })
-
     .state('tabs.phones', {
       url:'/phones',
       views: {
@@ -160,73 +155,32 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     views:{
       'coach-patients':{
         templateUrl:'partials/individual/coach-patients.html',
-        controller:'CoachPatientsCtrl'
+        controller:'myPatientCtrl'
       }
     }
 
   })
 
-//风险评估相关view---------------------------------------------------------------lrzlrzlrzlrzlrzlrzlrz
-  .state('risk',{
-    url:'/risk',
-    // views:{
-    //   'coach-risk':{
-        templateUrl:'partials/individual/risk.html',
-        controller:'RiskCtrl'
-      // }
-    // }
-
-  })
-
-  .state('riskdetail',{
-    url:'/risk/:num',
-    // views:{
-    //   'coach-risk':{
-        templateUrl:'partials/individual/riskdetail.html',
-        controller:'RiskCtrl'
-      // }
-    // }
-
-  })
-
-  .state('riskquestion',{
-    url:'/riskquestion',
-    templateUrl:'partials/modals/questions.html',
-    controller:'RiskQuestionCtrl'
-  })
-
-  // .state('riskquestion.diabetes',{
-  //   url:'/diabetes',
-  //   views:{
-  //     'riskquestion-diabetes':{
-  //       templateUrl:'partials/modals/diabetes.html',
-  //       controller:'RiskQuestionCtrl'
-  //     }
-  //   }
-
-  // })
-
-  // .state('riskquestion.hypertension',{
-  //   url:'/hypertension',
-  //   views:{
-  //     'riskquestion-hypertension':{
-  //       templateUrl:'partials/modals/hypertension.html',
-  //       controller:'RiskQuestionCtrl'
-  //     }
-  //   }
-
-  // })
-//风险评估相关view---------------------------------------------------------------lrzlrzlrzlrzlrzlrzlrz
-
-  .state('coach.patientsdetail', {
-    url: '/patients/:aId',
-    views: {
-      'coach-patients' : {
-        templateUrl: 'partials/individual/coach-patientsdetail.html',
-        controller: 'CoachPatientsCtrl'
+  .state('coach.newpatients',{
+    url:'/newpatients',
+    views:{
+      'coach-newpatients':{
+        templateUrl:'partials/individual/coach-newpatients.html',
+        controller:'newpatientsCtrl'
       }
     }
+
   })
+
+  // .state('coach.patientsdetail', {
+  //   url: '/patients/:aId',
+  //   views: {
+  //     'coach-patients' : {
+  //       templateUrl: 'partials/individual/coach-patientsdetail.html',
+  //       controller: 'CoachPatientsCtrl'
+  //     }
+  //   }
+  // })
 
   .state('coach.message',{
     url:'/message',
@@ -248,10 +202,171 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       }
     }
 
-  });
+  })
+
+  //新建患者
+$stateProvider
+  
+  .state('addpatient',{
+    url:'/addpatient',
+    abstract:true,
+    template:'<ion-view/><ion-nav-view/>'
+  })
+
+  .state('addpatient.newpatient',{
+    url:'/newpatient',
+    templateUrl:'partials/addpatient/newpatient.html',
+    controller:'newpatientCtrl'
+  })
+
+  .state('addpatient.basicinfo',{
+    url:'/newbasicinfo',
+    templateUrl:'partials/addpatient/basicinfo.html',
+    controller:'newbasicinfoCtrl'    
+  })  
+
+  .state('addpatient.clinicinfo', {
+    url: "/clinicinfo",
+    templateUrl: "partials/addpatient/clinicinfo.html",
+    controller:'datepickerCtrl',
+    cache:true
+  })
+
+  .state('addpatient.clinicinfo.examinationinfo', {//点击检查弹出modal页面
+    url: "/examinationinfo",
+    templateUrl: "partials/addpatient/examinationinfo.html",
+        // controller:'examinationinfoCtrl'
+  })
+
+  .state('addpatient.clinicinfo.druginfo', {//点击用药弹出modal页面
+    url: "/druginfo",
+    templateUrl: "partials/addpatient/druginfo.html",
+        // controller:'druginfoCtrl'
+  })
+
+  .state('addpatient.clinicinfo.DiagnosisInfo', {//点击诊断弹出modal页面
+    url: "/DiagnosisInfo",
+    templateUrl: "partials/addpatient/DiagnosisInfo.html",
+        // controller:'DiagnosisInfoCtrl'
+  })
+
+  .state('addpatient.ModuleInfo',{
+    url:'/ModuleInfo',
+    templateUrl:'partials/addpatient/ModuleInfo.html',
+    controller:'ModuleInfoCtrl'
+  })
+
+  .state('addpatient.ModuleList',{
+    url:'/ModuleInfo/:Module',
+    templateUrl:'partials/addpatient/ModuleInfoList.html',
+    controller:'ModuleInfoListDetailCtrl'
+  })
+
+  .state('addpatient.ModuleListDetail',{
+    url:'/ModuleInfo/:Module/:ListName',
+    templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
+    controller:'ModuleInfoListDetailCtrl'   
+  })
+  
+  .state('addpatient.risk',{
+    url:'/risk',
+    templateUrl:'partials/addpatient/risk.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('addpatient.riskdetail',{
+    url:'/risk/:num',
+    templateUrl:'partials/addpatient/riskdetail.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('addpatient.riskquestion',{
+    url:'/riskquestion',
+    templateUrl:'partials/addpatient/riskquestion.html',
+    controller:'RiskQuestionCtrl'
+  })
+
+  .state('addpatient.plan', {
+  url: '/:tt',
+    templateUrl: function ($stateParams){
+      if($stateParams.tt=='create')  //计划第一层 创建计划
+      {
+        return 'partials/addpatient/plan/create.html';  
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TG')) //计划第三层 体重管理与风险评估
+      {
+        return 'partials/addpatient/plan/weight.html';  
+      }
+      else if($stateParams.tt=='TB')  //计划第三层 饮食建议
+      {
+        return 'partials/addpatient/plan/food.html';  
+      }
+      else if($stateParams.tt=='TC')  //计划第三层 锻炼
+      {
+        return 'partials/addpatient/plan/exercise.html';  
+      }
+      else if($stateParams.tt=='TD')  //计划第三层 健康教育
+      {
+        return 'partials/addpatient/plan/healthEducation.html';  
+      }
+      else if($stateParams.tt=='TE')  //计划第三层 药物治疗
+      {
+        return 'partials/addpatient/plan/drug.html';  
+      }  
+      else if($stateParams.tt=='TF')  //计划第三层 体征测量
+      {
+        return 'partials/addpatient/plan/measure.html';  
+      }
+      else if($stateParams.tt=='TY')  //计划第三层 其他
+      {
+        return 'partials/addpatient/plan/others.html';  
+      }
+      else if($stateParams.tt=='TZ')  //计划第三层 个性化制定
+      {
+        return 'partials/addpatient/plan/personal.html';  
+      }
+      else if($stateParams.tt=='healthEducationDetail')  //计划第四层 健康教育详细
+      {
+        return 'partials/addpatient/plan/healthEducationDetail.html';  
+      }            
+   
+      else  //计划第二层
+      {
+        return 'partials/addpatient/plan/taskList.html'; 
+      }      
+    },
+    controllerProvider: function($stateParams) {
+      if($stateParams.tt=='create')
+      {
+        return 'CreateCtrl';
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
+      {
+        return 'MainPlanCtrl';
+      }    
+      else if($stateParams.tt=='TD')
+      {
+        return 'healthEducationCtrl';
+      }
+      else if($stateParams.tt=='TE')
+      {
+        return 'DrugCtrl';
+      }
     
+      else if($stateParams.tt=='healthEducationDetail')
+      {
+        return 'healthEducationDetailCtrl';
+      }
+      else
+      {
+        return 'TaskListCtrl';
+      }
+    }
+      
+  })
+
    //$urlRouterProvider.otherwise('/signin');
-   $urlRouterProvider.otherwise('/risk');
+   $urlRouterProvider.otherwise('/starting');
 
 }])
 

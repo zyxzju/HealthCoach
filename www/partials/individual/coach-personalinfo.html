@@ -6,6 +6,15 @@
         <button class="button button-icon icon ion-compose" ng-click="onClickSave()">保存</button>
   </ion-header-bar>
 
+<!--   <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-navicon " ng-click="doSomething()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon icon ion-compose " ng-click="onClickSave()">保存</button>
+    </ion-nav-buttons>
+
+  </ion-nav-bar> -->
 <!--   <ion-refresher
     pulling-text="Pull to refresh..."
     on-refresh="DoctorId = 1 ">
@@ -50,19 +59,19 @@ Dept
 
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','name'); " >
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit(0)" >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','birthday'); ">
+      <a href="#" class="item item-icon-left item-icon-right">
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthday}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit('姓名','userInfo','BasicInfo','gender'); ">
+      <a href="#" class="item item-icon-left item-icon-right">
         <i class="icon ion-male"></i>
        {{userInfo.BasicInfo.gender}}
 <!--         <span class="item-note">

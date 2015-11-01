@@ -1,0 +1,14 @@
+[
+{
+	"ModuleCode":"M1",
+	"ModuleName":"高血压"
+},
+{
+	"ModuleCode":"M2",
+	"ModuleName":"糖尿病"
+},
+{
+	"ModuleCode":"M3",
+	"ModuleName":"心衰"
+}
+]

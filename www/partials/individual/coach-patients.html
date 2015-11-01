@@ -1,5 +1,12 @@
 <ion-view view-title="现有病人">
-
+  <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon icon ion-navicon " ng-click="doSomething()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
 
 <!-- <ion-header-bar>
   <div class="h1 title">现有病人</div>
@@ -12,60 +19,79 @@
 
     <button class ="button button-icon ion-navicon" ng-click ="data.showReorder = !data.showReorder; showDelete = false;"></button>
   </ion-header-bar> -->
-  <ion-nav-buttons side="primary">
-    <button class="button button-icon ion-minus-circled" ng-click="data.showDelete = !data.showDelete; showReorder = false;">
-    </button>
-  </ion-nav-buttons>
 
-  <ion-nav-buttons side="secondary">
-    <button class="button button-icon ion-navicon" ng-click="data.showReorder = !data.showReorder; showDelete = false;">
-    </button>
-  </ion-nav-buttons>
 
-  <div class="bar bar-subheader 
+<!--   <div class="bar bar-subheader 
     item-input-inset bar-light">
     <label class="item-input-wrapper">
       <i class="icon ion-search placeholder-icon"></i>
       <input type="search" ng-model="query" placeholder="Search">
     </label>
+  </div> -->
+<div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important">
+    <div style="width:50%" class="item item-input item-select">
+      <div class="input-label">
+        筛选
+      </div>
+      <select>
+        <option>Blue</option>
+        <option selected="">Green</option>
+        <option>Red</option>
+      </select>
+    </div>
+    <div style="width:51%" class="item item-input item-select">
+      <div class="input-label">
+        排序
+      </div>
+      <select>
+        <option>Blue</option>
+        <option selected="">Green</option>
+        <option>Red</option>
+      </select>
+    </div>
   </div>
-<ion-pane>
-  <ion-content class="has-subheader">
-    <ion-refresher on-refresh="doRefresh()">
-    </ion-refresher>
-  	
-    <ion-list show-delete="data.showDelete" show-reorder="data.showReorder" >
-  		
-      <ion-item ng-class="{'star': patient.star}"  
-      collection-repeat ="patient in patients | filter: query " 
-      class ="item-thumbnail-left
-      item-icon-right 
-      item-text-wrap"  href="#/coach/patients/{{patient.shortname}}">
-      
-      <img src="img/{{patient.shortname}}_tn.jpg"
-        alt="{{ patient.name }} Photo">
-  		<h2>{{patient.name}}</h2>
-  		<h3>{{patient.reknown}}</h3>
-  		<p>{{patient.bio | limitTo: 100  }}  {{ patient.bio.length > 150 ? '&hellip;' : '' }}</p>
-      
-      <button class="button button-clear icon ion-star button-assertive"
-        ng-click="toggleStar(patient)"
-        ng-show="patient.star"></button>
-      
-      <ion-option-button class="button-dark"
-        ng-click="toggleStar(patient)">
-        <i class="icon ion-star"></i>
-      </ion-option-button>      
-      
-      <ion-delete-button class="ion-minus-circled" ng-click="onItemDelete(patient)">
-      </ion-delete-button>      
-      
-      <ion-reorder-button class="ion-navicon"
-        on-reorder="moveItem(patient, $fromIndex, $toIndex)">
-      </ion-reorder-button>
-  		
+  <ion-content class="has-subheader" padding="true">       
+    <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+    <ion-list> 
+    <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
+      <ion-item style="padding:0" ng-repeat="patient in patients track by $index"  >
+        <!-- <img ng-src="img/male.png"> -->
+        <div class="row">
+          <!-- <div class="col-10 "><div class="row"><h2>类别</h2><br></div><div class="row"><h2>消息</h2></div></div>  -->
+          <!-- <div class="col-90"> -->
+            <!-- <div class="row"> -->
+              <div class="col-67">
+                <div class="row ">
+                  <div class="col-50"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.UserName}}</h3></div>
+                  <div class="col-50"><h1 >{{patient.Age}}岁      {{patient.GenderText}}</h1></div>
+                </div>
+                <div class="row">
+                  <div class="col-100"><b><i class="icon ion-pie-graph"></i> {{patient.Module}}</b></div>
+                </div> 
+              </div>
+              <div class="col-33">
+                <div class="item-row">
+                  <div class="col-40">
+                    <div class="row"><b>依从率</b></div>
+                    <div class="row"><h3>{{patient.Age}}%</h3></div>
+                  </div>
+                  <i ng-hide="!ishide(patient)" style="font-size:2em;color:#c55e19" class="icon ion-sad"></i>
+                  <i ng-hide="ishide(patient)" style="font-size:2em;color:#33cd5f" class="icon ion-happy"></i>
+                </div>
+              </div>  
+            </div>
+            <div class="row">
+        
+          <b style="padding:0 10px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 计划进度</b>
+          <div style="background-color:#FEDACC; border:#DDDDDD 1px solid;width:100%">
+          <div ng-style="setwidth(patient)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Age}}%</p></div>
+          </div>
+        
+            </div>
+          <!-- </div>   -->
+        <!-- </div>         -->
       </ion-item>
-  	</ion-list>
+    </ion-list>
+  <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
   </ion-content>
-</ion-pane>
 </ion-view>

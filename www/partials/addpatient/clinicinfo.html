@@ -1,0 +1,123 @@
+<ion-nav-view >
+<ion-header-bar>
+    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward()"></a>
+    <h2 class="title">临床信息</h2>
+    <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
+</ion-header-bar>
+
+<ion-content class="padding">
+<div class="row">
+	<div class="col">
+		<div class="item item-select">
+			医院 
+			<select>
+				<option selected>海军总医院</option>
+			</select>
+		</div>
+	</div>
+	<div class="col ">
+		<div class="item item-input-inset">
+			<p>就诊ID</p>
+			<label class="item-input-wrapper">
+				<input type="text" ng-model="SyncInfo.userid">
+			</label>
+			
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="row">
+	<div class="col ">
+
+		<ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
+		<button class="button button-block button-positive" >起始日期{{tt}}</button>
+	</ionic-datepicker>
+
+</div>
+	<div class="col ">
+<button class="button button-block button-positive" ng-click="synclinicinfo()" >同步</button>
+</div>
+</div>
+</div>
+<button ng-click="NextPage()" class="button button-block button-positive">下一步</button>
+<!-- 	<div class="col ">
+		<div class="item item-select">
+			就诊日期 
+			<div >
+				<select ng-model="SyncInfo.Time" ng-options="a.Time for a in clinicinfo">
+					<option value="">请选择就诊日期</option>
+				</select>
+			</div>
+		</div>
+	</div> -->
+
+
+<!-- <div class="row">
+	<div class="button-bar">
+		<a class="button button-block button-positive" href="#/tab/clinic/examinationinfo" ng-click="examdata2local()" >同步信息</a>
+	</div>
+</div> -->
+
+
+<div style="width: 100% ">
+	<ion-nav-view name="clinicinfo" style="height=100px;border-style: ridge">
+
+<ion-list >
+<!--     <ion-item ng-repeat='item in clinicinfo' >
+
+ <h2>{{item.Time}}</h2>
+ <h2>{{item.Event}}</h2>
+
+    </ion-item> -->
+
+
+<ion-item ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
+<div class="row">
+	<h2 class="col col-50">入院时间：{{item.AdmissionDate}}</h2>
+	<h2 class="col col-50">出院时间：{{item.DischargeDate}} </h2>
+</div>
+
+<div class="row">
+	<a class="col col-50"  >就诊号：<h2 ng-model="SyncInfo.visitedid">{{item.VisitId}}</h2></a>
+<div class="col col-50">查看详情：<button ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
+<button ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
+<button ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button></div>
+		<!-- <option selected >查看详细信息</option>
+		<option ng-model='examValue' ng-change="openinfomodal(examValue)">检查信息</option>
+		<option ng-model='drugValue' ng-change="openinfomodal(drugValue)">用药信息</option>
+		<option >诊断信息</option> -->
+	
+</div>
+<!-- 
+<div class="row"> ng-click="openinfomodal()"
+<h2 class="col col-50">开始时间：{{item.StartDateTime}}</h2>
+<h2 class="col col-50">结束时间：{{item.StopDateTime}} </h2>
+</div>
+<div class="row">
+<h2 class="col col-50">给药频率：{{item.Frequency}} </h2>
+</div> -->
+</ion-item>
+
+
+
+
+
+
+</ion-content>
+</ion-nav-view>
+<!-- 
+<div class="row">
+	<div class="button-bar">
+		<a class="button button-block button-positive" href="#/tab/clinic/examinationinfo" ng-click="examdata2local()" >检查</a>
+		<a class="button button-block button-positive"  href="#/tab/clinic/druginfo" ng-click="drugdata2local()">用药</a>
+		<a class="button button-block button-positive" href="#/tab/clinic/DiagnosisInfo" ng-click="diagdata2local()">诊断</a>
+	</div>
+</div> -->
+
+
+
+
+
+
+

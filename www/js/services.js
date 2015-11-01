@@ -79,10 +79,16 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			LogOn:{method:'POST',headers:{token:getToken()}, params:{route: 'LogOn'}, timeout: 10000},
 			Register:{method:'POST', params:{route: 'Register'}, timeout: 10000},
 			ChangePassword:{method:'POST',params:{route:'ChangePassword'},timeout: 10000},
+			Verification:{method:'POST',params:{route:'Verification'},timeout:10000},
       myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
-      postDoctorInfo:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
-      postDoctorDetailInfo:{method:'POST',params:{route:'DoctorDtlInfo'}, timeout:10000},
-      getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000}
+      getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
+      UID:{method:'GET',params:{route:'UID'},timeout:10000},
+			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsList',DoctorId:'@DoctorId',ModuleType:'@ModuleType',Plan:'@Plan',Compliance:'@Compliance',Goal:'@Goal'},timeout:20000},
+      BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
+      PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
+      PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
 		})
 	}
 	var Service = function(){
@@ -93,6 +99,74 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
 		})
 	}	
+  var Dict = function(){
+    return $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'Dict',
+    },{
+          getYesNoType:{method:'GET',params:{route: 'Type/YesNoType'},isArray:true, timeout: 10000},
+          getHyperTensionDrugTypeName:{method:'GET',params:{route: 'HypertensionDrug/TypeNames'},isArray:true, timeout: 10000},
+          getHyperTensionDrugName:{method:'GET',params:{route: 'HypertensionDrug'}/*,headers:{"Content-Type":"application/xml; charset=utf-8"}*/,isArray:true, timeout: 10000},
+          getDiabetesDrugTypeName:{method:'GET',params:{route: 'DiabetesDrug/TypeNames'},isArray:true, timeout: 10000},
+          getDiabetesDrugName:{method:'GET',params:{route: 'DiabetesDrug'}/*,headers:{"Content-Type":"application/xml; charset=utf-8"}*/,isArray:true, timeout: 10000},
+          getDietHabbit:{method:'GET',params:{route: 'Type/DietHabbit'},isArray:true, timeout: 10000},
+          getDrinkFrequency:{method:'GET',params:{route: 'Type/DrinkFrequency'},isArray:true, timeout: 10000},
+          GetInsuranceType:{method:'GET',isArray:true, params:{route:'GetInsuranceType'},timeout:10000},
+          GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000}
+    })
+  }
+  var BasicInfo = function () {//ZXF
+    return $resource(CONFIG.baseUrl + ':path/:userid/BasicInfo', {path:'Users',userid:'@userid'},
+    {
+      GetBasicInfoByPid: {method:'GET', timeout: 100000},
+                // GetSignsDetailByPeriod: {method:'GET', params:{route: 'VitalSigns'}, timeout: 10000}
+              });
+  };
+
+  var HJZYYID = function () {//ZXF
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetLatestHUserIdByHCode',UserId:"@UserId",HospitalCode:'@HospitalCode'},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                GetHUserIdByHCode: {method:'GET',  timeout: 100000}
+              });
+      };
+  var ClinicInfoDetail = function () {//ZXF
+      return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetClinicInfoDetail',UserId:"@UserId",Type:'@Type',VisitId:'@VisitId',Date:'@Date'},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                GetClinicInfoDetailBy: {method:'GET',  timeout: 1000000}
+              });
+      };
+  var ClinicalInfoList = function () {//ZXF
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetClinicalInfoList',UserId:"@UserId"},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                GetClinicalInfoListbyUID: {method:'GET',  timeout: 1000000}
+              });
+      };
+  var examinfo = function () {//ZXF
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetExaminationList',UserId:"@UserId",VisitId:'@VisitId'},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                Getexaminfobypiduid: {method:'GET', isArray:true, timeout: 100000}
+
+              });
+      };
+  var diaginfo = function () {//ZXF
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetDiagnosisInfoList',UserId:"@UserId",VisitId:'@VisitId'},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                Getdiaginfobypiduid: {method:'GET', isArray:true, timeout: 100000}
+
+              });
+      };
+  var druginfo = function () {//ZXF
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetDrugRecordList',UserId:"@UserId",VisitId:'@VisitId'},
+        {
+                // GetClinicalNewMobile: {method:'GET', timeout: 10000},params:{route: '@UserId','@AdmissionDate','@ClinicDate','@Num' },
+                Getdruginfobypiduid: {method:'GET', isArray:true, timeout: 100000}
+
+              });
+      };
 
   var RiskInfo = function(){
     return $resource(CONFIG.baseUrl + ':path/:route',{
@@ -119,52 +193,61 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
     })
   }
-	// var Service = function(){
-	// 	return $resource(CONFIG.baseUrl + ':path/:route?phoneNo=:phoneNo&smsType=:smsType',{
-	// 		path:'Service',
-	// 	},{
- //            sendSMS:{method:'POST', params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
-	// 	})
-	// }
+
+  var PlanInfo = function () {
+          return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo'},
+          {
+              SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
+              GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
+              SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
+              GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
+              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
+          });
+      };
+
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
         abort = $q.defer();
         serve.Users = Users(); 
         serve.Service = Service();
+        serve.Dict = Dict();
+        serve.BasicInfo = BasicInfo();
+        serve.HJZYYID = HJZYYID();
+        serve.ClinicalInfoList = ClinicalInfoList();
+        serve.ClinicInfoDetail = ClinicInfoDetail();
+        serve.examinfo = examinfo();
+        serve.diaginfo = diaginfo();
+        serve.druginfo = druginfo();
         serve.RiskInfo = RiskInfo();
+        serve.PlanInfo = PlanInfo(); 
         }, 0, 1);  
 	}
     serve.Users = Users();
     serve.Service = Service();
+    serve.Dict = Dict();
+    serve.BasicInfo = BasicInfo();
+    serve.HJZYYID = HJZYYID();
+    serve.ClinicalInfoList = ClinicalInfoList();
+    serve.ClinicInfoDetail = ClinicInfoDetail();
+    serve.examinfo = examinfo();
+    serve.diaginfo = diaginfo();
+    serve.druginfo = druginfo();
     serve.RiskInfo = RiskInfo();
+    serve.PlanInfo = PlanInfo(); 
     return serve;
 }])
 
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){	 //XJZ
 	var serve = {};
-    var status = "";
-    //新的方法BEGIN
-    var returnMessage="";
-    serve.getMessage = function(){
-    	return returnMessage;
-    }
-
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-    var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
-    var passReg2=/^.[A-Za-z0-9]+$/;
+
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
         	return 7; 
         }
-        // if(logpass.length >18  ||  logpass.length<6){ //密码格式要求
-		// 	return 4;
-		// }else if(!passReg1.test(logpass)){
-		// 	return 5;
-		// }else if(!passReg2.test(logpass)){
-            // return 6;
-		// }
-
 		var deferred = $q.defer();   
         Data.Users.LogOn({PwType:_PwType, username:_username, password:_password, role: _role},
    		function(data,hearders,status){ 
@@ -193,7 +276,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         return deferred.promise;
     }
 
-    serve.verifySMS = function( _phoneNo,_smsType){
+    serve.sendSMS = function( _phoneNo,_smsType){
         if(!phoneReg.test(_phoneNo)){
         	return 7; 
         }
@@ -244,111 +327,68 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     	return deferred.promise;
     }
 
-    //新的方法END
-    
-	serve.userCheck = function(user){
-		if(user == username1){
-			return status=0;
-		}else{
-			return status=8;
-		}
-	}
-	serve.passCheck = function(pass){
-		var ispass=isPassValid(pass);
-		if(ispass!=0){
-			return 2;
-		}
-		if(pass == password1){
-			return status=0;
-		}else{
-			return status=2;
-		}
-	}
 
+    //var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
+    //var passReg2=/^.[A-Za-z0-9]+$/;
+	// var isPassValid = function(pass){
+		// if(pass.length >18  ||  pass.length<6){
+			// return 4;
+		// }else if(!passReg1.test(pass)){
+			// return 5;
+		// }else if(!passReg2.test(pass)){
+            // return 6;
+		// }else{
+			// return 0;
+		// }
+	// }
+	// serve.isTokenValid = function(){
+		// var isToken=Storage.get('token');
+		// if(isToken==null){
+			// return 0;
+		// }else{
+			// $http({
+				// method:'GET',
+				// url:'',
+				// headers:{token:isToken},
+			// })
+			// .success(function(data,status,headers,config){
 
-	var isPassValid = function(pass){
-		// var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/
-		// var passReg2=/^.[A-Za-z0-9]+$/
-		if(pass.length >18  ||  pass.length<6){
-			return 4;
-		}else if(!passReg1.test(pass)){
-			return 5;
-		}else if(!passReg2.test(pass)){
-            return 6;
-		}else{
-			return 0;
-		}
-	}
+			// })
+			// .error(function(data,status,headers,config){
 
-	serve.userregi = function(user,pass){
-		
-	}
-
-	serve.verifycodeCheck = function(vericode){
-		if(vericode == verifycode1){
-			return status=0;
-		}else{
-			return status=3;
-		}
-	}
-
-	serve.passReset = function(newpass){
-		var ispass=isPassValid(newpass);
-		if(ispass!=0){
-			return ispass;
-		}		
-		Storage.set('password1',newpass);
-		password1=Storage.get('password1');
-		return 0;
-	}
-
-	serve.isTokenValid = function(){
-		var isToken=Storage.get('token');
-		if(isToken==null){
-			return 0;
-		}else{
-			$http({
-				method:'GET',
-				url:'',
-				headers:{token:isToken},
-			})
-			.success(function(data,status,headers,config){
-
-			})
-			.error(function(data,status,headers,config){
-
-			});
-		}
-	}
+			// });
+		// }
+	// }
 
 	return serve;
 }])
-
-.factory('codeDefine',function(){ //XJZ
-	var serves={};
-	var codeMessage="";
-	var codes='';
-	serves.ctranslate = function(codes){
-
-		switch(codes){
-		    case 0:return errorMessage="";
-		    case 1:return errorMessage="";//登录失败
-		    case 2:return errorMessage="密码错误！";
-		    case 3:return errorMessage="验证码错误";
-		    case 4:return errorMessage="密码长度应为6-18位！";
-		    case 5:return errorMessage="密码应同时包括数字和字母！";
-		    case 6:return errorMessage="密码只能由数字和字母组成！";
-		    case 7:return errorMessage="手机号验证失败！";
-		    case 8:return errorMessage="该用户帐号不存在！";
-		    case 100:return errorMessage="未定义的错误";		    		    
-		    default:return errorMessage="未定义的错误";
-	    }
-	}
-
-	return serves;
-
-})
-
+.factory('userINFO',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){
+    var serve={};
+    serve.BasicInfo = function(_UserId){
+        var urltemp=_UserId+'/BasicInfo';
+        var deferred = $q.defer();   
+        Data.Users.BasicInfo({route:urltemp},
+        function(data,hearders,status){ 
+            deferred.resolve(data);
+        },
+        function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    serve.GetPatientsList = function(_DoctorId,_ModuleType,_Plan,_Compliance,_Goal){
+        var deferred = $q.defer();   
+        Data.Users.GetPatientsList({DoctorId:_DoctorId,ModuleType:_ModuleType,Plan:_Plan,Compliance:_Compliance,Goal:_Goal},
+        function(data,hearders,status){ 
+            deferred.resolve(data);
+        },
+        function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    }
+    return serve;
+}])
 //极光推送服务 TDY 20151026
 .factory('jpushService',['$http','$window',function($http,$window){ //TDY
 	var jpushServiceFactory={};
@@ -464,7 +504,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             mimeType : "image/jpeg"
           };
           var q = $q.defer();
-          // console.log("jinlaile");
+          console.log("jinlaile");
           $cordovaFileTransfer.upload(uri,imgURI,options)
             .then( function(r){
               console.log("Code = " + r.responseCode);
@@ -501,9 +541,11 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   }
 
 
-  }
+}
   
 }])
+
+
 
 .factory('Patients',['Data','$q','$resource','CONFIG',function(Data,$q,$resource,CONFIG){ //LRZ
   //get patients
@@ -641,26 +683,491 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
 
-  self.postDoctorInfo = function(docInfo){
-    var deferred = $q.defer();
-    Data.Users.postDoctorInfo(docInfo, function (data, headers) {
-      deferred.resolve(data);
-    }, function (err) {
-      deferred.reject(err);
+  //TDY 20151030
+  self.getquestionnaire = function(UserId,CategoryCode) {
+    var temp = $resource(CONFIG.baseUrl + ':path/:UserId/:CategoryCode', {
+      path:'ModuleInfo',  
+    }, {
+      getModuleInfo:{method:'GET',params:{UserId: UserId, CategoryCode: CategoryCode},isArray:true, timeout: 10000}
     });
-    return deferred.promise;
-  }
 
-  self.postDoctorDetailInfo = function(docDtlInfo){
     var deferred = $q.defer();
-    Data.Users.postDoctorDetailInfo(docDtlInfo, function (data, headers) {
+    temp.getModuleInfo({UserId: UserId, CategoryCode: CategoryCode},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getHyperTensionDrugNameByType = function(Type) {
+    var Filtet1 = "Type eq " + "'" + Type + "'";
+    var filter1 = $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'Dict',
+    },{
+          getHyperTensionDrugNameByType:{method:'GET',params:{route: 'HypertensionDrug', $filter:Filtet1}/*,headers:{"Content-Type":"application/xml; charset=utf-8"}*/,isArray:true, timeout: 10000},
+    });
+
+    var deferred = $q.defer();
+    filter1.getHyperTensionDrugNameByType({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getDiabetesDrugNameByType = function(Type) {
+    var Filtet2 = "Type eq " + "'" + Type + "'";
+    var filter2 = $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'Dict',
+    },{
+          getDiabetesDrugNameByType:{method:'GET',params:{route: 'DiabetesDrug', $filter:Filtet2}/*,headers:{"Content-Type":"application/xml; charset=utf-8"}*/,isArray:true, timeout: 10000},
+    });
+
+    var deferred = $q.defer();
+    filter2.getDiabetesDrugNameByType({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+  
+  //TDY 20151030
+  self.getYesNoType = function(){
+     var deferred = $q.defer();
+/*     do
+     {
+*/ 
+      Data.Dict.getYesNoType({},
+          function(data,status){
+            var check = {results: data};
+            console.log(check);
+            console.log(check.results[1]);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+      
+      //console.log(deferred.promise);
+        return deferred.promise;      
+     /*}while(typeof(check.results[1]) == "undefined")*/
+  };
+
+  //TDY 20151030
+  self.getHyperTensionDrugTypeName = function(){
+     var deferred = $q.defer();
+      Data.Dict.getHyperTensionDrugTypeName({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getHyperTensionDrugName = function(){
+     var deferred = $q.defer();
+      Data.Dict.getHyperTensionDrugName({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getDiabetesDrugTypeName = function(){
+     var deferred = $q.defer();
+      Data.Dict.getDiabetesDrugTypeName({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getDiabetesDrugName = function(){
+     var deferred = $q.defer();
+      Data.Dict.getDiabetesDrugName({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getDietHabbit = function(){
+     var deferred = $q.defer();
+      Data.Dict.getDietHabbit({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.getDrinkFrequency = function(){
+     var deferred = $q.defer();
+      Data.Dict.getDrinkFrequency({},
+          function(data,status){
+            // var data = {results: data};
+            //console.log(data);
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //TDY 20151030
+  self.setPatientDetailInfo = function(obj){
+    var deferred = $q.defer();
+      Data.Users.setPatientDetailInfo(obj,
+          function(data,status){
+            deferred.resolve(data);
+          },
+          function(err){
+            deferred.reject(err);
+          });
+        return deferred.promise;
+  };
+
+  //LZN 20151030
+  self.BasicInfo = function (arr){
+    var deferred = $q.defer();
+    Data.Users.BasicInfo(arr,function (data,headers) {
       deferred.resolve(data);
+      }, function (err) {
+          deferred.reject(err);
+      });
+      return deferred.promise;
+  };
+
+  //LZN 20151030
+  self.UID = function (_Type,_Name){
+      
+      
+
+    var deferred = $q.defer();
+    Data.Users.UID({Type:_Type,Name:_Name},function (data,headers){
+       deferred.resolve(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //LZN 20151030
+  self.BasicDtlInfo = function(arr){
+    var deferred = $q.defer();
+    Data.Users.BasicDtlInfo(arr,function (data,headers) {
+    deferred.resolve(data);
     }, function (err) {
+         deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+    return self;
+}])
+
+//LZN 20151030
+.factory('Dict',['$q','$http','Data',function($q,$http,Data){
+  var self = this;
+  self.GetInsuranceType = function(){
+    var deferred = $q.defer();
+    Data.Dict.GetInsuranceType(function (data,headers) {
+      deferred.resolve(data);
+    },function (err) {
       deferred.reject(err);
     });
     return deferred.promise;
   }
+  self.GetNo = function(_NumberingType,_TargetDate){
+    var deferred = $q.defer();
+    Data.Dict.GetNo({NumberingType:_NumberingType,TargetDate:_TargetDate},function (data,headers) {
+      deferred.resolve(data);
+    },function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+  self.GetHypertensionDrug = function () {
+        var deferred = $q.defer();       
+        Data.Dict.GetHypertensionDrug(function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+       return deferred.promise;
+    }; 
+
+    self.GetDiabetesDrug = function () {
+        var deferred = $q.defer();       
+        Data.Dict.GetDiabetesDrug(function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+       return deferred.promise;
+    }; 
+  return self;
+}])
+
+
+//ZXF 20151031
+.factory('Getdruginfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.Getdruginfobypiduid = function (arr) {
+    var deferred = $q.defer();
+    Data.druginfo.Getdruginfobypiduid(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
   
+  return self;
+}])
+
+//ZXF 20151031
+.factory('Getdiaginfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.Getdiaginfobypiduid = function (arr) {
+    var deferred = $q.defer();
+    Data.diaginfo.Getdiaginfobypiduid(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+//ZXF 20151031
+.factory('Getexaminfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.Getexaminfobypiduid = function (arr) {
+    var deferred = $q.defer();
+    Data.examinfo.Getexaminfobypiduid(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+//ZXF 20151031
+.factory('GetClinicalList', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.GetClinicalInfoListbyUID = function (arr) {
+    var deferred = $q.defer();
+    Data.ClinicalInfoList.GetClinicalInfoListbyUID(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+
+//根据userid获取hjzyy的就诊id//ZXF 20151031
+.factory('GetHZID', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.GetHUserIdByHCode = function (arr) {
+    var deferred = $q.defer();
+    Data.HJZYYID.GetHUserIdByHCode(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+//ZXF 20151031
+.factory('GetBasicInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.GetBasicInfoByPid = function (PatientId) {
+    var deferred = $q.defer();
+    Data.BasicInfo.GetBasicInfoByPid({userid:PatientId}, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+//ZXF 20151031
+.factory('GetClinicInfoDetail', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+  var self = this;
+  self.GetClinicInfoDetailBy = function (arr) {
+    var deferred = $q.defer();
+    Data.ClinicInfoDetail.GetClinicInfoDetailBy(arr, function (data, headers) {
+      deferred.resolve(data);
+       // console.log(data);
+     }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  
+  return self;
+}])
+
+//ZXF 20151031
+.factory('UserInfo', ['$http', '$q', function ($http, $q) {  
+  return {  
+    query : function(a,b,c,d) {  
+      var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行  
+      $http({method: 'GET', url: 'http://10.12.43.72:9000/Api/v1/BasicInfo/VitalSigns',params: {"PatientId": a,"Module":b,"StartDate":c,"Num":d}}).//"U201508170003", "M1", "20151013", "7"  
+      success(function(data, status, headers, config) {  
+        deferred.resolve(data);  // 声明执行成功，即http请求数据成功，可以返回数据了  
+      }).  
+      error(function(data, status, headers, config) {  
+        deferred.reject(data);   // 声明执行失败，即服务器返回错误  
+      });  
+      return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API  
+    } // end query  
+  };  
+}])
+
+.factory('PlanInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+    var self = this;
+
+    self.SetPlan = function (PlanNo, PatientId, StartDate, EndDate, Module, Status, DoctorId, piUserId, piTerminalName, piTerminalIP, piDeviceType) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetPlan({PlanNo:PlanNo, PatientId:PatientId, StartDate:StartDate, EndDate:EndDate, Module:Module, Status:Status, DoctorId:DoctorId, piUserId:piUserId, piTerminalName:piTerminalName, piTerminalIP:piTerminalIP, piDeviceType:piDeviceType}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.GetPlanList = function (PatientId, PlanNo, Module, Status) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetPlanList({PatientId:PatientId, PlanNo:PlanNo, Module:Module, Status:Status}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.SetTask = function (obj) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetTask(obj, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.DeleteTask = function (obj) {
+        var deferred = $q.defer();
+        Data.PlanInfo.DeleteTask(obj, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.GetTasks = function (PlanNo, ParentCode) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetTasks({PlanNo:PlanNo, ParentCode:ParentCode, Date:"1", PatientId:"1"}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
+    self.GetTarget = function (PlanNo, Type, Code) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetTarget({PlanNo:PlanNo, Type:Type, Code:Code}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.SetTarget = function (Plan, Type, Code, Value, Origin, Instruction, Unit, piUserId, piTerminalName, piTerminalIP, piDeviceType) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetTarget({Plan:Plan, Type:Type, Code:Code, Value:Value, Origin:Origin, Instruction:Instruction, Unit:Unit, piUserId:piUserId, piTerminalName:piTerminalName, piTerminalIP:piTerminalIP, piDeviceType:piDeviceType}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
     return self;
 }])
 
@@ -732,29 +1239,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       
       // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
       return promptPopup;  
-    }, 
-    edit: function (_msg, _title) {
-      var promptPopup = $ionicPopup.prompt({
-        title: _title,
-        // cssClass: '',
-        // subTitle: '',
-        template: _msg,
-        // templateUrl: '',
-        inputType: 'text',  // String (default: 'text'). The type of input to use
-        inputPlaceholder: _msg,  // String (default: ''). A placeholder to use for the input.
-        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
-        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
-        okText: '确定',
-        okType: 'button-energized'
-      });
-
-      // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
-      //   console.log(res);
-      // });
-      
-      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
-      return promptPopup;  
-    },     
+    },
     selection: function (_msg, _title, _res, $scope) {
       var selectionPopup = $ionicPopup.show({
         title: _title,
