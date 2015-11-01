@@ -285,6 +285,86 @@ $stateProvider
     templateUrl:'partials/addpatient/riskquestion.html',
     controller:'RiskQuestionCtrl'
   })
+
+  .state('addpatient.plan', {
+  url: '/:tt',
+    templateUrl: function ($stateParams){
+      if($stateParams.tt=='create')  //计划第一层 创建计划
+      {
+        return 'partials/addpatient/plan/create.html';  
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TG')) //计划第三层 体重管理与风险评估
+      {
+        return 'partials/addpatient/plan/weight.html';  
+      }
+      else if($stateParams.tt=='TB')  //计划第三层 饮食建议
+      {
+        return 'partials/addpatient/plan/food.html';  
+      }
+      else if($stateParams.tt=='TC')  //计划第三层 锻炼
+      {
+        return 'partials/addpatient/plan/exercise.html';  
+      }
+      else if($stateParams.tt=='TD')  //计划第三层 健康教育
+      {
+        return 'partials/addpatient/plan/healthEducation.html';  
+      }
+      else if($stateParams.tt=='TE')  //计划第三层 药物治疗
+      {
+        return 'partials/addpatient/plan/drug.html';  
+      }  
+      else if($stateParams.tt=='TF')  //计划第三层 体征测量
+      {
+        return 'partials/addpatient/plan/measure.html';  
+      }
+      else if($stateParams.tt=='TY')  //计划第三层 其他
+      {
+        return 'partials/addpatient/plan/others.html';  
+      }
+      else if($stateParams.tt=='TZ')  //计划第三层 个性化制定
+      {
+        return 'partials/addpatient/plan/personal.html';  
+      }
+      else if($stateParams.tt=='healthEducationDetail')  //计划第四层 健康教育详细
+      {
+        return 'partials/addpatient/plan/healthEducationDetail.html';  
+      }            
+   
+      else  //计划第二层
+      {
+        return 'partials/addpatient/plan/taskList.html'; 
+      }      
+    },
+    controllerProvider: function($stateParams) {
+      if($stateParams.tt=='create')
+      {
+        return 'CreateCtrl';
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
+      {
+        return 'MainPlanCtrl';
+      }    
+      else if($stateParams.tt=='TD')
+      {
+        return 'healthEducationCtrl';
+      }
+      else if($stateParams.tt=='TE')
+      {
+        return 'DrugCtrl';
+      }
+    
+      else if($stateParams.tt=='healthEducationDetail')
+      {
+        return 'healthEducationDetailCtrl';
+      }
+      else
+      {
+        return 'TaskListCtrl';
+      }
+    }
+      
+  })
+
    //$urlRouterProvider.otherwise('/signin');
    $urlRouterProvider.otherwise('/starting');
 
