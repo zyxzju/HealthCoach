@@ -193,6 +193,20 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
     })
   }
+
+  var PlanInfo = function () {
+          return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo'},
+          {
+              SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
+              GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
+              SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
+              GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
+              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
+          });
+      };
+
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -208,6 +222,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.diaginfo = diaginfo();
         serve.druginfo = druginfo();
         serve.RiskInfo = RiskInfo();
+        serve.PlanInfo = PlanInfo(); 
         }, 0, 1);  
 	}
     serve.Users = Users();
@@ -221,6 +236,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.diaginfo = diaginfo();
     serve.druginfo = druginfo();
     serve.RiskInfo = RiskInfo();
+    serve.PlanInfo = PlanInfo(); 
     return serve;
 }])
 
@@ -917,6 +933,25 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   }
+  self.GetHypertensionDrug = function () {
+        var deferred = $q.defer();       
+        Data.Dict.GetHypertensionDrug(function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+       return deferred.promise;
+    }; 
+
+    self.GetDiabetesDrug = function () {
+        var deferred = $q.defer();       
+        Data.Dict.GetDiabetesDrug(function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+       return deferred.promise;
+    }; 
   return self;
 }])
 
@@ -1056,6 +1091,84 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return deferred.promise;   // 返回承诺，这里并不是最终数据，而是访问最终数据的API  
     } // end query  
   };  
+}])
+
+.factory('PlanInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+    var self = this;
+
+    self.SetPlan = function (PlanNo, PatientId, StartDate, EndDate, Module, Status, DoctorId, piUserId, piTerminalName, piTerminalIP, piDeviceType) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetPlan({PlanNo:PlanNo, PatientId:PatientId, StartDate:StartDate, EndDate:EndDate, Module:Module, Status:Status, DoctorId:DoctorId, piUserId:piUserId, piTerminalName:piTerminalName, piTerminalIP:piTerminalIP, piDeviceType:piDeviceType}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.GetPlanList = function (PatientId, PlanNo, Module, Status) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetPlanList({PatientId:PatientId, PlanNo:PlanNo, Module:Module, Status:Status}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.SetTask = function (obj) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetTask(obj, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.DeleteTask = function (obj) {
+        var deferred = $q.defer();
+        Data.PlanInfo.DeleteTask(obj, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.GetTasks = function (PlanNo, ParentCode) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetTasks({PlanNo:PlanNo, ParentCode:ParentCode, Date:"1", PatientId:"1"}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
+    self.GetTarget = function (PlanNo, Type, Code) {
+        var deferred = $q.defer();
+        Data.PlanInfo.GetTarget({PlanNo:PlanNo, Type:Type, Code:Code}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+    self.SetTarget = function (Plan, Type, Code, Value, Origin, Instruction, Unit, piUserId, piTerminalName, piTerminalIP, piDeviceType) {
+        var deferred = $q.defer();
+        Data.PlanInfo.SetTarget({Plan:Plan, Type:Type, Code:Code, Value:Value, Origin:Origin, Instruction:Instruction, Unit:Unit, piUserId:piUserId, piTerminalName:piTerminalName, piTerminalIP:piTerminalIP, piDeviceType:piDeviceType}, function (data, headers) {
+            deferred.resolve(data);
+        }, function (err) {
+            deferred.reject(err);
+        });
+        return deferred.promise;
+    };
+
+
+    return self;
 }])
 
 //大师兄的弹窗业务service 可以随便调用
