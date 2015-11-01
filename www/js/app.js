@@ -275,12 +275,14 @@ $stateProvider
   })
 
   .state('addpatient.riskdetail',{
+    cache:false,
     url:'/risk/:num',
     templateUrl:'partials/addpatient/riskdetail.html',
     controller:'RiskCtrl'
   })
 
   .state('addpatient.riskquestion',{
+    cache:false,
     url:'/riskquestion',
     templateUrl:'partials/addpatient/riskquestion.html',
     controller:'RiskQuestionCtrl'

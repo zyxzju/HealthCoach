@@ -51,7 +51,7 @@ Dept
   <ion-content>
 
     <div class="list">
-      <a href="#" class="item item-thumbnail-left item-icon-right" >
+      <a href="#" class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
         <img src="{{imgURI}}" alt="Avatar">
     <!--     <h2>Item 07</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore necessitatibus, facilis nihil illo eligendi ipsum blanditiis repellat eveniet obcaecati at. Esse est porro, odit, maiores dolorum provident earum error omnis.</p> -->
@@ -59,19 +59,19 @@ Dept
 
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEdit(0)" >
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right">
+      <a href="#" class="item item-icon-left item-icon-right" >
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthday}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right">
+      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditGender()">
         <i class="icon ion-male"></i>
        {{userInfo.BasicInfo.gender}}
 <!--         <span class="item-note">
@@ -86,7 +86,7 @@ Dept
       </a>
       <div class="item item-divider">详细信息</div>
     
- <a href="#" class="item item-icon-left item-icon-right">
+ <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
         <i class="icon ion-calendar"></i>
          {{userInfo.DtInfo.unitname}}
   
@@ -94,19 +94,19 @@ Dept
 
       </a>
 
- <a href="#" class="item item-icon-left item-icon-right">
+ <a href="#" class="item item-icon-left item-icon-right "  ng-click = "onClickEditJobTitle()">
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.jobTitle}}
         <i class="icon ion-chevron-right"></i>
       </a>
 
- <a href="#" class="item item-icon-left item-icon-right">
+ <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditLevel()">
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.level}}
         <i class="icon ion-chevron-right"></i>
       </a>
       
-  <a href="#" class="item item-icon-left item-icon-right">
+  <a href="#" class="item item-icon-left item-icon-right" ng-click ="onClickEditDept()">
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.dept}}
         <i class="icon ion-chevron-right"></i>
