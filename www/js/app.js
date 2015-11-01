@@ -266,8 +266,25 @@ $stateProvider
     url:'/ModuleInfo/:Module/:ListName',
     templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
     controller:'ModuleInfoListDetailCtrl'   
-  });
+  })
   
+  .state('addpatient.risk',{
+    url:'/risk',
+    templateUrl:'partials/addpatient/risk.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('addpatient.riskdetail',{
+    url:'/risk/:num',
+    templateUrl:'partials/addpatient/riskdetail.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('addpatient.riskquestion',{
+    url:'/riskquestion',
+    templateUrl:'partials/addpatient/riskquestion.html',
+    controller:'RiskQuestionCtrl'
+  })
    //$urlRouterProvider.otherwise('/signin');
    $urlRouterProvider.otherwise('/starting');
 
