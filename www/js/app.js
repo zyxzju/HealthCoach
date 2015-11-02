@@ -195,7 +195,6 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('coach.i',{
     url:'/i',
-    cache:false,
     views:{
       'coach-me':{
         templateUrl:'partials/individual/coach-home.html',
@@ -277,14 +276,12 @@ $stateProvider
 
   .state('addpatient.riskdetail',{
     url:'/risk/:num',
-    cache:false,
     templateUrl:'partials/addpatient/riskdetail.html',
     controller:'RiskCtrl'
   })
 
   .state('addpatient.riskquestion',{
     url:'/riskquestion',
-    cache:false,
     templateUrl:'partials/addpatient/riskquestion.html',
     controller:'RiskQuestionCtrl'
   })
