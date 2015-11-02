@@ -363,8 +363,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //       templateUrl:'partials/individual/coach-idupload.html',
     //       controller:'CoachIdUploadCtrl'  
  
-.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout) { //LRZ
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker) { //LRZ
 
   // $scope.DtInfo = [
   // { t:"单位",
@@ -380,10 +380,62 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //   v: "217"
   // }
   // ];
+  $scope.Info = {
+    name: " ",
+    gender: "男",
+    birthday:"点击设置",
+    id: Storage.get('UID')
+  }
+  //填表的预设数据 和需要填写的项目
+
+  // date picker -------------------------------
+  var datePickerCallback = function (val) {
+    if (typeof(val) === 'undefined') {
+      console.log('No date selected');
+    } else {
+      $scope.datepickerObject.inputDate=val;
+      var dd=val.getDate();
+      var mm=val.getMonth()+1;
+      var yyyy=val.getFullYear();
+      var birthday=yyyy+'/'+mm+'/'+dd;
+      $scope.Info.birthday=birthday;
+      alert(birthday);
+    }
+  };
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(1900, 1, 1),   //Optional
+    to: new Date(),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };   
+
+  //from rootScope
+  console.log($rootScope.NAME);
+  console.log($rootScope.GENDER);
+  console.log($rootScope.BIRTHDAY);  
   //填表的预设数据 和需要填写的项目 是否封装进SERVICE config 里面?
   $scope.DtInfo = [
   { t:"单位",
-    c: ["普通医院","浙医一院","海军总医院"],
+    c: ["海军总医院","浙医二院","浙医一院"],
     v: ""
   },   
   { t: "科室",
@@ -401,13 +453,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   ];
   //填表的预设数据 和需要填写的项目
-  $scope.Info = {
-    name: "叶良辰",
-    gender: "男",
-    birthday:"19980808",
-    id: 1212
-  }
-  //填表的预设数据 和需要填写的项目
+
   $scope.state = "未提交";
   //填表的预设数据 和需要填写的项目
   // $scope.imgURI = "img/Barot_Bellingham_tn.jpg";
@@ -451,33 +497,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       Storage.set(14,$scope.imgURI);
       // for(i=0;i<temp.length;i++)console.log(temp[i].v);
       // $state.go('coach.home',{'state': $scope.state, 'info' :  infoObject.name},"replace");
-      $scope.upload();
+      $scope.upload(userInfo);
       $state.go('coach.i',{},"replace");
   };
 
   //upload
-  $scope.upload = function(){
+  $scope.upload = function(info){
 
     var DoctorInfo = {
-      UserId: "ZXF",
-      UserName: "ZXF",
-      Birthday: 19930418,
-      Gender: 1,
-      IDNo: "ZXF",
+      UserId: info.BasicInfo.id,
+      UserName: Storage.get('USERNAME'),
+      Birthday: info.BasicInfo.birthday,
+      Gender: info.BasicInfo.gender,
+      IDNo: info.BasicInfo.id,
       InvalidFlag: 0,
-      piUserId: "ZXF",
-      piTerminalName: "ZXFZXF",
-      piTerminalIP: "ZXF",
+      piUserId: "蛤蛤蛤",
+      piTerminalName: "蛤蛤蛤",
+      piTerminalIP: "蛤蛤蛤",
       piDeviceType: 0
   };
 
     var responce = Users.myTrial(DoctorInfo);
-    
-    var temp = Users.myTrial2("ZXF");
+    console.log(responce);
+    // var temp = Users.myTrial2("ZXF");
 
-    // var temp2 = Camera.uploadPicture($scope.imgURI);
+    // var temp = Camera.uploadPicture($scope.imgURI,info.BasicInfo.id);
     // var temp2 = Camera.uploadPicture2($scope.imgURI);
-    // console.log("返回的数据" + temp2 );
+    
   };
     //-----------------------------------------------------------
 
@@ -666,43 +712,220 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 // Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users',
-  function($scope,$state,$ionicHistory,Storage,PageFunc,Users) {
+.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users','$ionicActionSheet','Camera',
+  function($scope,$state,$ionicHistory,Storage,PageFunc,Users,$ionicActionSheet,Camera) {
    //获得信息
-   // $scope.state = Storage.get(13);
-   // $scope.name = Storage.get(131);
-   // $scope.company = Storage.get(132);
-   // $scope.position = Storage.get(133);
-   // $scope.selfintro = Storage.get(134);
    $scope.imgURI = Storage.get(14);
    $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-
+   $scope.backup = $scope.userInfo;
+   $scope.imgURIback = $scope.imgURI;
+  // date picker -------------------------------
+  var datePickerCallback = function (val) {
+    if (typeof(val) === 'undefined') {
+      console.log('No date selected');
+    } else {
+      $scope.datepickerObject.inputDate=val;
+      var dd=val.getDate();
+      var mm=val.getMonth()+1;
+      var yyyy=val.getFullYear();
+      var birthday=yyyy+'/'+mm+'/'+dd;
+      $scope.userInfo.BasicInfo.birthday=birthday;
+      alert(birthday);
+    }
+  };
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(1900, 1, 1),   //Optional
+    to: new Date(),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
   $scope.onClickBackward = function(){
+    if($scope.isEdited == true)
       PageFunc.confirm("是否放弃修改","确认").then( 
         function(res){
           if(res){
            // console.log("点了queren");
-          $state.go('coach.home');
+           //复原备份
+           $scope.userInfo = $scope.backup;
+          $state.go('coach.i');
           }
         });    
   };
-
+  //点击保存上传更新
   $scope.onClickSave = function(){
     PageFunc.confirm("是否上传新信息","确认").then( 
         function(res){
           if(res){
            // console.log("点了queren");
-              // 这两个service里面还没有写好
+              // 这两个service里面还没有写好 
               // ----------------------------------------------------------
-              // Users.myTrial(userInfo.BasicInfo);
-              // Users.myTrial(userInfo.DtInfo);
+              var objStr=JSON.stringify($scope.userInfo);
+              Storage.set("userInfo",objStr);
+              Users.myTrial($scope.userInfo.BasicInfo);
+              Users.myTrial($scope.userInfo.DtInfo);
+              $state.go('coach.i');
+          }
+          else{
+            $scope.imgURI = $scope.imgURIback;
+            $scope.userInfo = $scope.backup;
           }
         });    
   };
+  // 更改头像
+  $scope.onClickChangeHead =function(){
+    var hideSheet = $ionicActionSheet.show({
+     buttons: [
+       { text: '选择照相机' },
+       { text: '选择相册' }
+     ],
+     // destructiveText: 'Delete',
+     titleText: '上传认证照片',
+     cancelText: '取消',
+     cancel: function() {
+          // add cancel code..
+        },
+     buttonClicked: function(index) {
+      switch(index){
+        case 0 :  
+                Camera.getPicture().then(function(data) {
+                $scope.imgURI = data;
+                }, function(err) {});   break;
+        case 1 : 
+                Camera.getPictureFromPhotos().then(function(data) {
+                $scope.imgURI = data;
+                }, function(err) {}); 
+      }
+       return true;
+     }
+   });
+  };
+  //更改姓名
+  $scope.onClickEditName = function(){
+    PageFunc.edit("姓名","修改").then(function(res){
+      if(res){
+        $scope.isEdited = true;
+        $scope.userInfo.BasicInfo.name = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    });
+  };
+  //更改性别
+  $scope.onClickEditGender = function(){
+    var results = ['男','女'];
+    $scope.selection = {  
+      inces: results
+    };
+    $scope.ince = {  // <select>默认值
+      selected: results[0]
+    };
+    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择性别', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+      if(res){
+        
+        $scope.userInfo.BasicInfo.gender = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    });    
+  };
+  //更改单位
+  $scope.onClickEditUnitName = function(){
+    var results = ["海军总医院","浙医二院","浙医一院"];
+    $scope.selection = {  
+      inces: results
+    };
+    $scope.ince = {  // <select>默认值
+      selected: results[0]
+    };
+    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择工作单位', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+      if(res){
+        
+        $scope.userInfo.DtInfo.unitname = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    }); 
+  };
+  //更改职称
+  $scope.onClickEditJobTitle = function(){
+    var results = ["行政","临床","基础"];
+    $scope.selection = {  
+      inces: results
+    };
+    $scope.ince = {  // <select>默认值
+      selected: results[0]
+    };
+    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择职务', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+      if(res){
+        
+        $scope.userInfo.DtInfo.jobTitle = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    }); 
+  };
+  //更改级别
+  $scope.onClickEditLevel = function(){
+    var results = ["医士","住院医师","主治医师","副主任医师","主任医师"];
+    $scope.selection = {  
+      inces: results
+    };
+    $scope.ince = {  // <select>默认值
+      selected: results[0]
+    };
+    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择级别', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+      if(res){
+        
+        $scope.userInfo.DtInfo.level = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    }); 
+  };
+  //更改科室
+  $scope.onClickEditDept = function(){
+    var results = ["神经科","肛肠科","泌尿科","整形科"];
+    $scope.selection = {  
+      inces: results
+    };
+    $scope.ince = {  // <select>默认值
+      selected: results[0]
+    };
+    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择科室', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+      if(res){
+        
+        $scope.userInfo.DtInfo.dept = res;
+      }
+      else{
+        $scope.isEdited = false;
+      }
+    }); 
+  };
 
-  $scope.onClickEdit = function(_res){
-    PageFunc.selection("hehe","hhe",_res,$scope);
-  }
 }])
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------
