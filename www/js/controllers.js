@@ -21,7 +21,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 // --------登录注册、设置修改密码-熊佳臻---------------- 
-//登录  41-$state.go('tab.tasks')
+//登录  
 .controller('SignInCtrl', ['$scope','$state','$http', '$timeout','$window', 'userservice','Storage' , function($scope, $state,$http, $timeout ,$window, userservice, Storage) {
   if(Storage.get('USERNAME')!=null){
     $scope.logOn={username:Storage.get('USERNAME'),password:""};
@@ -73,8 +73,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //注册 
-.controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage){
+.controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage','loading','Users' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage,loading,Users){
+  $scope.barwidth="width:0%";
+  $scope.userName='';
   $scope.birthday="点击设置";
+  var upload={
+    "UserId": "",
+    "UserName": "",
+    "Birthday": "",
+    "Gender": "",
+    "IDNo": "sample string 5",
+    "InvalidFlag": 0,
+    "piUserId": "sample string 7",
+    "piTerminalName": "sample string 8",
+    "piTerminalIP": "sample string 9",
+    "piDeviceType": 2
+  }
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
       console.log('No date selected');
@@ -83,7 +97,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       var dd=val.getDate();
       var mm=val.getMonth()+1;
       var yyyy=val.getFullYear();
-      var birthday=yyyy+'/'+mm+'/'+dd;
+      var d=dd<10?('0'+String(dd)):String(dd);
+      var m=mm<10?('0'+String(mm)):String(mm);
+      upload.Birthday=parseInt(yyyy+m+d);
+      var birthday=yyyy+'/'+m+'/'+d;
       $scope.birthday=birthday;
     }
   };
@@ -113,36 +130,56 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   };  
   $scope.infoSetup = function(userName,userGender){
-    // var activition = function(){
-    //   var UIDpromise=userservice.UID('PhoneNo',$rootScope.userId);
-    //   UIDpromise.then(function(data){
-    //     var uid=data.result;
-    //     if(uid!=null){
-    //       userservice.Activition(uid,)
-    //     }
-    //   },function(data){
-    //   });
-    // }
-    $rootScope.NAME=userName;
-    $rootScope.GENDER=userGender;
-    $rootScope.BIRTHDAY=$scope.birthday;
-    var promise=userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach");
-    promise.then(function(data){
-      $scope.logStatus=data.result;
-      if(data.result=="注册成功"){
-        $timeout(function(){$state.go('upload');} , 500);
+    if(userName!='' && userGender!='' && $scope.birthday!='' && $scope.birthday!='点击设置'){
+      upload.UserName=userName;
+      upload.Gender=userGender == '男'?1:2;
+      var saveUID = function(){
+        UIDpromise=userservice.UID('PhoneNo',$rootScope.userId)
+        .then(function(data){
+          if(data.result!=null){
+            Storage.set('UID', data.result);
+            upload.UserId=Storage.get('UID');
+            Users.myTrial(upload).then(function(data){
+              $scope.logStatus=data.result;
+              if(data.result=="数据插入成功"){
+                $scope.logStatus='注册成功！';
+                $timeout(function(){$state.go('upload');} , 500);
+              }
+            });            
+          }
+        },function(data){
+        });
       }
-      //activition();//帐号激活用
-    },function(data){
-      $scope.logStatus=data.data.result;
-    });
-    //以下临时跳转
-    //$timeout(function(){$state.go('tab.tasks');} , 2000);
+      // $rootScope.NAME=userName;
+      // $rootScope.GENDER=userGender;
+      // $rootScope.BIRTHDAY=$scope.birthday;
+      loading.loadingBarStart($scope);
+      userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach")
+      .then(function(data){
+        loading.loadingBarFinish($scope);
+        console.log($rootScope.userId,$rootScope.password);
+        userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach').then(function(data){
+          if(data.result.substr(0,4)=="登陆成功"){
+            Storage.set('TOKEN', data.result.substr(12));
+          }
+        });
+        Storage.set('USERNAME', $rootScope.userId);
+        saveUID();
+      },function(data){
+        loading.loadingBarFinish($scope);
+        if(data.data==null && data.status==0){
+          $scope.logStatus='连接超时！';
+          return;          
+        }     
+        $scope.logStatus=data.data.result;
+      });
+    }else{
+      $scope.logStatus='请输入完整信息！';
+    }
   }
-  
 }])
 
-//设置密码   153-$state.go('tab.tasks')
+//设置密码   
 .controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' , 'userservice','Storage',function($scope,$state,$rootScope,$timeout,userservice,Storage) {
   var setPassState=Storage.get('setPasswordState');
   if(setPassState=='reset'){
@@ -182,7 +219,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 }])
 
-//修改密码  192-$state.go('tab.tasks');  $scope.nvGoback李山加的，不明
+//修改密码   $scope.nvGoback李山加的，不明
 .controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage', function($scope , $state,$timeout, $ionicHistory, userservice,Storage){
   $scope.ishide=true;
   $scope.change={oldPassword:"",newPassword:"",confirmPassword:""};

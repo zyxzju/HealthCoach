@@ -255,7 +255,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
    		},
    		function(err){
 	   		deferred.reject(err);
-	   		console.log(err.data);
        	});
         return deferred.promise;
     }
@@ -387,7 +386,41 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
-    return serve;
+    return serve;    
+}])
+.factory('loading',['$interval','$ionicLoading', function($interval,$ionicLoading){
+  var serve={};
+  var timerStart,timerFinish;
+  var repeat;
+  serve.loadingBarStart=function($scope){
+    repeat=0;
+    timerStart = $interval(function(){
+      if(repeat==65){
+        $scope.barwidth="width:"+repeat+"%";
+        $interval.cancel(timerStart);
+        timerStart=undefined;        
+      }else{
+        $scope.barwidth="width:"+repeat+"%";
+        repeat++;
+      }
+    },4);
+  }
+  serve.loadingBarFinish=function($scope){
+    $interval.cancel(timerStart);
+    timerStart=undefined; 
+    timerFinish = $interval(function(){
+      if(repeat==100){
+        $scope.barwidth="width:0%";
+        $interval.cancel(timerFinish);
+        timerFinish=undefined;        
+      }else{
+      $scope.barwidth="width:"+repeat+"%";
+      repeat++;
+      }
+    },1);    
+  }
+
+  return serve;
 }])
 //极光推送服务 TDY 20151026
 .factory('jpushService',['$http','$window',function($http,$window){ //TDY

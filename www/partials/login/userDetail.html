@@ -1,9 +1,9 @@
 <ion-view title="填写个人信息">
-  <ion-nav-bar class="bar-dark nav-title-slide-ios7" style="" >
+  <ion-nav-bar class="bar-dark nav-title-slide-ios7"  >
     <ion-nav-back-button class="button-icon ion-arrow-left-c">
     </ion-nav-back-button>
   </ion-nav-bar>
-  <ion-content padding="true" style="">
+  <ion-content padding="true" >
     
     <div  class="list">
       <label class="item item-input">
@@ -14,20 +14,12 @@
       <label  class="item item-input item-select">
         <div class="input-label">性别</div>
         <select ng-model="userGender">
-          <!-- <option selected>选择性别</option> -->
           <option >女</option>
           <option>男</option>
         </select>
       </label>
 
-<!--       <div ng-click ="birthdaySet()" class="item item-button-right" >
-        生日
-        <span class="text-right item-note">{{birthday}}</span>
-
-      </div> -->
-      
-      <a class="item" href="#">
-        
+      <a class="item" >       
         <ionic-datepicker input-obj="datepickerObject">
         <div>
         <span>生日</span>
@@ -37,66 +29,12 @@
       </div>
         </ionic-datepicker>
       </a>
-      
-
-
-<!--       <label class="checkbox">
-         <input type="checkbox">
-      </label>
-      <label >
-      
-        <span class="item-note">Grammy</span>
-      </lable>
-      <label class="checkbox">
-        <input type="checkbox">
-      </label> -->
       <span style="color:white">00</span><span style="color:#c55e19">{{logStatus}}</span>
       <button class="button button-block button-stable" ng-click ="infoSetup(userName,userGender)">
             注册
       </button>
     </div>
-
- <!--    <div class="row" >
-      <div class="col-50  col-center">
-        <label class="item item-input">
-          <span class="input-label">姓名</span>
-          <input type="text">
-        </label>  
-      </div>   
-      <div class="col col-center" style="text-align:center;min-height:42px">
-        <div style="background-color:#f077c0;border-radius:20px" >
-          <i style="font-size: 38px" class="icon ion-male"></i>
-        </div>
-        
-      </div> 
-      <div class="col col-center" style="text-align:center">
-        <div style="background-color:#11c1f3;border-radius:20px" >
-          <i style="font-size: 38px" class="icon ion-female"></i>
-        </div>
-      </div>       
-    </div>
-
-    <div class="row" >
-      <div class="col-50  col-center">
-        <label class="item item-input">
-          <span class="input-label">姓名</span>
-          <input type="text">
-        </label>  
-      </div>   
-      <div class="col" style="text-align:center;min-height:42px">
-        <div style="border-radius:40px">
-        <div style="background-color:#f077c0;border-radius:20px" >
-          <i style="font-size: 35px" class="icon ion-male"></i>
-        </div>
-     
-        <div style="background-color:#11c1f3;border-radius:20px" >
-          <i style="font-size: 35px" class="icon ion-female"></i>
-        </div>
-      </div>       
-    </div>
- -->    
-
-           
+          
   </ion-content>
           
 </ion-view>
