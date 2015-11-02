@@ -438,8 +438,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 	return jpushServiceFactory;
 }])
 //照相机服务 LRZ
-.factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',
-function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
+.factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
     getPicture: function() {
@@ -494,18 +493,18 @@ function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI,userid){
+    uploadPicture : function(imgURI){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var options = {
             fileKey : "file",
-            fileName : userid + ".jpg",
+            fileName : "ZXF" + ".jpg",
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
           var q = $q.defer();
-          // console.log("jinlaile");
+          console.log("jinlaile");
           $cordovaFileTransfer.upload(uri,imgURI,options)
             .then( function(r){
               console.log("Code = " + r.responseCode);
@@ -518,7 +517,7 @@ function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
               console.log("upload error target " + error.target);
               q.resolve(error);          
             }, function (progress) {
-              
+              console.log(progress);
             })
 
             ;
@@ -531,23 +530,16 @@ function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
       
     },
 
-  downloadPicture: function(url,userid){ 
+  uploadPicture2: function(imgURI){
+    document.addEventListener("deviceready", onDeviceReady, false);
 
-    var q = $q.defer();
-    var targetPath = cordova.file.documentsDirectory + userid+".jpg";
-    var trustHosts = true;
-    var options = {};
-
-    $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-      .then(function(r) {
-        q.resolve(r);  
-      }, function(err) {
-        q.resolve(err); 
-      }, function (progress) {
-      });
-
-    return q.promise;  
+    function onDeviceReady() {
+   // as soon as this function is called FileTransfer "should" be defined
+      console.log(FileTransfer);
+      console.log(File);
+    }
   }
+
 
 }
   
@@ -1248,28 +1240,6 @@ function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
       // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
       return promptPopup;  
     },
-    edit: function (_msg, _title) {
-      var promptPopup = $ionicPopup.prompt({
-        title: _title,
-        // cssClass: '',
-        // subTitle: '',
-        template: _msg,
-        // templateUrl: '',
-        inputType: 'text',  // String (default: 'text'). The type of input to use
-        inputPlaceholder: _msg,  // String (default: ''). A placeholder to use for the input.
-        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
-        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
-        okText: '确定',
-        okType: 'button-energized'
-      });
-
-      // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
-      //   console.log(res);
-      // });
-      
-      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
-      return promptPopup;  
-    },     
     selection: function (_msg, _title, _res, $scope) {
       var selectionPopup = $ionicPopup.show({
         title: _title,
