@@ -1312,12 +1312,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('ModuleInfoListDetailCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams',  '$timeout', '$ionicPopup', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams,  $timeout,$ionicPopup, Storage, Users) {
   
   var UserId = Storage.get('UID');
+  var PatientID = Storage.get('PatientID');
   var Module = $stateParams.Module;
   if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
   {
     var ListName = $stateParams.ListName;
   } 
   $scope.DietHabbitValue = "请选择饮食习惯";
+  $scope.DietHabbitData = "";
   $scope.ListName = ListName;
   var i=1;
   var j=1;
@@ -1327,6 +1329,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.DiabetesDrugData = [{"ID":1,"Type":"","Name":""}];
   $scope.obj = [];
   $scope.dflag = [];
+  $scope.HTypeName = "";
+  $scope.DTypeName = "";
   $scope.onClickBackward1 = function(){
       $state.go('addpatient.ModuleInfo');
   };
@@ -1334,30 +1338,126 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       window.location.href="#/addpatient/ModuleInfo/" +Module;
   };
 
+  var getHTypeName= function(Type){
+    for (var i=0;i<$scope.HTypeName.length;i++)
+    {
+      if (Type == $scope.HTypeName[i].Type)
+      {
+        return $scope.HTypeName[i].Name;
+      }
+        
+    }
+  };
+  var getDTypeName = function(Type){
+    for (var i=0;i<$scope.DTypeName.length;i++)
+    {
+      if (Type == $scope.DTypeName[i].Type)
+      {
+        return $scope.DTypeName[i].Name;
+      }
+        
+    }
+  };
   // $http.get('partials/data.json').success(function(data) {
   //     $scope.ModuleInfoList = data;
   // });
-  Users.getquestionnaire(UserId,Module).then(function(data,status){
+
+  Users.getHyperTensionDrugTypeName().then(function(data,status){
+        $scope.HypertensionDrugArray[0].Type = data;
+        $scope.HTypeName = data;
+    },function(data,status){
+      $scope.getStatus = status;
+  }); 
+
+  Users.getDiabetesDrugTypeName().then(function(data,status){
+      $scope.DiabetesDrugArray[0].Type = data;
+      $scope.DTypeName = data;
+    },function(data,status){
+      $scope.getStatus = status;
+  });
+
+  Users.getquestionnaire(PatientID,Module).then(function(data,status){
     $scope.ModuleInfoList = data;
     $scope.ModuleInfoListDetail = data;
+    var a=0;
+    var b=0;
+    for (var i=0;i<$scope.ModuleInfoListDetail.length;i++)
+    {
+      
+      if ($scope.ModuleInfoListDetail[i].Value !="")
+      {
+        if ($scope.ModuleInfoListDetail[i].OptionCategory == "DietHabbit")
+        {
+          $scope.DietHabbitValue = $scope.ModuleInfoListDetail[i].Content;
+        }
+        else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstHypertensionDrug")
+        {
+          if (a==0) {
+            $scope.HypertensionDrugArray[a].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[0];
+            $scope.HypertensionDrugArray[a].Name = getHTypeName($scope.HypertensionDrugArray[a].Type);
+            $scope.HypertensionDrugData[a].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[1];
+            $scope.HypertensionDrugData[a].Name = $scope.ModuleInfoListDetail[i].Content;
+            a++;
+          }
+          else
+          {
+            $scope.HypertensionDrugArray.push({"ID":a+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])});
+            $scope.HypertensionDrugData.push({"ID":a+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content});
+          }
+          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
+          {
+            $scope.ModuleInfoListDetail.splice(i, 1);
+          }
+        }
+        else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstDiabetesDrug")
+        {
+          if (b==0) {
+            $scope.DiabetesDrugArray[b].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[0];
+            $scope.DiabetesDrugArray[b].Name = getDTypeName($scope.DiabetesDrugArray[b].Type);
+            $scope.DiabetesDrugData[b].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[1];
+            $scope.DiabetesDrugData[b].Name = $scope.ModuleInfoListDetail[i].Content;
+            b++;
+          }
+          else
+          {
+            $scope.DiabetesDrugArray.push({"ID":b+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])});
+            $scope.DiabetesDrugData.push({"ID":b+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content});
+          }
+          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
+          {
+            $scope.ModuleInfoListDetail.splice(i, 1);
+          }
+        }
+        else if ($scope.ModuleInfoListDetail[i].OptionCategory == "DrinkFrequency")
+        {
+          $scope.ModuleInfoListDetail[i].Description = {"Type":$scope.ModuleInfoListDetail[i].Value,"Name":$scope.ModuleInfoListDetail[i].Content};
+        }
+        else if ($scope.ModuleInfoListDetail[i].OptionCategory == "YesNoType")
+        {
+          $scope.ModuleInfoListDetail[i].Description = {"Type":$scope.ModuleInfoListDetail[i].Value,"Name":$scope.ModuleInfoListDetail[i].Content};
+        }
+        else 
+        {
+          $scope.ModuleInfoListDetail[i].Description = $scope.ModuleInfoListDetail[i].Value;
+        }
+      }
+    }
   },function(data,status){
     $scope.getStatus = status;
   });
 
   // $scope.YesNoType = [{"Type":"1","Name":"是"},{"Type":"2","Name":"否"},{"Type":"3","Name":"未知"}];
+  // $timeout(function() { 
   Users.getYesNoType().then(function(data,status){
     $scope.YesNoType = data;
   },function(data,status){
     $scope.getStatus = status;
   });
+  // }, 200);
 
-  $timeout(function() { 
-    Users.getHyperTensionDrugTypeName().then(function(data,status){
-        $scope.HypertensionDrugArray[0].Type = data;
-    },function(data,status){
-      $scope.getStatus = status;
-    }); 
-  }, 100);
+  // $timeout(function() { 
+    
+  // }, 100);
 
   $scope.getHyperTensionDrugNameByType = function(Type, $index){
     $scope.HypertensionDrugArray[$index].Name = "";
@@ -1367,13 +1467,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      $scope.getStatus = status;
     });
   };
-  $timeout(function() {
-    Users.getDiabetesDrugTypeName().then(function(data,status){
-      $scope.DiabetesDrugArray[0].Type = data;
-    },function(data,status){
-      $scope.getStatus = status;
-    });
-  }, 100);
+  // $timeout(function() {
+    
+  // }, 100);
 
   $scope.getDiabetesDrugNameByType = function(Type, $index){
     $scope.DiabetesDrugArray[$index].Name = "";
@@ -1388,18 +1484,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.DiabetesDrugArray[0].Name = obj.Name;
   };
 
+  // $timeout(function() { 
   Users.getDietHabbit().then(function(data,status){
     $scope.DietHabbit = data;
     $scope.CheckboxValue = data;
   },function(data,status){
     $scope.getStatus = status;
   });
+  // }, 200);
 
+  // $timeout(function() { 
   Users.getDrinkFrequency().then(function(data,status){
     $scope.DrinkFrequency = data;
   },function(data,status){
     $scope.getStatus = status;
   });
+  // }, 150);
 
   //[{Patient:Patient, CategoryCode:"M", ItemCode:ItemCode, ItemSeq:ItemSeq, Value:Value, Description: "", SortNo:ItemSeq, revUserId: "sample string 4",TerminalName: "sample string 5", TerminalIP: "sample string 6",DeviceType: 1}]
   $scope.Save = function(){
@@ -1412,17 +1512,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         {
           if ($scope.ModuleInfoListDetail[k].Description.Type != "" && typeof($scope.ModuleInfoListDetail[k].Description.Type) != "undefined")
           {
-            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             $scope.dflag.push({"Flag":true});
           }
           else
           {
-            $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             $scope.dflag.push({"Flag":true});
           }
         }
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit" && $scope.DietHabbitValue != "" && $scope.DietHabbitValue != "请选择饮食习惯") {
-          $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitValue, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitData, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
           $scope.dflag.push({"Flag":true});
         } 
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
@@ -1431,7 +1531,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           {
             if ($scope.HypertensionDrugData[m].Name.Type !="")
             {
-              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m+1, "Value": $scope.HypertensionDrugData[m].Type.Type+","+$scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+              $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m+1, "Value": $scope.HypertensionDrugData[m].Type.Type+","+$scope.HypertensionDrugData[m].Name.Code, "Description":"", "SortNo":m+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
           }
           $scope.dflag.push({"Flag":true});
@@ -1440,22 +1540,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         {
           for (var n = 0; n < j; n++)
           {
-            if ($scope.DiabetesDrugData[m].Name.Type !="")
+            if ($scope.DiabetesDrugData[n].Name.Type !="")
             {
-              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": $scope.DiabetesDrugData[m].Type.Type+","+$scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+              $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": $scope.DiabetesDrugData[n].Type.Type+","+$scope.DiabetesDrugData[n].Name.Code, "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
           }
           $scope.dflag.push({"Flag":true});
         }
-        else
+        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "YesNoType" || $scope.ModuleInfoListDetail[k].OptionCategory == "DrinkFrequency")
+        {
+          $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": "0", "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+        }
+        else 
         {
           $scope.dflag.push({"Flag":false});
         }
           
-      }
-      else
-      {
-        $scope.dflag.push({"Flag":false});
       }
       };
       
@@ -1507,6 +1607,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               else if ($scope.DietHabbitValue.indexOf(',') == 0)
               {
                 $scope.DietHabbitValue = $scope.DietHabbitValue.substr(1);
+                $scope.DietHabbitData = $scope.DietHabbitData.substr(1);
               }
               return $scope.DietHabbitValue;        
             }
@@ -1521,10 +1622,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.DietChange = function(obj){
      for(var i = 0; i < $scope.DietHabbit.length; i++)
       {
+        var f =i+1;
         if ($scope.DietHabbit[i].Name == obj.Name)
         {
             if (obj.Type == true) {
               $scope.DietHabbitValue = $scope.DietHabbitValue + "," + obj.Name;
+              $scope.DietHabbitData = $scope.DietHabbitData + "," + f;
             }
             else if ($scope.DietHabbitValue.indexOf(obj.Name)) {
               var check = $scope.DietHabbitValue.split(',');
@@ -1712,7 +1815,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(e){
       console.log(e);
     });
-  $scope.users.UserId=Storage.get('UID');
+  $scope.users.UserId=Storage.get('PatientID');
   $scope.B="点击设置";
       var datePickerCallback = function (val) {
         if (typeof(val) === 'undefined') {
@@ -1766,7 +1869,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.HomeAddress.Patient=Storage.get('UID');
+    $scope.HomeAddress.Patient=Storage.get('PatientID');
 
   $scope.PhoneNumber={
       "Patient":"",
@@ -1781,7 +1884,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.PhoneNumber.Patient=Storage.get('UID');
+    $scope.PhoneNumber.Patient=Storage.get('PatientID');
 
     $scope.Nationality={
       "Patient":"",
@@ -1796,7 +1899,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.Nationality.Patient=Storage.get('UID');
+    $scope.Nationality.Patient=Storage.get('PatientID');
 
     $scope.Occupation={
       "Patient":"",
@@ -1811,7 +1914,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.Occupation.Patient=Storage.get('UID');
+    $scope.Occupation.Patient=Storage.get('PatientID');
 
     $scope.EmergencyContact={
       "Patient":"",
@@ -1826,7 +1929,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.EmergencyContact.Patient=Storage.get('UID');
+    $scope.EmergencyContact.Patient=Storage.get('PatientID');
 
 
     $scope.EmergencyContactPhoneNumber={
@@ -1842,7 +1945,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.EmergencyContactPhoneNumber.Patient=Storage.get('UID');
+    $scope.EmergencyContactPhoneNumber.Patient=Storage.get('PatientID');
   // var timeout = function() {
   //  var Timeout = $ionicPopup.alert({
     //    title: '连接超时',
@@ -2031,7 +2134,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.reset = function(){
     $scope.users={
-      "UserId":Storage.get('UID'),
+      "UserId":Storage.get('PatientID'),
       "UserName": "",
       "Birthday": "",
       "Gender": "",
@@ -2046,7 +2149,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "piDeviceType": 13
     };
     $scope.HomeAddress={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_2",
         "ItemSeq":1,
@@ -2059,7 +2162,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.PhoneNumber={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_1",
         "ItemSeq":1,
@@ -2072,7 +2175,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.Nationality={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact001_3",
         "ItemSeq":1,
@@ -2085,7 +2188,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.Occupation={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact001_2",
         "ItemSeq":1,
@@ -2098,7 +2201,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.EmergencyContact={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_3",
         "ItemSeq":1,
@@ -2111,7 +2214,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.EmergencyContactPhoneNumber={
-        "Patient":Storage.get('UID'),
+        "Patient":Storage.get('PatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_4",
         "ItemSeq":1,
