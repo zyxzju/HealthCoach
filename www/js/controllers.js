@@ -1381,9 +1381,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $scope.logStatus='正在注册';
             Dict.GetNo('17','{TargetDate}').then(
               function(data){
-                var UID=(data.result);
-                console.log(UID);
-                Storage.set('UID',UID);
+                var PatientID=(data.result);
+                console.log(PatientID);
+                Storage.set('PatientID',PatientID);
                 hide();
                 $state.go('addpatient.basicinfo')
               },function(e){
@@ -1391,7 +1391,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               });     
           }
           else{
-            Storage.set('UID',id);
+            Storage.set('PatientID',id);
             hide();
             $state.go('addpatient.basicinfo') 
           }
