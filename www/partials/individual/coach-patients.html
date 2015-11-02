@@ -34,19 +34,19 @@
         筛选
       </div>
       <select>
-        <option>Blue</option>
-        <option selected="">Green</option>
-        <option>Red</option>
+        <option selected="selected">全部患者</option>
+        <option>高血压</option>
+        <option>糖尿病</option>
       </select>
     </div>
     <div style="width:51%" class="item item-input item-select">
       <div class="input-label">
         排序
       </div>
-      <select>
-        <option>Blue</option>
-        <option selected="">Green</option>
-        <option>Red</option>
+      <select ng-model="rankBy" ng-change="rankPatients()" >
+        <option selected="selected">默认排序</option>
+        <option>计划进度</option>
+        <option>依从率</option>
       </select>
     </div>
   </div>

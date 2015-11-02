@@ -85,7 +85,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsList',DoctorId:'@DoctorId',ModuleType:'@ModuleType',Plan:'@Plan',Compliance:'@Compliance',Goal:'@Goal'},timeout:20000},
+      Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:20000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
@@ -277,7 +278,16 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){	 //XJZ
 	var serve = {};
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-
+    serve.Roles = function (_UserId){
+      var deferred = $q.defer();
+      Data.Users.Roles({UserId:_UserId},
+        function(data){
+          deferred.resolve(data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    }
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
         	return 7; 
@@ -359,40 +369,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     		})
     	return deferred.promise;
     }
-
-
-    //var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
-    //var passReg2=/^.[A-Za-z0-9]+$/;
-	// var isPassValid = function(pass){
-		// if(pass.length >18  ||  pass.length<6){
-			// return 4;
-		// }else if(!passReg1.test(pass)){
-			// return 5;
-		// }else if(!passReg2.test(pass)){
-            // return 6;
-		// }else{
-			// return 0;
-		// }
-	// }
-	// serve.isTokenValid = function(){
-		// var isToken=Storage.get('token');
-		// if(isToken==null){
-			// return 0;
-		// }else{
-			// $http({
-				// method:'GET',
-				// url:'',
-				// headers:{token:isToken},
-			// })
-			// .success(function(data,status,headers,config){
-
-			// })
-			// .error(function(data,status,headers,config){
-
-			// });
-		// }
-	// }
-
 	return serve;
 }])
 .factory('userINFO',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){
@@ -409,10 +385,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
-    serve.GetPatientsList = function(_DoctorId,_ModuleType,_Plan,_Compliance,_Goal){
+    serve.GetPatientsList = function(_DoctorId,_Module,_VitalType,_VitalCode){
         var deferred = $q.defer();   
-        Data.Users.GetPatientsList({DoctorId:_DoctorId,ModuleType:_ModuleType,Plan:_Plan,Compliance:_Compliance,Goal:_Goal},
-        function(data,hearders,status){ 
+        Data.Users.GetPatientsList({DoctorId:_DoctorId,Module:_Module,VitalType:_VitalType,VitalCode:_VitalCode},
+        function(data){ 
             deferred.resolve(data);
         },
         function(err){

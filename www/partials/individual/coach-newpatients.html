@@ -10,9 +10,9 @@
         筛选
       </div>
       <select>
-        <option>Blue</option>
-        <option selected="">Green</option>
-        <option>Red</option>
+        <option>全部申请</option>
+        <option selected="">高血压</option>
+        <option>糖尿病</option>
       </select>
     </div>
     <div style="width:51%" class="item item-input item-select">
@@ -20,9 +20,8 @@
         排序
       </div>
       <select>
-        <option>Blue</option>
-        <option selected="">Red</option>
-        <option>Red</option>
+        <option>申请时间</option>
+        <option selected="">预约时间</option>
       </select>
     </div>
   </div>
@@ -50,6 +49,5 @@
       </ion-item>
     </ion-list>
     <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
-    <!-- <a class="button button-block button-stable" ng-click="showdata()">patients</a> -->
   </ion-content>
 </ion-view>
