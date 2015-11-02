@@ -2633,12 +2633,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 }])
 
-//GL 20151101
-.controller('CreateCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', 'Dict', '$ionicPopup', function($scope, $http, $state, $stateParams, PlanInfo, Dict, $ionicPopup){ 
+//GL 20151101 创建计划
+.controller('CreateCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', 'Dict', '$ionicPopup', 'Storage', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, Dict, $ionicPopup, Storage, $ionicHistory){ 
     $scope.create = {};
     $scope.create.EndDate;
     $scope.create.PlanList = new Array();
-    $scope.create.AddFlag = "false"; //只允许当前有一个正在执行的计划
+    $scope.create.AddFlag = true; //只允许当前有一个正在执行的计划
 
     $scope.$watch('$viewContentLoaded', function() { 
         GetPlanList();
@@ -2648,7 +2648,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //获取计划列表
     function GetPlanList()
     {
-        var PatientId = "U201510260001";
+        var PatientId = "P003";
         var promise = PlanInfo.GetPlanList(PatientId, "NULL", "", 0);  //PatientId, PlanNo, Module, Status
         promise.then(function(data) {
             for (var i=0; i< data.length; i++)
@@ -2659,7 +2659,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
                 if(($scope.create.AddFlag) && (data[i].Status =="3"))
                 {
-                    $scope.create.AddFlag = "disabled";
+                    $scope.create.AddFlag = false;
                 }
             } 
             //console.log($scope.create.PlanList);                      
@@ -2685,17 +2685,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     function SetPlan(PlanNo)
     {       
-        var PatientId = "U201510260001";
+        var PatientId = "P003";
         var StartDate = TimeFormat(new Date()); 
         var EndDate = new Array("9999/12/31", "99991231");
         var Module = "M1";
         var Status = "3";
-        var DoctorId = "DOC201506180002";
+        var DoctorId = Storage.get('UID');
         var promise = PlanInfo.SetPlan(PlanNo, PatientId, StartDate[1], EndDate[1], Module, Status, DoctorId, "1", "1", "1", 1);  
         promise.then(function(data) {  
             if(data.result == "数据插入成功")
             {
                 $scope.create.PlanList.push({PlanName:"当前计划", PlanNo:PlanNo, StartDate:StartDate[1], EndDate: EndDate[1]});
+                $scope.create.AddFlag = false;
             }                         
         }, function(data) {  
         });      
@@ -2733,10 +2734,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         arry[1] = date2;
         return arry;
     }
+
+    $scope.onClickBackward = function(){
+      $ionicHistory.goBack();
+  };
 }])
 
-//GL 20151101
-.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup){
+//GL 20151101 一级任务列表
+.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
     //console.log($stateParams.tt);
     //alert(1);
     $scope.TaskList = {};
@@ -2954,10 +2959,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         return arry;
     }
 
+    //按下确定后返回   
+    $scope.onClickBackward = function(){
+        $ionicHistory.goBack();
+    }
+    
 }])
 
 //GL 20151101
-.controller('MainPlanCtrl',['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup){
+.controller('MainPlanCtrl',['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
     var Type = $stateParams.tt;
     console.log(Type);
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
@@ -2980,15 +2990,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.task.Time;
     $scope.task.Freq;
 
-    //药物治疗
-    $scope.task.DrugName;
-    $scope.task.DrugDose;
-    $scope.task.DrugFreq;
-    $scope.task.DrugWay;
-    $scope.task.DrugTime;
-    $scope.task.Module
+    // //药物治疗
+    // $scope.task.DrugName;
+    // $scope.task.DrugDose;
+    // $scope.task.DrugFreq;
+    // $scope.task.DrugWay;
+    // $scope.task.DrugTime;
+    // $scope.task.Module
 
-    //特征测量
+    //体征测量
     $scope.task.MeasureTime = [{"Name":"早餐前", "Checked":false}, {"Name":"早餐后", "Checked":false}, {"Name":"午餐前", "Checked":false}, {"Name":"午餐后", "Checked":false}, {"Name":"晚餐前", "Checked":false}, {"Name":"晚餐后", "Checked":false}];
 
     $scope.$on('$ionicView.enter', function() {
@@ -3314,10 +3324,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }
         });                
     } 
+
+    //返回   
+    $scope.onClickBackward = function(){
+        $ionicHistory.goBack();
+    }
 }])
 
-//GL 20151101
-.controller('healthEducationCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', function($scope, $http, $state, $stateParams, PlanInfo){ 
+//GL 20151101 健康教育
+.controller('healthEducationCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicHistory){ 
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
     $scope.task = {};
     $scope.task.list;
@@ -3342,10 +3357,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     $scope.task.list[i].ControlType = false;
                 } 
-                arry[i] = $scope.task.list[i].ControlType;       
+                arry[i] = $scope.task.list[i].ControlType;                    
             }
-
-            //console.log($scope.task.list);
         }, function(data) {  
         });   
     }
@@ -3398,22 +3411,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                          "Code":"TD0000", 
                          "SortNo":'1'}];
             var promise1 = PlanInfo.DeleteTask(DeleteList);
-                promise1.then(function(data) 
+            promise1.then(function(data) 
+            {
+                if ((data.result == "数据删除成功") || (data.result == "数据未找到"))
                 {
-                    if ((data.result == "数据删除成功") || (data.result == "数据未找到"))
-                    {
-                        window.location.href = "#/addpatient/taskList";
-                    }
-                },function(data){
-                });  
-
+                    window.location.href = "#/addpatient/taskList";
+                }
+            },function(data){
+            });  
         }        
     }
 
+    //返回   
+    $scope.onClickBackward = function(){
+        $ionicHistory.goBack();
+    }
 }])
 
 //GL 20151101
-.controller('healthEducationDetailCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', function($scope, $http, $state, $stateParams, PlanInfo){
+.controller('healthEducationDetailCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo','$ionicHistory',  function($scope, $http, $state, $stateParams, PlanInfo, $ionicHistory){
     var Code = localStorage.getItem("healthEducationCode");
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
     $scope.task = {};
@@ -3560,13 +3576,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }     
         }
     }
+ 
+    //返回   
+    $scope.onClickBackward = function(){
+        $ionicHistory.goBack();
+    }
 }])
 
-//GL 20151101
-.controller('DrugCtrl',['$scope', '$http', '$state', '$stateParams', '$ionicPopup', 'Dict', 'PlanInfo',function($scope, $http, $state, $stateParams, $ionicPopup, Dict, PlanInfo){
-    var PlanNo = localStorage.getItem("CurrentPlanNo");  
+//GL 20151101 药物治疗
+.controller('DrugCtrl',['$scope', '$http', '$state', '$stateParams', '$ionicPopup', 'Users', 'PlanInfo', '$ionicHistory', function($scope, $http, $state, $stateParams, $ionicPopup, Users, PlanInfo, $ionicHistory){
+    var PlanNo = localStorage.getItem("CurrentPlanNo");
+    var Type = $stateParams.tt;
     $scope.task = {};
-    $scope.task.list;
+    $scope.task.list = new Array();
     $scope.task.Module;
     $scope.task.DrugList;
     $scope.DrugName;
@@ -3574,19 +3596,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.task.Freq;
     $scope.task.Way;
     $scope.task.Time;
+    $scope.task.DeleteList = new Array();
+
+    $scope.$on('$ionicView.enter', function() {
+        GettaskList(); 
+    });
 
     $scope.$watch('$viewContentLoaded', function() { 
-        $scope.GetDrugList(); 
-        //GettaskList();    
+        $scope.GetDrugList();           
     });
 
     //获取任务列表
     function GettaskList()
     {
-        var promise = PlanInfo.GetTasks(PlanNo, "TE0001");  
-        promise.then(function(data) {            
-            $scope.task.list = data; 
-            console.log($scope.task.list);
+        var promise = PlanInfo.GetTasks(PlanNo, Type + "0000");  
+        promise.then(function(data) { 
+            for (var i=0; i<data.length; i++)
+            {
+                data[i].Description = data[i].Instruction.split(':')[0];
+                $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0001", "SortNo":(i+1).toString()});
+            }                      
+            $scope.task.list = data;
+            //console.log($scope.task.list);
+            //console.log($scope.task.DeleteList);
         }, function(data) {  
         });   
     }
@@ -3597,15 +3629,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         var promise;
         if ($scope.task.Module == "M2")
         {
-            promise = Dict.GetDiabetesDrug();
+            promise = Users.getDiabetesDrugName();
         }
         else
         {            
-            promise = Dict.GetHypertensionDrug();  
+            promise = Users.getHyperTensionDrugName();  
         }
         promise.then(function(data) {            
             $scope.task.DrugList = data;
-            console.log($scope.task.DrugList);
+            //console.log($scope.task.DrugList);
         }, function(data) {  
         }); 
     }
@@ -3614,7 +3646,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.addItem = function ()
     {
         var myPopup = $ionicPopup.show({
-        templateUrl: 'templates/plan/drugAdd.html',
+        templateUrl: 'partials/addpatient/plan/drugAdd.html',
         title: '添加药物',
         scope: $scope,
         buttons: [
@@ -3626,7 +3658,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                   $scope.task.Dose = "";
                   $scope.task.Freq = "";
                   $scope.task.Way = "";
-                  $scope.task.Time = "";      
+                  $scope.task.Time = ""; 
+                  return [""];   
               }
             },
             {
@@ -3650,16 +3683,34 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           ]
         });
         myPopup.then(function(res) {
-            if (res[0] != "")
+            if ((res[0] != "")&&(res[0]))
             {
-                for (var i=1; i<5; i++)
+                var Flag = false;
+                for(var i=0; i<$scope.task.list.length;i++)
                 {
-                    if (!res[i])
+                    if($scope.task.list[i].Description == res[0])
                     {
-                        res[i] = "";
+                        Flag = true;
                     }
                 }
-                $scope.task.list.push({"Name":res[0], "Instruction":res[1]+ "|" + res[2] + "|" + res[3] + "|" + res[4]});
+                if (Flag)
+                {
+                    RepeatAlert(); //弹出警告框
+                }
+                else
+                {
+                    for (var i=1; i<5; i++)
+                    {
+                        if (!res[i])
+                        {
+                            res[i] = "";
+                        }
+                    }
+                    $scope.task.list.push({"Description":res[0], "Instruction":res[0] + ":" + res[1]+ "|" + res[2] + "|" + res[3] + "|" + res[4]});
+                    //console.log($scope.task.list.length);
+                    //SetTask({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1', "Instruction":"", "piUserId":"1",  "piTerminalName":"1",  "piTerminalIP":"1",  "piDeviceType":0});
+
+                }
             }
         });
     }
@@ -3667,8 +3718,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //编辑药物
     $scope.EditTask = function (obj)
     { 
-        $scope.task.DrugName = obj.Name;
-        var temparry = obj.Instruction.split('|');
+        $scope.task.DrugName = obj.Description;
+        var temparry = obj.Instruction.split(':')[1].split('|');
         $scope.task.Dose = temparry[0];
         $scope.task.Freq = temparry[1];
         $scope.task.Way = temparry[2];
@@ -3676,7 +3727,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
         var myPopup = $ionicPopup.show({
-        templateUrl: 'templates/plan/drugEdit.html',
+        templateUrl: 'partials/addpatient/plan/drugEdit.html',
         title: '编辑药物',
         scope: $scope,
         buttons: [
@@ -3688,18 +3739,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                   $scope.task.Dose = "";
                   $scope.task.Freq = "";
                   $scope.task.Way = "";
-                  $scope.task.Time = "";      
+                  $scope.task.Time = "";
+                  return [""]; 
               }
             },
             {
               text: '确定',
               type: 'button-small button-positive',
               onTap: function(e) {
-                  var editArry = new Array();                
-                  editArry[0] = $scope.task.Dose;
-                  editArry[1] = $scope.task.Freq;
-                  editArry[2] = $scope.task.Way;
-                  editArry[3] = $scope.task.Time;  
+                  var editArry = new Array();
+                  editArry[0] = $scope.task.DrugName;                
+                  editArry[1] = $scope.task.Dose;
+                  editArry[2] = $scope.task.Freq;
+                  editArry[3] = $scope.task.Way;
+                  editArry[4] = $scope.task.Time;  
                   $scope.task.DrugName = "";
                   $scope.task.Dose = "";
                   $scope.task.Freq = "";
@@ -3711,21 +3764,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           ]
         });
         myPopup.then(function(res) {
-            for (var i=1; i<5; i++)
+            if(res[0] != "")
             {
-                if (!res[i])
+                for (var i=1; i<5; i++)
                 {
-                    res[i] = "";
+                    if (!res[i])
+                    {
+                        res[i] = "";
+                    }
                 }
+                for (var i=0; i<$scope.task.list.length; i++)
+                {
+                    if($scope.task.list[i].Description === obj.Description)
+                    {
+                        $scope.task.list[i].Instruction = res[0] + ":" + res[1]+ "|" + res[2]+ "|" + res[3]+ "|" + res[4];
+                        break;
+                    }
+                }           
+
             }
-            for (var i=0; i<$scope.task.list.length; i++)
-            {
-                if($scope.task.list[i].Name === obj.Name)
-                {
-                    $scope.task.list[i].Instruction = res[0]+ "|" + res[1]+ "|" + res[2]+ "|" + res[3];
-                    break;
-                }
-            }           
         });
     }
 
@@ -3734,12 +3791,90 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         for (var i=0; i<$scope.task.list.length; i++)
         {
-            if($scope.task.list[i].Name === obj.Name)
+            if($scope.task.list[i].Description === obj.Description)
             {
                 $scope.task.list.splice(i, 1);
                 break;
             }
         }    
+    }
+
+    $scope.Confirm = function ()
+    {
+        var AddList = new Array();
+        if ($scope.task.list.length > 0)
+        {
+            AddList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1', "Instruction":"", "piUserId":"1",  "piTerminalName":"1",  "piTerminalIP":"1",  "piDeviceType":0}); //父级条目
+        }
+        for(var i=0; i< $scope.task.list.length; i++)
+        {
+            AddList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0001", "SortNo":(i+1).toString(), "Instruction":$scope.task.list[i].Instruction, "piUserId":"1",  "piTerminalName":"1",  "piTerminalIP":"1",  "piDeviceType":0});
+        }
+        // if ($scope.task.DeleteList.length > 0)
+        // {
+        //     if($scope.task.list.length = 0)
+        //     {
+        //         $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1'}); //删除父级条目
+        //         DeleteTask($scope.task.DeleteList);
+        //     }
+        //     else
+        //     {
+        //          var promise = PlanInfo.DeleteTask($scope.task.DeleteList);
+        //           promise.then(function(data) 
+        //           {
+        //               if (data.result == "数据删除成功")
+        //               {
+        //                   SetTask(AddList);
+        //               }
+        //           },function(data){
+        //           });  
+        //     }
+        // }
+        SetTask(AddList);
+    }
+
+    function SetTask(obj)
+    {
+        var promise = PlanInfo.SetTask(obj);
+        promise.then(function(data)
+        {
+            if (data.result == "数据插入成功")
+            {
+                //console.log("数据插入成功");
+                window.location.href = "#/addpatient/taskList";
+            }
+        },function(data){              
+        });   
+    }
+
+    function DeleteTask(obj)
+    {
+        var promise = PlanInfo.DeleteTask(obj);
+        promise.then(function(data) 
+        {
+            if (data.result == "数据删除成功")
+            {
+                console.log("数据删除成功");
+            }
+        },function(data){
+        });   
+    }
+
+    function RepeatAlert()
+    {
+        var alertPopup = $ionicPopup.alert({
+            title: '提示',
+            template: '这种药物在列表中已存在！'
+        });
+        alertPopup.then(function(res) {
+            //console.log($scope.TaskList.StartDate);
+            $scope.task.list.Name = null;
+        });
+    }
+
+    //返回   
+    $scope.onClickBackward = function(){
+        $ionicHistory.goBack();
     }
 }])
 
