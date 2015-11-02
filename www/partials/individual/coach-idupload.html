@@ -9,44 +9,105 @@
 <ion-list class="list-inset">
 
   <label class="item item-input">
-    <input type="text" placeholder="姓名" ng-model="Info.name">    
+
+    <span class="input-label" >姓名</span>
+    
+    <input type="text" style = "text-align:right" ng-model="userInfo.BasicInfo.name">    
   </label>
 
 
   <label class="item item-input item-select">
-    <div class="input-label"  >
+    <div class="input-label">
       性别
     </div>
-    <select ng-model="Info.gender">
-      <option>男</option>
-      <option>女</option>
+    <select ng-model="userInfo.BasicInfo.gender">
+      <option>男 </option>
+      <option>女 </option>
     </select>
   </label>
 
 
-  <label class="item item-input">
-    <input type="text" placeholder="生日" ng-model="Info.birthday">    
-  </label>
+  <a class="item">
+        <ionic-datepicker input-obj="datepickerObject">
+        <div>
+        <span>生日</span>
+        <span class="item-note ">
+          {{userInfo.BasicInfo.birthdayforshow}}
+        </span>
+      </div>
+        </ionic-datepicker>
+       
+  </a>
 
     <div class="item item-divider">详细信息</div>
 
-    <label class="item item-input item-select" ng-repeat="item in DtInfo">
+    <label class="item item-input item-select" >
 
       <div class="input-label">
-        {{item.t}} 
+      工作单位
       </div>
-      <select ng-model="item.v" >
-        <option ng-repeat = "choice in item.c"> {{choice}} </option>
+      <select ng-model="userInfo.DtInfo.unitname">
+        <option> 海军总医院 </option>
+        <option> 浙医二院   </option>
+        <option> 浙医一院   </option>
       </select>
 
     </label>
 
+
+
+    <label class="item item-input item-select" >
+
+      <div class="input-label">
+      科室
+      </div>
+      <select ng-model="userInfo.DtInfo.dept">
+        <option> 肛肠科 </option>
+        <option> 精神课 </option>
+        <option> 泌尿科 </option>
+      </select>
+
+    </label>
+
+    <label class="item item-input item-select" >
+
+      <div class="input-label">
+      职务
+      </div>
+      <select ng-model="userInfo.DtInfo.jobTitle">
+        <option> 医士         </option>
+        <option> 住院医师     </option>
+        <option> 主治医师     </option>
+        <option> 副主任医师    </option>
+        <option> 主任医师     </option>
+      </select>
+
+    </label>
+
+    <label class="item item-input item-select" >
+
+      <div class="input-label">
+      等级
+      </div>
+      <select ng-model="userInfo.DtInfo.level">
+        
+        <option> 副高 </option>
+        <option> 正高 </option>
+        <option> 中级 </option>
+        <option> 初级 </option>
+      </select>
+
+    </label>
 </ion-list>
 
 <!-- <img ng-src="{{lastPhoto}}" style="max-width: 100%"> -->
-<img ng-show="imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}"  style ="height=100 width =100 middle ">
-<img ng-show="imgURI == undefined" ng-click="onClickCamera($event)" ng-src="img/plus.png" height=100 width=100>
+<div class="card" height=100; width =100>
 
+  <div style ="height=100; width =100; display:block; text-align:center;">
+    <img ng-show = "imgURI != undefined"  ng-click="onClickCamera($event)" ng-src="{{imgURI}}"  >
+    <img ng-show = "imgURI == undefined" ng-click="onClickCamera($event)" ng-src='http://placehold.it/300/CCE8D6?text="点击此处拍照"' width = 100 height =100>
+  </div>
+</div>
 <!--  {{"http://placehold.it/300?text=placehold.it+fuck!"}}
  --><!--   <ion-list>
     <div class="list list-inset">
