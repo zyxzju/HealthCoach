@@ -80,7 +80,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			Register:{method:'POST', params:{route: 'Register'}, timeout: 10000},
 			ChangePassword:{method:'POST',params:{route:'ChangePassword'},timeout: 10000},
 			Verification:{method:'POST',params:{route:'Verification'},timeout:10000},
-      myTrialPost:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},
+      postDoctorInfo:{method:'POST',params:{route:'DoctorInfo'}, timeout:10000},//lrz20151102
+      postDoctorDtlInfo:{method:'POST',params:{route:'DoctorDtlInfo'}, timeout:10000},//lrz20151102
       getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
@@ -437,7 +438,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return jpushServiceFactory;
 }])
-//照相机服务 LRZ
+//照相机服务 LRZ 20151102
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
@@ -493,18 +494,18 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI){
+    uploadPicture : function(imgURI,userid){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var options = {
             fileKey : "file",
-            fileName : "ZXF" + ".jpg",
+            fileName : userid + ".jpg",
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
           var q = $q.defer();
-          console.log("jinlaile");
+          // console.log("jinlaile");
           $cordovaFileTransfer.upload(uri,imgURI,options)
             .then( function(r){
               console.log("Code = " + r.responseCode);
@@ -530,20 +531,29 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       
     },
 
-  uploadPicture2: function(imgURI){
-    document.addEventListener("deviceready", onDeviceReady, false);
+  downloadPicture: function(url,userid){ 
 
-    function onDeviceReady() {
-   // as soon as this function is called FileTransfer "should" be defined
-      console.log(FileTransfer);
-      console.log(File);
-    }
+    var q = $q.defer();
+    var targetPath = cordova.file.documentsDirectory + userid+".jpg";
+    var trustHosts = true;
+    var options = {};
+
+    $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+      .then(function(r) {
+        q.resolve(r);  
+      }, function(err) {
+        q.resolve(err); 
+      }, function (progress) {
+      });
+
+    return q.promise;  
   }
 
 
 }
   
 }])
+
 
 
 
@@ -652,17 +662,120 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
   var self = this;
 
-  self.myTrial = function (DoctorInfo) {
+//LRZ 20151102
+  self.postDoctorInfo = function (data) {
+    // console.log(data);
+
+    
+    var DoctorInfo = {
+      "UserId": String(data.id),
+      "UserName": String(data.name),
+      "Birthday": String(data.birthday),
+      "Gender": (data.gender == '男' ? 1:2),
+      "IDNo": String(data.idno),
+      "InvalidFlag": 0,
+      "piUserId": "蛤蛤蛤",
+      "piTerminalName": "蛤蛤蛤",
+      "piTerminalIP": "蛤蛤蛤",
+      "piDeviceType": 2
+    };
     var deferred = $q.defer();
-    Data.Users.myTrialPost(DoctorInfo, function (data, headers) {
+    Data.Users.postDoctorInfo(DoctorInfo, function (data, headers) {
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
     });
     return deferred.promise;
   };
+//LRZ 20151102
+  self.postDoctorDtlInfo = function (data) {
+    var DoctorInfo = {
+      UserId: Storage.get('UID'),
+      unitname:data.unitname,
+      jobTitle: data.jobTitle,
+      level: data.level,
+      dept: data.dept,
+      photoAddress: data.photoAddress
+    };
 
-  self.myTrial2 = function (userid) {
+  var temp = [{
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_4",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.photoAddress,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_5",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.unitname,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"    
+                },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_6",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.jobTitle,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"   
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_7",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.level,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_8",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.dept,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              }
+    ];
+
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+//LRZ 20151102
+  self.getDocInfo = function (userid) {
     
     // Storage.set(13131313,userid);
     //由于API中要求有userID变量 DATA 中只能写死 所以动态生成一个方法
@@ -675,7 +788,28 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
     var deferred = $q.defer();
     temp.myTrialGET({}, function (data, headers) {
-      console.log("获得了数据"+data)
+      // console.log("获得了数据"+data)
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  //LRZ 20151102
+  self.getDocDtlInfo = function (userid) {
+    
+    // Storage.set(13131313,userid);
+    //由于API中要求有userID变量 DATA 中只能写死 所以动态生成一个方法
+    var temp = $resource(CONFIG.baseUrl + ':path/:uid/:route', {
+      path:'Users',  
+    }, {
+      myTrialGET: {method:'GET', params:{uid: userid,route:'DoctorDtlInfo'}, timeout: 10000}
+    });
+
+
+    var deferred = $q.defer();
+    temp.myTrialGET({}, function (data, headers) {
+      // console.log("获得了数据"+data)
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
@@ -1240,6 +1374,28 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
       return promptPopup;  
     },
+    edit: function (_msg, _title) {
+      var promptPopup = $ionicPopup.prompt({
+        title: _title,
+        // cssClass: '',
+        // subTitle: '',
+        template: _msg,
+        // templateUrl: '',
+        inputType: 'text',  // String (default: 'text'). The type of input to use
+        inputPlaceholder: _msg,  // String (default: ''). A placeholder to use for the input.
+        cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
+        cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
+        okText: '确定',
+        okType: 'button-energized'
+      });
+
+      // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
+      //   console.log(res);
+      // });
+      
+      // 这里返回Popup实例, 便于在调用的地方执行promptPopup.then(callback).
+      return promptPopup;  
+    },     
     selection: function (_msg, _title, _res, $scope) {
       var selectionPopup = $ionicPopup.show({
         title: _title,
