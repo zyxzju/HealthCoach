@@ -518,10 +518,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress : CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+Storage.get('UID')+'.jpg'
+          photoAddress :temp.PhotoAddress
         }
           console.log( $scope.userInfo.DtInfo);
-          $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
+          if($scope.userInfo.DtInfo.photoAddress != null)
+            $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+$scope.userInfo.DtInfo.photoAddress;
+          else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
            // var objStr=JSON.stringify($scope.userInfo);
            // Storage.set("userInfo",objStr);   
      });
@@ -738,10 +740,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         jobTitle: temp.JobTitle,
         level: temp.Level,
         dept: temp.Dept,
-       photoAddress : CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+Storage.get('UID')+'.jpg'
+       photoAddress :  temp.PhotoAddress
      }
      // console.log( $scope.userInfo.DtInfo.photoAddress);
-     $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
+      if($scope.userInfo.DtInfo.photoAddress != null)
+        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
    });
    // var doRefresh = function(){};
    // $timeout(doRefresh(),500);
@@ -768,10 +772,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress : CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+Storage.get('UID')+'.jpg'
+          photoAddress : temp.PhotoAddress
        }
        // console.log( $scope.userInfo.DtInfo.photoAddress);
-       $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
+      if($scope.userInfo.DtInfo.photoAddress != null)
+        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
      });
 
   }
@@ -872,10 +878,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress : CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+Storage.get('UID')+'.jpg'
+          photoAddress : temp.PhotoAddress
        }
         // console.log( $scope.userInfo.DtInfo.photoAddress);
-       $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
+      if($scope.userInfo.DtInfo.photoAddress != null)
+        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
            var objStr=JSON.stringify($scope.userInfo);
            Storage.set("userInfo",objStr);
      });
