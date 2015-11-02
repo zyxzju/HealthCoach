@@ -20,7 +20,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 .constant('CONFIG', {
 
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
   // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
@@ -208,6 +208,33 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
       };
 
+    //ZXF的
+  var PlanInfo1 = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'Plan',PatientId:'@PatientId',PlanNo:'@PlanNo',Module:'@Module',Status:'@Status'},
+        {
+              
+              GetplaninfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+
+  var PlanchartInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'PlanInfoChart'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              
+              GetchartInfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+  var VitalSigns=function(){
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'VitalInfo',route:'VitalSigns'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              // GET Api/v1/VitalInfo/VitalSigns?UserId={UserId}&StartDate={StartDate}&EndDate={EndDate}
+              GetVitalSignsbydate:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+
+      }
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -224,6 +251,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.druginfo = druginfo();
         serve.RiskInfo = RiskInfo();
         serve.PlanInfo = PlanInfo(); 
+        serve.PlanInfo1 = PlanInfo1();
+        serve.PlanchartInfo = PlanchartInfo();
+        serve.VitalSigns = VitalSigns();
         }, 0, 1);  
 	}
     serve.Users = Users();
@@ -237,7 +267,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.diaginfo = diaginfo();
     serve.druginfo = druginfo();
     serve.RiskInfo = RiskInfo();
-    serve.PlanInfo = PlanInfo(); 
+    serve.PlanInfo = PlanInfo();
+    serve.PlanInfo1 = PlanInfo1();
+    serve.PlanchartInfo = PlanchartInfo();
+    serve.VitalSigns = VitalSigns(); 
     return serve;
 }])
 
@@ -692,7 +725,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改
-.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
+.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;
 
 //LRZ 20151102
@@ -918,9 +951,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   //TDY 20151030
   self.getYesNoType = function(){
      var deferred = $q.defer();
-/*     do
-     {
-*/ 
       Data.Dict.getYesNoType({},
           function(data,status){
             var check = {results: data};
@@ -1338,6 +1368,50 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return self;
 }])
 
+//ZXF 20151102
+.factory('GetVitalSigns', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetVitalSignsbydate = function (arr) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.VitalSigns.GetVitalSignsbydate(arr, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanchartInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetchartInfobyPlanNo = function (arr) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.PlanchartInfo.GetchartInfobyPlanNo(arr, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetplaninfobyPlanNo = function (arr) {
+    var deferred = $q.defer();
+    Data.PlanInfo1.GetplaninfobyPlanNo(arr, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
 //大师兄的弹窗业务service 可以随便调用
 .factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
   return {

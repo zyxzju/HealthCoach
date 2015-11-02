@@ -1,0 +1,47 @@
+<ion-header-bar class="bar-dark">
+<div class="buttons">
+  <button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
+</div>
+<h1 class="title">患者管理</h1>
+<div class="buttons">
+  <button class="button">Right Button</button>
+</div>
+</ion-header-bar>
+<ion-header-bar class="bar-subheader bar-stable">
+<label class="item item-input item-select">
+  <div >
+    <h2>患者姓名：{{Name}}      性别：{{gender}}        年龄：{{age}}</h2>
+  </div>
+  <select>
+    <option selected>高血压模块</option>
+    <option>糖尿病模块</option>
+  </select>
+</label>
+</ion-header-bar>
+
+<ion-nav-view name="tablelist" >
+
+</ion-nav-view >
+
+
+<ion-tabs class="tabs-dark tabs-icon-top">
+<ion-tab title="计划情况"  icon="ion-stats-bars " href="#/tab/plan">
+
+</ion-tab>
+
+<ion-tab title="临床信息" icon="ion-document-text "  href="#/tab/clinic" >
+
+</ion-tab>
+
+<ion-tab title="慢病信息" icon="ion-ios-barcode"  href="#/tab/vital">
+
+</ion-tab>
+
+<ion-tab title="计划调整" icon="ion-ios-loop-strong "  href="#/tab/change">
+
+</ion-tab>
+
+<ion-tab title="消息发送" icon="ion-ios-chatbubble"  href="#/tab/message">
+
+</ion-tab>
+</ion-tabs>

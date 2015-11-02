@@ -1393,16 +1393,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstHypertensionDrug")
         {
           if (a==0) {
-            $scope.HypertensionDrugArray[a].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[0];
-            $scope.HypertensionDrugArray[a].Name = getHTypeName($scope.HypertensionDrugArray[a].Type);
-            $scope.HypertensionDrugData[a].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[1];
-            $scope.HypertensionDrugData[a].Name = $scope.ModuleInfoListDetail[i].Content;
+            $scope.HypertensionDrugData[a].Type = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])};
+            $scope.HypertensionDrugData[a].Name = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content};
             a++;
           }
           else
           {
-            $scope.HypertensionDrugArray.push({"ID":a+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])});
-            $scope.HypertensionDrugData.push({"ID":a+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content});
+            $scope.HypertensionDrugArray.push({"ID":a+1,"Type":"","Name":""});
+            $scope.HypertensionDrugData.push({"ID":a+1,"Type":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])},"Name":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content}});
           }
           if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
           {
@@ -1412,16 +1410,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstDiabetesDrug")
         {
           if (b==0) {
-            $scope.DiabetesDrugArray[b].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[0];
-            $scope.DiabetesDrugArray[b].Name = getDTypeName($scope.DiabetesDrugArray[b].Type);
-            $scope.DiabetesDrugData[b].Type = $scope.ModuleInfoListDetail[i].Value.split(',')[1];
-            $scope.DiabetesDrugData[b].Name = $scope.ModuleInfoListDetail[i].Content;
+            $scope.DiabetesDrugData[b].Type = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])};
+            $scope.DiabetesDrugData[b].Name = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content};
             b++;
           }
           else
           {
-            $scope.DiabetesDrugArray.push({"ID":b+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])});
-            $scope.DiabetesDrugData.push({"ID":b+1,"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content});
+            $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
+            $scope.DiabetesDrugData.push({"ID":b+1,"Type":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])},"Name":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content}});
           }
           if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
           {
@@ -4455,4 +4451,541 @@ $scope.synclinicinfo=function(){
   };  
 
 
-});
+})
+
+//抽象页面上用户信息的控制器 ZXF 20151102
+.controller('mainCtrl',function($scope, $state,$http, Storage,GetBasicInfo){
+  var promise=GetBasicInfo.GetBasicInfoByPid('PID201505250003');
+  promise.then(function(data){
+    $scope.clinicinfo=data;
+    console.log($scope.clinicinfo)
+    $scope.Name=data.UserName;
+    $scope.age=data.Age;
+    $scope.gender=data.GenderText;
+  }, function(data) {
+  })
+})
+
+// 依从率图的控制器amcharts部分 ZXF 20151102
+.controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
+
+
+//进入页面，调用函数获取任务列表（当前、往期计划）
+var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:'PID201506180013',PlanNo:'NULL',Module:'M1',Status:'3'});
+promiseS1.then(function(data1){
+  console.log(data1);
+  //在调用同一函数，status=4，调取往期计划planno
+  GetPlanInfo.GetplaninfobyPlanNo({PatientId:'PID201506180013',PlanNo:'NULL',Module:'M1',Status:'4'}).then(
+    function(s){
+      $scope.formerPlanInfo=s;
+      Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
+      console.log($scope.formerPlanInfo);
+    }, function(e) {  
+    });
+//页面载入时显示的当前计划，收缩压的图
+Storage.set("latestplanstartdate",data1[0].StartDate);
+Storage.set("latestplanenddate",data1[0].EndDate);
+Storage.set("latestplanno",data1[0].PlanNo);
+$scope.latestPlanInfo=data1;
+$scope.latestplan=data1[0].PlanNo;
+console.log($scope.latestplan);
+
+var d = {
+  UserId:'PID201506180013',
+  PlanNo:data1[0].PlanNo,
+  StartDate:data1[0].StartDate,
+  EndDate:data1[0].EndDate,
+  ItemType:'Bloodpressure',
+  ItemCode:'Bloodpressure_1'
+};
+GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
+  function(data){
+    $scope.HPchartdate=data;
+    console.log($scope.HPchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.HPchartdate,"收缩压","mmHg");
+      $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  //点击切换各个体征的图
+  $scope.changeVitalInfo = function(option) {
+    Storage.set("selectedvitaltype",option.SignName);
+    console.log(Storage.get("selectedvitaltype"));
+
+ //传参调函画图
+showsomething(option.SignName,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
+
+
+  };
+}, function(e) {
+    ///// 
+  }
+  );
+if ($scope.planList=='PLAN20151029') {
+  console.log(KEYI);
+
+};
+
+// $scope.planList={"pl":""};
+$scope.changeplan= function(something){
+// Storage.set("latestplanno",data1[0].PlanNo);
+// Storage.set("latestplanstartdate",data1[0].StartDate);
+// Storage.set("latestplanenddate",data1[0].EndDate);
+ // console.log(Storage.get("selectedvitaltype"));
+ $scope.planno=something;
+
+ $scope.localselectedname=Storage.get("selectedvitaltype");
+
+$scope.plan=angular.fromJson(Storage.get("formerplan"));
+
+
+if (something==Storage.get("latestplanno")) {
+  $scope.startdate=Storage.get("latestplanstartdate");
+  $scope.enddate=Storage.get("latestplanenddate");
+}else{
+  for (var i = 0; i <= $scope.plan.length-1; i++) {
+    console.log($scope.plan[i].PlanName);
+    if ($scope.plan[i].PlanNo==something) {
+     $scope.startdate= $scope.plan[i].StartDate;
+     $scope.enddate=$scope.plan[i].EndDate;
+   };
+ };
+};
+
+showsomething($scope.localselectedname,$scope.planno,$scope.startdate,$scope.enddate)
+
+
+$scope.changeVitalInfo = function(option) {
+  console.log(option);
+   Storage.set("selectedvitaltype",option.SignName);
+  $scope.selectedname=option.SignName;
+ console.log($scope.selectedname);
+ //传参调函画图
+showsomething($scope.selectedname,$scope.planno,$scope.startdate,$scope.enddate)
+
+};
+};
+
+var showsomething=function(param,something,Sdate,Edate){
+    if (param=="舒张压") {
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
+      function(data){
+        $scope.LPchartdate=data;
+        // Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
+        // $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
+        console.log($scope.LPchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.LPchartdate,"舒张压","mmHg");
+      $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if (param=="收缩压") {
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
+      function(data){
+        $scope.HPchartdate=data;
+        console.log($scope.HPchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.HPchartdate,"收缩压","mmHg");
+            $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if (param=="脉率") {
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
+      function(data){
+        $scope.HBchartdate=data;
+        console.log($scope.HBchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.HBchartdate,"脉率","次/分钟");
+       $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="凌晨血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="睡前血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  }
+  if(param=="早餐前血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="早餐后血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="午餐前血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="午餐后血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="晚餐前血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+  if(param=="晚餐后血糖"){
+
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
+      function(data){
+        $scope.BSchartdate=data;
+        console.log($scope.BSchartdate);
+      //调用绘图的方法 传参
+      createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
+      $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+    }, function(data) {
+      /////
+    });
+  };
+}
+
+
+
+// $scope.showvitalsigns = function(option){
+
+
+// };
+
+//提振参数选择下拉框选项 默认收缩压selected
+$scope.options = [{"SignName":"收缩压"},
+{"SignName":"舒张压"},
+{"SignName":"脉率"},
+{"SignName":"凌晨血糖"},
+{"SignName":"睡前血糖"},
+{"SignName":"早餐前血糖"},
+{"SignName":"早餐后血糖"},
+{"SignName":"午餐前血糖"},
+{"SignName":"午餐后血糖"},
+{"SignName":"晚餐前血糖"},
+{"SignName":"晚餐后血糖"},
+
+
+];  
+$scope.vitalInfo =$scope.options[0];
+//切换体征选项后，重新绘制
+
+
+//传参绘图
+function createStockChart(ChartData,title,unit) {
+
+  chart="";
+  chart = AmCharts.makeChart("chartdiv3", {
+    "type": "serial",
+    "theme": "light",
+    "legend": {
+     "useGraphSettings": true
+   },
+
+   "dataProvider": ChartData,
+   "valueAxes": [{
+    // "integersOnly": true,
+        // "maximum": 160,
+        // "minimum": 60,
+        "reversed": false,
+        "axisAlpha": 0,
+        "dashLength": 5,
+        "gridCount": 10,
+        "position": "left",
+
+        
+      }],
+      "startDuration": 0.5,
+      "graphs": [{
+        "balloonText": "[[category]]: <p>[[title]]：[[value]] [[unit]]</p>",
+        "bullet": "round",
+        "type": "smoothedLine",
+        "valueField": "Value",
+        "title":title,
+        "fillAlphas": 0
+      }],
+      "chartScrollbar": {
+       "gridAlpha":0,
+       // "hideXScrollbar":true,
+       'maximum':0.5,
+       // "scrollDuration":0.5,
+       "color":"#888888",
+       "scrollbarHeight":25,
+       "backgroundAlpha":0,
+        // "selectedBackgroundAlpha":0.1,
+        // "selectedBackgroundColor":"#888888",
+        "graphFillAlpha":0,
+        "autoGridCount":true,
+        // "selectedGraphFillAlpha":1,
+        "graphLineAlpha":0.2,
+        "graphLineColor":"#c2c2c2",
+        // "selectedGraphLineColor":"#888888",
+        // "selectedGraphLineAlpha":1
+
+      },
+
+      "chartCursor": {
+       "pan" :true,
+       "cursorAlpha": 0,
+       "zoomable": false
+     },
+     "categoryField": "Date",
+     "dataDateFormat": "YYYY-MM-DD",
+     "categoryAxis": {
+       "gridPosition": "start",
+      // "parseDates": true,
+      "axisAlpha": 0,
+      "fillAlpha": 0.05,
+      "fillColor": "#000000",
+      "minPeriod": "DD",
+      "gridAlpha": 0
+        // ,
+        // "position": "top"
+      },
+      "export": {
+       "enabled": true,
+       "position": "bottom-right"
+     }
+   })
+}
+// }
+// )
+})
+
+//ZXF 20151102 体征列表
+ .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns) {
+
+     var UserId='PID201506180013';
+     var setstate;
+     $scope.getbackgroundcolor = function(index){
+      // var temp='{background-color:#EEEEEE}'
+      
+      if(index%2){
+        // temp={background-color:#EEEEEE};
+        return {'background-color':'#EEEEEE'};
+      }else{
+        // temp='';
+        return '';
+      }
+      // console.log(index%2);
+      // return temp;
+     }
+     //调函数
+  var showthetable=function(UserId,date1,date2){
+    GetVitalSigns.GetVitalSignsbydate({UserId:UserId,StartDate:date1,EndDate:date2}).then(
+      function(data){
+        $scope.vitalsigns=data;
+        Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
+        console.log($scope.vitalsigns);
+        $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
+        Storage.rm("vitalsigns");
+      }, function(data) {
+          /////
+    });
+      //数据展示
+    
+  };
+     //新建，页面初始时显示的时间，开始时间是昨天，结束时间是当天
+     var d=new Date();
+     var day=d.getDate();
+     var month=d.getMonth()+1;
+     var year=d.getFullYear();
+     var yestoday=d.getDate()-1;
+     var yestodaymonth=d.getMonth()+1;
+     var yestodayyear=d.getFullYear();
+//这里应该会涉及到昨天是哪天的问题
+     if (d.getDate()<=9) {
+      console.log(d.getDate());
+       day='0'+''+d.getDate();
+       yestoday='0'+''+(d.getDate()-1);
+      console.log(day);
+      if ((d.getDate()==1)&&(d.getMonth()>=1)) {
+        yestodaymonth=d.getMonth(); 
+       switch(d.getMonth()){ 
+       case 2 : yestoday =28 ; 
+       break; 
+       case 1,3,5,7,8,10,12 : yestoday = 31; 
+       break; 
+       case 4,6,9,11 : yestoday = 30; 
+       break; 
+       }
+      }else if((d.getDate()==1)&&(d.getMonth()==0)) {
+         yestodayyear=d.getFullYear()-1;
+         yestodaymonth=12,
+         yestoday=31;
+     }; 
+     };
+     if (month<10) {
+      month='0'+month;
+     };
+     if (yestodaymonth<10) {
+      yestodaymonth='0'+yestodaymonth;
+     };
+
+
+
+     $scope.selectedstartdate=yestodayyear+'-'+yestodaymonth+'-'+yestoday;
+      console.log($scope.selectedstartdate);
+     $scope.selecrtedenddate=date=year+'-'+month+'-'+day;
+     console.log($scope.selecrtedenddate);
+     $scope.StartDateforuse =parseInt(yestodayyear+''+yestodaymonth+''+yestoday);
+     console.log($scope.StartDateforuse);
+     $scope.EndDateforuse =parseInt(year+''+month+''+day);
+     console.log($scope.EndDateforuse);
+       //调用函数显示昨天的数据
+       showthetable(UserId,$scope.StartDateforuse,$scope.EndDateforuse);
+
+
+        $scope.setStart = function(){
+          setstate=0;
+        } 
+        $scope.setEnd = function(){
+          setstate=1;
+        } 
+
+
+        var datePickerCallback = function (val) {
+          if (typeof(val) === 'undefined') {
+            console.log('No date selected');
+          } else {
+
+            $scope.inputDate=val;
+            var chooenmonth=(val.getMonth()+1);
+            var chooenday=val.getDate();
+            if ((val.getMonth()+1)<10) {
+              // console.log(val.getMonth());
+              chooenmonth='0'+''+(val.getMonth()+1);
+            };
+            if (val.getDate()<10) {
+               chooenday='0'+''+val.getDate();
+            };
+
+
+
+            var date=val.getFullYear()+'-'+chooenmonth+'-'+chooenday;    
+            // console.log(date);         
+            var dateuser=parseInt(val.getFullYear()+''+chooenmonth+''+chooenday);
+             console.log(dateuser);
+           if(setstate==0){
+            $scope.selectedstartdate=date;
+           console.log($scope.selectedstartdate);
+             Storage.set("StartDateforvitasign",dateuser )
+
+             }else if(setstate==1){
+
+           $scope.selecrtedenddate=date       
+              console.log($scope.selecrtedenddate);
+              Storage.set("EndDateforvitasign",dateuser )
+             }
+          }
+        };
+        var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+        var weekDaysList=["日","一","二","三","四","五","六"];
+        $scope.datepickerObject = {
+          titleLabel: '日期',  //Optional
+          todayLabel: '今天',  //Optional
+          closeLabel: '取消',  //Optional
+          setLabel: '设置',  //Optional
+          setButtonType : 'button-assertive',  //Optional
+          todayButtonType : 'button-assertive',  //Optional
+          closeButtonType : 'button-assertive',  //Optional
+          inputDate: new Date(),    //Optional
+          mondayFirst: false,    //Optional
+          //disabledDates: disabledDates, //Optional
+          weekDaysList: weekDaysList,   //Optional
+          monthList: monthList, //Optional
+          templateType: 'popup', //Optional
+          showTodayButton: 'false', //Optional
+          modalHeaderColor: 'bar-positive', //Optional
+          modalFooterColor: 'bar-positive', //Optional
+          from: new Date(1900, 1, 1),   //Optional
+          to: new Date(),    //Optional
+          callback: function (val) {    //Mandatory
+            datePickerCallback(val);
+          }
+        };  
+        
+
+  //点击搜索，调用函数
+  $scope.bowerdata=function(){
+   var startjikan=Storage.get("StartDateforvitasign");
+    var endjikan=Storage.get("EndDateforvitasign");
+    console.log(startjikan);
+
+    showthetable(UserId,startjikan,endjikan);
+  };
+
+
+
+
+})
