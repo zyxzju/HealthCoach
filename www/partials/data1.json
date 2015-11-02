@@ -1,14 +1,17 @@
 [
 {
 	"ModuleCode":"M1",
-	"ModuleName":"高血压"
+	"ModuleName":"高血压",
+	"Flag":false
 },
 {
 	"ModuleCode":"M2",
-	"ModuleName":"糖尿病"
+	"ModuleName":"糖尿病",
+	"Flag":false
 },
 {
 	"ModuleCode":"M3",
-	"ModuleName":"心衰"
+	"ModuleName":"心衰",
+	"Flag":false
 }
 ]

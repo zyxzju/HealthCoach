@@ -1,9 +1,9 @@
 <ion-view title="慢病信息">
-<ion-header-bar>
+<!-- <ion-header-bar>
     <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward2()"></a>
-    <h2 class="title">慢病信息</h2>
+    <h2 class="title">慢病信息</h2> -->
     <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
-</ion-header-bar>
+<!-- </ion-header-bar> -->
   <ion-content>
     <div>    
       <ion-list>
@@ -71,6 +71,10 @@
         </div>
       </ion-list>
     </div>
-    <button ng-click="Save()" class="button button-block button-positive">保存</button>
+    <div>
+      <button ng-click="Save()" class="button button-block button-positive">保存</button>
+      <button class="button button-block button-positive" ng-click="onClickBackward2()">取消</button>
+    </div>
+    
   </ion-content>
 </ion-view>
