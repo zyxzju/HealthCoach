@@ -1059,6 +1059,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }, 100);
 
   $scope.getHyperTensionDrugNameByType = function(Type, $index){
+    $scope.HypertensionDrugArray[$index].Name = "";
     Users.getHyperTensionDrugNameByType(Type.Type).then(function(data,status){
       $scope.HypertensionDrugArray[$index].Name = data;
     },function(data){
@@ -1074,6 +1075,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }, 100);
 
   $scope.getDiabetesDrugNameByType = function(Type, $index){
+    $scope.DiabetesDrugArray[$index].Name = "";
     Users.getDiabetesDrugNameByType(Type.Type).then(function(data,status){
       $scope.DiabetesDrugArray[$index].Name = data;
     },function(data){
@@ -1100,6 +1102,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   //[{Patient:Patient, CategoryCode:"M", ItemCode:ItemCode, ItemSeq:ItemSeq, Value:Value, Description: "", SortNo:ItemSeq, revUserId: "sample string 4",TerminalName: "sample string 5", TerminalIP: "sample string 6",DeviceType: 1}]
   $scope.Save = function(){
+    $scope.dflag = [];
     for (var k=0; k<$scope.ModuleInfoListDetail.length;k++)
     {
       
@@ -1127,7 +1130,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           {
             if ($scope.HypertensionDrugData[m].Name.Type !="")
             {
-              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m, "Value": $scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m+1, "Value": $scope.HypertensionDrugData[m].Type.Type+","+$scope.HypertensionDrugData[m].Name.Type, "Description":"", "SortNo":m+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
           }
           $scope.dflag.push({"Flag":true});
@@ -1138,7 +1141,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           {
             if ($scope.DiabetesDrugData[m].Name.Type !="")
             {
-              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n, "Value": $scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+              $scope.obj.push({"Patient":"12312", "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": $scope.DiabetesDrugData[m].Type.Type+","+$scope.DiabetesDrugData[m].Name.Type, "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
           }
           $scope.dflag.push({"Flag":true});
@@ -1345,7 +1348,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 console.log(UID);
                 Storage.set('UID',UID);
                 hide();
-                $state.go('new.basicinfo')
+                $state.go('addpatient.basicinfo')
               },function(e){
                 console.log(e);
               });     
@@ -1353,7 +1356,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           else{
             Storage.set('UID',id);
             hide();
-            $state.go('new.basicinfo') 
+            $state.go('addpatient.basicinfo') 
           }
         },function(e){
           console.log(e);
@@ -1363,7 +1366,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 }])
 
-.controller('basicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading){
+.controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading){
   $scope.scrollBottom = function() {
       $ionicScrollDelegate.scrollBottom(true);
     };
@@ -1706,7 +1709,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 
                 hide();
                 a();
-                $state.go('new.clinicinfo');
+                $state.go('addpatient.clinicinfo');
               },function(e){
                 console.log($scope.users.InsuranceType);
                 console.log($scope.users.Gender);
@@ -1715,7 +1718,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 console.log(e);
                 hide();
                 a();
-                $state.go('new.clinicinfo');
+                $state.go('addpatient.clinicinfo');
               });
             }
           },function(e){
