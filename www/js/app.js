@@ -367,6 +367,96 @@ $stateProvider
     }
       
   })
+  
+   //患者管理
+$stateProvider
+
+$stateProvider
+ .state('manage', {
+  url: "/tab",
+  abstract: true,
+  templateUrl: "partials/managepatient/main.html",
+  controller:"mainCtrl"
+})
+ .state('manage.plan', {
+  url: "/plan",
+  views: {
+    'plan-tab': {
+      templateUrl: "partials/managepatient/plan.html",
+      controller:'planCtrl'
+    }
+  }
+})
+.state('manage.clinic', {
+  url: "/clinic",
+  views: {
+    'clinic-tab': {
+      templateUrl: "partials/managepatient/clinic.html",
+      controller:'datepickerCtrl',
+     cache:true
+    }
+  }
+})
+ .state('manage.clinic.examinationinfo', {
+  url: "/examinationinfo",
+  views: {
+    'allmsg': {
+      templateUrl: "partials/managepatient/examinationinfo.html",
+      // controller:'examinationinfoCtrl'
+    }
+  }
+})
+ .state('manage.clinic.druginfo', {
+  url: "/druginfo",
+  views: {
+    'allmsg': {
+      templateUrl: "partials/managepatient/druginfo.html",
+      // controller:'druginfoCtrl'
+    }
+  }
+})
+ .state('manage.clinic.DiagnosisInfo', {
+  url: "/DiagnosisInfo",
+  views: {
+    'allmsg': {
+      templateUrl: "partials/managepatient/DiagnosisInfo.html",
+      // controller:'DiagnosisInfoCtrl'
+    }
+  }
+})
+ .state('Independent',{
+  abstract:true,
+  url:"/Independent",
+  template:'<ion-nav-view/>'
+})
+
+ .state('Independent.asspic',{
+  url:"/asspic",
+  views: {
+    '': {
+      templateUrl: "content/asspic.html",
+      controller: 'asspicCtrl'
+    }
+  }
+})
+ .state('Independent.table',{
+  url:"/table",
+  views: {
+    '': {
+      templateUrl: "content/table.html",
+      controller: 'vitaltableCtrl'
+    }
+  }
+})
+  .state('Independent.table.tablelist',{
+  url:"/tablelist",
+  views: {
+    'tablelist': {
+      templateUrl: "content/tablelist.html",
+      
+    }
+  }
+})
 
    //$urlRouterProvider.otherwise('/signin');
    $urlRouterProvider.otherwise('/starting');

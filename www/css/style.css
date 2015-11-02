@@ -82,3 +82,9 @@
   height: 250px;
   background-color: #F7F4EA;
 }
+
+#chartdiv3 {
+  width: 100%;
+  height: 500px;
+  font-size : 11px;
+}

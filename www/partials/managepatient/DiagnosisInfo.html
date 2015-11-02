@@ -1,0 +1,27 @@
+<ion-modal-view>
+<ion-header-bar align-title="middle" class="bar-positive">
+  <div class="buttons">
+    <button class="button" ng-click="closediagModal()">返回</button>
+  </div>
+  <h1 class="title">诊断信息</h1>
+  
+</ion-header-bar>
+    <ion-content>
+     <ion-list >
+      <ion-item  ng-if=show>
+    <h2>无诊断数据</h2>
+  </ion-item>
+    <ion-item ng-repeat='item in Diagnosisinfo' >
+
+
+  <h2>时间:{{item.RecordDate}}</h2>
+      <h2>{{item.DiagnosisTypeName}}:{{item.DiagnosisName}}</h2>
+
+    
+    </ion-item>
+
+
+  </ion-list>
+    </ion-content>
+  </ion-modal-view>
+
