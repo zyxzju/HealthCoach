@@ -22,14 +22,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 // --------登录注册、设置修改密码-熊佳臻---------------- 
 //登录  
-.controller('SignInCtrl', ['$scope','$state','$http', '$timeout','$window', 'userservice','Storage' , function($scope, $state,$http, $timeout ,$window, userservice, Storage) {
+.controller('SignInCtrl', ['$scope','$state', '$timeout', 'userservice','Storage','loading','PageFunc' , function($scope, $state, $timeout, userservice, Storage,loading,PageFunc) {
+  $scope.barwidth="width:0%";
   if(Storage.get('USERNAME')!=null){
     $scope.logOn={username:Storage.get('USERNAME'),password:""};
   }else{
     $scope.logOn={username:"",password:""};
   }
   $scope.signIn = function(logOn) {
-    //$timeout(function(){$state.go('tab.tasks');} , 1000);
+    $scope.logStatus='';
     if((logOn.username!="") && (logOn.password!="")){ 
       var saveUID = function(){
         var UIDpromise=userservice.UID('PhoneNo',logOn.username);
@@ -39,22 +40,42 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         },function(data){
         });
-      }
-                
+      }                
       var promise=userservice.userLogOn('PhoneNo' ,logOn.username,logOn.password,'HealthCoach');
       if(promise==7){
         $scope.logStatus='手机号验证失败！';
         return;
       }
+      loading.loadingBarStart($scope);
       promise.then(function(data){
         $scope.logStatus=data.result.substr(0,4);
         if($scope.logStatus=="登陆成功"){
+          loading.loadingBarFinish($scope);
           Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
           saveUID();
           $timeout(function(){$state.go('coach.home');} , 1000);
         }
       },function(data){
+        loading.loadingBarFinish($scope);
+        if(data.data==null && data.status==0){
+          $scope.logStatus='连接超时！';
+          return;          
+        }
+        if(data.status==404){
+          $scope.logStatus='连接服务器失败！';
+          return;          
+        }
+        if(data.data.result=='暂未激活'){
+          loading.loadingBarFinish($scope);
+          //Storage.set('TOKEN', data.result.substr(12));
+          Storage.set('USERNAME', logOn.username);
+          saveUID();
+          //alert('未激活,这个跳转在controller 73行');
+          PageFunc.confirm('未认证，激活,这个跳转在controller 74行');
+          $timeout(function(){$state.go('coach.home');} , 500);  
+          return;        
+        }        
         $scope.logStatus=data.data.result;
       });
     }else{
@@ -130,6 +151,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   };  
   $scope.infoSetup = function(userName,userGender){
+    $scope.logStatus='';
     if(userName!='' && userGender!='' && $scope.birthday!='' && $scope.birthday!='点击设置'){
       upload.UserName=userName;
       upload.Gender=userGender == '男'?1:2;
@@ -180,7 +202,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //设置密码   
-.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' , 'userservice','Storage',function($scope,$state,$rootScope,$timeout,userservice,Storage) {
+.controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' , 'userservice','Storage','loading' ,function($scope,$state,$rootScope,$timeout,userservice,Storage,loading) {
+  $scope.barwidth="width:0%";
   var setPassState=Storage.get('setPasswordState');
   if(setPassState=='reset'){
     $scope.headerText="重置密码";
@@ -191,6 +214,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   $scope.setPassword={newPass:"" , confirm:""};
   $scope.resetPassword=function(setPassword){
+    $scope.logStatus='';
     if((setPassword.newPass!="") && (setPassword.confirm!="")){
       if(setPassword.newPass == setPassword.confirm){
         if(setPassState=='register'){
@@ -198,17 +222,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           $state.go('userdetail');
         }else{
           var userId=Storage.get('UID');
-          var promise=userservice.changePassword('#*bme319*#',setPassword.newPass,userId);
-          promise.then(function(data,status){
+          loading.loadingBarStart($scope);
+          userservice.changePassword('#*bme319*#',setPassword.newPass,userId)
+          .then(function(data){
+            loading.loadingBarFinish($scope);
             $scope.logStatus=data.result;
             if(data.result=='修改密码成功'){
               $timeout(function(){$state.go('signin');} , 500);
             }
           },function(data){
+            loading.loadingBarFinish($scope);
+            if(data.data==null && data.status==0){
+              $scope.logStatus='连接超时！';
+              return;          
+            }
             $scope.logStatus=data.data.result;
           });
-          //以下临时跳转
-          //$timeout(function(){$state.go('tab.tasks');} , 3000);
         }
       }else{
         $scope.logStatus="两次输入的密码不一致";
@@ -220,31 +249,48 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //修改密码   $scope.nvGoback李山加的，不明
-.controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage', function($scope , $state,$timeout, $ionicHistory, userservice,Storage){
+.controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage','loading' , function($scope , $state,$timeout, $ionicHistory, userservice,Storage,loading){
+  $scope.barwidth="width:0%";
   $scope.ishide=true;
   $scope.change={oldPassword:"",newPassword:"",confirmPassword:""};
   $scope.passwordCheck = function(change){
-    var promiseold=userservice.userLogOn('PhoneNo',Storage.get('USERNAME'),change.oldPassword,'HealthCoach');
-    promiseold.then(function(data){
+    $scope.logStatus1='';
+    loading.loadingBarStart($scope);
+    userservice.userLogOn('PhoneNo',Storage.get('USERNAME'),change.oldPassword,'HealthCoach')
+    .then(function(data){
+      loading.loadingBarFinish($scope);
       $scope.logStatus1='验证成功';
-      //$scope.ishide=false;
       $timeout(function(){$scope.ishide=false;} , 500);
     },function(data){
+
+      loading.loadingBarFinish($scope);
+      if(data.data==null && data.status==0){
+        $scope.logStatus1='连接超时！';
+        return;          
+      }      
       $scope.logStatus1='密码错误';
     });
   }
 
   $scope.gotoChange = function(change){
+    $scope.logStatus2='';
     if((change.newPassword!="") && (change.confirmPassword!="")){
       if(change.newPassword == change.confirmPassword){
+        loading.loadingBarStart($scope);
         userservice.changePassword(change.oldPassword,change.newPassword,Storage.get('UID'))
         .then(function(data){
+          loading.loadingBarFinish($scope);
           $scope.logStatus2='修改成功';
           $timeout(function(){$scope.change={originalPassword:"",newPassword:"",confirmPassword:""};
           $state.go('coach.i');
           $scope.ishide=true;
           } , 500);
         },function(data){
+          loading.loadingBarFinish($scope);
+          if(data.data==null && data.status==0){
+            $scope.logStatus2='连接超时！';
+            return;          
+          }
           $scope.logStatus2=data.data.result;
         })
       }else{
@@ -257,47 +303,67 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickBackward = function(){
     $ionicHistory.goBack();
   }
- 
-
 }])
 
 //获取验证码  
-.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice', function($scope, $state,$interval,$rootScope,Storage,userservice) {
+.controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading' , function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
+  $scope.barwidth="width:0%";
   var setPassState=Storage.get('setPasswordState');
   $scope.veriusername="" 
   $scope.verifyCode="";
   $scope.veritext="获取验证码";
   $scope.isable=false;
   $scope.gotoReset = function(veriusername,verifyCode){
-    if(veriusername!=0 && verifyCode!=0){
+    $scope.logStatus='';
+    if(veriusername!=0 && verifyCode!=0 && veriusername!='' && verifyCode!=''){
+      loading.loadingBarStart($scope);
       $rootScope.userId=veriusername;
-      var promise=userservice.checkverification(veriusername,'verification',verifyCode);
-      promise.then(function(data){
+      userservice.checkverification(veriusername,'verification',verifyCode)
+      .then(function(data){
+        loading.loadingBarFinish($scope);
         if(data.result==1){
-          $scope.logStatus='验证成功';
+          $scope.logStatus='验证成功！';
           $state.go('setpassword');
-        }
+        }else{
+          $scope.logStatus='验证码错误！';
+        }        
       },function(data){
-        $scope.logStatus=data.statusText;
+        loading.loadingBarFinish($scope);
+        if(data.data==null && data.status==0){
+          $scope.logStatus='连接超时！';
+          return;          
+        }
+        $scope.logStatus='验证失败！';
     });
     }else{
       $scope.logStatus="请输入完整信息！"
     }
   }
-  
-  
+   
   $scope.getcode=function(veriusername){
+    $scope.logStatus='';
     var operation=Storage.get('setPasswordState');
     var sendSMS = function(){  
-      userservice.sendSMS(veriusername,'verification').then(function(data){
-          $scope.logStatus='您的验证码已发送';
-          unablebutton();
+      userservice.sendSMS(veriusername,'verification')
+      .then(function(data){
+        loading.loadingBarFinish($scope);
+        unablebutton();        
+        if(data.result[0]=='您'){
+          $scope.logStatus="您的验证码已发送，重新获取请稍后";
+        }else{
+          $scope.logStatus='验证码发送成功！';
+        }
       },function(data){
-        $scope.logStatus=data.statusText;
+        loading.loadingBarFinish($scope);
+        if(data.data==null && data.status==0){
+          $scope.logStatus='连接超时！';
+          return;          
+        }
+        $scope.logStatus='验证码发送失败！';
       }) 
     }; 
     var unablebutton = function(){      
-    //验证码BUTTON效果
+     //验证码BUTTON效果
       $scope.isable=true;
       $scope.veritext="180S再次发送"; 
       var time = 179;
@@ -319,16 +385,36 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.logStatus='手机号验证失败！';
       return;
     }
+    loading.loadingBarStart($scope);
     promise.then(function(data){
       if(data.result!=null){
         if(operation=='reset'){
           Storage.set('UID',data.result);
           sendSMS();//发送验证码
         }else{
-          $scope.logStatus='该账户已进行过注册！';
+          userservice.Roles(data.result).then(function(data){
+            loading.loadingBarFinish($scope);
+            var flag=0;
+            for(var i in data){
+              if(data[i]=='HealthCoach'){
+                $scope.logStatus='该账户已进行过注册！';
+                flag=1;
+                break;
+              }
+            }
+            if(flag==0){
+              sendSMS();
+            }
+          },function(){
+            loading.loadingBarFinish($scope);
+            $scope.logStatus='网络出错了，请再次发送';
+          })
+          // loading.loadingBarFinish($scope);
+          // $scope.logStatus='该账户已进行过注册！';
         }
       }else{
         if(operation=='reset'){
+          loading.loadingBarFinish($scope);
           Storage.set('UID','');
           $scope.logStatus="用户不存在";
         }else{
@@ -336,11 +422,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
       }
     },function(data){
-      $scope.logStatus=data.statusText;
+      loading.loadingBarFinish($scope);
+      if(data.data==null && data.status==0){
+          $scope.logStatus='连接超时！';
+          return;          
+      }
+      $scope.logStatus='网络出错了，请再次发送';
     })
-
   }
-
 }])
 //二维码在这里，ngcordova的插件QRscan()
 .controller('HomeTabCtrl', ['$scope', '$state','$cordovaBarcodeScanner',function($scope, $state, $cordovaBarcodeScanner) {
@@ -718,7 +807,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 // Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory',function($scope,$state,$ionicHistory) { //LRZ
+.controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','Storage',function($scope,$state,$ionicHistory,$ionicPopup,Storage) { //LRZ
   $scope.onClickBackward = function(){
       $ionicHistory.goBack();
   };
@@ -726,6 +815,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickChangePassword = function(){
     $state.go('changepassword');
   }
+  $scope.onClickSignOut = function(){
+    var myPopup = $ionicPopup.show({
+      template: '<center>确定要退出登录吗?</center>',
+      title: '退出',
+      //subTitle: '2',
+      scope: $scope,
+      buttons: [
+        { text: '取消',
+          type: 'button-small',
+          onTap: function(e) {
+            
+          }
+        },
+        {
+          text: '<b>确定</b>',
+          type: 'button-small button-positive ',
+          onTap: function(e) {
+              $state.go('signin');
+              Storage.rm('TOKEN');
+          }
+        }
+      ]
+    });
+  }  
 }])
 // Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
 // ----------------------------------------------------------------------------------------
@@ -1040,15 +1153,67 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-.controller('myPatientCtrl', ['$scope', '$state', '$http','$timeout','$interval' ,'userINFO' ,function($scope, $state, $http,$timeout,$interval,userINFO){
+.controller('myPatientCtrl', ['$cordovaBarcodeScanner','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc' ,function($cordovaBarcodeScanner,$ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc){
   var PIDlist=new Array();//PID列表
   var PIDlistLength;//PID列表长度
   var loaditems=0;//已加载条目
-  var PatientsList;
+  var PatientsList,PatientsList1,PatientsList2,PatientsListOrigin;
   var PatientsBasic=new Array();//输出到页面的json 
   var refreshing=0;//控制连续刷新时序            
   $scope.patients=PatientsBasic;
   $scope.moredata = true;  //控制上拉加载
+
+    //-----------------------------------------------------------------------------//
+  var DOCID=Storage.get('UID');
+  var rankList = new Array();
+  var rankPID = new Array();  
+  $scope.rankBy='默认排序';   
+  //loading图标显示
+  $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
+  $scope.rankPatients=function(){
+    var rank;var propertyName;
+    rankList[0]=PatientsListOrigin;
+    switch($scope.rankBy){
+      case '计划进度':rank=1;propertyName='Process';break;
+      case '依从率':rank=2;propertyName='ComplianceRate';break;
+      default:rank=0;
+    }
+    if(rankPID[rank]==undefined){
+      var compare=function(propertyName) { 
+        return function (object1, object2) { 
+          var value1 = object1[propertyName]; 
+          var value2 = object2[propertyName]; 
+          if (value2 < value1) { 
+            return -1; 
+          } 
+          else if (value2 > value1) { 
+            return 1; 
+          } 
+          else { 
+            return 0; 
+          } 
+        } 
+      } 
+      rankList[rank]=PatientsListOrigin;
+      rankList[rank].sort(compare(propertyName));
+      var temp=new Array();
+      for(var i in rankList[rank]){
+        temp.push(rankList[rank][i].PatientId);
+        
+      }
+      rankPID[rank]=temp; 
+    }
+    PatientsBasic=[];loaditems=0;
+    PIDlist=rankPID[rank];
+    PatientsList=rankList[rank];
+    firstget();
+  }
   var onePatientBasic= function(PID){
     userINFO.BasicInfo(PID).then(function(data){
       var str=JSON.stringify(data);
@@ -1076,6 +1241,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var timer;
     timer = $interval(function(){
       if(repeat==0){
+        $timeout(function(){$scope.moredata = false;},2000);
         $scope.patients=PatientsBasic;
         $interval.cancel(timer);
         timer=undefined;        
@@ -1091,66 +1257,153 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       }else{
       getPatientsBasic(PIDlist);
       }
-      $timeout(function(){$scope.moredata = false;},5000);
+      $ionicLoading.hide();
       $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
       refreshing=0;
   }
-
+  var netError = function(){
+    $ionicLoading.hide();
+    PageFunc.confirm('网络好像不太稳定', '连接超时');   
+  }
   var getPIDlist = function(){
-    userINFO.GetPatientsList('DOC201506180002','M1','0','0','0')
+    userINFO.GetPatientsList(DOCID,'M1','0','0')
     .then(function(data){
-      PatientsList=data.DT_PatientList; 
-      for(var i in PatientsList){
-        PIDlist.push(PatientsList[i].PatientId);
+      var datastr=JSON.stringify(data);
+      var datastr=JSON.parse(datastr);
+      PatientsList1=datastr;
+      for(var i in PatientsList1){
+        PIDlist.push(PatientsList1[i].PatientId);
       }
-      PIDlistLength=PIDlist.length; 
       
-      firstget();
+      userINFO.GetPatientsList(DOCID,'M2','0','0')
+      .then(function(data){
+        var datastr=JSON.stringify(data);
+        var datastr=JSON.parse(datastr);
+        PatientsList2=datastr;
+        for(var i in PatientsList2){
+          PIDlist.push(PatientsList2[i].PatientId);
+        }
+        PIDlistLength=PIDlist.length;
+        
+        rankPID[0]=PIDlist;
+        if(PatientsList1!='' && PatientsList2!=''){
+          var s1=JSON.stringify(PatientsList1);
+          var s2=JSON.stringify(PatientsList2);
+          s1=s1.substring(0,s1.length-1);s1=s1.substr(1);
+          s2=s2.substring(0,s2.length-1);s2=s2.substr(1);          
+          PatientsList=JSON.parse('['+s1 + ',' + s2+ ']');
+        }else{
+          if(PatientsList1!=''){
+            PatientsList=PatientsList1;
+          }else if(PatientsList2!=''){
+            PatientsList=PatientsList2;
+          }else{
+            PatientsList=[];
+          }
+        }
+        PatientsListOrigin=PatientsList;
+        firstget();         
+      },function(data){
+        netError();
+      })
     },function(data){
+      netError();
     });
   }
-
+  //获取PIDlist并加载10条
   getPIDlist();
 
   $scope.doRefresh =function() {
     if(refreshing==0){
-      refreshing=1;
+      refreshing=1;$scope.rankBy='默认排序';
       PatientsBasic=[];PIDlist=[];
       loaditems=0;PIDlistLength=0;
       getPIDlist();
     }
   }
   $scope.loadMore = function(){
-    if((PIDlistLength-loaditems)>10){
-        getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
-    }else if(loaditems>=10){
-      getPatientsBasic(PIDlist.slice(loaditems));
-    }
     if(PIDlistLength==loaditems && PIDlistLength!=0){
       $scope.moredata=true;
-    }    
+    } 
+    if((PIDlistLength-loaditems)>10){
+      getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
+    }else if(loaditems>=10){
+      getPatientsBasic(PIDlist.slice(loaditems));
+    }  
    $scope.$broadcast('scroll.infiniteScrollComplete');
   }  
-    $scope.setwidth=function(patient){
-      var divwidth=patient.Age + '%';
-      return {width:divwidth}; 
-    };
-    $scope.ishide=function(patient){
-      if(patient.Age>=50){
-        return false;
-      }else{
-        return true;
-      } 
-    };      
+  $scope.setwidth=function(patient){
+    var divwidth=patient.Age + '%';
+    return {width:divwidth}; 
+  };
+  $scope.ishide=function(patient){
+    if(patient.Age>=50){
+      return false;
+    }else{
+      return true;
+    } 
+  };
+    //扫一扫，具体跳转再改
+  $scope.QRscan = function(){
+    var isMyPID=0;
+    $cordovaBarcodeScanner
+    .scan()
+    .then(function(data) {
+      // Success! Barcode data is here
+      var s = "Result: " + data.text + "<br/>" +
+      "Format: " + data.format + "<br/>" +
+      "Cancelled: " + data.cancelled;
+      for(var i in PIDlist){
+        if(data.text==PIDlist[i]){
+          isMyPID=1;
+          Storage.set("viewPID",data.text);
+          $state.go('config');
+          break; 
+        }
+      }
+      if(isMyPID==0){
+        var myPopup = $ionicPopup.show({
+          template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+          //title: '',
+          //subTitle: '2',
+          scope: $scope,
+          buttons: [
+            { text: '取消',
+              type: 'button-small',
+              onTap: function(e) {                
+              }
+            },
+            {
+              text: '<b>确定</b>',
+              type: 'button-small button-positive ',
+              onTap: function(e) {
+                $state.go('signin');
+              }
+            }
+          ]
+        });
+      }
+    }, function(error) {      
+    });
+  }         
 }])
-.controller('newpatientsCtrl', ['$scope', '$state', '$http', '$interval','$timeout' ,'userINFO' ,function($scope, $state, $http, $interval,$timeout,userINFO){
+.controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage){
   var PIDlist=new Array();
-  var PIDlistLength;loaditems=0;
+  var PIDlistLength;
+  var loaditems=0;
   var PatientsList;
   var PatientsBasic=new Array(); 
-  var refreshing=0;//控制连续刷新时序            
+  var refreshing=0;//控制连续刷新时序   
+  var DOCID=Storage.get('UID');          
   $scope.patients=PatientsBasic;
   $scope.moredata = true;
+  $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
   var onePatientBasic= function(PID){     
     userINFO.BasicInfo(PID).then(function(data){
       var str=JSON.stringify(data);
@@ -1168,7 +1421,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var timer;
     timer = $interval(function(){
       if(repeat==0){
-      $timeout(function(){$scope.moredata = false;},3000);
+        $timeout(function(){$scope.moredata = false;},2000);
         $scope.patients=PatientsBasic;
         $interval.cancel(timer);
         timer=undefined;        
@@ -1184,20 +1437,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       }else{
       getPatientsBasic(PIDlist);
       }
-      
+      $ionicLoading.hide();     
       $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
       refreshing=0;
   }
-
+  var netError = function(){
+       $ionicLoading.hide();
+      PageFunc.confirm('网络好像不太稳定', '连接超时');   
+  }
   var getPIDlist = function(){
-    userINFO.GetPatientsList('DOC201506180002','M1','0','0','0')
+    userINFO.GetPatientsList(DOCID,'M1','0','0')
     .then(function(data){
-      PatientsList=data.DT_PatientList; 
+      var datastr=JSON.stringify(data);
+      var datastr=JSON.parse(datastr);
+      PatientsList=datastr;       
       for(var i in PatientsList){
         PIDlist.push(PatientsList[i].PatientId);
       }
       PIDlistLength=PIDlist.length; 
-      
       firstget();
     },function(data){
     });
@@ -1215,18 +1472,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   }
   $scope.loadMore = function(){
+    if(PIDlistLength==loaditems && PIDlistLength!=0){
+      $scope.moredata=true;
+    } 
     if((PIDlistLength-loaditems)>10){
-        console.log(PIDlistLength-loaditems);
-        console.log(PIDlist.slice(loaditems,loaditems+10));
-        getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
-    }else{
-      //console.log(PIDlist.slice(loaditems));
+      getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
+    }else if(loaditems>=10){
       getPatientsBasic(PIDlist.slice(loaditems));
     }
-    if(PIDlistLength==loaditems && PIDlistLength!=0){
-      //console.log('END');
-      $scope.moredata=true;
-    }    
+   
    $scope.$broadcast('scroll.infiniteScrollComplete');
   } 
   $scope.onItemDelete = function(index) {
