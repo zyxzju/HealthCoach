@@ -1,6 +1,6 @@
 <ion-view view-title="药物列表">
 	<ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="$ionicGoBack()">
+		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
 		</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="secondary">
@@ -11,7 +11,7 @@
 	<ion-content>
 		<div class = "list">
 			<a class = "item item-icon-right" ng-repeat = "item in task.list " href = "#">
-			{{item.Name}}
+			{{item.Description}}
 				<div ng-click="EditTask(item)">
 				    <i class="icon ion-edit" style="margin-right:40px;"></i>	
 				</div>
@@ -21,7 +21,7 @@
 			</a>
 		</div>
 		<div style="text-align:center;padding:20px;">
-        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="$ionicGoBack()"> 
+        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()"> 
         <span style="font-size:15px;color:blue;font-weight:bold">确定</span>
         </button>
 	</ion-content>
