@@ -378,6 +378,18 @@ $stateProvider
   templateUrl: "partials/managepatient/main.html",
   controller:"mainCtrl"
 })
+
+ .state('manage.chat',{
+    url:'/chat',
+    views:{
+      "chat":{
+        templateUrl:'partials/managepatient/chat-detail.html',
+        controller:'ChatDetailCtrl'
+      }
+    }
+    
+  })
+
  .state('manage.plan', {
   url: "/plan",
   views: {
@@ -536,16 +548,7 @@ $stateProvider
     
       
   })
-  .state('manage.chat',{
-    url:'/chat',
-    views:{
-      "message":{
-        templateUrl:'partials/managepatient/chat-detail.html',
-        controller:'ChatDetailCtrl'
-      }
-    }
-    
-  })
+  
 
  .state('Independent',{
   abstract:true,
