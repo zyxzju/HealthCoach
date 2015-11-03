@@ -1070,7 +1070,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   //LZN 20151030
   self.BasicInfo = function (arr){
     var deferred = $q.defer();
-    Data.Users.BasicInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicInfo(arr,function (data,headers) {
       deferred.resolve(data);
       }, function (err) {
           deferred.reject(err);
@@ -1095,7 +1095,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   //LZN 20151030
   self.BasicDtlInfo = function(arr){
     var deferred = $q.defer();
-    Data.Users.BasicDtlInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicDtlInfo(arr,function (data,headers) {
     deferred.resolve(data);
     }, function (err) {
          deferred.reject(err);
