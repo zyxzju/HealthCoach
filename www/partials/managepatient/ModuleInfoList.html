@@ -12,8 +12,8 @@
     <div>
       <ion-list>
       <div ng-repeat='Module in ModuleInfoList'>
-        <ion-item href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
-          <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">{{Module.ItemName}}<!-- <div class="markDisplay dflag[$index].Flag">
+        <ion-item ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
+          <a class="item item-icon-right">{{Module.ItemName}}<!-- <div class="markDisplay dflag[$index].Flag">
             <i class="icon ion-ios-checkmark-empty"></i>
           </div> --></a>
         </ion-item>
