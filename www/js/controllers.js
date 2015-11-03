@@ -2648,7 +2648,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //获取计划列表
     function GetPlanList()
     {
-        var PatientId = "P003";
+        var PatientId = "P005";
         var promise = PlanInfo.GetPlanList(PatientId, "NULL", "", 0);  //PatientId, PlanNo, Module, Status
         promise.then(function(data) {
             for (var i=0; i< data.length; i++)
@@ -2685,7 +2685,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     function SetPlan(PlanNo)
     {       
-        var PatientId = "P003";
+        var PatientId = "P005";
         var StartDate = TimeFormat(new Date()); 
         var EndDate = new Array("9999/12/31", "99991231");
         var Module = "M1";
@@ -3611,13 +3611,21 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTasks(PlanNo, Type + "0000");  
         promise.then(function(data) { 
+            console.log(data);
             for (var i=0; i<data.length; i++)
-            {
-                data[i].Description = data[i].Instruction.split(':')[0];
-                $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0001", "SortNo":(i+1).toString()});
+            {   
+                if(data[i].Instruction == "")
+                {
+                    data.splice(i, 1);
+                }
+                else
+                {
+                    data[i].Description = data[i].Instruction.split(':')[0];
+                    $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0001", "SortNo":(i+1).toString()});
+                }
             }                      
             $scope.task.list = data;
-            //console.log($scope.task.list);
+            console.log($scope.task.list);
             //console.log($scope.task.DeleteList);
         }, function(data) {  
         });   
@@ -3841,7 +3849,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             if (data.result == "数据插入成功")
             {
                 //console.log("数据插入成功");
-                window.location.href = "#/addpatient/taskList";
+                $ionicHistory.goBack();
             }
         },function(data){              
         });   
