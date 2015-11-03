@@ -392,12 +392,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress :temp.PhotoAddress
+          photoAddress : temp.PhotoAddress
         }
-          console.log( $scope.userInfo.DtInfo);
-          if($scope.userInfo.DtInfo.photoAddress != null)
-            $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+$scope.userInfo.DtInfo.photoAddress;
-          else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+          // console.log( $scope.userInfo.DtInfo);
+          
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ 
+          (typeof($scope.userInfo.DtInfo.photoAddress) =='undefined'?'non.jpg':$scope.userInfo.DtInfo.photoAddress);
            // var objStr=JSON.stringify($scope.userInfo);
            // Storage.set("userInfo",objStr);   
      });
@@ -490,7 +490,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //-----------------------------------------------------------
 
   $scope.onClickCamera = function(){
-    // $scope.openPopover($event);
+  
    // Show the action sheet
    var hideSheet = $ionicActionSheet.show({
      buttons: [
@@ -517,56 +517,37 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      hideSheet();
    }, 2000);
   };
-  
-  //  $scope.onClickCameraCancel = function(){
-  //   $scope.closePopover();
-  // };
-
-
-  // $scope.onClickCameraPhotos = function(){
-  
-  //  console.log("选个照片"); 
-  //  $scope.choosePhotos();
-  //  $scope.closePopover();
-  // };
-
-  // $scope.onClickCameraCamera = function(){
-    // console.log("要拍照了！");
-    // Camera.getPicture().then(function(imageURI){
-    //   console.log(imageURI);
-    // },function(err){
-    //   console.log(err);
-    // });
-    // $scope.closePopover();
-  // };
-  
-  $scope.getPhoto = function() {
-    console.log("要拍照了！");
-    $scope.takePicture();
-    $scope.closePopover();
-  };
-
+   
   $scope.takePicture = function() {
    Camera.getPicture().then(function(data) {
-      // console.log(data);
-      $scope.imgURI = data;
       PageFunc.confirm("是否上传","确认").then(function(res){
-        if(res)Camera.uploadPicture($scope.imgURI,Storage.get('UID'));
+        if(res){
+          var d = new Date();
+          var temp = d.getTime();
+          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+         } 
       })
     }, function(err) {
-
+      PageFunc.message("上传失败", 1000, "消息");
     });
   };
   
   $scope.choosePhotos = function() {
    Camera.getPictureFromPhotos().then(function(data) {
-      // console.log(data);
-      $scope.imgURI = data;
+      PageFunc.confirm("是否上传","确认").then(function(res){
+        if(res){
+          var d = new Date();
+          var temp = d.getTime();
+          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+         } 
+      })
     }, function(err) {
-      // console.err(err);
-      // $scope.imgURI = undefined;
+      PageFunc.message("上传失败", 1000, "消息");
     });
-    // conso
   }
  
 
@@ -614,12 +595,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         jobTitle: temp.JobTitle,
         level: temp.Level,
         dept: temp.Dept,
-       photoAddress :  temp.PhotoAddress
+       photoAddress : temp.PhotoAddress
      }
      // console.log( $scope.userInfo.DtInfo.photoAddress);
-      if($scope.userInfo.DtInfo.photoAddress != null)
-        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+     // $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
+      if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
+       $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
    });
    // var doRefresh = function(){};
    // $timeout(doRefresh(),500);
@@ -648,12 +630,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           dept: temp.Dept,
           photoAddress : temp.PhotoAddress
        }
-       // console.log( $scope.userInfo.DtInfo.photoAddress);
-      if($scope.userInfo.DtInfo.photoAddress != null)
-        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+       console.log( $scope.userInfo.DtInfo.photoAddress);
+        if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
+         $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+        else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
      });
 
+  }
+
+  $scope.onClickTest = function(){
+    console.log("yeah");
+    doRefresh();
   }
   $scope.onClickPersonalInfo = function(){
       $state.go('personalinfo');
@@ -731,9 +718,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           photoAddress : temp.PhotoAddress
        }
         // console.log( $scope.userInfo.DtInfo.photoAddress);
-      if($scope.userInfo.DtInfo.photoAddress != null)
-        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-      else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+        if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
+         $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
+        else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+
            var objStr=JSON.stringify($scope.userInfo);
            Storage.set("userInfo",objStr);
      });
@@ -805,7 +793,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
   //点击保存上传更新
   $scope.onClickSave = function(){
-
     PageFunc.confirm("是否上传新信息","确认").then( 
         function(res){
           if(res){
@@ -835,8 +822,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         });    
   };
   // 更改头像
-  $scope.onClickChangeHead =function(){
-    var hideSheet = $ionicActionSheet.show({
+  $scope.onClickChangeHead = function(){  
+   // Show the action sheet
+   var hideSheet = $ionicActionSheet.show({
      buttons: [
        { text: '选择照相机' },
        { text: '选择相册' }
@@ -849,24 +837,52 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         },
      buttonClicked: function(index) {
       switch(index){
-        case 0 :  
-                Camera.getPicture().then(function(data) {
-                $scope.imgURI = data;
-                Camera.uploadPicture(data,Storage.get("UID"));
-                }, function(err) {});   
-                $scope.isEdited = true;
-                break;
-        case 1 : 
-                Camera.getPictureFromPhotos().then(function(data) {
-                $scope.imgURI = data;
-                Camera.uploadPicture(data,Storage.get("UID"));
-                }, function(err) {}); 
-                $scope.isEdited = true;
+        case 0 :  $scope.takePicture(); break;
+        case 1 :  $scope.choosePhotos();
       }
        return true;
      }
    });
+
+   // For example's sake, hide the sheet after two seconds
+   $timeout(function() {
+     hideSheet();
+   }, 2000);
   };
+  //拍照
+  $scope.takePicture = function() {
+   Camera.getPicture().then(function(data) {
+      PageFunc.confirm("是否上传","确认").then(function(res){
+        if(res){
+          $scope.isEdited = true;
+          var d = new Date();
+          var temp = d.getTime();
+          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+         } 
+      })
+    }, function(err) {
+      PageFunc.message("上传失败", 1000, "消息");
+    });
+  };
+  //选择相册
+  $scope.choosePhotos = function() {
+   Camera.getPictureFromPhotos().then(function(data) {
+      PageFunc.confirm("是否上传","确认").then(function(res){
+        if(res){
+          $scope.isEdited = true;
+          var d = new Date();
+          var temp = d.getTime();
+          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+         } 
+      })
+    }, function(err) {
+      PageFunc.message("上传失败", 1000, "消息");
+    });
+  }  
   //更改姓名
   $scope.onClickEditName = function(){
     PageFunc.edit("姓名","修改").then(function(res){
