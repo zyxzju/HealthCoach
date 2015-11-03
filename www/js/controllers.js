@@ -2777,33 +2777,38 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         var Type;
         var Code;
         var Value;
+        var Unit;
         switch (piType)
         {
             case "SBP":
             Type = "Bloodpressure";
             Code = "Bloodpressure_1";
             Value = $scope.TaskList.SBP;
+            Unit = "mmhg";
             break;
             case "DBP":
             Type = "Bloodpressure";
             Code = "Bloodpressure_2";
             Value = $scope.TaskList.DBP;
+            Unit = "mmhg";
             break;
             case "BloodSugar":
             Type = "BloodSugar";
             Code = "BloodSugar_1";
             Value = $scope.TaskList.BloodSugar;
+            Unit = "mmol/L";
             break;
             default:
             Type = "Weight";
             Code = "Weight_1";
             Value = $scope.TaskList.Weight;
+            Unit = "kg";
             break;
         }
 
         if (!isNaN(Value))
         {
-            var promise = PlanInfo.SetTarget(PlanNo, Type, Code, Value, "Origin", "Instruction", "Unit", "piUserId", "piTerminalName", "piTerminalIP", 1);  
+            var promise = PlanInfo.SetTarget(PlanNo, Type, Code, Value, "", "", Unit, "piUserId", "piTerminalName", "piTerminalIP", 1);  
             promise.then(function(data) {
                 if(data.result == "数据插入成功")
                 {
@@ -3625,7 +3630,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
             }                      
             $scope.task.list = data;
-            console.log($scope.task.list);
+            //console.log($scope.task.list);
             //console.log($scope.task.DeleteList);
         }, function(data) {  
         });   
