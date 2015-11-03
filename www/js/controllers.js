@@ -795,6 +795,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 
   $scope.addpatient = function(){
+      Storage.set("isManage","No");
       $state.go('addpatient.newpatient');
   }
 }])
@@ -1340,6 +1341,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.PIDdetail = function(PID){
     Storage.set("PatientID",PID);
+    Storage.set("isManage","Yes");
     $state.go('manage.plan');
   }
 
@@ -3774,7 +3776,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //GL 20151101 一级任务列表
-.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
+.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory','Storage', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory,Storage){
     ////console.log($stateParams.tt);
     //alert(1);
     $scope.TaskList = {};
@@ -4009,7 +4011,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //GL 20151101
-.controller('MainPlanCtrl',['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
+.controller('MainPlanCtrl',['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', 'Storage',function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory,Storage){
     var Type = $stateParams.tt;
     //console.log(Type);
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
@@ -4154,14 +4156,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
+                              if (Storage.get("isManage") == "No")
+                              {
                                 window.location.href = "#/addpatient/taskList";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/taskList";
+                              } 
                             }
                         },function(data){
                         });  
                     }
                     else
                     {
-                         window.location.href = "#/addpatient/taskList";
+                         if (Storage.get("isManage") == "No")
+                              {
+                                window.location.href = "#/addpatient/taskList";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/taskList";
+                              } 
                     }                   
                 }
             },function(data){              
@@ -4176,14 +4192,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        window.location.href = "#/addpatient/taskList";
+                        if (Storage.get("isManage") == "No")
+                              {
+                                window.location.href = "#/addpatient/taskList";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/taskList";
+                              } 
                     }
                 },function(data){
                 });  
             }
             else
             {
-                 window.location.href = "#/addpatient/taskList";
+                 if (Storage.get("isManage") == "No")
+                  {
+                    window.location.href = "#/addpatient/taskList";
+                  }
+                  else
+                  {
+                    window.location.href = "#/manage/taskList";
+                  } 
             }     
         }
     }
@@ -4374,7 +4404,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //GL 20151101 健康教育
-.controller('healthEducationCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicHistory){ 
+.controller('healthEducationCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicHistory', 'Storage',function($scope, $http, $state, $stateParams, PlanInfo, $ionicHistory,Storage){ 
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
     $scope.task = {};
     $scope.task.list;
@@ -4441,7 +4471,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               {
                   if (data.result == "数据插入成功")
                   {
-                      window.location.href = "#/addpatient/taskList";     
+                    if (Storage.get("isManage") == "No")
+                    {
+                      window.location.href = "#/addpatient/taskList";  
+                    }
+                    else
+                    {
+                      window.location.href = "#/manage/taskList"; 
+                    }    
                   }
               },function(data){              
               });    
@@ -4457,7 +4494,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
                 if ((data.result == "数据删除成功") || (data.result == "数据未找到"))
                 {
-                    window.location.href = "#/addpatient/taskList";
+                    if (Storage.get("isManage") == "No")
+                    {
+                      window.location.href = "#/addpatient/taskList";  
+                    }
+                    else
+                    {
+                      window.location.href = "#/manage/taskList"; 
+                    } 
                 }
             },function(data){
             });  
@@ -4585,14 +4629,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
+                              if (Storage.get("isManage") == "No")
+                              {
                                 window.location.href = "#/addpatient/TD";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/TD";
+                              }
+                                
                             }
                         },function(data){
                         });  
                     }
                     else
                     {
-                         window.location.href = "#/addpatient/TD";
+                         if (Storage.get("isManage") == "No")
+                              {
+                                window.location.href = "#/addpatient/TD";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/TD";
+                              }
                     }                   
                 }
             },function(data){              
@@ -4607,14 +4666,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        window.location.href = "#/addpatient/TD";
+                        if (Storage.get("isManage") == "No")
+                              {
+                                window.location.href = "#/addpatient/TD";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/TD";
+                              }
                     }
                 },function(data){
                 });  
             }
             else
             {
-                 window.location.href = "#/addpatient/TD";
+                 if (Storage.get("isManage") == "No")
+                              {
+                                window.location.href = "#/addpatient/TD";
+                              }
+                              else
+                              {
+                                window.location.href = "#/manage/TD";
+                              }
             }     
         }
     }
