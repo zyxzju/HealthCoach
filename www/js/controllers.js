@@ -1546,40 +1546,38 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //GL 20151103 交流
 .controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
-{
-    //console.log($stateParams.tt);
+{   
     $scope.Dialog = {};
-    var paraArry = $stateParams.tt.split('&');
-    $scope.DoctorId = paraArry[0];
-    $scope.DoctorName =  paraArry[1];
-    $scope.imageURL = Storage.get('ImageURL_doc');
+    $scope.DoctorId = "DOC201506180002";
+    $scope.DoctorName =  "何疆春";
+    $scope.imageURL = ""; //医生头像地址
 
-    $scope.PatientId = Storage.get('UID');
-
+    $scope.PatientId = "PID201506180016";
+    $scope.PatientName = "李田昌";
     $scope.Dialog.SMScontent = "";
-    var WsUserId = $scope.PatientId;
-    var WsUserName = $scope.PatientId; //最好是患者姓名
+    var WsUserId = $scope.DoctorId;
+    var WsUserName = $scope.DoctorId; 
     var wsServerIP = CONFIG.wsServerIP; 
 
-    $scope.myImage = "img/DefaultAvatar.jpg";
+    $scope.myImage = ""; //患者头像地址
 
-    var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
-    Data.Users.GetPatientDetailInfo({route:urltemp2}, 
-       function (success, headers) {
-        //console.log(success);
-          if( (success.PhotoAddress=="") || (success.PhotoAddress==null))
-          {
-            $scope.myImage = "img/DefaultAvatar.jpg";
-          }
-          else 
-          {
-            $scope.myImage = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + success.PhotoAddress;
-          } 
+    // var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
+    // Data.Users.GetPatientDetailInfo({route:urltemp2}, 
+    //    function (success, headers) {
+    //     console.log(success);
+    //       if( (success.PhotoAddress=="") || (success.PhotoAddress==null))
+    //       {
+    //         $scope.myImage = "img/DefaultAvatar.jpg";
+    //       }
+    //       else 
+    //       {
+    //         $scope.myImage = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile + "/" + success.PhotoAddress;
+    //       } 
 
-       }, 
-      function (err) {
-        // 目前好像不存在userid不对的情况，都会返回一个结果
-      });  
+    //    }, 
+    //   function (err) {
+    //     // 目前好像不存在userid不对的情况，都会返回一个结果
+    //   });  
 
 
     var footerBar; // gets set in $ionicView.enter
@@ -1599,10 +1597,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             var DataArry = obj.content.split("||");
             if (DataArry[0] == WsUserId)
             {
-              if(DataArry[0] == $scope.Dialog.DoctorId)
+              if(DataArry[1] == $scope.PatientId)
               {
                   $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
-                  ////console.log($scope.Dialog);
+                  //console.log($scope.Dialog);
                   $ionicScrollDelegate.scrollBottom(true);
                   $scope.$apply();
                   //SetSMSRead(ThisUserId, TheOtherId);//改写阅读状态
@@ -1637,7 +1635,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
 
     $scope.$watch('$viewContentLoaded', function() {  
-        $scope.GetSMSDialogue($scope.PatientId, $scope.DoctorId);
+        $scope.GetSMSDialogue($scope.DoctorId, $scope.PatientId);
         $scope.SocketInit();
         footerBar = document.body.querySelector('#userMessagesView .bar-footer');
         scroller = document.body.querySelector('#userMessagesView .scroll-content');
@@ -1647,8 +1645,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   
     //发送消息
     $scope.submitSMS = function() {
-        var SendBy = $scope.PatientId;
-        var Receiver = $scope.DoctorId;
+        var SendBy = $scope.DoctorId;
+        var Receiver = $scope.PatientId;
         var piUserId = "1";
         var piTerminalName = "1";
         var piTerminalIP = "1";
@@ -1675,11 +1673,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
     $scope.$on('taResize', function(e, ta) {
-        ////console.log('taResize');
+        //console.log('taResize');
         if (!ta) return;
         
         var taHeight = ta[0].offsetHeight;
-        ////console.log('taHeight: ' + taHeight);
+        //console.log('taHeight: ' + taHeight);
         
         if (!footerBar) return;
         
@@ -1692,9 +1690,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
      // this keeps the keyboard open on a device only after sending a message, it is non obtrusive
     function keepKeyboardOpen() {
-        ////console.log('keepKeyboardOpen');
+        //console.log('keepKeyboardOpen');
         txtInput.one('blur', function() {
-            //console.log('textarea blur, focus back on it');
+            console.log('textarea blur, focus back on it');
             txtInput[0].focus();
         });
     } 
