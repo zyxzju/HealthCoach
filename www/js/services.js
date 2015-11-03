@@ -236,6 +236,14 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             });
 
       }
+  var MessageInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
+              {
+                submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
+        
+        });
+    };
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -255,6 +263,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.PlanInfo1 = PlanInfo1();
         serve.PlanchartInfo = PlanchartInfo();
         serve.VitalSigns = VitalSigns();
+        serve.MessageInfo = MessageInfo();
         }, 0, 1);  
 	}
     serve.Users = Users();
@@ -272,6 +281,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.PlanInfo1 = PlanInfo1();
     serve.PlanchartInfo = PlanchartInfo();
     serve.VitalSigns = VitalSigns(); 
+    serve.MessageInfo = MessageInfo();
     return serve;
 }])
 
@@ -1387,6 +1397,32 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   return self;
+}])
+
+// --------交流-苟玲----------------
+.factory('MessageInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+    var self = this;
+    self.submitSMS = function (SendBy,Content,Receiver,piUserId,piTerminalName,piTerminalIP,piDeviceType) {
+      var deferred = $q.defer();
+      Data.MessageInfo.submitSMS({SendBy:SendBy,Content:Content,Receiver:Receiver,piUserId:piUserId,piTerminalName:piTerminalName,piTerminalIP:piTerminalIP,piDeviceType:piDeviceType}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    self.GetSMSDialogue = function (Reciever,SendBy) {
+      var deferred = $q.defer();
+      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    return self;
 }])
 //大师兄的弹窗业务service 可以随便调用
 .factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
