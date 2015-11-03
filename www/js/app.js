@@ -576,7 +576,7 @@ $stateProvider
   url:"/table",
   views: {
     '': {
-      templateUrl: "content/table.html",
+      templateUrl: "partials/managepatient/table.html",
       controller: 'vitaltableCtrl'
     }
   }
@@ -585,7 +585,7 @@ $stateProvider
   url:"/tablelist",
   views: {
     'tablelist': {
-      templateUrl: "content/tablelist.html",
+      templateUrl: "partials/managepatient/tablelist.html",
       
     }
   }

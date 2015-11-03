@@ -3445,7 +3445,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   $scope.NextPage = function(){
-    window.location.href="/#/addpatient/create"
+    window.location.href="/#/addpatient/create";
+  };
+  $scope.BacktoManage = function(){
+    window.location.href="/#/manage/plan";
   };
   $scope.toggleStar = function(item) {
     item.star = !item.star;
@@ -3706,6 +3709,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.GetTasks(); 
     });
 
+    $scope.onClickBackward = function(){
+      $ionicHistory.goBack();
+  };
+  
     $scope.GetTasks = function ()
     {
         var promise = PlanInfo.GetTasks(PlanNo, "T");  
