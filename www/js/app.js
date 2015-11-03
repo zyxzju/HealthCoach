@@ -503,39 +503,50 @@ $stateProvider
       {
         return 'partials/managepatient/plan/taskList.html'; 
       }      
-    },
-    controllerProvider: function($stateParams) {
-      if($stateParams.tt=='create')
-      {
-        return 'CreateCtrl';
+      },
+      controllerProvider: function($stateParams) {
+        if($stateParams.tt=='create')
+        {
+          return 'CreateCtrl';
+        }
+         else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
+        {
+          return 'MainPlanCtrl';
+        }    
+        else if($stateParams.tt=='TD')
+        {
+          return 'healthEducationCtrl';
+        }
+        else if($stateParams.tt=='TE')
+        {
+          return 'DrugCtrl';
+        }
+      
+        else if($stateParams.tt=='healthEducationDetail')
+        {
+          return 'healthEducationDetailCtrl';
+        }
+        else
+        {
+          return 'TaskListCtrl';
+        }
       }
-       else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
-      {
-        return 'MainPlanCtrl';
-      }    
-      else if($stateParams.tt=='TD')
-      {
-        return 'healthEducationCtrl';
-      }
-      else if($stateParams.tt=='TE')
-      {
-        return 'DrugCtrl';
-      }
-    
-      else if($stateParams.tt=='healthEducationDetail')
-      {
-        return 'healthEducationDetailCtrl';
-      }
-      else
-      {
-        return 'TaskListCtrl';
-      }
-    }
     }
   }
     
       
   })
+  .state('manage.chat',{
+    url:'/chat',
+    views:{
+      "message":{
+        templateUrl:'partials/managepatient/chat-detail.html',
+        controller:'ChatDetailCtrl'
+      }
+    }
+    
+  })
+
  .state('Independent',{
   abstract:true,
   url:"/Independent",
