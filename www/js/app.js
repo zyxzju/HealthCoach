@@ -373,7 +373,7 @@ $stateProvider
 
 $stateProvider
  .state('manage', {
-  url: "/tab",
+  url: "/manage",
   abstract: true,
   templateUrl: "partials/managepatient/main.html",
   controller:"mainCtrl"
@@ -424,6 +424,118 @@ $stateProvider
     }
   }
 })
+ .state('manage.ModuleInfo',{
+  url:"/ModuleInfo",
+  views:{
+    'ModuleInfo':{
+      templateUrl:"partials/managepatient/ModuleInfo.html",
+      controller:"ModuleInfoCtrl"
+    }
+  }
+ })
+ .state('manage.ModuleList',{
+    url:'/ModuleInfo/:Module',
+    views:{
+      "ModuleInfo":{
+        templateUrl:'partials/managepatient/ModuleInfoList.html',
+        controller:'ModuleInfoListDetailCtrl'
+      }
+    }
+    
+  })
+ .state('manage..ModuleListDetail',{
+    url:'/ModuleInfo/:Module/:ListName',
+    views:{
+      "ModuleInfo":{
+        templateUrl:'partials/managepatient/ModuleListInfoDetail.html',
+        controller:'ModuleInfoListDetailCtrl'
+      }
+    }
+    
+  })
+ .state('manage.task', {
+  url: '/:tt',
+  views:{
+    "changeplan":{
+      templateUrl: function ($stateParams){
+      if($stateParams.tt=='create')  //计划第一层 创建计划
+      {
+        return 'partials/managepatient/plan/create.html';  
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TG')) //计划第三层 体重管理与风险评估
+      {
+        return 'partials/managepatient/plan/weight.html';  
+      }
+      else if($stateParams.tt=='TB')  //计划第三层 饮食建议
+      {
+        return 'partials/managepatient/plan/food.html';  
+      }
+      else if($stateParams.tt=='TC')  //计划第三层 锻炼
+      {
+        return 'partials/managepatient/plan/exercise.html';  
+      }
+      else if($stateParams.tt=='TD')  //计划第三层 健康教育
+      {
+        return 'partials/managepatient/plan/healthEducation.html';  
+      }
+      else if($stateParams.tt=='TE')  //计划第三层 药物治疗
+      {
+        return 'partials/managepatient/plan/drug.html';  
+      }  
+      else if($stateParams.tt=='TF')  //计划第三层 体征测量
+      {
+        return 'partials/managepatient/plan/measure.html';  
+      }
+      else if($stateParams.tt=='TY')  //计划第三层 其他
+      {
+        return 'partials/managepatient/plan/others.html';  
+      }
+      else if($stateParams.tt=='TZ')  //计划第三层 个性化制定
+      {
+        return 'partials/managepatient/plan/personal.html';  
+      }
+      else if($stateParams.tt=='healthEducationDetail')  //计划第四层 健康教育详细
+      {
+        return 'partials/managepatient/plan/healthEducationDetail.html';  
+      }            
+   
+      else  //计划第二层
+      {
+        return 'partials/managepatient/plan/taskList.html'; 
+      }      
+    },
+    controllerProvider: function($stateParams) {
+      if($stateParams.tt=='create')
+      {
+        return 'CreateCtrl';
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
+      {
+        return 'MainPlanCtrl';
+      }    
+      else if($stateParams.tt=='TD')
+      {
+        return 'healthEducationCtrl';
+      }
+      else if($stateParams.tt=='TE')
+      {
+        return 'DrugCtrl';
+      }
+    
+      else if($stateParams.tt=='healthEducationDetail')
+      {
+        return 'healthEducationDetailCtrl';
+      }
+      else
+      {
+        return 'TaskListCtrl';
+      }
+    }
+    }
+  }
+    
+      
+  })
  .state('Independent',{
   abstract:true,
   url:"/Independent",

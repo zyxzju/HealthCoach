@@ -1,0 +1,97 @@
+
+
+
+<!-- <ion-tabs class="tabs-icon-top tabs-color-active-balanced">
+ 
+
+	  <ion-tab title="高血压模块" icon-off="ion-ios-heart-outline" icon-on="ion-ios-heart" href="#/riskquestion/hypertension">
+	    <ion-nav-view name="riskquestion-hypertension"></ion-nav-view>
+	  </ion-tab>  
+
+	  <ion-tab title="糖尿病模块" icon-off="ion-ios-pint-outline" icon-on="ion-ios-pint" href="#/riskquestion/diabetes">
+	    <ion-nav-view name="riskquestion-diabetes"></ion-nav-view>
+	  </ion-tab>  
+
+ </ion-tabs> -->
+
+
+ <ion-view view-title="风险评估" hide-nav-bar="true">
+
+
+<ion-header-bar>
+  <div class="h1 title">信息录入</div>    
+</ion-header-bar>
+
+<ion-content>
+
+      <div class = "row">
+        <div class ="col col-50">
+          <div class = "padding">
+            <button class="button button-block button-primary" ng-click="clickCancel()">取消</button>
+          </div>
+        </div>
+        <div class = "col col-50">
+          <div class="padding">
+          <button class="button button-block button-primary" ng-click="clickSubmit()">提交信息</button>
+        </div>
+        </div>
+      </div>
+
+
+<ion-slide-box on-slide-changed="slideHasChanged($index)">
+  <ion-slide>
+        <div class="card">
+    	  <div class="item item-divider">
+    <h2>高血压风险描述<h2>
+  </div>
+        <label class="item item-input">
+          <span class="input-label">当前收缩压</span>
+          <input type="number" placeholder="mmHg" ng-model="value.SBP">
+        </label>
+
+
+        <label class="item item-input">
+          <span class="input-label">当前舒张压</span>
+          <input type="number" placeholder="mmHg" ng-model="value.DBP">
+        </label>
+
+    </div>
+    
+  </ion-slide>
+
+
+  <ion-slide>
+<div class="card">
+    	  <div class="item item-divider">
+    <h2>糖尿病风险描述<h2>
+  </div>
+		<label class="item item-input">
+          <span class="input-label">当前血糖值</span>
+          <input type="number" placeholder="mmol/L" ng-model="value.glucose">
+        </label>
+
+        <label class="item item-input item-select">
+            <div class="input-label">
+              测量时段
+            </div>
+            <select ng-model = "value.period">
+              <option>凌晨</option>
+              <option>早餐前</option>
+              <option>早餐后</option>
+              <option>午餐前</option>
+              <option>午餐后</option>
+              <option>晚餐前</option>
+              <option>晚餐后</option>
+              <option>睡前</option>
+            </select>
+          </label>
+
+
+
+          
+
+    
+    </div>
+  </ion-slide>
+</ion-slide-box>
+</ion-content>

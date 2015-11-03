@@ -1878,22 +1878,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
       
       if ($scope.ModuleInfoListDetail[k].ParentCode == ListName) {
-        if ($scope.ModuleInfoListDetail[k].Description != "")
+        if ($scope.ModuleInfoListDetail[k].OptionCategory == "")
         {
-          if ($scope.ModuleInfoListDetail[k].Description.Type != "" && typeof($scope.ModuleInfoListDetail[k].Description.Type) != "undefined")
+          $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});  
+          $scope.dflag.push({"Flag":true});
+        }
+        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit") 
+        {
+          if ($scope.DietHabbitValue != "" || $scope.DietHabbitValue != "请选择饮食习惯")
           {
-            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitData, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             $scope.dflag.push({"Flag":true});
           }
           else
           {
-            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.ModuleInfoListDetail[k].Description, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": "0", "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             $scope.dflag.push({"Flag":true});
           }
-        }
-        else if ($scope.ModuleInfoListDetail[k].OptionCategory == "DietHabbit" && $scope.DietHabbitValue != "" && $scope.DietHabbitValue != "请选择饮食习惯") {
-          $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": 1, "Value": $scope.DietHabbitData, "Description":"", "SortNo":1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
-          $scope.dflag.push({"Flag":true});
         } 
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
         {
@@ -1902,6 +1903,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             if ($scope.HypertensionDrugData[m].Name.Type !="")
             {
               $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": m+1, "Value": $scope.HypertensionDrugData[m].Type.Type+","+$scope.HypertensionDrugData[m].Name.Code, "Description":"", "SortNo":m+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            }
+            else
+            {
+              $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": "", "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
           }
           $scope.dflag.push({"Flag":true});
@@ -1914,12 +1919,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
               $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": $scope.DiabetesDrugData[n].Type.Type+","+$scope.DiabetesDrugData[n].Name.Code, "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
             }
+            else
+            {
+              $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": n+1, "Value": "", "Description":"", "SortNo":n+1, "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+            }
           }
           $scope.dflag.push({"Flag":true});
         }
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "YesNoType" || $scope.ModuleInfoListDetail[k].OptionCategory == "DrinkFrequency")
         {
-          $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": "0", "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          if ($scope.ModuleInfoListDetail[k].Description != "" && typeof($scope.ModuleInfoListDetail[k].Description) != "undefined")
+          {
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": $scope.ModuleInfoListDetail[k].Description.Type, "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          }
+          else
+          {
+            $scope.obj.push({"Patient":PatientID, "CategoryCode":"M", "ItemCode": $scope.ModuleInfoListDetail[k].ItemCode, "ItemSeq": "1", "Value": "0", "Description":"", "SortNo":"1", "revUserId":"sample string 4","TerminalName":"sample string 5", "TerminalIP":"sample string 6", "DeviceType": 1});
+          }
         }
         else 
         {
@@ -1927,7 +1943,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
           
       }
-      };
+    };
       
       Users.setPatientDetailInfo($scope.obj).then(function(data,status){
         $scope.getStatus = data;
