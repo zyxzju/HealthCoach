@@ -54,7 +54,7 @@
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <ion-item style="padding:0" ng-repeat="patient in patients track by $index"  >
+      <ion-item style="padding:0" ng-repeat="patient in patients track by $index" ng-click="PIDdetail(patient.UserId)" >
         <!-- <img ng-src="img/male.png"> -->
         <div class="row">
           <!-- <div class="col-10 "><div class="row"><h2>类别</h2><br></div><div class="row"><h2>消息</h2></div></div>  -->
