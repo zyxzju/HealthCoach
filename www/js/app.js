@@ -553,15 +553,25 @@ $stateProvider
   template:'<ion-nav-view/>'
 })
 
- .state('Independent.asspic',{
-  url:"/asspic",
-  views: {
-    '': {
-      templateUrl: "content/asspic.html",
-      controller: 'asspicCtrl'
-    }
-  }
-})
+  .state('Independent.risk',{
+    url:'/risk',
+    templateUrl:'partials/managepatient/risk.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('Independent.riskdetail',{
+    url:'/risk/:num',
+    cache: false,
+    templateUrl:'partials/managepatient/riskdetail.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('Independent.riskquestion',{
+    url:'/riskquestion',
+    cache: false,
+    templateUrl:'partials/managepatient/riskquestion.html',
+    controller:'RiskQuestionCtrl'
+  })
  .state('Independent.table',{
   url:"/table",
   views: {
