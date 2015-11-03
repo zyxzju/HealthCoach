@@ -23,6 +23,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
+  wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
   consReceiptUploadPath: 'cons/receiptUpload',
   userResUploadPath: 'user/resUpload',
