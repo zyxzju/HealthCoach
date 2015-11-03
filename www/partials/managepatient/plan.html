@@ -14,7 +14,7 @@
   <div class="row">
     <div class="rol ">
       <p>计划选择：</p>
-     <select ng-model="planList" ng-change="changeplan(planList)">
+     <select ng-model="planList" ng-change="changeplan(planList)" style="height=28px">
       <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
       <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
     </select >
@@ -22,7 +22,7 @@
 <!--  <select ng-model="planInfo" ng-change="changeplanInfo(planInfo)" ng-options="option.PlanNo for option in planinfo" class="select-block select-calm">{{option.PlanName}}:{{option.PlanNo }}
     </select>
  -->
-    <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm">
+    <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm"  style="height=28px">
     </select>
   </div>
 

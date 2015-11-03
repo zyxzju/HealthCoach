@@ -801,7 +801,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 // Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','Storage',function($scope,$state,$ionicHistory,$ionicPopup,Storage) { //LRZ
+.controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','$timeout' ,'Storage',function($scope,$state,$ionicHistory,$ionicPopup,$timeout,Storage) { //LRZ
   $scope.onClickBackward = function(){
       $ionicHistory.goBack();
   };
@@ -827,7 +827,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           type: 'button-small button-positive ',
           onTap: function(e) {
               $state.go('signin');
-              Storage.rm('TOKEN');
+              $timeout(function(){
+              $ionicHistory.clearHistory();
+              $ionicHistory.clearCache();
+              var TOKEN=Storage.get('TOKEN');
+              var USERNAME=Storage.get('USERNAME');
+              Storage.clear;
+              Storage.set('USERNAME',USERNAME);
+              Storage.set('TOKEN',TOKEN);
+              },100);
+
           }
         }
       ]
@@ -2796,11 +2805,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // $scope.EmergencyContactPhoneNumber="";
 }])
 
-//LRZ 20151101
+//LRZ 20151103
 .controller('RiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage',
   function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage){
   
-    //console.log("doing refreshing");
+    console.log("doing refreshing");
     $scope.userid = Storage.get('PatientID');
     // $scope.userid = "PID201506170002";
     Patients.getEvalutionResults($scope.userid).then(function(data){
@@ -2858,17 +2867,40 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         }        
     };
-    // //console.log($scope.newRisks);
-      for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
-        if($scope.newRisks[i].num == $scope.whichone) {
-          $scope.index = i;
-          //console.log($scope.newRisks[$scope.index]);
-          break;
+    // console.log($scope.newRisks);
+    //不显示没填写的项目 lrz20151103
+    for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
+      if(typeof($scope.newRisks[i].M1) == 'undefined' 
+        || typeof($scope.newRisks[i].M1.SBP) == 'undefined' 
+        || typeof($scope.newRisks[i].M1.DBP) == 'undefined')
+        $scope.newRisks[i].M1show = false;
+      else  $scope.newRisks[i].M1show = true;
+        // console.log($scope.newRisks[i].M1show);
+      if(typeof($scope.newRisks[i].M2) == 'undefined' || 
+         typeof($scope.newRisks[i].M2.AssessmentTime) == 'undefined' ||
+         typeof($scope.newRisks[i].M2.Period) == 'undefined' ||
+         typeof($scope.newRisks[i].M2.Glucose) == 'undefined')
+        $scope.newRisks[i].M2show = false;
+      else $scope.newRisks[i].M2show = true;
+    };    
+    // $ionicSlideBoxDelegate.$getByHandle('slide1').enableSlide(true);
+    for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
+      if($scope.newRisks[i].num == $scope.whichone) {
+        $scope.index = i;
+        console.log($scope.newRisks[$scope.index]);
+        if(($scope.newRisks[$scope.index].M1show != $scope.newRisks[$scope.index].M2show)){
+            
+            // $ionicSlideBoxDelegate.$getByHandle('my-handle').slide(($scope.newRisks[$scope.index].M1show)?0:1,500);
+            console.log('参数不全，禁止了滑动');
+            // $ionicSlideBoxDelegate.$getByHandle('my-handle').enableSlide(false);
         }
-      };
-     
-    //console.log($scope.newRisks[$scope.index]);  
-        // //console.log("又画图了");
+        // else $ionicSlideBoxDelegate.$getByHandle('slide1').enableSlide(true);
+        break;
+      }
+    };
+
+    // console.log($scope.newRisks[$scope.index]);  
+        // console.log("又画图了");
         $scope.data1 =  {
           "type": "serial",
           "theme": "light",
@@ -2879,7 +2911,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "state3": 20,
                 "state4": 20,
                 "state5": 20,
-                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? 0:$scope.newRisks[$scope.index].M1.SBP), //params
+                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.SBP), //params
                 "target": 120               //params
 
             }, {
@@ -2889,7 +2921,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "state3": 20,
                 "state4": 20,
                 "state5": 20,
-                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? 0:$scope.newRisks[$scope.index].M1.DBP),         //params
+                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.DBP),         //params
                 "target": 100             //params
             }],
             "valueAxes": [{
@@ -2950,19 +2982,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "columnWidth": 0.618,
                 "valueField": "state5"
             }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+                "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
                 "fillAlphas": 0,
                 "columnWidth": 0.5,
                 "lineThickness": 5,
-                "labelText": "[[value]]"+" 目前",
+                "labelText": "[[value]]"+" 当前",
                 "clustered": false,
-                "lineAlpha": 0.3,
+                "lineAlpha": 1.5,
                 "stackable": false,
                 "columnWidth": 0.618,
                 "noStepRisers": true,
-                "title": "目前",
+                "title": "当前",
                 "type": "step",
-                "color": "#cc4488",
+                "color": "#000000",
                 "valueField": "now"      
             }, {
                 "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
@@ -3007,7 +3039,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "average": 7.2-6.1,
                 "poor": 8.8-7.2,
                 "bad": 1,
-                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? 3:$scope.newRisks[$scope.index].M2.Glucose)
+                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? -100:$scope.newRisks[$scope.index].M2.Glucose)
             }],
             "valueAxes": [{
                 "maximum": 10,
@@ -3060,7 +3092,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "noStepRisers": true,
                 "lineThickness": 3,
                 "fillAlphas": 0,
-                "labelText": "[[value]]"+" 目前",
+                "labelText": "[[value]]"+" 当前",
                 "lineColor": "#0080FF", 
                 "stackable": false,
                 "showBalloon": true,
@@ -3079,7 +3111,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
         $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
         
-        // //console.log("又画图了");
+        // console.log("又画图了");
 
         $scope.data = { showDelete: false, showReorder: false };
         $scope.dbtshow = false;
@@ -3095,9 +3127,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   
 
   $scope.doRefresh = function(){
-    //console.log("doing refreshing");
+    console.log("doing refreshing");
     // $scope.userid = Storage.get('UID');
-  // $scope.userid = "PID201506170002";
+    // $scope.userid = "PID201506170002";
     $scope.userid = Storage.get('PatientID');
     Patients.getEvalutionResults($scope.userid).then(function(data){
     $scope.risks = data;
@@ -3152,10 +3184,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         }        
     };
-    //console.log($scope.newRisks);
+
+    //不显示没填写的项目 lrz20151103
+    for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
+      if(typeof($scope.newRisks[i].M1) == 'undefined' 
+        || typeof($scope.newRisks[i].M1.SBP) == 'undefined' 
+        || typeof($scope.newRisks[i].M1.DBP) == 'undefined')
+        $scope.newRisks[i].M1show = false;
+      else  $scope.newRisks[i].M1show = true;
+        console.log($scope.newRisks[i].M1show);
+      if(typeof($scope.newRisks[i].M2) == 'undefined' || 
+         typeof($scope.newRisks[i].M2.AssessmentTime) == 'undefined' ||
+         typeof($scope.newRisks[i].M2.Period) == 'undefined' ||
+         typeof($scope.newRisks[i].M2.Glucose) == 'undefined')
+        $scope.newRisks[i].M2show = false;
+      else $scope.newRisks[i].M2show = true;
+    };
+
+    console.log($scope.newRisks);
     });
-    // //console.log("in controller");
-    // //console.log($scope.risks);
+    // console.log("in controller");
+    // console.log($scope.risks);
         $scope.data1 =  {
           "type": "serial",
           "theme": "light",
@@ -3166,7 +3215,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "state3": 20,
                 "state4": 20,
                 "state5": 20,
-                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? 0:$scope.newRisks[$scope.index].M1.SBP), //params
+                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.SBP), //params
                 "target": 120               //params
 
             }, {
@@ -3176,7 +3225,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "state3": 20,
                 "state4": 20,
                 "state5": 20,
-                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? 0:$scope.newRisks[$scope.index].M1.DBP),         //params
+                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.DBP),         //params
                 "target": 100             //params
             }],
             "valueAxes": [{
@@ -3241,13 +3290,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "fillAlphas": 0,
                 "columnWidth": 0.5,
                 "lineThickness": 5,
-                "labelText": "[[value]]"+" 目前",
+                "labelText": "[[value]]"+" 当前",
                 "clustered": false,
                 "lineAlpha": 0.3,
                 "stackable": false,
                 "columnWidth": 0.618,
                 "noStepRisers": true,
-                "title": "目前",
+                "title": "当前",
                 "type": "step",
                 "color": "#cc4488",
                 "valueField": "now"      
@@ -3294,7 +3343,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "average": 7.2-6.1,
                 "poor": 8.8-7.2,
                 "bad": 1,
-                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? 3:$scope.newRisks[$scope.index].M2.Glucose)
+                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M2.Glucose)
             }],
             "valueAxes": [{
                 "maximum": 10,
@@ -3347,7 +3396,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 "noStepRisers": true,
                 "lineThickness": 3,
                 "fillAlphas": 0,
-                "labelText": "[[value]]"+" 目前",
+                "labelText": "[[value]]"+" 当前",
                 "lineColor": "#0080FF", 
                 "stackable": false,
                 "showBalloon": true,
@@ -3374,84 +3423,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickEvaluation = function(){
       //open a new page to collect patient info  
       $state.go('addpatient.riskquestion');
-      // ger question
-      // Patients.getEvalutionInput($scope.userid).then(function(data){
-      //     $scope.questions = data;
-      //     // //console.log($scope.questions);
-      //     $scope.questions.SBP = 150;
-      //     $scope.questions.DBP = 134;
-
-      // });
-      // get risk result
-
-      // get another result
   }
-
-  $scope.onClickEvaluation1 = function(){
-    $state.go('Independent.riskquestion');
-  }
-  // $scope.onClickSave = function(){
-  //   //upload 
-  //   Patients.getMaxSortNo($scope.userid).then(function(data){
-  //     var maxsortno = data.result; 
-  //     // //console.log("赫赫");
-  //     //console.log(maxsortno);
-  //   })
-  //   // //console.log($scope.userid);
-  //   //get sbp description 
-  //     // var date = new Date();
-  //     // //console.log(date);
-  //   Patients.getSBPDescription(190).then(function(data){
-  //       //console.log(data);
-
-  //       var t = data.result + "||190||120";
-  //       // //console.log(t);
-  //       var time2 = new Date();
-  //       var temp = {
-  //         "UserId": $scope.userid,
-  //         "SortNo": 233,
-  //         "AssessmentType": "M1",
-  //         "AssessmentName": "高血压",
-  //         "AssessmentTime": "2015-10-29T15:02:34.1988359+08:00",
-  //         "Result": t ,
-  //         "revUserId": "sample string 7",
-  //         "TerminalName": "sample string 8",
-  //         "TerminalIP": "sample string 9",
-  //         "DeviceType": 10
-  //       }
-  //     // Patients.postTreatmentIndicators(temp);
-  //     var temp =  {
-  //       "UserId": $scope.userid,
-  //       "SortNo": 233,
-  //       "AssessmentType": "M2",
-  //       "AssessmentName": "糖尿病",
-  //       "AssessmentTime": "2015-10-29T15:01:36.2198371+08:00",
-  //       "Result": " 糖尿病不严重。||100||160",
-  //       "revUserId": "sample string 7",
-  //       "TerminalName": "sample string 8",
-  //       "TerminalIP": "sample string 9",
-  //       "DeviceType": 10
-  //     };
-  //     // Patients.postTreatmentIndicators(temp);
-  //     //POST RESULT
-  //     // //console.log($scope.description);
-  //     //
-      
-      
-  //   });
-  //   // //console.log($scope.description);
-  //   $state.go('risk');
-  //   // //console.log($scope.description);
-  //   // Patients.
-  //   //
-  // }
 
   $scope.slideHasChanged = function (_index){
-    // //console.log(_index);
+    // console.log(_index);
     // $ionicSlideBoxDelegate.currentIndex();
     if(_index == 1) $scope.dbtshow = true;
     else $scope.dbtshow = false;
-    // //console.log($scope.description);
+    // console.log($scope.description);
   }
 
   $scope.onClickBackward = function(){
@@ -3459,16 +3438,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $state.go('addpatient.risk');
   }
 
-  $scope.onClickBackward1 = function(){
-      // $state.go("risk");
-      $state.go('Independent.risk');
-  }
-
   $scope.NextPage = function(){
-    window.location.href="/#/addpatient/create";
-  };
-  $scope.BacktoManage = function(){
-    window.location.href="/#/manage/plan";
+    window.location.href="/#/addpatient/create"
   };
   $scope.toggleStar = function(item) {
     item.star = !item.star;
@@ -3477,7 +3448,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onChangeChartData = function(sbp,dbp){
       $scope.marker = sbp;
       if(sbp === undefined || dbp === undefined || $scope.chart === undefined) return;
-      //console.log(sbp);
+      console.log(sbp);
       var temp1 = {
           "type": "收缩压",
           "state1": 40+80,
@@ -3500,7 +3471,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "target": 100               //params
 
       };
-      //console.log("push");
+      console.log("push");
       $scope.chart.dataProvider.pop();
       $scope.chart.dataProvider.pop();
       $scope.chart.dataProvider.push(temp1);
@@ -3509,10 +3480,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.chart.validateData();
       $scope.chart.validateNow();
       // $scope.chart2.validateData();
-      //console.log($scope.chart);
+      console.log($scope.chart);
   }
 
-   // //console.log("controller初始化的函数跑了一遍结束"); 
+   // console.log("controller初始化的函数跑了一遍结束"); 
  
 }])
 
@@ -3522,40 +3493,37 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
  
   $scope.userid = Storage.get('PatientID');
   // $scope.userid = "PID201506170002";
-  // //console.log($scope.userid);
-  // //console.log($scope.SBP);
+  // console.log($scope.userid);
+  // console.log($scope.SBP);
   $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined};
 
   $scope.clickCancel = function(){
     $state.go('addpatient.risk');
   };
-  $scope.clickCancel1 = function(){
-    $state.go('Independent.risk');
-  };
-  // //console.log($scope.SBP);
+  // console.log($scope.SBP);
   $scope.clickSubmit = function(){
     //upload 
     Patients.getMaxSortNo($scope.userid).then(function(data){
       var maxsortno = data.result; 
-      // //console.log("赫赫");
-      // //console.log(data);
+      // console.log("赫赫");
+      // console.log(data);
    
-    // //console.log($scope.userid);
+    // console.log($scope.userid);
     //get sbp description 
       // var date = new Date();
-      // //console.log(date);
+      // console.log(date);
       // var SBP = parseInt(100 + 20 * Math.random());
       // var DBP = parseInt(70 + 10 * Math.random());
       // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
-    // //console.log($scope.SBP);
+    // console.log($scope.SBP);
     Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
-        // //console.log(data);
+        // console.log(data);
 
         var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
-        // //console.log(t);
+        // console.log(t);
         var time2 = new Date();
         time2.setHours(time2.getHours()+8);
-        // //console.log(time2);
+        // console.log(time2);
         var temp = {
           "UserId": $scope.userid,
           "SortNo": parseInt(maxsortno)+1,
@@ -3569,108 +3537,45 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "DeviceType": 10
         }
       if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
-        // //console.log("上传血压数据");
+        // console.log("上传血压数据");
         var tt = Patients.postTreatmentIndicators(temp);
-        // //console.log(tt);
+        // console.log(tt);
       }
+
+      var t1;
+      if($scope.value.glucose<6.1) t1 = "正常血糖.";
+      else if($scope.value.glucose<7.0) t1 = "糖尿病前期.";
+      else  t1 = "糖尿病.";
       var temp =  {
         "UserId": $scope.userid,
         "SortNo": parseInt(maxsortno)+1,
         "AssessmentType": "M2",
         "AssessmentName": "糖尿病",
         "AssessmentTime": time2,
-        "Result": "糖尿病不严重。"+"||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
+        "Result": t1 + "||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
         "revUserId": "sample string 7",
         "TerminalName": "sample string 8",
         "TerminalIP": "sample string 9",
         "DeviceType": 10
       };
-      // //console.log(temp.Result);
+      // console.log(temp.Result);
       if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
-        // //console.log("上传血糖数据");
+        // console.log("上传血糖数据");
         Patients.postTreatmentIndicators(temp);
       }
       //POST RESULT
-      // //console.log($scope.description);
+      // console.log($scope.description);
       //
       
       
     })
-    // //console.log($scope.description);
+    // console.log($scope.description);
     })
-    // //console.log($scope.description);
+    // console.log($scope.description);
     // Patients.
     $state.go('addpatient.risk');
-  };
-  $scope.clickSubmit1 = function(){
-    //upload 
-    Patients.getMaxSortNo($scope.userid).then(function(data){
-      var maxsortno = data.result; 
-      // //console.log("赫赫");
-      // //console.log(data);
-   
-    // //console.log($scope.userid);
-    //get sbp description 
-      // var date = new Date();
-      // //console.log(date);
-      // var SBP = parseInt(100 + 20 * Math.random());
-      // var DBP = parseInt(70 + 10 * Math.random());
-      // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
-    // //console.log($scope.SBP);
-    Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
-        // //console.log(data);
-
-        var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
-        // //console.log(t);
-        var time2 = new Date();
-        time2.setHours(time2.getHours()+8);
-        // //console.log(time2);
-        var temp = {
-          "UserId": $scope.userid,
-          "SortNo": parseInt(maxsortno)+1,
-          "AssessmentType": "M1",
-          "AssessmentName": "高血压",
-          "AssessmentTime": time2,
-          "Result": t ,
-          "revUserId": "sample string 7",
-          "TerminalName": "sample string 8",
-          "TerminalIP": "sample string 9",
-          "DeviceType": 10
-        }
-      if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
-        // //console.log("上传血压数据");
-        var tt = Patients.postTreatmentIndicators(temp);
-        // //console.log(tt);
-      }
-      var temp =  {
-        "UserId": $scope.userid,
-        "SortNo": parseInt(maxsortno)+1,
-        "AssessmentType": "M2",
-        "AssessmentName": "糖尿病",
-        "AssessmentTime": time2,
-        "Result": "糖尿病不严重。"+"||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
-        "revUserId": "sample string 7",
-        "TerminalName": "sample string 8",
-        "TerminalIP": "sample string 9",
-        "DeviceType": 10
-      };
-      // //console.log(temp.Result);
-      if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
-        // //console.log("上传血糖数据");
-        Patients.postTreatmentIndicators(temp);
-      }
-      //POST RESULT
-      // //console.log($scope.description);
-      //
-      
-      
-    })
-    // //console.log($scope.description);
-    })
-    // //console.log($scope.description);
-    // Patients.
-    $state.go('Independent.risk');
   }
+
 }])
 
 //GL 20151101 创建计划
@@ -5009,7 +4914,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //临床信息控制器 ZXF 20151031
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
   GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo) {
-  $scope.SyncInfo={"userid":"PID00009999"};
+  $scope.SyncInfo={"userid":""};
   //$scope.SyncInfo={"userid":Storage.get('PatientID')};
 //根据userid获取就诊信息列表（展示时用）
   // var a={UserId:$scope.SyncInfo.patientid};
@@ -5050,7 +4955,7 @@ $scope.$on('$destroy', function() {
   $scope.modalexam.remove();
 });
   //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
-  $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
+  $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
@@ -5080,7 +4985,7 @@ $scope.$on('$destroy', function() {
 
  // });
 //点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
-$ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
+$ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
   scope: $scope,
   animation: 'slide-in-up'
 }).then(function(modal) {
@@ -5299,10 +5204,10 @@ showsomething($scope.selectedname,$scope.planno,$scope.startdate,$scope.enddate)
 };
 };
 
-var showsomething=function(param,something,Sdate,Edate){
+var showsomething=function(PatientId,plannumber,Sdate,Edate){
     if (param=="舒张压") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
       function(data){
         $scope.LPchartdate=data;
         // Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
@@ -5317,7 +5222,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if (param=="收缩压") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
       function(data){
         $scope.HPchartdate=data;
         //console.log($scope.HPchartdate);
@@ -5330,7 +5235,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if (param=="脉率") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
       function(data){
         $scope.HBchartdate=data;
         //console.log($scope.HBchartdate);
@@ -5343,7 +5248,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="凌晨血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5555,9 +5460,14 @@ function createStockChart(ChartData,title,unit) {
 })
 
 //ZXF 20151102 体征列表
- .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns) {
+ .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
 
-     var UserId=Storage.get('PatientID');
+     var PatintId=Storage.get('PatientID');
+      GetBasicInfo.GetBasicInfoByPid(PatintId).then(function(barsigns){
+      $scope.Name=barsigns.UserName;
+      $scope.gender=barsigns.GenderText;
+      $scope.age=barsigns.Age;
+     });
      var setstate;
      $scope.getbackgroundcolor = function(index){
       // var temp='{background-color:#EEEEEE}'
@@ -5573,8 +5483,8 @@ function createStockChart(ChartData,title,unit) {
       // return temp;
      }
      //调函数
-  var showthetable=function(UserId,date1,date2){
-    GetVitalSigns.GetVitalSignsbydate({UserId:UserId,StartDate:date1,EndDate:date2}).then(
+  var showthetable=function(PatintId,date1,date2){
+    GetVitalSigns.GetVitalSignsbydate(PatintId,date1,date2).then(
       function(data){
         $scope.vitalsigns=data;
         Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
@@ -5635,7 +5545,7 @@ function createStockChart(ChartData,title,unit) {
      $scope.EndDateforuse =parseInt(year+''+month+''+day);
      //console.log($scope.EndDateforuse);
        //调用函数显示昨天的数据
-       showthetable(UserId,$scope.StartDateforuse,$scope.EndDateforuse);
+       showthetable(PatintId,$scope.StartDateforuse,$scope.EndDateforuse);
 
 
         $scope.setStart = function(){
@@ -5714,7 +5624,7 @@ function createStockChart(ChartData,title,unit) {
     var endjikan=Storage.get("EndDateforvitasign");
     //console.log(startjikan);
 
-    showthetable(UserId,startjikan,endjikan);
+    showthetable(PatintId,startjikan,endjikan);
   };
 
 
