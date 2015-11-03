@@ -2244,6 +2244,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 .controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicLoading){
+
   
   
   // $scope.PhoneNo="";
@@ -2263,7 +2264,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.test = function()
   {
     loading();
-    // //console.log($scope.PhoneNo.pn);
+    // console.log($scope.PhoneNo.pn);
     // if($scope.PhoneNo.pn.length!=11) {
     //  $scope.logStatus='请输入11位手机号';
     //  hide()
@@ -2277,7 +2278,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //  Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
     //    function(data){
     //      id=data.result;
-    //      //console.log(id);
+    //      console.log(id);
     //      if(id == null) {
     //        $scope.logStatus='未注册的手机号';
     //        hide()
@@ -2288,7 +2289,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //        $state.go('new.basicinfo') 
     //      }
     //    },function(e){
-    //      //console.log(e);
+    //      console.log(e);
     //    });
     //    } 
     // }
@@ -2303,33 +2304,34 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
         function(data){
           id=data.result;
-          //console.log(id);
+          console.log(id);
           if(id == null) {
-            $scope.logStatus='正在注册';
-            Dict.GetNo('17','{TargetDate}').then(
-              function(data){
-                var PatientID=(data.result);
-                //console.log(PatientID);
-                Storage.set('PatientID',PatientID);
-                hide();
-                $state.go('addpatient.basicinfo')
-              },function(e){
-                //console.log(e);
-              });     
+            // $scope.logStatus='正在注册';
+            // Dict.GetNo('17','{TargetDate}').then(
+            //  function(data){
+            //    var PatientID=(data.result);
+            //    console.log(PatientID);
+            //    Storage.set('PatientID',PatientID);
+            //    hide();
+            //    $state.go('new.basicinfo')
+            //  },function(e){
+            //    console.log(e);
+            //  }); 
+            hide();   
+            $state.go('new.basicinfo')
           }
           else{
             Storage.set('PatientID',id);
             hide();
-            $state.go('addpatient.basicinfo') 
+            $state.go('new.basicinfo') 
           }
         },function(e){
-          //console.log(e);
+          console.log(e);
         });     
     }
   }
 
 }])
-
 .controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading){
   $scope.scrollBottom = function() {
       $ionicScrollDelegate.scrollBottom(true);
@@ -2362,24 +2364,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "piTerminalIP": "sample string 12",
     "piDeviceType": 13
     };
-    $scope.InsuranceTypes={
-      "Code":"",
-      "Name":"",
-      "InputCode":"",
-      "Redundance":""
-      };
-    Dict.GetInsuranceType().then(
-      function(data){
-        $scope.InsuranceTypes=data;
-        //console.log($scope.InsuranceTypes);
-      },function(e){
-      //console.log(e);
-    });
+    
+
+    
+    
+
+    
+
   $scope.users.UserId=Storage.get('PatientID');
+  
+
   $scope.B="点击设置";
       var datePickerCallback = function (val) {
         if (typeof(val) === 'undefined') {
-          //console.log('No date selected');
+          console.log('No date selected');
         } else {
         $scope.datepickerObject.inputDate=val;
           var dd=val.getDate();
@@ -2391,6 +2389,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
     };
 
+  $scope.users.Birthday=Storage.get('b');
+  // console.log($scope.users.Birthday);
   var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
   var weekDaysList=["日","一","二","三","四","五","六"];
   $scope.datepickerObject = {
@@ -2416,8 +2416,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       datePickerCallback(val);
     }
   };  
+
+    $scope.patientid = Storage.get('PatientID');
     $scope.HomeAddress={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact002_2",
       "ItemSeq":1,
@@ -2429,10 +2431,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.HomeAddress.Patient=Storage.get('PatientID');
+    // $scope.HomeAddress.Patient=Storage.get('PatientID');
 
   $scope.PhoneNumber={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact002_1",
       "ItemSeq":1,
@@ -2444,10 +2446,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.PhoneNumber.Patient=Storage.get('PatientID');
+    // $scope.PhoneNumber.Patient=Storage.get('PatientID');
 
     $scope.Nationality={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact001_3",
       "ItemSeq":1,
@@ -2459,10 +2461,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.Nationality.Patient=Storage.get('PatientID');
+    // $scope.Nationality.Patient=Storage.get('PatientID');
 
     $scope.Occupation={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact001_2",
       "ItemSeq":1,
@@ -2474,10 +2476,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.Occupation.Patient=Storage.get('PatientID');
+    // $scope.Occupation.Patient=Storage.get('PatientID');
 
     $scope.EmergencyContact={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact002_3",
       "ItemSeq":1,
@@ -2489,11 +2491,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.EmergencyContact.Patient=Storage.get('PatientID');
+    // $scope.EmergencyContact.Patient=Storage.get('PatientID');
 
 
     $scope.EmergencyContactPhoneNumber={
-      "Patient":"",
+      "Patient":$scope.patientid,
       "CategoryCode":"Contact",
       "ItemCode":"Contact002_4",
       "ItemSeq":1,
@@ -2505,7 +2507,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "TerminalIP":"string",
       "DeviceType":1
     };
-    $scope.EmergencyContactPhoneNumber.Patient=Storage.get('PatientID');
+
+    // $scope.EmergencyContactPhoneNumber.Patient=Storage.get('PatientID');
   // var timeout = function() {
   //  var Timeout = $ionicPopup.alert({
     //    title: '连接超时',
@@ -2513,12 +2516,97 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //    okText: '关闭',           
     //  });
     //  Timeout.then(function(res) {
-    //    //console.log('success');
+    //    console.log('success');
     //  });
     //  $timeout(function(){
     //    Timeout.close();
     //  },5000)
   // };
+  
+      
+  Dict.Type("AboBloodType").then(
+      function(data){
+        $scope.BloodTypes=[];
+        for(var i=0;i<5;i++){
+          $scope.BloodTypes[i]=data[i].Name;
+        };
+        // console.log($scope.BloodTypes);
+        if($scope.BloodTypes!=""){
+          Dict.Type("SexType").then(
+            function(data){
+              $scope.Genders=[];
+              for(var i=0;i<4;i++){
+                $scope.Genders[i]=data[i].Name;
+              }
+              // console.log($scope.Genders);
+              // console.log(data);
+              if($scope.Genders!=""){
+                Dict.GetInsuranceType().then(
+                  function(data){
+                    $scope.InsuranceTypes=[];
+                    for(var i=0;i<24;i++){
+                      $scope.InsuranceTypes[i]=data[i].Name;
+                    };
+                    // console.log($scope.InsuranceTypes);
+                  
+                    // $scope.InsuranceTypes=data.Name;
+                    // console.log($scope.InsuranceTypes);
+                    if($scope.InsuranceTypes!=""){
+                      console.log($scope.users.UserId);
+                      if($scope.users.UserId!=null){
+                      BasicInfo.GetBasicInfo($scope.users.UserId).then(
+                        function(data){
+                          console.log(data);
+                          
+                          $scope.users.UserName=data.UserName;
+                          if(data.Birthday!=null && data.Birthday!=NaN){
+                            $scope.users.Birthday=data.Birthday;
+                            $scope.users.Birthday=parseInt($scope.users.Birthday);
+                          }
+                          $scope.users.Gender=data.Gender;
+                          $scope.users.BloodType=data.BloodType;
+                          $scope.users.IDNo=data.IDNo;
+                          $scope.users.DoctorId=data.DoctorId;
+                          $scope.users.InsuranceType=data.InsuranceType;
+                          console.log($scope.users);
+                          
+                          if(data!=""){
+                            BasicDtlInfo.GetBasicDtlInfo($scope.users.UserId).then(
+                              function(data){
+                                console.log(data);
+                                $scope.HomeAddress.Value=data.HomeAddress;
+                                if(data.PhoneNumber!="") $scope.PhoneNumber.Value=data.PhoneNumber;
+                                $scope.Nationality.Value=data.Nationality;
+                                $scope.Occupation.Value=data.Occupation;
+                                $scope.EmergencyContact.Value=data.EmergencyContact;
+                                $scope.EmergencyContactPhoneNumber.Value=data.EmergencyContactPhoneNumber;
+                              },function(e){
+                                console.log(e);
+                              });
+                          }
+                        },function(e){
+                          console.log(e);
+                        });
+                    }
+
+                    }
+                    
+
+                    
+                  },function(e){
+                  console.log(e);
+                });
+              }
+            },function(e){
+              console.log(e);
+          });
+        }
+    },function(e){
+        console.log(e);
+    });
+
+  
+  
   var detail = [$scope.HomeAddress,$scope.PhoneNumber,$scope.Nationality,$scope.Occupation,$scope.EmergencyContact,$scope.EmergencyContactPhoneNumber];
   
 
@@ -2540,17 +2628,31 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     
 
   $scope.save = function(){
-    if($scope.users.InsuranceType!='') $scope.users.InsuranceType = $scope.users.InsuranceType.Name;
+    
+$scope.users.Birthday=Storage.get('b');
+// $scope.PhoneNumber.Value=Storage.get('phoneno');
+    // if(){
+      // if($scope.users.InsuranceType!='') $scope.users.InsuranceType = $scope.users.InsuranceType.Name;
+    
+      // if($scope.users.Gender!='') $scope.users.Gender = $scope.users.Gender.Name;
+      // if($scope.users.BloodType!='') $scope.users.BloodType = $scope.users.BloodType.Name;
+    // }
     loading();
-    // 男用1表示，女用0表示
-    if ($scope.users.Gender == '男') $scope.users.Gender=1;
-    if($scope.users.Gender == '女') $scope.users.Gender=0;
+    
+    if($scope.users.Gender =='男性' || $scope.users.Gender == '1') $scope.users.Gender=1;
+    if($scope.users.Gender =='女性' || $scope.users.Gender == '2') $scope.users.Gender=2;
+    if($scope.users.Gender =='其他' || $scope.users.Gender == '3') $scope.users.Gender=3;
+    if($scope.users.Gender =='未知' || $scope.users.Gender == '4') $scope.users.Gender=4;
 
-    if($scope.users.BloodType == 'A型') $scope.users.BloodType=1;
-    if($scope.users.BloodType == 'B型') $scope.users.BloodType=2;
-    if($scope.users.BloodType == 'O型') $scope.users.BloodType=3;
-    if($scope.users.BloodType == 'AB型') $scope.users.BloodType=4;
-    if($scope.users.BloodType == '其他') $scope.users.BloodType=5;
+    // // 男用1表示，女用0表示
+    // if ($scope.users.Gender == '男') $scope.users.Gender=1;
+    // if($scope.users.Gender == '女') $scope.users.Gender=0;
+    
+    if($scope.users.BloodType == 'A型' || $scope.users.BloodType == '1') $scope.users.BloodType=1;
+    if($scope.users.BloodType == 'B型' || $scope.users.BloodType == '2') $scope.users.BloodType=2;
+    if($scope.users.BloodType == 'O型' || $scope.users.BloodType == '3') $scope.users.BloodType=3;
+    if($scope.users.BloodType == 'AB型' || $scope.users.BloodType =='4') $scope.users.BloodType=4;
+    if($scope.users.BloodType == '其他' || $scope.users.BloodType =='5') $scope.users.BloodType=5;
     if($scope.users.IDNo.length!=15 && $scope.users.IDNo.length!=18 && $scope.users.IDNo!=''){
       $scope.logStatus='请输入正确的身份证号';
       hide();
@@ -2575,7 +2677,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         okText: '确定',           
       });
       alertS.then(function(res) {
-        //console.log('success');
+        console.log('success');
 
       });
       $timeout(function(){
@@ -2590,106 +2692,284 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         okText: '确定',
       });
       alertF.then(function(res){
-        //console.log('failed');
+        console.log('failed');
       });
       
     };
-    $scope.users.Birthday=Storage.get('b');
+    
 
   //  Users.BasicDtlInfo($scope.HomeAddress).then(
   //    function(data){
-  //      //console.log($scope.HomeAddress.Patient);
-  //      //console.log($scope.HomeAddress.Value);
+  //      console.log($scope.HomeAddress.Patient);
+  //      console.log($scope.HomeAddress.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.PhoneNumber).then(
   //    function(data){
-  //      //console.log($scope.PhoneNumber.Patient);
-  //      //console.log($scope.PhoneNumber.Value);
+  //      console.log($scope.PhoneNumber.Patient);
+  //      console.log($scope.PhoneNumber.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.Nationality).then(
   //    function(data){
-  //      //console.log($scope.Nationality.Patient);
-  //      //console.log($scope.Nationality.Value);
+  //      console.log($scope.Nationality.Patient);
+  //      console.log($scope.Nationality.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.Occupation).then(
   //    function(data){
-  //      //console.log($scope.Occupation.Patient);
-  //      //console.log($scope.Occupation.Value);
+  //      console.log($scope.Occupation.Patient);
+  //      console.log($scope.Occupation.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.EmergencyContact).then(
   //    function(data){
-  //      //console.log($scope.EmergencyContact.Patient);
-  //      //console.log($scope.EmergencyContact.Value);
+  //      console.log($scope.EmergencyContact.Patient);
+  //      console.log($scope.EmergencyContact.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.EmergencyContactPhoneNumber).then(
   //    function(data){
-  //      //console.log($scope.EmergencyContactPhoneNumber.Patient);
-  //      //console.log($scope.EmergencyContactPhoneNumber.Value);
+  //      console.log($scope.EmergencyContactPhoneNumber.Patient);
+  //      console.log($scope.EmergencyContactPhoneNumber.Value);
   //    },function(e){
-  //      //console.log(e);
+  //      console.log(e);
   //    });
-      Users.BasicInfo($scope.users).then(
+    var p='';
+    // console.log($scope.users.UserId);
+    if($scope.users.UserId!=null){
+      console.log('if')
+      Users.Roles($scope.users.UserId).then(
         function(data){
-          //console.log($scope.users.InsuranceType);
-          //console.log($scope.users.Gender);
-          //console.log($scope.users.BloodType);
-          //console.log($scope.users.Birthday);
+          // console.log(data);
+          var l=data.length;
+          
+          for(var i=0;i<l;i++) {
+            if (data[i]=='Patient'){
+              p=1;
+              console.log(p);
+            }
+          };
+          if(p==1){
+            Users.BasicInfo($scope.users).then(
+        function(data){
+          console.log($scope.users.InsuranceType);
+          console.log($scope.users.Gender);
+          console.log($scope.users.BloodType);
+          console.log($scope.users.Birthday);
           
           if(data.result=='数据插入成功'){
             Users.BasicDtlInfo(detail).then(
               function(data){
-                //console.log($scope.HomeAddress.Patient);
-                //console.log($scope.HomeAddress.Value);
-
-                //console.log($scope.PhoneNumber.Patient);
-                //console.log($scope.PhoneNumber.Value);
-
-                //console.log($scope.Nationality.Patient);
-                //console.log($scope.Nationality.Value);
-
-                //console.log($scope.Nationality.Patient);
-                //console.log($scope.Nationality.Value);
-
-                //console.log($scope.EmergencyContact.Patient);
-                //console.log($scope.EmergencyContact.Value);
-
-                //console.log($scope.EmergencyContactPhoneNumber.Patient);
-                //console.log($scope.EmergencyContactPhoneNumber.Value);
+                
                 
                 hide();
                 a();
-                $state.go('addpatient.clinicinfo');
+                $state.go('new.clinicinfo');
               },function(e){
-                //console.log($scope.users.InsuranceType);
-                //console.log($scope.users.Gender);
-                //console.log($scope.users.BloodType);
-                //console.log($scope.users.Birthday);
-                //console.log(e);
+                
+                console.log(e);
                 hide();
                 a();
-                $state.go('addpatient.clinicinfo');
+                $state.go('new.clinicinfo');
               });
             }
           },function(e){
-            //console.log(e);
+            console.log($scope.users);
+            console.log($scope.users.Birthday);
+            console.log(e);
+          
             hide();
             b();
           });
+          }
+          if(p==0){
+            Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
+        function(data){
+          if(data.result=='注册成功'){
+            Users.UID('PhoneNo',$scope.PhoneNo).then(
+              function(data){
+                $scope.patientid=data.result;
+                $scope.users.UserId=data.result;
+                console.log($scope.patientid);
+                console.log($scope.users.UserId);
+                if($scope.users.UserId!=null){
+                  Users.BasicInfo($scope.users).then(
+                    function(data){
+                      
+                      console.log($scope.users.Birthday);
+                      // $timeout(2000);
+                      if(data.result=='数据插入成功'){
+                        Users.BasicDtlInfo(detail).then(
+                          function(data){
+                            hide();
+                            a();
+                            $state.go('new.clinicinfo');
+                          },function(e){
+                            console.log(e);
+                            hide();
+                            a();
+                            $state.go('new.clinicinfo');
+                          });
+                      }
+                    },function(e){
+                      console.log(e);
+                      console.log($scope.users.Birthday);
+                      hide();
+                      b();
+                    });
+                }
+              },function(e){
+                console.log(e);
+              });
+          }
+        },function(e){
+            console.log()
+            console.log(e);
+        });
+          }
+          // console.log('qwrwewerest'+p);别管后4行
+        },function(e){
+            console.log(e);
+        });
+    }
+    else{
+      Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
+        function(data){
+          if(data.result=='注册成功'){
+            Users.UID('PhoneNo',$scope.PhoneNo).then(
+              function(data){
+                $scope.patientid=data.result;
+                $scope.users.UserId=data.result;
+                console.log($scope.patientid);
+                console.log($scope.users.UserId);
+                if($scope.users.UserId!=null){
+                  Users.BasicInfo($scope.users).then(
+                    function(data){
+                      
+                      console.log($scope.users.Birthday);
+                      // $timeout(2000);
+                      if(data.result=='数据插入成功'){
+                        Users.BasicDtlInfo(detail).then(
+                          function(data){
+                            hide();
+                            a();
+                            $state.go('new.clinicinfo');
+                          },function(e){
+                            console.log(e);
+                            hide();
+                            a();
+                            $state.go('new.clinicinfo');
+                          });
+                      }
+                    },function(e){
+                      console.log(e);
+                      console.log($scope.users);
+                      console.log($scope.users.Birthday);
+                      hide();
+                      b();
+                    });
+                }
+              },function(e){
+                console.log(e);
+              });
+          }
+        },function(e){
+            console.log()
+            console.log(e);
+        });
+          
+    }
+    // console.log(p);
+    // if(p!=1){
+    //  Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
+    //    function(data){
+    //      if(data.result=='注册成功'){
+    //        Users.UID('PhoneNo',$scope.PhoneNo).then(
+    //          function(data){
+    //            $scope.patientid=data.result;
+    //            $scope.users.UserId=data.result;
+    //            console.log($scope.patientid);
+    //            console.log($scope.users.UserId);
+    //            if($scope.users.UserId!=null){
+    //              Users.BasicInfo($scope.users).then(
+    //                function(data){
+                      
+    //                  console.log($scope.users.Birthday);
+    //                  // $timeout(2000);
+    //                  if(data.result=='数据插入成功'){
+    //                    Users.BasicDtlInfo(detail).then(
+    //                      function(data){
+    //                        hide();
+    //                        a();
+    //                        $state.go('new.clinicinfo');
+    //                      },function(e){
+    //                        console.log(e);
+    //                        hide();
+    //                        a();
+    //                        $state.go('new.clinicinfo');
+    //                      });
+    //                  }
+    //                },function(e){
+    //                  console.log(e);
+    //                  console.log($scope.users.Birthday);
+    //                  hide();
+    //                  b();
+    //                });
+    //            }
+    //          },function(e){
+    //            console.log(e);
+    //          });
+    //      }
+    //    },function(e){
+    //        console.log()
+    //        console.log(e);
+    //    });
+    // // }
+      // },function(e){
+      //  console.log(e);
+      // });
+    
+    // else{Users.BasicInfo($scope.users).then(
+    //    function(data){
+    //      console.log($scope.users.InsuranceType);
+    //      console.log($scope.users.Gender);
+    //      console.log($scope.users.BloodType);
+    //      console.log($scope.users.Birthday);
+          
+    //      if(data.result=='数据插入成功'){
+    //        Users.BasicDtlInfo(detail).then(
+    //          function(data){
+                
+                
+    //            hide();
+    //            a();
+    //            $state.go('new.clinicinfo');
+    //          },function(e){
+                
+    //            console.log(e);
+    //            hide();
+    //            a();
+    //            $state.go('new.clinicinfo');
+    //          });
+    //        }
+    //      },function(e){
+    //        console.log(e);
+    //      console.log($scope.users.Birthday);
+    //        hide();
+    //        b();
+    //      });
+    // }
   }
 
   $scope.reset = function(){
