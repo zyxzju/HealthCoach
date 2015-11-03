@@ -443,11 +443,11 @@ $stateProvider
     }
     
   })
- .state('manage..ModuleListDetail',{
+ .state('manage.ModuleListDetail',{
     url:'/ModuleInfo/:Module/:ListName',
     views:{
       "ModuleInfo":{
-        templateUrl:'partials/managepatient/ModuleListInfoDetail.html',
+        templateUrl:'partials/managepatient/ModuleInfoListDetail.html',
         controller:'ModuleInfoListDetailCtrl'
       }
     }
