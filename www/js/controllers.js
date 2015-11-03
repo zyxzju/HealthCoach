@@ -3683,7 +3683,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //获取计划列表
     function GetPlanList()
     {
-        var PatientId = "P005";
+        var PatientId = localStorage.getItem("PatientID");
         var promise = PlanInfo.GetPlanList(PatientId, "NULL", "", 0);  //PatientId, PlanNo, Module, Status
         promise.then(function(data) {
             for (var i=0; i< data.length; i++)
@@ -3720,7 +3720,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     function SetPlan(PlanNo)
     {       
-        var PatientId = "P005";
+        var PatientId = localStorage.getItem("PatientID");
         var StartDate = TimeFormat(new Date()); 
         var EndDate = new Array("9999/12/31", "99991231");
         var Module = "M1";
@@ -4156,7 +4156,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
-                              if (Storage.get("isManage") == "No")
+                              if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/taskList";
                               }
@@ -4170,7 +4170,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     }
                     else
                     {
-                         if (Storage.get("isManage") == "No")
+                         if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/taskList";
                               }
@@ -4192,7 +4192,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        if (Storage.get("isManage") == "No")
+                        if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/taskList";
                               }
@@ -4206,7 +4206,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }
             else
             {
-                 if (Storage.get("isManage") == "No")
+                 if (localStorage.getItem("isManage") == "No")
                   {
                     window.location.href = "#/addpatient/taskList";
                   }
@@ -4471,7 +4471,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               {
                   if (data.result == "数据插入成功")
                   {
-                    if (Storage.get("isManage") == "No")
+                    if (localStorage.getItem("isManage") == "No")
                     {
                       window.location.href = "#/addpatient/taskList";  
                     }
@@ -4494,7 +4494,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
                 if ((data.result == "数据删除成功") || (data.result == "数据未找到"))
                 {
-                    if (Storage.get("isManage") == "No")
+                    if (localStorage.getItem("isManage") == "No")
                     {
                       window.location.href = "#/addpatient/taskList";  
                     }
@@ -4629,7 +4629,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
-                              if (Storage.get("isManage") == "No")
+                              if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/TD";
                               }
@@ -4644,7 +4644,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     }
                     else
                     {
-                         if (Storage.get("isManage") == "No")
+                         if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/TD";
                               }
@@ -4666,7 +4666,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        if (Storage.get("isManage") == "No")
+                        if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/TD";
                               }
@@ -4680,7 +4680,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }
             else
             {
-                 if (Storage.get("isManage") == "No")
+                 if (localStorage.getItem("isManage") == "No")
                               {
                                 window.location.href = "#/addpatient/TD";
                               }
