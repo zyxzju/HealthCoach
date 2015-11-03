@@ -1592,6 +1592,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var UserId = Storage.get('UID');
   var PatientID = Storage.get('PatientID');
   var Module = $stateParams.Module;
+  $scope.test = {"test":{"Type":"1","Name":"是"}};
+
   if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
   {
     var ListName = $stateParams.ListName;
@@ -1599,16 +1601,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.DietHabbitValue = "请选择饮食习惯";
   $scope.DietHabbitData = "";
   $scope.ListName = ListName;
-  var i=1;
-  var j=1;
   $scope.HypertensionDrugArray = [{"ID":1,"Type":"","Name":""}];
   $scope.HypertensionDrugData = [{"ID":1,"Type":"","Name":""}];
   $scope.DiabetesDrugArray = [{"ID":1,"Type":"","Name":""}];
   $scope.DiabetesDrugData = [{"ID":1,"Type":"","Name":""}];
   $scope.obj = [];
   $scope.dflag = [];
+  var a=0;
+  var b=0;
   $scope.HTypeName = "";
   $scope.DTypeName = "";
+  $scope.HDrugName = "";
+  $scope.DDrugName = "";
   $scope.onClickBackward1 = function(){
       $state.go('addpatient.ModuleInfo');
   };
@@ -1636,6 +1640,80 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         
     }
   };
+
+  var getYesNoValue = function(Type){
+    for (var i=0;i<$scope.YesNoType.length;i++)
+    {
+      if (Type == $scope.YesNoType[i].Type)
+      {
+        return $scope.YesNoType[i];
+      }
+    }
+  };
+
+  var getDrinkFrequencyValue = function(Type){
+    for (var i=0;i<$scope.DrinkFrequency.length;i++)
+    {
+      if (Type == $scope.DrinkFrequency[i].Type)
+      {
+        return $scope.DrinkFrequency[i];
+      }
+    }
+  };
+
+  var getHType = function(Type){
+    for (var i=0;i<$scope.HTypeName.length;i++)
+    {
+      if (Type == $scope.HTypeName[i].Type)
+      {
+        return $scope.HTypeName[i];
+      }
+    }
+  };
+
+  var getHName = function(Type1,Type2,index){
+    Users.getHyperTensionDrugNameByType(Type1).then(function(data,status){
+      $scope.HypertensionDrugArray[index].Name = data;
+      for (var i=0;i<$scope.HypertensionDrugArray[index].Name.length;i++)
+      {
+        if (Type2 == $scope.HypertensionDrugArray[index].Name[i].Code)
+        {
+          $scope.HypertensionDrugData[index].Name = $scope.HypertensionDrugArray[index].Name[i];
+          break;
+        }
+      }
+    },function(data){
+     $scope.getStatus = status;
+    });
+      
+  };
+
+  var getDType = function(Type){
+    for (var i=0;i<$scope.DTypeName.length;i++)
+    {
+      if (Type == $scope.DTypeName[i].Type)
+      {
+        return $scope.DTypeName[i];
+      }
+    }
+  };
+
+  var getDName = function(Type1,Type2,index){
+    Users.getDiabetesDrugNameByType(Type1).then(function(data,status){
+      $scope.DiabetesDrugArray[index].Name = data;
+      for (var i=0;i<$scope.DiabetesDrugArray[index].Name.length;i++)
+      {
+        if (Type2 == $scope.DiabetesDrugArray[index].Name[i].Code)
+        {
+          $scope.DiabetesDrugData[index].Name = $scope.DiabetesDrugArray[index].Name[i];
+          break;
+        }
+      }
+    },function(data){
+     $scope.getStatus = status;
+    });
+  };
+
   // $http.get('partials/data.json').success(function(data) {
   //     $scope.ModuleInfoList = data;
   // });
@@ -1654,11 +1732,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.getStatus = status;
   });
 
+  Users.getYesNoType().then(function(data,status){
+    $scope.YesNoType = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
+  Users.getDrinkFrequency().then(function(data,status){
+    $scope.DrinkFrequency = data;
+  },function(data,status){
+    $scope.getStatus = status;
+  });
+
   Users.getquestionnaire(PatientID,Module).then(function(data,status){
     $scope.ModuleInfoList = data;
     $scope.ModuleInfoListDetail = data;
-    var a=0;
-    var b=0;
+    var temparray = [];
+    var count = 0;
     for (var i=0;i<$scope.ModuleInfoListDetail.length;i++)
     {
       
@@ -1670,45 +1760,51 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstHypertensionDrug")
         {
+          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
+          {
+            a = $scope.ModuleInfoListDetail[i].ItemSeq - 1;
+            temparray.push(i);
+          }
           if (a==0) {
-            $scope.HypertensionDrugData[a].Type = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])};
-            $scope.HypertensionDrugData[a].Name = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content};
-            a++;
+            $scope.HypertensionDrugData[a].Type = getHType($scope.ModuleInfoListDetail[i].Value.split(',')[0]);
+            getHName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1],a);
           }
           else
           {
             $scope.HypertensionDrugArray.push({"ID":a+1,"Type":"","Name":""});
-            $scope.HypertensionDrugData.push({"ID":a+1,"Type":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getHTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])},"Name":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content}});
-          }
-          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
-          {
-            $scope.ModuleInfoListDetail.splice(i, 1);
+            $scope.HypertensionDrugArray[a].Type = $scope.HypertensionDrugArray[a-1].Type;
+            $scope.HypertensionDrugData.push({"ID":a+1,"Type":getHType($scope.ModuleInfoListDetail[i].Value.split(',')[0]),"Name":""});
+            getHName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1],a);
           }
         }
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "Cm.MstDiabetesDrug")
         {
+          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
+          {
+            b = $scope.ModuleInfoListDetail[i].ItemSeq - 1;
+            temparray.push(i);
+          }
           if (b==0) {
-            $scope.DiabetesDrugData[b].Type = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])};
-            $scope.DiabetesDrugData[b].Name = {"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content};
-            b++;
+            $scope.DiabetesDrugData[b].Type = getDType($scope.ModuleInfoListDetail[i].Value.split(',')[0]);
+            getDName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1],b);
           }
           else
           {
             $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
-            $scope.DiabetesDrugData.push({"ID":b+1,"Type":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[0],"Name":getDTypeName($scope.ModuleInfoListDetail[i].Value.split(',')[0])},"Name":{"Type":$scope.ModuleInfoListDetail[i].Value.split(',')[1],"Name":$scope.ModuleInfoListDetail[i].Content}});
-          }
-          if ($scope.ModuleInfoListDetail[i].ItemSeq > 1)
-          {
-            $scope.ModuleInfoListDetail.splice(i, 1);
+            $scope.DiabetesDrugArray[a].Type = $scope.DiabetesDrugArray[b-1].Type;
+            $scope.DiabetesDrugData.push({"ID":b+1,"Type":getDType($scope.ModuleInfoListDetail[i].Value.split(',')[0]),"Name":""});
+            getDName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1],b);
+            // $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
+            // $scope.DiabetesDrugData.push({"ID":b+1,"Type":getDType($scope.ModuleInfoListDetail[i].Value.split(',')[0]),"Name":getDName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1])});
           }
         }
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "DrinkFrequency")
         {
-          $scope.ModuleInfoListDetail[i].Description = {"Type":$scope.ModuleInfoListDetail[i].Value,"Name":$scope.ModuleInfoListDetail[i].Content};
+          $scope.ModuleInfoListDetail[i].Description = getDrinkFrequencyValue($scope.ModuleInfoListDetail[i].Value);
         }
         else if ($scope.ModuleInfoListDetail[i].OptionCategory == "YesNoType")
         {
-          $scope.ModuleInfoListDetail[i].Description = {"Type":$scope.ModuleInfoListDetail[i].Value,"Name":$scope.ModuleInfoListDetail[i].Content};
+          $scope.ModuleInfoListDetail[i].Description = getYesNoValue($scope.ModuleInfoListDetail[i].Value);
         }
         else 
         {
@@ -1716,17 +1812,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
       }
     }
+    for (var i=0;i<temparray.length;i++)
+    {
+      $scope.ModuleInfoListDetail.splice(temparray[i]-count,1);
+      count++;
+    }
+    console.log($scope.ModuleInfoListDetail);
   },function(data,status){
     $scope.getStatus = status;
   });
 
   // $scope.YesNoType = [{"Type":"1","Name":"是"},{"Type":"2","Name":"否"},{"Type":"3","Name":"未知"}];
   // $timeout(function() { 
-  Users.getYesNoType().then(function(data,status){
-    $scope.YesNoType = data;
-  },function(data,status){
-    $scope.getStatus = status;
-  });
+  
   // }, 200);
 
   // $timeout(function() { 
@@ -1754,9 +1852,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     });
   };
 
-  $scope.getDiabetesdurgName = function(obj){
-    $scope.DiabetesDrugArray[0].Name = obj.Name;
-  };
 
   // $timeout(function() { 
   Users.getDietHabbit().then(function(data,status){
@@ -1768,11 +1863,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // }, 200);
 
   // $timeout(function() { 
-  Users.getDrinkFrequency().then(function(data,status){
-    $scope.DrinkFrequency = data;
-  },function(data,status){
-    $scope.getStatus = status;
-  });
+  
   // }, 150);
 
   //[{Patient:Patient, CategoryCode:"M", ItemCode:ItemCode, ItemSeq:ItemSeq, Value:Value, Description: "", SortNo:ItemSeq, revUserId: "sample string 4",TerminalName: "sample string 5", TerminalIP: "sample string 6",DeviceType: 1}]
@@ -1801,7 +1892,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         } 
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
         {
-          for (var m = 0; m < i; m++)
+          for (var m = 0; m < a; m++)
           {
             if ($scope.HypertensionDrugData[m].Name.Type !="")
             {
@@ -1812,7 +1903,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstDiabetesDrug")
         {
-          for (var n = 0; n < j; n++)
+          for (var n = 0; n < b; n++)
           {
             if ($scope.DiabetesDrugData[n].Name.Type !="")
             {
@@ -1922,37 +2013,37 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   
   $scope.addhyperdrug = function(){
-    i++;
-    $scope.HypertensionDrugArray.push({"ID":i,"Type":"","Name":""});
-    $scope.HypertensionDrugData.push({"ID":i,"Type":"","Name":""});
+    a++;
+    $scope.HypertensionDrugArray.push({"ID":a+1,"Type":"","Name":""});
+    $scope.HypertensionDrugData.push({"ID":a+1,"Type":"","Name":""});
     Users.getHyperTensionDrugTypeName().then(function(data,status){
-        $scope.HypertensionDrugArray[i-1].Type = data;
+        $scope.HypertensionDrugArray[a].Type = data;
     },function(data,status){
       $scope.getStatus = status;
     }); 
   };
   $scope.deletehyperdrug = function(){
-    if (i >1) {
-      i--;
-      $scope.HypertensionDrugArray.pop({"ID":i,"Type":"","Name":""});
-      $scope.HypertensionDrugData.pop({"ID":i,"Type":"","Name":""});
+    if (a >1) {
+      a--;
+      $scope.HypertensionDrugArray.pop({"ID":a+1,"Type":"","Name":""});
+      $scope.HypertensionDrugData.pop({"ID":a+1,"Type":"","Name":""});
     };
   };
   $scope.adddiabetesdrug = function(){
-    j++;
-    $scope.DiabetesDrugArray.push({"ID":j,"Type":"","Name":""});
-    $scope.DiabetesDrugData.push({"ID":j,"Type":"","Name":""});
+    b++;
+    $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
+    $scope.DiabetesDrugData.push({"ID":b+1,"Type":"","Name":""});
     Users.getDiabetesDrugTypeName().then(function(data,status){
-        $scope.DiabetesDrugArray[j-1].Type = data;
+        $scope.DiabetesDrugArray[b].Type = data;
     },function(data,status){
       $scope.getStatus = status;
     }); 
     };
   $scope.deletediabetesdrug = function(){
-    if (j >1) {
-      j--;
-      $scope.DiabetesDrugArray.pop({"ID":j,"Type":"","Name":""});
-      $scope.DiabetesDrugData.pop({"ID":j,"Type":"","Name":""});
+    if (b >1) {
+      b--;
+      $scope.DiabetesDrugArray.pop({"ID":b+1,"Type":"","Name":""});
+      $scope.DiabetesDrugData.pop({"ID":b+1,"Type":"","Name":""});
     };
   };
 }])
