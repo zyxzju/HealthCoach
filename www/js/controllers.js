@@ -1200,6 +1200,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     maxWidth: 200,
     showDelay: 0
   });
+
   $scope.rankPatients=function(){
     var rank;var propertyName;
     rankList[0]=PatientsListOrigin;
@@ -1336,6 +1337,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   //获取PIDlist并加载10条
   getPIDlist();
+
+  $scope.PIDdetail = function(PID){
+    Storage.set("PatientID",PID);
+  }
 
   $scope.doRefresh =function() {
     if(refreshing==0){
