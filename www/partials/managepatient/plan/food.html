@@ -1,0 +1,24 @@
+<ion-view view-title="建议饮食结构">
+	<ion-nav-buttons side="primary">
+		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
+		</button>
+	</ion-nav-buttons>
+	<ion-content>
+		<div class="list">
+			<div class="item" ng-repeat="item in task.list">
+				<ion-checkbox  ng-model = "item.ControlType">
+	            	{{item.Name}}
+	        	</ion-checkbox>
+	        	<label class="item item-input">
+	    			<span class="input-label">建议摄入量（克）</span>
+	    			<input type="number" ng-model="item.Instruction">
+	  			</label>	 		
+	    	</div>
+	    </div>
+         <div style="text-align:center;padding:20px;">
+			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()">
+			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
+			</button>
+		</div>
+	</ion-content>
+</ion-view>

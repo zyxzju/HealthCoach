@@ -1,0 +1,17 @@
+<ion-view view-title="{{task.Title}}">
+	<ion-nav-buttons side="primary">
+		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
+		</button>
+	</ion-nav-buttons>
+
+	<ion-content>
+		<ion-checkbox ng-model = "item.ControlType" ng-repeat = "item in task.list">
+        {{item.Name}}
+        </ion-checkbox>
+		<div style="text-align:center;padding:20px;">
+        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()"> 
+        <span style="font-size:15px;color:blue;font-weight:bold">确定</span>
+        </button>
+	</ion-content>
+
+</ion-view>

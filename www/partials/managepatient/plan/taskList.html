@@ -1,0 +1,60 @@
+<ion-view view-title="计划设定">
+	<ion-nav-buttons side="primary">
+		<a class="button icon-left ion-chevron-left button-clear button-white" href="#/addpatient/create">
+		</a>
+	</ion-nav-buttons>
+	
+	<ion-content>	
+
+		<div style="font-size:15px;color:blue; padding:10px;text-align:center; font-weight:bold">
+		结束日期
+		</div>
+		<label class="item item-input">
+			<span class="input-label">选择日期</span>
+			<input type="date" ng-model="TaskList.EndDate" ng-change = "SetEndDate()">
+		</label>
+
+		<div style="font-size:15px;color:blue; padding:10px;text-align:center; font-weight:bold">
+		预期目标
+		</div>			
+		
+		<label class="item item-input" style = "width:50%; float:left">
+			<span class="input-label">收缩压</span>
+			<input type="text" ng-model = "TaskList.SBP" ng-blur="SetTarget('SBP')">
+		</label>
+
+		<label class="item item-input" style = "width:50%; float:left">
+			<span class="input-label">舒张压</span>
+			<input type="text" ng-model = "TaskList.DBP" ng-blur="SetTarget('DBP')">
+		</label>			
+		
+		<label class="item item-input">
+			<span class="input-label">血糖</span>
+			<input type="text" ng-model = "TaskList.BloodSugar" ng-blur="SetTarget('BloodSugar')">
+		</label>		
+		
+		<label class="item item-input">
+			<span class="input-label">体重</span>
+			<input type="text" ng-model = "TaskList.Weight" ng-blur="SetTarget('Weight')">
+		</label>		
+		
+		<div style="font-size:15px;color:blue;padding:10px;text-align:center; font-weight:bold">
+		任务
+		</div>
+				
+		<div class="list">
+			<a class="item item-icon-right" ng-repeat="item in TaskList.taskList" href="#/addpatient/{{item.Type}}">         
+	        {{item.Name}}
+	        <div class="markDisplay{{item.InvalidFlag}}">
+	        	<i class="icon ion-ios-checkmark-empty"></i>
+	        </div>
+	        </a>       
+        </div>			
+						
+		<div style="text-align:center;padding:20px;">
+			<button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="onClickBackward()">
+			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
+			</button>
+		</div>					
+	</ion-content>
+</ion-view>
