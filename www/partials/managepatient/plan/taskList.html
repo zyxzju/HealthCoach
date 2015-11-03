@@ -1,6 +1,6 @@
 <ion-view view-title="计划设定">
 	<ion-nav-buttons side="primary">
-		<a class="button icon-left ion-chevron-left button-clear button-white" href="#/addpatient/create">
+		<a class="button icon-left ion-chevron-left button-clear button-white" href="#/manage/create">
 		</a>
 	</ion-nav-buttons>
 	
@@ -43,7 +43,7 @@
 		</div>
 				
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat="item in TaskList.taskList" href="#/addpatient/{{item.Type}}">         
+			<a class="item item-icon-right" ng-repeat="item in TaskList.taskList" href="#/manage/{{item.Type}}">         
 	        {{item.Name}}
 	        <div class="markDisplay{{item.InvalidFlag}}">
 	        	<i class="icon ion-ios-checkmark-empty"></i>

@@ -1,8 +1,8 @@
 <ion-view view-title="计划列表">
-	<ion-nav-buttons side="primary">
+	<!-- <ion-nav-buttons side="primary">
 		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="$onClickBackward()">
 		</button>
-	</ion-nav-buttons>
+	</ion-nav-buttons> -->
 	<ion-nav-buttons side="secondary">
 		<div class="markDisplay{{create.AddFlag}}">
 			<button class="button icon-right" ng-click="CreatePlan()">
@@ -12,14 +12,14 @@
 	</ion-nav-buttons>
 	<ion-content>
 		<div class="list">
-			<a class="item" href="#/addpatient/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
+			<a class="item" href="#/manage/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
 			{{item.PlanNo}}---{{item.PlanName}}：{{item.StartDate}}-{{item.EndDate}}
 	        </a>
     	</div>
-    	<div style="text-align:center;padding:20px;">
+    	<!-- <div style="text-align:center;padding:20px;">
 			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="$onClickBackward()">
 			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
 			</button>
-		</div>
+		</div> -->
     </ion-content>	
 </ionic view>
