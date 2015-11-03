@@ -64,7 +64,7 @@
 			<div class='row responsive-sm'>
 				<div class='col'>	
 					<label class="item item-input">
-						*姓名：<input type="text" ng-model="users.UserName">
+						*姓名：<input type="text" placeholder="张三" ng-model="users.UserName">
 					</label>
 				</div>
 				<div class='col'>
@@ -87,9 +87,10 @@
 						<div class="input-label">
 							*性别
 						</div>
-						<select ng-model="users.Gender">
-							<option selected>男</option>
-							<option>女</option>
+						<select ng-model="users.Gender" ng-options="Gender for Gender in Genders">
+							<option selected value="">请选择</option>
+							<!-- <option selected>男</option>
+							<option>女</option> --> 
 						</select>
 					</label>
 				</div>
@@ -98,12 +99,13 @@
 						<div class="input-label">
 							*血型
 						</div>
-						<select ng-model="users.BloodType">
-							<option>A型</option>
+						<select ng-model="users.BloodType" ng-options="BloodType for BloodType in BloodTypes">
+							<option selected value="">请选择</option>
+							<!-- <option>A型</option>
 							<option>B型</option>
 							<option>O型</option>
 							<option>AB型</option>
-							<option>其他</option>
+							<option>其他</option> -->
 						</select>
 					</label>
 				</div>
@@ -119,7 +121,7 @@
 						<div class="input-label">
 							*医保类型
 						</div>
-						<select ng-model="users.InsuranceType" ng-options="InsuranceType.Name for InsuranceType in InsuranceTypes">
+						<select ng-model="users.InsuranceType" ng-options="InsuranceType for InsuranceType in InsuranceTypes">
 							<option selected value="">请选择</option>
 
 							<!-- <option>医保</option>
@@ -152,7 +154,7 @@
 				</div>
 			</div>	
 		</div>
-	</div>
+	</div><br>
 		
 		
 		
@@ -205,6 +207,12 @@
 					</label>
 				</div>
 			</div>
+
+			<div class='row responsive-sm'>
+	  			<div class='col col-25'></div>
+	  			<div class='col col-25'><p style="color:#FF0000">{{logStatus}}</p>
+	  			</div>
+	  		</div>
 		</div>
 	</div><br>
 	<div class='row responsive-sm'>
@@ -222,3 +230,14 @@
 	
 	</ion-content>
 </ion-view>
+		
+		
+		
+		
+		<!-- <label class="item item-input">
+			身高(cm)：<input type="text" ng-model="Height">
+		</label>
+		<label class="item item-input">
+			体重(kg)：<input type="text" ng-model="Weight">
+		</label> -->
+	

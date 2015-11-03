@@ -90,7 +90,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:20000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
+      
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+
       setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
 		})
 	}
@@ -114,6 +116,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           getDietHabbit:{method:'GET',params:{route: 'Type/DietHabbit'},isArray:true, timeout: 10000},
           getDrinkFrequency:{method:'GET',params:{route: 'Type/DrinkFrequency'},isArray:true, timeout: 10000},
           GetInsuranceType:{method:'GET',isArray:true, params:{route:'GetInsuranceType'},timeout:10000},
+          Type:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
           GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000}
     })
   }
@@ -124,7 +127,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 // GetSignsDetailByPeriod: {method:'GET', params:{route: 'VitalSigns'}, timeout: 10000}
               });
   };
-
+  var BasicDtlInfo = function () {
+      return $resource(CONFIG.baseUrl + ':path/:UserId/BasicDtlInfo',{path:'Users',UserId:'@UserId'},
+      { 
+        GetBasicDtlInfo:{method:'GET',timeout:10000}
+      })
+    };
   var HJZYYID = function () {//ZXF
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetLatestHUserIdByHCode',UserId:"@UserId",HospitalCode:'@HospitalCode'},
         {
@@ -253,6 +261,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.Service = Service();
         serve.Dict = Dict();
         serve.BasicInfo = BasicInfo();
+        serve.BasicDtlInfo = BasicDtlInfo();
         serve.HJZYYID = HJZYYID();
         serve.ClinicalInfoList = ClinicalInfoList();
         serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -271,6 +280,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.Service = Service();
     serve.Dict = Dict();
     serve.BasicInfo = BasicInfo();
+    serve.BasicDtlInfo = BasicDtlInfo();
     serve.HJZYYID = HJZYYID();
     serve.ClinicalInfoList = ClinicalInfoList();
     serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -1108,6 +1118,22 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   }
+
+  self.Type = function(_Category){
+    var deferred = $q.defer();
+    Data.Dict.Type({Category:_Category},function (data,headers) {
+      deferred.resolve(data);
+    },function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+ 
+
+
+
+
+
   self.GetNo = function(_NumberingType,_TargetDate){
     var deferred = $q.defer();
     Data.Dict.GetNo({NumberingType:_NumberingType,TargetDate:_TargetDate},function (data,headers) {
@@ -1240,6 +1266,21 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   
+  return self;
+}])
+
+// LZN 20151103
+.factory('BasicDtlInfo',['$q','$http','Data',function($q,$http,Data){
+  var self = this;
+  self.GetBasicDtlInfo = function(_UserId){
+    var deferred = $q.defer();
+    Data.BasicDtlInfo.GetBasicDtlInfo({UserId:_UserId},function (data,headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
   return self;
 }])
 
