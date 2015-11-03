@@ -1,9 +1,10 @@
-<ion-view view-title="{{DoctorName}}" id = "userMessagesView">    
+<ion-view view-title="{{PatientName}}" id = "userMessagesView">    
     <ion-content class="padding" start-y="120">
         <div ng-repeat="item in Dialog">
             <my-smsdrt time="{{item.SendDateTime}}" content="{{item.Content}}" type="{{item.IDFlag}}" face="{{item.IDFlag === 'Send' && myImage || imageURL}}"></my-smsdrt> 
-        </div>      
-    </ion-content>      
+        </div>
+        <br><br>      
+    </ion-content>     
     <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
         <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
             <label class="item-input-wrapper">
