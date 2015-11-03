@@ -2318,12 +2318,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             //    console.log(e);
             //  }); 
             hide();   
-            $state.go('new.basicinfo')
+            $state.go('addpatient.basicinfo')
           }
           else{
             Storage.set('PatientID',id);
             hide();
-            $state.go('new.basicinfo') 
+            $state.go('addpatient.basicinfo') 
           }
         },function(e){
           console.log(e);
@@ -2332,7 +2332,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
 }])
-.controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading){
+.controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading','userservice','GetBasicInfo','BasicDtlInfo',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading,userservice,GetBasicInfo,BasicDtlInfo){
   $scope.scrollBottom = function() {
       $ionicScrollDelegate.scrollBottom(true);
     };
@@ -2343,7 +2343,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     
 
   $scope.PhoneNo=Storage.get('phoneno');
-  
+  var DoctorId = Storage.get('UID');
 
   // $scope.UserId,$scope.UserId,$scope.Birthday,$scope.Gender,$scope.BloodType,$scope.IDNo,$scope.DoctorId,$scope.InsuranceType
   // $scope.Gender="";
@@ -2554,7 +2554,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     if($scope.InsuranceTypes!=""){
                       console.log($scope.users.UserId);
                       if($scope.users.UserId!=null){
-                      BasicInfo.GetBasicInfo($scope.users.UserId).then(
+                      GetBasicInfo.GetBasicInfoByPid($scope.users.UserId).then(
                         function(data){
                           console.log(data);
                           
@@ -2566,7 +2566,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           $scope.users.Gender=data.Gender;
                           $scope.users.BloodType=data.BloodType;
                           $scope.users.IDNo=data.IDNo;
-                          $scope.users.DoctorId=data.DoctorId;
+                          $scope.users.DoctorId=DoctorId;
                           $scope.users.InsuranceType=data.InsuranceType;
                           console.log($scope.users);
                           
@@ -2749,7 +2749,7 @@ $scope.users.Birthday=Storage.get('b');
     // console.log($scope.users.UserId);
     if($scope.users.UserId!=null){
       console.log('if')
-      Users.Roles($scope.users.UserId).then(
+      userservice.Roles($scope.users.UserId).then(
         function(data){
           // console.log(data);
           var l=data.length;
@@ -2775,13 +2775,13 @@ $scope.users.Birthday=Storage.get('b');
                 
                 hide();
                 a();
-                $state.go('new.clinicinfo');
+                $state.go('addpatient.clinicinfo');
               },function(e){
                 
                 console.log(e);
                 hide();
                 a();
-                $state.go('new.clinicinfo');
+                $state.go('addpatient.clinicinfo');
               });
             }
           },function(e){
@@ -2794,7 +2794,7 @@ $scope.users.Birthday=Storage.get('b');
           });
           }
           if(p==0){
-            Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
+            userservice.userRegister("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
         function(data){
           if(data.result=='注册成功'){
             Users.UID('PhoneNo',$scope.PhoneNo).then(
@@ -2814,12 +2814,12 @@ $scope.users.Birthday=Storage.get('b');
                           function(data){
                             hide();
                             a();
-                            $state.go('new.clinicinfo');
+                            $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
                             hide();
                             a();
-                            $state.go('new.clinicinfo');
+                            $state.go('addpatient.clinicinfo');
                           });
                       }
                     },function(e){
@@ -2844,7 +2844,7 @@ $scope.users.Birthday=Storage.get('b');
         });
     }
     else{
-      Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
+      userservice.userRegister("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
         function(data){
           if(data.result=='注册成功'){
             Users.UID('PhoneNo',$scope.PhoneNo).then(
@@ -2864,12 +2864,12 @@ $scope.users.Birthday=Storage.get('b');
                           function(data){
                             hide();
                             a();
-                            $state.go('new.clinicinfo');
+                            $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
                             hide();
                             a();
-                            $state.go('new.clinicinfo');
+                            $state.go('addpatient.clinicinfo');
                           });
                       }
                     },function(e){
