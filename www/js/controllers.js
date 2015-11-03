@@ -1340,6 +1340,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.PIDdetail = function(PID){
     Storage.set("PatientID",PID);
+    $state.go('manage.plan');
   }
 
   $scope.doRefresh =function() {
@@ -5010,7 +5011,7 @@ $scope.synclinicinfo=function(){
 
 //抽象页面上用户信息的控制器 ZXF 20151102
 .controller('mainCtrl',function($scope, $state,$http, Storage,GetBasicInfo){
-  var promise=GetBasicInfo.GetBasicInfoByPid('PID201505250003');
+  var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
   promise.then(function(data){
     $scope.clinicinfo=data;
     console.log($scope.clinicinfo)
@@ -5024,13 +5025,13 @@ $scope.synclinicinfo=function(){
 // 依从率图的控制器amcharts部分 ZXF 20151102
 .controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
 
-
+var PatintId = Storage.get('PatientID');
 //进入页面，调用函数获取任务列表（当前、往期计划）
-var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:'PID201506180013',PlanNo:'NULL',Module:'M1',Status:'3'});
+var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
 promiseS1.then(function(data1){
   console.log(data1);
   //在调用同一函数，status=4，调取往期计划planno
-  GetPlanInfo.GetplaninfobyPlanNo({PatientId:'PID201506180013',PlanNo:'NULL',Module:'M1',Status:'4'}).then(
+  GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'4'}).then(
     function(s){
       $scope.formerPlanInfo=s;
       Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
@@ -5046,7 +5047,7 @@ $scope.latestplan=data1[0].PlanNo;
 console.log($scope.latestplan);
 
 var d = {
-  UserId:'PID201506180013',
+  UserId:PatintId,
   PlanNo:data1[0].PlanNo,
   StartDate:data1[0].StartDate,
   EndDate:data1[0].EndDate,
@@ -5125,7 +5126,7 @@ showsomething($scope.selectedname,$scope.planno,$scope.startdate,$scope.enddate)
 var showsomething=function(param,something,Sdate,Edate){
     if (param=="舒张压") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
       function(data){
         $scope.LPchartdate=data;
         // Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
@@ -5140,7 +5141,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if (param=="收缩压") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
       function(data){
         $scope.HPchartdate=data;
         console.log($scope.HPchartdate);
@@ -5153,7 +5154,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if (param=="脉率") {
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
       function(data){
         $scope.HBchartdate=data;
         console.log($scope.HBchartdate);
@@ -5166,7 +5167,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="凌晨血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5179,7 +5180,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="睡前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5192,7 +5193,7 @@ var showsomething=function(param,something,Sdate,Edate){
   }
   if(param=="早餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5205,7 +5206,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="早餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5218,7 +5219,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="午餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5231,7 +5232,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="午餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5244,7 +5245,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="晚餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5257,7 +5258,7 @@ var showsomething=function(param,something,Sdate,Edate){
   };
   if(param=="晚餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:'PID201506180013',PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
       function(data){
         $scope.BSchartdate=data;
         console.log($scope.BSchartdate);
@@ -5380,7 +5381,7 @@ function createStockChart(ChartData,title,unit) {
 //ZXF 20151102 体征列表
  .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns) {
 
-     var UserId='PID201506180013';
+     var UserId=Storage.get('PatientID');
      var setstate;
      $scope.getbackgroundcolor = function(index){
       // var temp='{background-color:#EEEEEE}'
