@@ -536,13 +536,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI,userid){
+    uploadPicture : function(imgURI,fileName){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var options = {
             fileKey : "file",
-            fileName : userid + ".jpg",
+            fileName : fileName,
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
