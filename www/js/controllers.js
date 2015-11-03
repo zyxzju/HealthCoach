@@ -2109,11 +2109,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.getStatus = data;
         if (data.result == "数据插入成功")
         {
-          window.location.href="#/addpatient/ModuleInfo/" +Module;
+          if (Storage.get("isManage") == "No")
+          {
+            window.location.href="#/addpatient/ModuleInfo/" +Module;
+          }
+          else
+          {
+            window.location.href="#/manage/ModuleInfo/" +Module;
+          }
         }
         else
         {
-          alert(data.result);
+          console.log(data.result);
         }
       },function(data,status){
         $scope.getStatus = status;
