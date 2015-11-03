@@ -229,7 +229,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             });
       };
   var VitalSigns=function(){
-        return $resource(CONFIG.baseUrl + ':path/:route', {path:'VitalInfo',route:'VitalSigns'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'VitalInfo',route:'VitalSigns',UserId:'@UserId',StartDate:'@StartDate',EndDate:'@EndDate'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
         {
               // GET Api/v1/VitalInfo/VitalSigns?UserId={UserId}&StartDate={StartDate}&EndDate={EndDate}
               GetVitalSignsbydate:{method:'GET', timeout: 10000, isArray:true},
@@ -1358,9 +1358,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 //ZXF 20151102
 .factory('GetVitalSigns', ['$q', '$http', 'Data', function ( $q,$http, Data) {
   var self = this;
-  self.GetVitalSignsbydate = function (arr) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+  self.GetVitalSignsbydate = function (UserId,StartDate,EndDate) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
     var deferred = $q.defer();
-    Data.VitalSigns.GetVitalSignsbydate(arr, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+    Data.VitalSigns.GetVitalSignsbydate({UserId:UserId,StartDate:StartDate,EndDate:EndDate}, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
