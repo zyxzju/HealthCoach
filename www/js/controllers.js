@@ -112,7 +112,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
-      console.log('No date selected');
+      //console.log('No date selected');
     } else {
       $scope.datepickerObject.inputDate=val;
       var dd=val.getDate();
@@ -179,7 +179,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach")
       .then(function(data){
         loading.loadingBarFinish($scope);
-        console.log($rootScope.userId,$rootScope.password);
+        //console.log($rootScope.userId,$rootScope.password);
         userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach').then(function(data){
           if(data.result.substr(0,4)=="登陆成功"){
             Storage.set('TOKEN', data.result.substr(12));
@@ -457,10 +457,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       .encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.baidu.com")
       .then(function(success) {
         // Success!
-        console.log(success);
+        //console.log(success);
       }, function(error) {
         // An error occurred
-        console.log(error);
+        //console.log(error);
       });
   }
 }])
@@ -491,7 +491,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
-      // console.log(data);
+      // //console.log(data);
       $scope.userInfo.BasicInfo = {
        name:temp.DoctorName ,
        gender:temp.Gender==1?'男':'女',
@@ -500,9 +500,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
        idno:temp.IDNo
      }
      // var temp2 = String($scope.userInfo.BasicInfo.bithday);
-     // console.log($scope.userInfo.BasicInfo.birthday);
+     // //console.log($scope.userInfo.BasicInfo.birthday);
      var t = String($scope.userInfo.BasicInfo.birthday);
-     console.log(t);
+     //console.log(t);
       $scope.Info = {
         name: $scope.userInfo.BasicInfo.name,
         gender: $scope.userInfo.BasicInfo.gender==1?'男':'女',
@@ -512,7 +512,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
        Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
-        // console.log(data);
+        // //console.log(data);
         $scope.userInfo.DtInfo = {
           unitname: temp.UnitName,
           jobTitle: temp.JobTitle,
@@ -520,7 +520,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           dept: temp.Dept,
           photoAddress : temp.PhotoAddress
         }
-          // console.log( $scope.userInfo.DtInfo);
+          // //console.log( $scope.userInfo.DtInfo);
           
           $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ 
           (typeof($scope.userInfo.DtInfo.photoAddress) =='undefined'?'non.jpg':$scope.userInfo.DtInfo.photoAddress);
@@ -535,7 +535,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // date picker -------------------------------
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
-      console.log('No date selected');
+      //console.log('No date selected');
     } else {
       $scope.datepickerObject.inputDate=val;
       var dd=val.getDate();
@@ -598,10 +598,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.upload = function(info){
 
     Users.postDoctorInfo($scope.userInfo.BasicInfo).then(function(res){
-      console.log(res);
+      //console.log(res);
       if(res.result == "数据插入成功"){
         Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
-        console.log(res);
+        //console.log(res);
         if(res.result == "数据插入成功")
         $state.go('coach.i');
         });                  
@@ -685,8 +685,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   ['$scope','$state','$stateParams','$cordovaBarcodeScanner','Storage','Users','CONFIG','$timeout',
   function($scope,$state,$stateParams,$cordovaBarcodeScanner,Storage,Users,CONFIG,$timeout) { //LRZ
    
-   // console.log($stateParams.info);
-   // console.log($stateParams.info.intro);
+   // //console.log($stateParams.info);
+   // //console.log($stateParams.info.intro);
    // $scope.items = $stateParams.info;
    // $scope.state = $stateParams.state;
 
@@ -697,13 +697,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    // $scope.position = Storage.get(133);
    // $scope.selfintro = Storage.get(134);
    // $scope.imgURI = Storage.get(14);
-   // console.log($scope.infom);
+   // //console.log($scope.infom);
 
    //从服务器获得用户信息 
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
-      // console.log(data);
+      // //console.log(data);
       $scope.userInfo.BasicInfo = {
        name:temp.DoctorName ,
        gender:temp.Gender==1?'男':'女',
@@ -715,7 +715,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
    Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
-      // console.log(data);
+      // //console.log(data);
       $scope.userInfo.DtInfo = {
         unitname: temp.UnitName,
         jobTitle: temp.JobTitle,
@@ -723,7 +723,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         dept: temp.Dept,
        photoAddress : temp.PhotoAddress
      }
-     // console.log( $scope.userInfo.DtInfo.photoAddress);
+     // //console.log( $scope.userInfo.DtInfo.photoAddress);
      // $scope.imgURI = $scope.userInfo.DtInfo.photoAddress;
       if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
@@ -736,7 +736,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.userInfo = {BasicInfo:{},DtInfo:{}};
      Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
-        // console.log(data);
+        // //console.log(data);
         $scope.userInfo.BasicInfo = {
          name:temp.DoctorName ,
          gender:temp.Gender==1?'男':'女',
@@ -748,7 +748,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      
      Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
-        // console.log(data);
+        // //console.log(data);
         $scope.userInfo.DtInfo = {
           unitname: temp.UnitName,
           jobTitle: temp.JobTitle,
@@ -756,7 +756,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           dept: temp.Dept,
           photoAddress : temp.PhotoAddress
        }
-       console.log( $scope.userInfo.DtInfo.photoAddress);
+       //console.log( $scope.userInfo.DtInfo.photoAddress);
         if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
          $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
@@ -765,7 +765,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   $scope.onClickTest = function(){
-    console.log("yeah");
+    //console.log("yeah");
     doRefresh();
   }
   $scope.onClickPersonalInfo = function(){
@@ -843,7 +843,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
-      // console.log(data);
+      // //console.log(data);
       $scope.userInfo.BasicInfo = {
        name:temp.DoctorName ,
        gender:temp.Gender==1?'男':'女',
@@ -852,14 +852,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
        idno:temp.IDNo
      }
      // var temp2 = String($scope.userInfo.BasicInfo.bithday);
-     // console.log($scope.userInfo.BasicInfo.birthday);
+     // //console.log($scope.userInfo.BasicInfo.birthday);
      var t = String($scope.userInfo.BasicInfo.birthday);
-     console.log(t);
+     //console.log(t);
 
      $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
        Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
-        // console.log(data);
+        // //console.log(data);
         $scope.userInfo.DtInfo = {
           unitname: temp.UnitName,
           jobTitle: temp.JobTitle,
@@ -867,7 +867,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           dept: temp.Dept,
           photoAddress : temp.PhotoAddress
        }
-        // console.log( $scope.userInfo.DtInfo.photoAddress);
+        // //console.log( $scope.userInfo.DtInfo.photoAddress);
         if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
          $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
@@ -885,7 +885,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // date picker -------------------------------
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
-      console.log('No date selected');
+      //console.log('No date selected');
     } else {
       $scope.datepickerObject.inputDate=val;
       var dd=val.getDate();
@@ -927,11 +927,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       PageFunc.confirm("是否放弃修改","确认").then( 
         function(res){
           if(res){
-           // console.log("点了queren");
+           // //console.log("点了queren");
            //复原备份
-           // console.log($scope.backup);
+           // //console.log($scope.backup);
            $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-           console.log($scope.userInfo);
+           //console.log($scope.userInfo);
            $state.go('coach.i');
           }
         });
@@ -946,16 +946,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     PageFunc.confirm("是否上传新信息","确认").then( 
         function(res){
           if(res){
-           // console.log("点了queren");
+           // //console.log("点了queren");
               // 这两个service里面还没有写好 
               // ----------------------------------------------------------
               var objStr=JSON.stringify($scope.userInfo);
               Storage.set("userInfo",objStr);
               Users.postDoctorInfo($scope.userInfo.BasicInfo).then(function(res){
-                console.log(res);
+                //console.log(res);
                 if(res.result == "数据插入成功"){
                   Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
-                  console.log(res);
+                  //console.log(res);
                   if(res.result == "数据插入成功")
                   $state.go('coach.i');
                   });                  
@@ -1150,7 +1150,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $http.get('js/data.json').success(function(data) {
     $scope.calendar = data.calendar; 
     // $scope.whichartist= $state.params.aId;
-    // console.log($scope.whichartist);
+    // //console.log($scope.whichartist);
     $scope.data = { showDelete: false, showReorder: false };
 
   $scope.onItemDelete = function(dayIndex,item) {
@@ -1514,7 +1514,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $scope.$broadcast('scroll.infiniteScrollComplete');
   } 
   $scope.onItemDelete = function(index) {
-    console.log(index);
+    //console.log(index);
     $scope.patients.splice(index, 1);
   } 
 }])
@@ -1545,7 +1545,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //GL 20151103 交流
 .controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
 {
-    console.log($stateParams.tt);
+    //console.log($stateParams.tt);
     $scope.Dialog = {};
     var paraArry = $stateParams.tt.split('&');
     $scope.DoctorId = paraArry[0];
@@ -1564,7 +1564,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
     Data.Users.GetPatientDetailInfo({route:urltemp2}, 
        function (success, headers) {
-        console.log(success);
+        //console.log(success);
           if( (success.PhotoAddress=="") || (success.PhotoAddress==null))
           {
             $scope.myImage = "img/DefaultAvatar.jpg";
@@ -1600,7 +1600,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               if(DataArry[0] == $scope.Dialog.DoctorId)
               {
                   $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
-                  //console.log($scope.Dialog);
+                  ////console.log($scope.Dialog);
                   $ionicScrollDelegate.scrollBottom(true);
                   $scope.$apply();
                   //SetSMSRead(ThisUserId, TheOtherId);//改写阅读状态
@@ -1673,11 +1673,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
     $scope.$on('taResize', function(e, ta) {
-        //console.log('taResize');
+        ////console.log('taResize');
         if (!ta) return;
         
         var taHeight = ta[0].offsetHeight;
-        //console.log('taHeight: ' + taHeight);
+        ////console.log('taHeight: ' + taHeight);
         
         if (!footerBar) return;
         
@@ -1690,9 +1690,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
      // this keeps the keyboard open on a device only after sending a message, it is non obtrusive
     function keepKeyboardOpen() {
-        //console.log('keepKeyboardOpen');
+        ////console.log('keepKeyboardOpen');
         txtInput.one('blur', function() {
-            console.log('textarea blur, focus back on it');
+            //console.log('textarea blur, focus back on it');
             txtInput[0].focus();
         });
     } 
@@ -1777,7 +1777,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onClickBackward2 = function(){
       window.location.href="#/addpatient/ModuleInfo/" +Module;
   };
-
+  $scope.onClickBackward3 = function(){
+      $state.go('manage.ModuleInfo');
+  };
+  $scope.onClickBackward4 = function(){
+      window.location.href="#/manage/ModuleInfo/" +Module;
+  };
   var getHTypeName= function(Type){
     for (var i=0;i<$scope.HTypeName.length;i++)
     {
@@ -1975,7 +1980,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.ModuleInfoListDetail.splice(temparray[i]-count,1);
       count++;
     }
-    console.log($scope.ModuleInfoListDetail);
+    //console.log($scope.ModuleInfoListDetail);
   },function(data,status){
     $scope.getStatus = status;
   });
@@ -2154,7 +2159,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         ]
     });
     myPopup.then(function(res) {
-    console.log('Tapped!', res);
+    //console.log('Tapped!', res);
   });
   };
 
@@ -2242,7 +2247,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.test = function()
   {
     loading();
-    // console.log($scope.PhoneNo.pn);
+    // //console.log($scope.PhoneNo.pn);
     // if($scope.PhoneNo.pn.length!=11) {
     //  $scope.logStatus='请输入11位手机号';
     //  hide()
@@ -2256,7 +2261,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //  Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
     //    function(data){
     //      id=data.result;
-    //      console.log(id);
+    //      //console.log(id);
     //      if(id == null) {
     //        $scope.logStatus='未注册的手机号';
     //        hide()
@@ -2267,7 +2272,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //        $state.go('new.basicinfo') 
     //      }
     //    },function(e){
-    //      console.log(e);
+    //      //console.log(e);
     //    });
     //    } 
     // }
@@ -2282,18 +2287,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       Users.UID('PhoneNo',$scope.PhoneNo.pn).then(
         function(data){
           id=data.result;
-          console.log(id);
+          //console.log(id);
           if(id == null) {
             $scope.logStatus='正在注册';
             Dict.GetNo('17','{TargetDate}').then(
               function(data){
                 var PatientID=(data.result);
-                console.log(PatientID);
+                //console.log(PatientID);
                 Storage.set('PatientID',PatientID);
                 hide();
                 $state.go('addpatient.basicinfo')
               },function(e){
-                console.log(e);
+                //console.log(e);
               });     
           }
           else{
@@ -2302,7 +2307,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $state.go('addpatient.basicinfo') 
           }
         },function(e){
-          console.log(e);
+          //console.log(e);
         });     
     }
   }
@@ -2350,15 +2355,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Dict.GetInsuranceType().then(
       function(data){
         $scope.InsuranceTypes=data;
-        console.log($scope.InsuranceTypes);
+        //console.log($scope.InsuranceTypes);
       },function(e){
-      console.log(e);
+      //console.log(e);
     });
   $scope.users.UserId=Storage.get('PatientID');
   $scope.B="点击设置";
       var datePickerCallback = function (val) {
         if (typeof(val) === 'undefined') {
-          console.log('No date selected');
+          //console.log('No date selected');
         } else {
         $scope.datepickerObject.inputDate=val;
           var dd=val.getDate();
@@ -2492,7 +2497,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //    okText: '关闭',           
     //  });
     //  Timeout.then(function(res) {
-    //    console.log('success');
+    //    //console.log('success');
     //  });
     //  $timeout(function(){
     //    Timeout.close();
@@ -2554,7 +2559,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         okText: '确定',           
       });
       alertS.then(function(res) {
-        console.log('success');
+        //console.log('success');
 
       });
       $timeout(function(){
@@ -2569,7 +2574,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         okText: '确定',
       });
       alertF.then(function(res){
-        console.log('failed');
+        //console.log('failed');
       });
       
     };
@@ -2577,95 +2582,95 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   //  Users.BasicDtlInfo($scope.HomeAddress).then(
   //    function(data){
-  //      console.log($scope.HomeAddress.Patient);
-  //      console.log($scope.HomeAddress.Value);
+  //      //console.log($scope.HomeAddress.Patient);
+  //      //console.log($scope.HomeAddress.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.PhoneNumber).then(
   //    function(data){
-  //      console.log($scope.PhoneNumber.Patient);
-  //      console.log($scope.PhoneNumber.Value);
+  //      //console.log($scope.PhoneNumber.Patient);
+  //      //console.log($scope.PhoneNumber.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.Nationality).then(
   //    function(data){
-  //      console.log($scope.Nationality.Patient);
-  //      console.log($scope.Nationality.Value);
+  //      //console.log($scope.Nationality.Patient);
+  //      //console.log($scope.Nationality.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.Occupation).then(
   //    function(data){
-  //      console.log($scope.Occupation.Patient);
-  //      console.log($scope.Occupation.Value);
+  //      //console.log($scope.Occupation.Patient);
+  //      //console.log($scope.Occupation.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.EmergencyContact).then(
   //    function(data){
-  //      console.log($scope.EmergencyContact.Patient);
-  //      console.log($scope.EmergencyContact.Value);
+  //      //console.log($scope.EmergencyContact.Patient);
+  //      //console.log($scope.EmergencyContact.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
 
     // Users.BasicDtlInfo($scope.EmergencyContactPhoneNumber).then(
   //    function(data){
-  //      console.log($scope.EmergencyContactPhoneNumber.Patient);
-  //      console.log($scope.EmergencyContactPhoneNumber.Value);
+  //      //console.log($scope.EmergencyContactPhoneNumber.Patient);
+  //      //console.log($scope.EmergencyContactPhoneNumber.Value);
   //    },function(e){
-  //      console.log(e);
+  //      //console.log(e);
   //    });
       Users.BasicInfo($scope.users).then(
         function(data){
-          console.log($scope.users.InsuranceType);
-          console.log($scope.users.Gender);
-          console.log($scope.users.BloodType);
-          console.log($scope.users.Birthday);
+          //console.log($scope.users.InsuranceType);
+          //console.log($scope.users.Gender);
+          //console.log($scope.users.BloodType);
+          //console.log($scope.users.Birthday);
           
           if(data.result=='数据插入成功'){
             Users.BasicDtlInfo(detail).then(
               function(data){
-                console.log($scope.HomeAddress.Patient);
-                console.log($scope.HomeAddress.Value);
+                //console.log($scope.HomeAddress.Patient);
+                //console.log($scope.HomeAddress.Value);
 
-                console.log($scope.PhoneNumber.Patient);
-                console.log($scope.PhoneNumber.Value);
+                //console.log($scope.PhoneNumber.Patient);
+                //console.log($scope.PhoneNumber.Value);
 
-                console.log($scope.Nationality.Patient);
-                console.log($scope.Nationality.Value);
+                //console.log($scope.Nationality.Patient);
+                //console.log($scope.Nationality.Value);
 
-                console.log($scope.Nationality.Patient);
-                console.log($scope.Nationality.Value);
+                //console.log($scope.Nationality.Patient);
+                //console.log($scope.Nationality.Value);
 
-                console.log($scope.EmergencyContact.Patient);
-                console.log($scope.EmergencyContact.Value);
+                //console.log($scope.EmergencyContact.Patient);
+                //console.log($scope.EmergencyContact.Value);
 
-                console.log($scope.EmergencyContactPhoneNumber.Patient);
-                console.log($scope.EmergencyContactPhoneNumber.Value);
+                //console.log($scope.EmergencyContactPhoneNumber.Patient);
+                //console.log($scope.EmergencyContactPhoneNumber.Value);
                 
                 hide();
                 a();
                 $state.go('addpatient.clinicinfo');
               },function(e){
-                console.log($scope.users.InsuranceType);
-                console.log($scope.users.Gender);
-                console.log($scope.users.BloodType);
-                console.log($scope.users.Birthday);
-                console.log(e);
+                //console.log($scope.users.InsuranceType);
+                //console.log($scope.users.Gender);
+                //console.log($scope.users.BloodType);
+                //console.log($scope.users.Birthday);
+                //console.log(e);
                 hide();
                 a();
                 $state.go('addpatient.clinicinfo');
               });
             }
           },function(e){
-            console.log(e);
+            //console.log(e);
             hide();
             b();
           });
@@ -2788,7 +2793,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('RiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage',
   function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage){
   
-    console.log("doing refreshing");
+    //console.log("doing refreshing");
     $scope.userid = Storage.get('PatientID');
     // $scope.userid = "PID201506170002";
     Patients.getEvalutionResults($scope.userid).then(function(data){
@@ -2846,17 +2851,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         }        
     };
-    // console.log($scope.newRisks);
+    // //console.log($scope.newRisks);
       for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
         if($scope.newRisks[i].num == $scope.whichone) {
           $scope.index = i;
-          console.log($scope.newRisks[$scope.index]);
+          //console.log($scope.newRisks[$scope.index]);
           break;
         }
       };
      
-    console.log($scope.newRisks[$scope.index]);  
-        // console.log("又画图了");
+    //console.log($scope.newRisks[$scope.index]);  
+        // //console.log("又画图了");
         $scope.data1 =  {
           "type": "serial",
           "theme": "light",
@@ -3067,7 +3072,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
         $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
         
-        // console.log("又画图了");
+        // //console.log("又画图了");
 
         $scope.data = { showDelete: false, showReorder: false };
         $scope.dbtshow = false;
@@ -3083,7 +3088,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   
 
   $scope.doRefresh = function(){
-    console.log("doing refreshing");
+    //console.log("doing refreshing");
     // $scope.userid = Storage.get('UID');
   // $scope.userid = "PID201506170002";
     $scope.userid = Storage.get('PatientID');
@@ -3140,10 +3145,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         }        
     };
-    console.log($scope.newRisks);
+    //console.log($scope.newRisks);
     });
-    // console.log("in controller");
-    // console.log($scope.risks);
+    // //console.log("in controller");
+    // //console.log($scope.risks);
         $scope.data1 =  {
           "type": "serial",
           "theme": "light",
@@ -3365,7 +3370,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // ger question
       // Patients.getEvalutionInput($scope.userid).then(function(data){
       //     $scope.questions = data;
-      //     // console.log($scope.questions);
+      //     // //console.log($scope.questions);
       //     $scope.questions.SBP = 150;
       //     $scope.questions.DBP = 134;
 
@@ -3375,22 +3380,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // get another result
   }
 
+  $scope.onClickEvaluation1 = function(){
+    $state.go('Independent.riskquestion');
+  }
   // $scope.onClickSave = function(){
   //   //upload 
   //   Patients.getMaxSortNo($scope.userid).then(function(data){
   //     var maxsortno = data.result; 
-  //     // console.log("赫赫");
-  //     console.log(maxsortno);
+  //     // //console.log("赫赫");
+  //     //console.log(maxsortno);
   //   })
-  //   // console.log($scope.userid);
+  //   // //console.log($scope.userid);
   //   //get sbp description 
   //     // var date = new Date();
-  //     // console.log(date);
+  //     // //console.log(date);
   //   Patients.getSBPDescription(190).then(function(data){
-  //       console.log(data);
+  //       //console.log(data);
 
   //       var t = data.result + "||190||120";
-  //       // console.log(t);
+  //       // //console.log(t);
   //       var time2 = new Date();
   //       var temp = {
   //         "UserId": $scope.userid,
@@ -3419,29 +3427,34 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //     };
   //     // Patients.postTreatmentIndicators(temp);
   //     //POST RESULT
-  //     // console.log($scope.description);
+  //     // //console.log($scope.description);
   //     //
       
       
   //   });
-  //   // console.log($scope.description);
+  //   // //console.log($scope.description);
   //   $state.go('risk');
-  //   // console.log($scope.description);
+  //   // //console.log($scope.description);
   //   // Patients.
   //   //
   // }
 
   $scope.slideHasChanged = function (_index){
-    // console.log(_index);
+    // //console.log(_index);
     // $ionicSlideBoxDelegate.currentIndex();
     if(_index == 1) $scope.dbtshow = true;
     else $scope.dbtshow = false;
-    // console.log($scope.description);
+    // //console.log($scope.description);
   }
 
   $scope.onClickBackward = function(){
       // $state.go("risk");
       $state.go('addpatient.risk');
+  }
+
+  $scope.onClickBackward1 = function(){
+      // $state.go("risk");
+      $state.go('Independent.risk');
   }
 
   $scope.NextPage = function(){
@@ -3457,7 +3470,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.onChangeChartData = function(sbp,dbp){
       $scope.marker = sbp;
       if(sbp === undefined || dbp === undefined || $scope.chart === undefined) return;
-      console.log(sbp);
+      //console.log(sbp);
       var temp1 = {
           "type": "收缩压",
           "state1": 40+80,
@@ -3480,7 +3493,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "target": 100               //params
 
       };
-      console.log("push");
+      //console.log("push");
       $scope.chart.dataProvider.pop();
       $scope.chart.dataProvider.pop();
       $scope.chart.dataProvider.push(temp1);
@@ -3489,10 +3502,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.chart.validateData();
       $scope.chart.validateNow();
       // $scope.chart2.validateData();
-      console.log($scope.chart);
+      //console.log($scope.chart);
   }
 
-   // console.log("controller初始化的函数跑了一遍结束"); 
+   // //console.log("controller初始化的函数跑了一遍结束"); 
  
 }])
 
@@ -3502,37 +3515,40 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
  
   $scope.userid = Storage.get('PatientID');
   // $scope.userid = "PID201506170002";
-  // console.log($scope.userid);
-  // console.log($scope.SBP);
+  // //console.log($scope.userid);
+  // //console.log($scope.SBP);
   $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined};
 
   $scope.clickCancel = function(){
     $state.go('addpatient.risk');
   };
-  // console.log($scope.SBP);
+  $scope.clickCancel1 = function(){
+    $state.go('Independent.risk');
+  };
+  // //console.log($scope.SBP);
   $scope.clickSubmit = function(){
     //upload 
     Patients.getMaxSortNo($scope.userid).then(function(data){
       var maxsortno = data.result; 
-      // console.log("赫赫");
-      // console.log(data);
+      // //console.log("赫赫");
+      // //console.log(data);
    
-    // console.log($scope.userid);
+    // //console.log($scope.userid);
     //get sbp description 
       // var date = new Date();
-      // console.log(date);
+      // //console.log(date);
       // var SBP = parseInt(100 + 20 * Math.random());
       // var DBP = parseInt(70 + 10 * Math.random());
       // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
-    // console.log($scope.SBP);
+    // //console.log($scope.SBP);
     Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
-        // console.log(data);
+        // //console.log(data);
 
         var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
-        // console.log(t);
+        // //console.log(t);
         var time2 = new Date();
         time2.setHours(time2.getHours()+8);
-        // console.log(time2);
+        // //console.log(time2);
         var temp = {
           "UserId": $scope.userid,
           "SortNo": parseInt(maxsortno)+1,
@@ -3546,9 +3562,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "DeviceType": 10
         }
       if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
-        // console.log("上传血压数据");
+        // //console.log("上传血压数据");
         var tt = Patients.postTreatmentIndicators(temp);
-        // console.log(tt);
+        // //console.log(tt);
       }
       var temp =  {
         "UserId": $scope.userid,
@@ -3562,24 +3578,92 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "TerminalIP": "sample string 9",
         "DeviceType": 10
       };
-      // console.log(temp.Result);
+      // //console.log(temp.Result);
       if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
-        // console.log("上传血糖数据");
+        // //console.log("上传血糖数据");
         Patients.postTreatmentIndicators(temp);
       }
       //POST RESULT
-      // console.log($scope.description);
+      // //console.log($scope.description);
       //
       
       
     })
-    // console.log($scope.description);
+    // //console.log($scope.description);
     })
-    // console.log($scope.description);
+    // //console.log($scope.description);
     // Patients.
     $state.go('addpatient.risk');
-  }
+  };
+  $scope.clickSubmit1 = function(){
+    //upload 
+    Patients.getMaxSortNo($scope.userid).then(function(data){
+      var maxsortno = data.result; 
+      // //console.log("赫赫");
+      // //console.log(data);
+   
+    // //console.log($scope.userid);
+    //get sbp description 
+      // var date = new Date();
+      // //console.log(date);
+      // var SBP = parseInt(100 + 20 * Math.random());
+      // var DBP = parseInt(70 + 10 * Math.random());
+      // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
+    // //console.log($scope.SBP);
+    Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
+        // //console.log(data);
 
+        var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
+        // //console.log(t);
+        var time2 = new Date();
+        time2.setHours(time2.getHours()+8);
+        // //console.log(time2);
+        var temp = {
+          "UserId": $scope.userid,
+          "SortNo": parseInt(maxsortno)+1,
+          "AssessmentType": "M1",
+          "AssessmentName": "高血压",
+          "AssessmentTime": time2,
+          "Result": t ,
+          "revUserId": "sample string 7",
+          "TerminalName": "sample string 8",
+          "TerminalIP": "sample string 9",
+          "DeviceType": 10
+        }
+      if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
+        // //console.log("上传血压数据");
+        var tt = Patients.postTreatmentIndicators(temp);
+        // //console.log(tt);
+      }
+      var temp =  {
+        "UserId": $scope.userid,
+        "SortNo": parseInt(maxsortno)+1,
+        "AssessmentType": "M2",
+        "AssessmentName": "糖尿病",
+        "AssessmentTime": time2,
+        "Result": "糖尿病不严重。"+"||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
+        "revUserId": "sample string 7",
+        "TerminalName": "sample string 8",
+        "TerminalIP": "sample string 9",
+        "DeviceType": 10
+      };
+      // //console.log(temp.Result);
+      if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
+        // //console.log("上传血糖数据");
+        Patients.postTreatmentIndicators(temp);
+      }
+      //POST RESULT
+      // //console.log($scope.description);
+      //
+      
+      
+    })
+    // //console.log($scope.description);
+    })
+    // //console.log($scope.description);
+    // Patients.
+    $state.go('Independent.risk');
+  }
 }])
 
 //GL 20151101 创建计划
@@ -3611,7 +3695,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     $scope.create.AddFlag = false;
                 }
             } 
-            //console.log($scope.create.PlanList);                      
+            ////console.log($scope.create.PlanList);                      
         }, function(data) {  
         });  
     }
@@ -3691,7 +3775,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //GL 20151101 一级任务列表
 .controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
-    //console.log($stateParams.tt);
+    ////console.log($stateParams.tt);
     //alert(1);
     $scope.TaskList = {};
     $scope.TaskList.EndDate;   //结束日期
@@ -3712,13 +3796,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.onClickBackward = function(){
       $ionicHistory.goBack();
   };
-  
+
     $scope.GetTasks = function ()
     {
         var promise = PlanInfo.GetTasks(PlanNo, "T");  
         promise.then(function(data) {          
             $scope.TaskList.taskList = data; 
-            console.log($scope.TaskList.taskList);
+            //console.log($scope.TaskList.taskList);
             GetSBP();
         }, function(data) {  
         });   
@@ -3791,7 +3875,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                             template: '结束日期必须大于开始日期{{TaskList.StartDate}}'
                         });
                         alertPopup.then(function(res) {
-                            //console.log($scope.TaskList.StartDate);
+                            ////console.log($scope.TaskList.StartDate);
                             $scope.TaskList.EndDate = null;
                         });
                      } 
@@ -3799,7 +3883,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     {
                         var promise1 = PlanInfo.SetPlan(PlanNo, data[0].PatientId, data[0].StartDate, EndDateStr, data[0].Module, data[0].Status, data[0].DoctorId, "1", "1", "1", 1);             
                         promise1.then(function(data) { 
-                            console.log(TimeFormat($scope.TaskList.EndDate)[1]);              
+                            //console.log(TimeFormat($scope.TaskList.EndDate)[1]);              
                         }, function(data) {  
                         });                             
 
@@ -3814,7 +3898,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTarget(PlanNo, "Bloodpressure", "Bloodpressure_1");  
         promise.then(function(data) {
-            //console.log(data);
+            ////console.log(data);
             if(data.Type)
             {
                 $scope.TaskList.SBP = data.Value;
@@ -3829,7 +3913,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTarget(PlanNo, "Bloodpressure", "Bloodpressure_2");  
         promise.then(function(data) {
-            //console.log(data);
+            ////console.log(data);
             if(data.Type)
             {
                 $scope.TaskList.DBP = data.Value;
@@ -3844,7 +3928,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTarget(PlanNo, "BloodSugar", "BloodSugar_1");  
         promise.then(function(data) {
-            //console.log(data);
+            ////console.log(data);
             if(data.Type)
             {
                 $scope.TaskList.BloodSugar = data.Value;
@@ -3859,7 +3943,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTarget(PlanNo, "Weight", "Weight_1");  
         promise.then(function(data) {
-            //console.log(data);
+            ////console.log(data);
             if(data.Type)
             {
                 $scope.TaskList.Weight = data.Value;
@@ -3927,7 +4011,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //GL 20151101
 .controller('MainPlanCtrl',['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory){
     var Type = $stateParams.tt;
-    console.log(Type);
+    //console.log(Type);
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
     $scope.task = {};
     $scope.task.list;
@@ -3986,7 +4070,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     $scope.task.list[i].Instruction =parseInt($scope.task.list[i].Instruction);   
                 }      
             }
-            console.log($scope.task.list);
+            //console.log($scope.task.list);
         }, function(data) {  
         });   
     }
@@ -4325,7 +4409,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.SelectType = function (Code)
     {
         localStorage.setItem("healthEducationCode", Code);
-        //console.log(localStorage.getItem("healthEducationCode"));
+        ////console.log(localStorage.getItem("healthEducationCode"));
     }
 
     //点击确定或返回
@@ -4415,7 +4499,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 } 
                 arry[i] = $scope.task.list[i].ControlType;  
             }
-            //console.log($scope.task.list);
+            ////console.log($scope.task.list);
         }, function(data) {  
         });   
     }
@@ -4569,7 +4653,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         var promise = PlanInfo.GetTasks(PlanNo, Type + "0000");  
         promise.then(function(data) { 
-            console.log(data);
+            //console.log(data);
             for (var i=0; i<data.length; i++)
             {   
                 if(data[i].Instruction == "")
@@ -4583,8 +4667,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
             }                      
             $scope.task.list = data;
-            //console.log($scope.task.list);
-            //console.log($scope.task.DeleteList);
+            ////console.log($scope.task.list);
+            ////console.log($scope.task.DeleteList);
         }, function(data) {  
         });   
     }
@@ -4603,7 +4687,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
         promise.then(function(data) {            
             $scope.task.DrugList = data;
-            //console.log($scope.task.DrugList);
+            ////console.log($scope.task.DrugList);
         }, function(data) {  
         }); 
     }
@@ -4673,7 +4757,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         }
                     }
                     $scope.task.list.push({"Description":res[0], "Instruction":res[0] + ":" + res[1]+ "|" + res[2] + "|" + res[3] + "|" + res[4]});
-                    //console.log($scope.task.list.length);
+                    ////console.log($scope.task.list.length);
                     //SetTask({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1', "Instruction":"", "piUserId":"1",  "piTerminalName":"1",  "piTerminalIP":"1",  "piDeviceType":0});
 
                 }
@@ -4806,7 +4890,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         {
             if (data.result == "数据插入成功")
             {
-                //console.log("数据插入成功");
+                ////console.log("数据插入成功");
                 $ionicHistory.goBack();
             }
         },function(data){              
@@ -4820,7 +4904,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         {
             if (data.result == "数据删除成功")
             {
-                console.log("数据删除成功");
+                //console.log("数据删除成功");
             }
         },function(data){
         });   
@@ -4833,7 +4917,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             template: '这种药物在列表中已存在！'
         });
         alertPopup.then(function(res) {
-            //console.log($scope.TaskList.StartDate);
+            ////console.log($scope.TaskList.StartDate);
             $scope.task.list.Name = null;
         });
     }
@@ -4852,11 +4936,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //根据userid获取就诊信息列表（展示时用）
   // var a={UserId:$scope.SyncInfo.patientid};
   var promise2=GetClinicalList.GetClinicalInfoListbyUID({UserId:$scope.SyncInfo.userid});
-  console.log($scope.SyncInfo.userid);
+  //console.log($scope.SyncInfo.userid);
   promise2.then(function(data){
     $scope.cliniclist=data.DT_InPatientInfo;
 
-    console.log($scope.cliniclist);
+    //console.log($scope.cliniclist);
 //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
 $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
   scope: $scope,
@@ -4869,14 +4953,14 @@ $scope.onClickBackward = function(){
 };
 $scope.openexaminfomodal = function(index) {
   $scope.modalexam.show();
-  console.log(index);
-  console.log($scope.SyncInfo.userid);
-  console.log($scope.cliniclist[index].VisitId);
+  //console.log(index);
+  //console.log($scope.SyncInfo.userid);
+  //console.log($scope.cliniclist[index].VisitId);
   var promise1=Getexaminfo.Getexaminfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
   promise1.then(function(data1){
     $scope.Examinationinfo=data1;
     $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
-    console.log($scope.Examinationinfo);
+    //console.log($scope.Examinationinfo);
   }, function(data1) {  
   });
 };
@@ -4902,7 +4986,7 @@ $scope.$on('$destroy', function() {
       $scope.Diagnosisinfo=data0;
       $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
 
-      console.log($scope.Diagnosisinfo);
+      //console.log($scope.Diagnosisinfo);
     },
     function(data0) {
     }
@@ -4934,7 +5018,7 @@ $scope.opendruginfomodal = function(index) {
       $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
 
 
-      console.log($scope.DrugRecordinfo);
+      //console.log($scope.DrugRecordinfo);
     }, function(data2) {  
     }
     )
@@ -4983,12 +5067,12 @@ $scope.datepickerObject = {
     };
     var datePickerCallback = function (val) {
       if (typeof(val) === 'undefined') {
-        console.log('No date selected');
+        //console.log('No date selected');
       } else {
     // var d=new Date(val);
     $scope.tt=val.getFullYear()+'-'+(val.getMonth()+1)+'-'+val.getDate();
-    console.log('Selected date is : ', val)
-    console.log(val)
+    //console.log('Selected date is : ', val)
+    //console.log(val)
   }
 };
 
@@ -5004,7 +5088,7 @@ $scope.synclinicinfo=function(){
     promise.then(function(data){
       //拿到海总的就诊号用于后续同步
       $scope.HJZYYID=data.result;
-      console.log($scope.HJZYYID)
+      //console.log($scope.HJZYYID)
 //调用webservice
 
 
@@ -5021,7 +5105,7 @@ $scope.synclinicinfo=function(){
   var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
   promise.then(function(data){
     $scope.clinicinfo=data;
-    console.log($scope.clinicinfo)
+    //console.log($scope.clinicinfo)
     $scope.Name=data.UserName;
     $scope.age=data.Age;
     $scope.gender=data.GenderText;
@@ -5036,22 +5120,27 @@ var PatintId = Storage.get('PatientID');
 //进入页面，调用函数获取任务列表（当前、往期计划）
 var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
 promiseS1.then(function(data1){
-  console.log(data1);
+  //console.log(data1);
   //在调用同一函数，status=4，调取往期计划planno
   GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'4'}).then(
     function(s){
       $scope.formerPlanInfo=s;
       Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
-      console.log($scope.formerPlanInfo);
+      //console.log($scope.formerPlanInfo);
     }, function(e) {  
     });
+
+  if (data1.length==0) {
+  $scope.latestplan="无执行中的计划";
+  $scope.diaplaysm=true;
+}else{
 //页面载入时显示的当前计划，收缩压的图
 Storage.set("latestplanstartdate",data1[0].StartDate);
 Storage.set("latestplanenddate",data1[0].EndDate);
 Storage.set("latestplanno",data1[0].PlanNo);
 $scope.latestPlanInfo=data1;
 $scope.latestplan=data1[0].PlanNo;
-console.log($scope.latestplan);
+//console.log($scope.latestplan);
 
 var d = {
   UserId:PatintId,
@@ -5064,7 +5153,7 @@ var d = {
 GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
   function(data){
     $scope.HPchartdate=data;
-    console.log($scope.HPchartdate);
+    //console.log($scope.HPchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.HPchartdate,"收缩压","mmHg");
       $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5074,19 +5163,21 @@ GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
   //点击切换各个体征的图
   $scope.changeVitalInfo = function(option) {
     Storage.set("selectedvitaltype",option.SignName);
-    console.log(Storage.get("selectedvitaltype"));
+    //console.log(Storage.get("selectedvitaltype"));
 
  //传参调函画图
 showsomething(option.SignName,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
 
 
   };
+};
+
 }, function(e) {
     ///// 
   }
   );
 if ($scope.planList=='PLAN20151029') {
-  console.log(KEYI);
+  //console.log(KEYI);
 
 };
 
@@ -5095,7 +5186,7 @@ $scope.changeplan= function(something){
 // Storage.set("latestplanno",data1[0].PlanNo);
 // Storage.set("latestplanstartdate",data1[0].StartDate);
 // Storage.set("latestplanenddate",data1[0].EndDate);
- // console.log(Storage.get("selectedvitaltype"));
+ // //console.log(Storage.get("selectedvitaltype"));
  $scope.planno=something;
 
  $scope.localselectedname=Storage.get("selectedvitaltype");
@@ -5108,7 +5199,7 @@ if (something==Storage.get("latestplanno")) {
   $scope.enddate=Storage.get("latestplanenddate");
 }else{
   for (var i = 0; i <= $scope.plan.length-1; i++) {
-    console.log($scope.plan[i].PlanName);
+    //console.log($scope.plan[i].PlanName);
     if ($scope.plan[i].PlanNo==something) {
      $scope.startdate= $scope.plan[i].StartDate;
      $scope.enddate=$scope.plan[i].EndDate;
@@ -5120,10 +5211,10 @@ showsomething($scope.localselectedname,$scope.planno,$scope.startdate,$scope.end
 
 
 $scope.changeVitalInfo = function(option) {
-  console.log(option);
+  //console.log(option);
    Storage.set("selectedvitaltype",option.SignName);
   $scope.selectedname=option.SignName;
- console.log($scope.selectedname);
+ //console.log($scope.selectedname);
  //传参调函画图
 showsomething($scope.selectedname,$scope.planno,$scope.startdate,$scope.enddate)
 
@@ -5138,7 +5229,7 @@ var showsomething=function(param,something,Sdate,Edate){
         $scope.LPchartdate=data;
         // Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
         // $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
-        console.log($scope.LPchartdate);
+        //console.log($scope.LPchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.LPchartdate,"舒张压","mmHg");
       $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5151,7 +5242,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
       function(data){
         $scope.HPchartdate=data;
-        console.log($scope.HPchartdate);
+        //console.log($scope.HPchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.HPchartdate,"收缩压","mmHg");
             $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5164,7 +5255,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
       function(data){
         $scope.HBchartdate=data;
-        console.log($scope.HBchartdate);
+        //console.log($scope.HBchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.HBchartdate,"脉率","次/分钟");
        $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5177,7 +5268,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5190,7 +5281,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5203,7 +5294,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5216,7 +5307,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5229,7 +5320,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5242,7 +5333,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5255,7 +5346,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5268,7 +5359,7 @@ var showsomething=function(param,something,Sdate,Edate){
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
       function(data){
         $scope.BSchartdate=data;
-        console.log($scope.BSchartdate);
+        //console.log($scope.BSchartdate);
       //调用绘图的方法 传参
       createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
       $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -5400,7 +5491,7 @@ function createStockChart(ChartData,title,unit) {
         // temp='';
         return '';
       }
-      // console.log(index%2);
+      // //console.log(index%2);
       // return temp;
      }
      //调函数
@@ -5409,7 +5500,7 @@ function createStockChart(ChartData,title,unit) {
       function(data){
         $scope.vitalsigns=data;
         Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
-        console.log($scope.vitalsigns);
+        //console.log($scope.vitalsigns);
         $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
         Storage.rm("vitalsigns");
       }, function(data) {
@@ -5428,10 +5519,10 @@ function createStockChart(ChartData,title,unit) {
      var yestodayyear=d.getFullYear();
 //这里应该会涉及到昨天是哪天的问题
      if (d.getDate()<=9) {
-      console.log(d.getDate());
+      //console.log(d.getDate());
        day='0'+''+d.getDate();
        yestoday='0'+''+(d.getDate()-1);
-      console.log(day);
+      //console.log(day);
       if ((d.getDate()==1)&&(d.getMonth()>=1)) {
         yestodaymonth=d.getMonth(); 
        switch(d.getMonth()){ 
@@ -5458,13 +5549,13 @@ function createStockChart(ChartData,title,unit) {
 
 
      $scope.selectedstartdate=yestodayyear+'-'+yestodaymonth+'-'+yestoday;
-      console.log($scope.selectedstartdate);
+      //console.log($scope.selectedstartdate);
      $scope.selecrtedenddate=date=year+'-'+month+'-'+day;
-     console.log($scope.selecrtedenddate);
+     //console.log($scope.selecrtedenddate);
      $scope.StartDateforuse =parseInt(yestodayyear+''+yestodaymonth+''+yestoday);
-     console.log($scope.StartDateforuse);
+     //console.log($scope.StartDateforuse);
      $scope.EndDateforuse =parseInt(year+''+month+''+day);
-     console.log($scope.EndDateforuse);
+     //console.log($scope.EndDateforuse);
        //调用函数显示昨天的数据
        showthetable(UserId,$scope.StartDateforuse,$scope.EndDateforuse);
 
@@ -5479,14 +5570,14 @@ function createStockChart(ChartData,title,unit) {
 
         var datePickerCallback = function (val) {
           if (typeof(val) === 'undefined') {
-            console.log('No date selected');
+            //console.log('No date selected');
           } else {
 
             $scope.inputDate=val;
             var chooenmonth=(val.getMonth()+1);
             var chooenday=val.getDate();
             if ((val.getMonth()+1)<10) {
-              // console.log(val.getMonth());
+              // //console.log(val.getMonth());
               chooenmonth='0'+''+(val.getMonth()+1);
             };
             if (val.getDate()<10) {
@@ -5496,18 +5587,18 @@ function createStockChart(ChartData,title,unit) {
 
 
             var date=val.getFullYear()+'-'+chooenmonth+'-'+chooenday;    
-            // console.log(date);         
+            // //console.log(date);         
             var dateuser=parseInt(val.getFullYear()+''+chooenmonth+''+chooenday);
-             console.log(dateuser);
+             //console.log(dateuser);
            if(setstate==0){
             $scope.selectedstartdate=date;
-           console.log($scope.selectedstartdate);
+           //console.log($scope.selectedstartdate);
              Storage.set("StartDateforvitasign",dateuser )
 
              }else if(setstate==1){
 
            $scope.selecrtedenddate=date       
-              console.log($scope.selecrtedenddate);
+              //console.log($scope.selecrtedenddate);
               Storage.set("EndDateforvitasign",dateuser )
              }
           }
@@ -5543,7 +5634,7 @@ function createStockChart(ChartData,title,unit) {
   $scope.bowerdata=function(){
    var startjikan=Storage.get("StartDateforvitasign");
     var endjikan=Storage.get("EndDateforvitasign");
-    console.log(startjikan);
+    //console.log(startjikan);
 
     showthetable(UserId,startjikan,endjikan);
   };
