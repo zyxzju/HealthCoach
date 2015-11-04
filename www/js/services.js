@@ -725,7 +725,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;
 
-//LRZ 20151102
+  //LRZ 20151102
   self.postDoctorInfo = function (data) {
     // console.log(data);
 
@@ -750,7 +750,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+  //LRZ 20151102
   self.postDoctorDtlInfo = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -761,7 +761,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress: data.photoAddress
     };
 
-  var temp = [{
+    var temp = [{
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
                 "ItemCode": "Contact001_4",
@@ -837,7 +837,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+  //LRZ 20151102
   self.getDocInfo = function (userid) {
     
     // Storage.set(13131313,userid);
