@@ -2356,7 +2356,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "Gender": "",
     "BloodType": "",
     "IDNo": "",
-    "DoctorId": "",
+    "DoctorId": DoctorId,
     "InsuranceType": "",
     "InvalidFlag": 9,
     "piUserId": "lzn",
@@ -2562,9 +2562,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           if(data.Birthday!=null && data.Birthday!=NaN){
                             $scope.users.Birthday=data.Birthday;
                             $scope.users.Birthday=parseInt($scope.users.Birthday);
+                            var a=Math.floor($scope.users.Birthday/10000);
+                            var b=$scope.users.Birthday-a*10000;
+                            var c=Math.floor(b/100);
+                            var d=b-c*100;
+                            $scope.B=a+'/'+c+'/'+d;
                           }
                           $scope.users.Gender=data.Gender;
+                          if($scope.users.Gender=='1') $scope.users.Gender='男性';
+                          if($scope.users.Gender=='2') $scope.users.Gender='女性';
+                          if($scope.users.Gender=='3') $scope.users.Gender='其他';
+                          if($scope.users.Gender=='4') $scope.users.Gender='未知';
                           $scope.users.BloodType=data.BloodType;
+                          if($scope.users.BloodType=='1') $scope.users.BloodType='A型';
+                          if($scope.users.BloodType=='2') $scope.users.BloodType='B型';
+                          if($scope.users.BloodType=='3') $scope.users.BloodType='O型';
+                          if($scope.users.BloodType=='4') $scope.users.BloodType='AB型';
+                          if($scope.users.BloodType=='5') $scope.users.BloodType='其他';
+
                           $scope.users.IDNo=data.IDNo;
                           $scope.users.DoctorId=DoctorId;
                           $scope.users.InsuranceType=data.InsuranceType;
@@ -2628,7 +2643,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     
 
   $scope.save = function(){
-    
+    if(Storage.get('b')!=null)
 $scope.users.Birthday=Storage.get('b');
 // $scope.PhoneNumber.Value=Storage.get('phoneno');
     // if(){
@@ -2639,10 +2654,10 @@ $scope.users.Birthday=Storage.get('b');
     // }
     loading();
     
-    if($scope.users.Gender =='男性' || $scope.users.Gender == '1') $scope.users.Gender=1;
-    if($scope.users.Gender =='女性' || $scope.users.Gender == '2') $scope.users.Gender=2;
-    if($scope.users.Gender =='其他' || $scope.users.Gender == '3') $scope.users.Gender=3;
-    if($scope.users.Gender =='未知' || $scope.users.Gender == '4') $scope.users.Gender=4;
+    if($scope.users.Gender =='男性') $scope.users.Gender=1;
+    if($scope.users.Gender =='女性') $scope.users.Gender=2;
+    if($scope.users.Gender =='其他') $scope.users.Gender=3;
+    if($scope.users.Gender =='未知') $scope.users.Gender=4;
 
     // // 男用1表示，女用0表示
     // if ($scope.users.Gender == '男') $scope.users.Gender=1;
@@ -2748,7 +2763,7 @@ $scope.users.Birthday=Storage.get('b');
     var p='';
     // console.log($scope.users.UserId);
     if($scope.users.UserId!=null){
-      console.log('if')
+     
       userservice.Roles($scope.users.UserId).then(
         function(data){
           // console.log(data);
@@ -2761,7 +2776,7 @@ $scope.users.Birthday=Storage.get('b');
             }
           };
           if(p==1){
-            Users.BasicInfo($scope.users).then(
+            Users.PatientBasicInfo($scope.users).then(
         function(data){
           console.log($scope.users.InsuranceType);
           console.log($scope.users.Gender);
@@ -2769,7 +2784,7 @@ $scope.users.Birthday=Storage.get('b');
           console.log($scope.users.Birthday);
           
           if(data.result=='数据插入成功'){
-            Users.BasicDtlInfo(detail).then(
+            Users.PatientBasicDtlInfo(detail).then(
               function(data){
                 
                 
@@ -2796,21 +2811,21 @@ $scope.users.Birthday=Storage.get('b');
           if(p==0){
             userservice.userRegister("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
         function(data){
-          if(data.result=='注册成功'){
-            Users.UID('PhoneNo',$scope.PhoneNo).then(
-              function(data){
-                $scope.patientid=data.result;
-                $scope.users.UserId=data.result;
-                console.log($scope.patientid);
-                console.log($scope.users.UserId);
-                if($scope.users.UserId!=null){
-                  Users.BasicInfo($scope.users).then(
+          if(data.result=='新建角色成功，密码与您已有账号一致'){
+            // Users.UID('PhoneNo',$scope.PhoneNo).then(
+            //   function(data){
+            //     $scope.patientid=data.result;
+            //     $scope.users.UserId=data.result;
+            //     console.log($scope.patientid);
+            //     console.log($scope.users.UserId);
+            //     if($scope.users.UserId!=null){
+                  Users.PatientBasicInfo($scope.users).then(
                     function(data){
                       
                       console.log($scope.users.Birthday);
                       // $timeout(2000);
                       if(data.result=='数据插入成功'){
-                        Users.BasicDtlInfo(detail).then(
+                        Users.PatientBasicDtlInfo(detail).then(
                           function(data){
                             hide();
                             a();
@@ -2833,12 +2848,12 @@ $scope.users.Birthday=Storage.get('b');
                 console.log(e);
               });
           }
-        },function(e){
-            console.log()
-            console.log(e);
-        });
-          }
-          // console.log('qwrwewerest'+p);别管后4行
+        // },function(e){
+        //     console.log()
+        //     console.log(e);
+        // });
+        //   }
+        //   console.log('qwrwewerest'+p);别管后4行
         },function(e){
             console.log(e);
         });
@@ -2853,14 +2868,21 @@ $scope.users.Birthday=Storage.get('b');
                 $scope.users.UserId=data.result;
                 console.log($scope.patientid);
                 console.log($scope.users.UserId);
-                if($scope.users.UserId!=null){
-                  Users.BasicInfo($scope.users).then(
+                Storage.set('PatientID',data.result);
+                $scope.HomeAddress.Patient=data.result;
+                $scope.PhoneNumber.Patient=data.result;
+                $scope.Nationality.Patient=data.result;
+                $scope.Occupation.Patient=data.result;
+                $scope.EmergencyContact.Patient=data.result;
+                $scope.EmergencyContactPhoneNumber.Patient=data.result;
+                if($scope.users.UserId!=null && $scope.patientid!=null &&  $scope.EmergencyContactPhoneNumber.Patient!=null){
+                  Users.PatientBasicInfo($scope.users).then(
                     function(data){
                       
                       console.log($scope.users.Birthday);
                       // $timeout(2000);
                       if(data.result=='数据插入成功'){
-                        Users.BasicDtlInfo(detail).then(
+                        Users.PatientBasicDtlInfo(detail).then(
                           function(data){
                             hide();
                             a();
