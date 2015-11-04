@@ -19,8 +19,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 .constant('CONFIG', {
-
-  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器
+ 
+  baseUrl: 'http://localhost:7516/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
   wsServerIP : "ws://" + "121.43.107.106" + ":4141",
@@ -1454,9 +1454,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return deferred.promise;
     };
 
-    self.GetSMSDialogue = function (Reciever,SendBy) {
+    self.GetSMSDialogue = function (Reciever,SendBy,top,skip) {
       var deferred = $q.defer();
-      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy}, function (data, headers) {
+      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy, $orderby:"SendDateTime desc", $top:top,$skip:skip}, function (data, headers) {
         deferred.resolve(data);
       }, function (err) {
         deferred.reject(err);
