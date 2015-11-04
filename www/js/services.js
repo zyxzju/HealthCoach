@@ -87,7 +87,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
       Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:20000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
       

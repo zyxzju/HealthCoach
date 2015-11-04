@@ -249,7 +249,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   }
 }])
-
 //修改密码   $scope.nvGoback李山加的，不明
 .controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage','loading' , function($scope , $state,$timeout, $ionicHistory, userservice,Storage,loading){
   $scope.barwidth="width:0%";
@@ -306,7 +305,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $ionicHistory.goBack();
   }
 }])
-
 //获取验证码  
 .controller('phonevalidCtrl', ['$scope','$state','$interval','$rootScope', 'Storage', 'userservice','loading' , function($scope, $state,$interval,$rootScope,Storage,userservice,loading) {
   $scope.barwidth="width:0%";
@@ -466,22 +464,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       });
   }
 }])
-
-.controller('phonesCtrl', ['$scope', '$state', '$http' ,function($scope, $state, $http){ //XJZ
-  var url1='http://angular.github.io/angular-phonecat/step-7/app/';
-    $http.get('http://angular.github.io/angular-phonecat/step-7/app/phones/phones.json').success(function(data) {
-      
-    for(var i in data){
-      data[i].imageUrl=url1 + data[i].imageUrl;
-    }
-    $scope.phones = data;
-  })
-}])
-
-.controller('PhoneDetailCtrl', ['$scope', '$stateParams',
-  function($scope, $stateParams) {
-    $scope.phoneId = $stateParams.phoneId;
- }])
 
 //lrz20151102
 .controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG',
@@ -677,7 +659,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       PageFunc.message("上传失败", 1000, "消息");
     });
   }
- 
 
 }])
 
@@ -1508,6 +1489,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       PIDlistLength=PIDlist.length; 
       firstget();
     },function(data){
+      netError();
     });
   }
 
@@ -1535,7 +1517,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $scope.$broadcast('scroll.infiniteScrollComplete');
   } 
   $scope.onItemDelete = function(index) {
-    //console.log(index);
     $scope.patients.splice(index, 1);
   } 
 }])
