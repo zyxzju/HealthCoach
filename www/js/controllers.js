@@ -1359,6 +1359,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.PIDdetail = function(Patient){
     Storage.set("PatientID",Patient.UserId);
     Storage.set("isManage","Yes");
+    Storage.set("PatientName",Patient.UserName);
     Storage.set("PatientPhotoAddress",Patient.photoAddress);
     $state.go('manage.plan');
   }
@@ -1572,11 +1573,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 { 
     $scope.Dialog = {};
     $scope.DoctorId = localStorage.getItem("UID");
-    $scope.DoctorName =  "";
+    $scope.DoctorName =  localStorage.getItem("DoctorName");
     $scope.imageURL = localStorage.getItem("PatientPhotoAddress"); //医生头像地址
 
     $scope.PatientId = localStorage.getItem("PatientID");
-    $scope.PatientName = "";
+    $scope.PatientName = localStorage.getItem("PatientName");;
     $scope.Dialog.SMScontent = "";
     var WsUserId = $scope.DoctorId;
     var WsUserName = $scope.DoctorId; 
