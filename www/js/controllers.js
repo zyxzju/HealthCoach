@@ -3570,10 +3570,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $state.go('Independent.risk');
   }
   $scope.NextPage = function(){
-    window.location.href="/#/addpatient/create"
+    window.location.href="#/addpatient/create"
   };
   $scope.BacktoManage = function(){
-    window.location.href="/#/manage/plan";
+    window.location.href="#/manage/plan";
   };
   $scope.toggleStar = function(item) {
     item.star = !item.star;
