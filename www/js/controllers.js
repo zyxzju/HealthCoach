@@ -1374,9 +1374,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //获取PIDlist并加载10条
   getPIDlist();
 
-  $scope.PIDdetail = function(PID){
-    Storage.set("PatientID",PID);
+  $scope.PIDdetail = function(Patient){
+    Storage.set("PatientID",Patient.PatientId);
     Storage.set("isManage","Yes");
+    Storage.set("PatientPhotoAddress",Patient.photoAddress);
     $state.go('manage.plan');
   }
 
