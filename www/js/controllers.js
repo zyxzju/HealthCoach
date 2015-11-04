@@ -576,22 +576,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 
-  $scope.state = "未提交";
+  // $scope.state = "未提交";
   //填表的预设数据 和需要填写的项目
   // $scope.imgURI = "img/Barot_Bellingham_tn.jpg";
   //the user skip this step put state to unuploaded.
   $scope.onClickSkip = function(){     
-      $scope.state = "未提交";
-      Storage.set(13,$scope.state);
-      $state.go('coach.i',{'state': $scope.state,'info':null},"replace");
+      // $scope.state = "未提交";
+      // Storage.set(13,$scope.state);
+      console.log("broadcasting");
+      $rootScope.$broadcast("onClickSkip");
+      $state.go('coach.i');
   };
 
   //the user submit
   $scope.onClickSubmit = function(){
       
-      $scope.state = "审核中";
+      // $scope.state = "审核中";
+
       $scope.upload($scope.userInfo);
-      $state.go('coach.i',{},"replace");
+      console.log("broadcasting");
+      $rootScope.$broadcast("onClickSubmit");
+      $state.go('coach.i');
   };
 
   //upload
@@ -690,8 +695,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    // $scope.items = $stateParams.info;
    // $scope.state = $stateParams.state;
 
-   
-   $scope.state = Storage.get(13);
+   //应该从服务器获得，此处写死
+   $scope.state = '未提交';
    // $scope.name = Storage.get(131);
    // $scope.company = Storage.get(132);
    // $scope.position = Storage.get(133);
@@ -728,6 +733,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
        $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
       else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+
+      Storage.set('doctorphoto',$scope.imgURI);
    });
    // var doRefresh = function(){};
    // $timeout(doRefresh(),500);
@@ -760,6 +767,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
          $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+        Storage.set('doctorphoto',$scope.imgURI);
      });
 
   }
@@ -798,6 +806,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       Storage.set("isManage","No");
       $state.go('addpatient.newpatient');
   }
+  $scope.onClickCheck = function(){
+    //console.log("yeah");
+    $state.go('upload');
+  }
+  $scope.$on('onClickSkip',function(){
+    console.log("接受到了跳过广播");
+    if($scope.state != "待审核" && $scope.state != "已通过" ) $scope.state = "未提交";
+  }) 
+
+  $scope.$on('onClickSubmit',function(){
+    console.log("接受到了提交广播");
+    if($scope.state != "已通过" ) $scope.state = "待审核";
+  })     
 }])
 // Coach Personal Config Controller 个人设置页面的controller  还没啥用
 // ----------------------------------------------------------------------------------------
@@ -881,7 +902,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
          $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-
+        Storage.set('doctorphoto',$scope.imgURI);
            var objStr=JSON.stringify($scope.userInfo);
            Storage.set("userInfo",objStr);
      });
@@ -1020,6 +1041,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
           Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
           $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+          Storage.set('doctorphoto',$scope.imgURI);
          } 
       })
     }, function(err) {
