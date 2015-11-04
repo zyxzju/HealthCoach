@@ -5027,46 +5027,54 @@ $scope.users.Birthday=Storage.get('b');
 //临床信息控制器 ZXF 20151031
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
   GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo) {
-  $scope.SyncInfo={"userid":""};
-  //$scope.SyncInfo={"userid":Storage.get('PatientID')};
+  //首先获取pid
+    var PatientID=Storage.get("PatientID");
+    console.log(PatientID);
+//根据pid获取海总最近一次就诊id
+   GetHZID.GetHUserIdByHCode({UserId:PatientID,HospitalCode:'HJZYY'}).then(function(data){
+      //拿到海总的就诊号用于后续同步
+      $scope.HJZYYID=data.result;
+      // console.log($scope.HJZYYID);
+    });
+
+
 //根据userid获取就诊信息列表（展示时用）
-  // var a={UserId:$scope.SyncInfo.patientid};
-  var promise2=GetClinicalList.GetClinicalInfoListbyUID({UserId:$scope.SyncInfo.userid});
+  var promise2=GetClinicalList.GetClinicalInfoListbyUID({UserId:PatientID});
   //console.log($scope.SyncInfo.userid);
   promise2.then(function(data){
     $scope.cliniclist=data.DT_InPatientInfo;
 
     //console.log($scope.cliniclist);
 //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
-$ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
-  scope: $scope,
-  animation: 'slide-in-up'
-}).then(function(modal) {
-  $scope.modalexam = modal;
-});
-$scope.onClickBackward = function(){
-  $ionicHistory.goBack();
-};
-$scope.openexaminfomodal = function(index) {
-  $scope.modalexam.show();
+  $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalexam = modal;
+  });
+  $scope.onClickBackward = function(){
+    $ionicHistory.goBack();
+  };
+  $scope.openexaminfomodal = function(index) {
+    $scope.modalexam.show();
   //console.log(index);
   //console.log($scope.SyncInfo.userid);
   //console.log($scope.cliniclist[index].VisitId);
-  var promise1=Getexaminfo.Getexaminfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+  var promise1=Getexaminfo.Getexaminfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
   promise1.then(function(data1){
     $scope.Examinationinfo=data1;
     $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
     //console.log($scope.Examinationinfo);
-  }, function(data1) {  
-  });
-};
+    }, function(data1) {  
+    });
+  };
 
-$scope.closeexamModal = function() {
-  $scope.modalexam.hide();
-};
-$scope.$on('$destroy', function() {
-  $scope.modalexam.remove();
-});
+  $scope.closeexamModal = function() {
+    $scope.modalexam.hide();
+  };
+  $scope.$on('$destroy', function() {
+    $scope.modalexam.remove();
+  });
   //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
   $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
     scope: $scope,
@@ -5077,7 +5085,7 @@ $scope.$on('$destroy', function() {
 
   $scope.opendiaginfomodal = function(index) {
     $scope.modaldiag.show();
-    var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+    var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
     promise0.then(function(data0){
       $scope.Diagnosisinfo=data0;
       $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
@@ -5108,7 +5116,7 @@ $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
 $scope.opendruginfomodal = function(index) {
   $scope.modaldrug.show();
     // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
-    var promise1=Getdruginfo.Getdruginfobypiduid({UserId:$scope.SyncInfo.userid,VisitId:$scope.cliniclist[index].VisitId});
+    var promise1=Getdruginfo.Getdruginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
     promise1.then(function(data2){
       $scope.DrugRecordinfo=data2;
       $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
@@ -5179,7 +5187,7 @@ $scope.NextPage = function(){
 //这是同步的button事件根据pid拿到最近十条就诊记录
 $scope.synclinicinfo=function(){
     // UserId:"@UserId",HospitalCode:'@HospitalCode'
-    var a={UserId:$scope.SyncInfo.userid,HospitalCode:'HJZYY'};
+    var a={UserId:PatientID,HospitalCode:'HJZYY'};
     var promise=GetHZID.GetHUserIdByHCode(a);
     promise.then(function(data){
       //拿到海总的就诊号用于后续同步
@@ -5216,6 +5224,8 @@ $scope.synclinicinfo=function(){
 .controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
 
 var PatintId = Storage.get('PatientID');
+// var PatintId ="PID201506180013";
+console.log(PatintId);
 //进入页面，调用函数获取任务列表（当前、往期计划）
 var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
 promiseS1.then(function(data1){
@@ -5265,7 +5275,7 @@ GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
     //console.log(Storage.get("selectedvitaltype"));
 
  //传参调函画图
-showsomething(option.SignName,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
+drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
 
 
   };
@@ -5275,38 +5285,38 @@ showsomething(option.SignName,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDat
     ///// 
   }
   );
-if ($scope.planList=='PLAN20151029') {
-  //console.log(KEYI);
+// if ($scope.planList=='PLAN20151029') {
+//   //console.log(KEYI);
 
-};
+// };
 
 // $scope.planList={"pl":""};
-$scope.changeplan= function(something){
+$scope.changeplan= function(changedplan){
 // Storage.set("latestplanno",data1[0].PlanNo);
 // Storage.set("latestplanstartdate",data1[0].StartDate);
 // Storage.set("latestplanenddate",data1[0].EndDate);
  // //console.log(Storage.get("selectedvitaltype"));
- $scope.planno=something;
+ $scope.planno=changedplan;
 
  $scope.localselectedname=Storage.get("selectedvitaltype");
 
 $scope.plan=angular.fromJson(Storage.get("formerplan"));
 
 
-if (something==Storage.get("latestplanno")) {
+if (changedplan==Storage.get("latestplanno")) {
   $scope.startdate=Storage.get("latestplanstartdate");
   $scope.enddate=Storage.get("latestplanenddate");
 }else{
   for (var i = 0; i <= $scope.plan.length-1; i++) {
     //console.log($scope.plan[i].PlanName);
-    if ($scope.plan[i].PlanNo==something) {
+    if ($scope.plan[i].PlanNo==changedplan) {
      $scope.startdate= $scope.plan[i].StartDate;
      $scope.enddate=$scope.plan[i].EndDate;
    };
  };
 };
 
-showsomething($scope.localselectedname,$scope.planno,$scope.startdate,$scope.enddate)
+drawcharts($scope.localselectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
 
 
 $scope.changeVitalInfo = function(option) {
@@ -5315,17 +5325,18 @@ $scope.changeVitalInfo = function(option) {
   $scope.selectedname=option.SignName;
  //console.log($scope.selectedname);
  //传参调函画图
-showsomething($scope.selectedname,$scope.planno,$scope.startdate,$scope.enddate)
+drawcharts($scope.selectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
 
 };
 };
 
-var showsomething=function(PatientId,plannumber,Sdate,Edate){
+var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
     if (param=="舒张压") {
 
     GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
       function(data){
         $scope.LPchartdate=data;
+        console.log(data);
         // Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
         // $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
         //console.log($scope.LPchartdate);
@@ -5377,7 +5388,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="睡前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5390,7 +5401,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   }
   if(param=="早餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5403,7 +5414,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="早餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5416,7 +5427,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="午餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5429,7 +5440,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="午餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5442,7 +5453,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="晚餐前血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5455,7 +5466,7 @@ var showsomething=function(PatientId,plannumber,Sdate,Edate){
   };
   if(param=="晚餐后血糖"){
 
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:something,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
+    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
       function(data){
         $scope.BSchartdate=data;
         //console.log($scope.BSchartdate);
@@ -5579,7 +5590,7 @@ function createStockChart(ChartData,title,unit) {
  .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
 
      var PatintId=Storage.get('PatientID');
-     console.log(PatintId);
+     // console.log(PatintId);
       GetBasicInfo.GetBasicInfoByPid(PatintId).then(function(barsigns){
       $scope.Name=barsigns.UserName;
       $scope.gender=barsigns.GenderText;
@@ -5660,7 +5671,9 @@ function createStockChart(ChartData,title,unit) {
      $scope.StartDateforuse =parseInt(yestodayyear+''+yestodaymonth+''+yestoday);
      //console.log($scope.StartDateforuse);
      $scope.EndDateforuse =parseInt(year+''+month+''+day);
-     //console.log($scope.EndDateforuse);
+     console.log($scope.EndDateforuse);
+     Storage.set("EndDateforvitasign",$scope.EndDateforuse);
+
        //调用函数显示昨天的数据
        showthetable(PatintId,$scope.StartDateforuse,$scope.EndDateforuse);
 
@@ -5740,7 +5753,7 @@ function createStockChart(ChartData,title,unit) {
    var startjikan=Storage.get("StartDateforvitasign");
     var endjikan=Storage.get("EndDateforvitasign");
     console.log(startjikan);
-    console.log(endjikan);
+   console.log(endjikan);
     showthetable(PatintId,startjikan,endjikan);
   };
 
