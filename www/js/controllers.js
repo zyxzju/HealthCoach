@@ -22,7 +22,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 // --------登录注册、设置修改密码-熊佳臻---------------- 
 //登录  
-.controller('SignInCtrl', ['$scope','$state', '$timeout', 'userservice','Storage','loading','PageFunc' , function($scope, $state, $timeout, userservice, Storage,loading,PageFunc) {
+.controller('SignInCtrl', ['$scope','$state', '$timeout', 'userservice','Storage','loading','PageFunc' , 'jpushService',function($scope, $state, $timeout, userservice, Storage,loading,PageFunc,jpushService) {
   $scope.barwidth="width:0%";
   if(Storage.get('USERNAME')!=null){
     $scope.logOn={username:Storage.get('USERNAME'),password:""};
@@ -37,6 +37,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         UIDpromise.then(function(data){
           if(data.result!=null){
             Storage.set('UID', data.result);
+            //window.plugins.jPushPlugin.setAlias(data.result);
           }
         },function(data){
         });
@@ -1356,7 +1357,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   getPIDlist();
 
   $scope.PIDdetail = function(Patient){
-    Storage.set("PatientID",Patient.PatientId);
+    Storage.set("PatientID",Patient.UserId);
     Storage.set("isManage","Yes");
     Storage.set("PatientPhotoAddress",Patient.photoAddress);
     $state.go('manage.plan');
@@ -1570,18 +1571,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
 { 
     $scope.Dialog = {};
-    $scope.DoctorId = "DOC201506180002";
-    $scope.DoctorName =  "何疆春";
-    $scope.imageURL = ""; //医生头像地址
+    $scope.DoctorId = localStorage.getItem("UID");
+    $scope.DoctorName =  "";
+    $scope.imageURL = localStorage.getItem("PatientPhotoAddress"); //医生头像地址
 
-    $scope.PatientId = "PID201506180016";
-    $scope.PatientName = "李田昌";
+    $scope.PatientId = localStorage.getItem("PatientID");
+    $scope.PatientName = "";
     $scope.Dialog.SMScontent = "";
     var WsUserId = $scope.DoctorId;
     var WsUserName = $scope.DoctorId; 
     var wsServerIP = CONFIG.wsServerIP; 
 
-    $scope.myImage = ""; //患者头像地址
+    $scope.myImage = localStorage.getItem("doctorphoto"); //患者头像地址
 
     // var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
     // Data.Users.GetPatientDetailInfo({route:urltemp2}, 
@@ -2680,8 +2681,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     
 
   $scope.save = function(){
+    var detail = [$scope.HomeAddress,$scope.PhoneNumber,$scope.Nationality,$scope.Occupation,$scope.EmergencyContact,$scope.EmergencyContactPhoneNumber];
     if(Storage.get('b')!=null)
-$scope.users.Birthday=Storage.get('b');
+
+  $scope.users.Birthday=Storage.get('b');
 // $scope.PhoneNumber.Value=Storage.get('phoneno');
     // if(){
       // if($scope.users.InsuranceType!='') $scope.users.InsuranceType = $scope.users.InsuranceType.Name;
@@ -3126,6 +3129,7 @@ $scope.users.Birthday=Storage.get('b');
         "DeviceType":1
       };
     $scope.B="点击设置";  
+    detail=[];
   }
   // $scope.Hospital="";
   // $scope.DoctorId="";
@@ -3833,6 +3837,10 @@ $scope.users.Birthday=Storage.get('b');
         arry[1] = date2;
         return arry;
     }
+
+    $scope.backtomain=function(){
+      $state.go('coach.patients');
+    };
 
     $scope.onClickBackward = function(){
       $ionicHistory.goBack();
@@ -5673,6 +5681,11 @@ function createStockChart(ChartData,title,unit) {
     GetVitalSigns.GetVitalSignsbydate(PatintId,date1,date2).then(
       function(data){
         $scope.vitalsigns=data;
+        if (data.length==0) {
+          $scope.displaytable=true;
+        }else{
+          $scope.displaytable=false;
+        };
         Storage.set("vitalsigns",angular.toJson( $scope.vitalsigns));
         //console.log($scope.vitalsigns);
         $scope.allsigns=angular.fromJson(Storage.get("vitalsigns"));
@@ -5731,7 +5744,7 @@ function createStockChart(ChartData,title,unit) {
      $scope.EndDateforuse =parseInt(year+''+month+''+day);
      console.log($scope.EndDateforuse);
      Storage.set("EndDateforvitasign",$scope.EndDateforuse);
-
+     Storage.set("StartDateforvitasign",$scope.StartDateforuse);
        //调用函数显示昨天的数据
        showthetable(PatintId,$scope.StartDateforuse,$scope.EndDateforuse);
 
