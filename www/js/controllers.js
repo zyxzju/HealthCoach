@@ -3728,6 +3728,9 @@ $scope.users.Birthday=Storage.get('b');
   $scope.NextPage = function(){
     window.location.href="/#/addpatient/create"
   };
+  $scope.BacktoManage = function(){
+    window.location.href="/#/manage/plan";
+  };
   $scope.toggleStar = function(item) {
     item.star = !item.star;
   }

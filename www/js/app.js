@@ -595,7 +595,7 @@ $stateProvider
 })
 
    //$urlRouterProvider.otherwise('/signin');
-   //$urlRouterProvider.otherwise('/starting');
+   $urlRouterProvider.otherwise('/starting');
 
 }])
 
