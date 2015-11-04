@@ -53,13 +53,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           loading.loadingBarFinish($scope);
           Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
+          Storage.set('isSignIN','YES');
           saveUID();
           $timeout(function(){$state.go('coach.home');} , 1000);
         }
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
-          $scope.logStatus='连接超时！';
+          $scope.logStatus='网络错误！';
           return;          
         }
         if(data.status==404){
@@ -70,9 +71,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           loading.loadingBarFinish($scope);
           //Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
+          Storage.set('isSignIN','YES');
           saveUID();
           //alert('未激活,这个跳转在controller 73行');
-          PageFunc.confirm('未认证，激活,这个跳转在controller 74行');
+          PageFunc.confirm('未认证，激活,这个跳转在controller 77行');
           $timeout(function(){$state.go('coach.home');} , 500);  
           return;        
         }        
@@ -190,7 +192,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
-          $scope.logStatus='连接超时！';
+          $scope.logStatus='网络错误！';
           return;          
         }     
         $scope.logStatus=data.data.result;
@@ -233,7 +235,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           },function(data){
             loading.loadingBarFinish($scope);
             if(data.data==null && data.status==0){
-              $scope.logStatus='连接超时！';
+              $scope.logStatus='网络错误！';
               return;          
             }
             $scope.logStatus=data.data.result;
@@ -265,7 +267,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
       loading.loadingBarFinish($scope);
       if(data.data==null && data.status==0){
-        $scope.logStatus1='连接超时！';
+        $scope.logStatus1='网络错误！';
         return;          
       }      
       $scope.logStatus1='密码错误';
@@ -288,7 +290,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         },function(data){
           loading.loadingBarFinish($scope);
           if(data.data==null && data.status==0){
-            $scope.logStatus2='连接超时！';
+            $scope.logStatus2='网络错误！';
             return;          
           }
           $scope.logStatus2=data.data.result;
@@ -330,7 +332,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
-          $scope.logStatus='连接超时！';
+          $scope.logStatus='网络错误！';
           return;          
         }
         $scope.logStatus='验证失败！';
@@ -356,7 +358,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(data){
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
-          $scope.logStatus='连接超时！';
+          $scope.logStatus='网络错误！';
           return;          
         }
         $scope.logStatus='验证码发送失败！';
@@ -424,7 +426,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     },function(data){
       loading.loadingBarFinish($scope);
       if(data.data==null && data.status==0){
-          $scope.logStatus='连接超时！';
+          $scope.logStatus='网络错误！';
           return;          
       }
       $scope.logStatus='网络出错了，请再次发送';
@@ -847,17 +849,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           text: '<b>确定</b>',
           type: 'button-small button-positive ',
           onTap: function(e) {
-              $state.go('signin');
+              var USERNAME=Storage.get('USERNAME');
+              Storage.clear();
+              Storage.set('USERNAME',USERNAME);
               $timeout(function(){
               $ionicHistory.clearHistory();
               $ionicHistory.clearCache();
-              var TOKEN=Storage.get('TOKEN');
-              var USERNAME=Storage.get('USERNAME');
-              Storage.clear;
-              Storage.set('USERNAME',USERNAME);
-              Storage.set('TOKEN',TOKEN);
+              $state.go('signin');
               },100);
-
+              
           }
         }
       ]
@@ -1209,7 +1209,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-.controller('myPatientCtrl', ['$cordovaBarcodeScanner','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc' ,function($cordovaBarcodeScanner,$ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc){
+.controller('myPatientCtrl', ['$cordovaBarcodeScanner','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG' ,function($cordovaBarcodeScanner,$ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG){
   var PIDlist=new Array();//PID列表
   var PIDlistLength;//PID列表长度
   var loaditems=0;//已加载条目
@@ -1276,7 +1276,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       var str=JSON.stringify(data);
       var str=JSON.parse(str);
       //两个JSON拼数据,把PatientsList中的字段加到PatientsBasic
-      str.photoAddress = PatientsList[loaditems].photoAddress;
+      if(PatientsList[loaditems].photoAddress=='' || PatientsList[loaditems].photoAddress==null){    
+        str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ PatientsList[loaditems].photoAddress;
+      }
       str.PlanNo = PatientsList[loaditems].PlanNo;
       str.StartDate = PatientsList[loaditems].StartDate;
       str.Process = PatientsList[loaditems].Process;
@@ -1320,7 +1324,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   var netError = function(){
     $ionicLoading.hide();
-    PageFunc.confirm('网络好像不太稳定', '连接超时');   
+    PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
   var getPIDlist = function(){
     userINFO.GetPatientsList(DOCID,'M1','0','0')
@@ -1450,7 +1454,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     });
   }         
 }])
-.controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage){
+.controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
   var PIDlist=new Array();
   var PIDlistLength;
   var loaditems=0;
@@ -1471,6 +1475,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     userINFO.BasicInfo(PID).then(function(data){
       var str=JSON.stringify(data);
       var str=JSON.parse(str);
+      if(PatientsList[loaditems].photoAddress=='' || PatientsList[loaditems].photoAddress==null){    
+        str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ PatientsList[loaditems].photoAddress;
+      }
       PatientsBasic.push(str);
       loaditems++;
     },function(data){
@@ -1506,7 +1515,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   var netError = function(){
        $ionicLoading.hide();
-      PageFunc.confirm('网络好像不太稳定', '连接超时');   
+      PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
   var getPIDlist = function(){
     userINFO.GetPatientsList(DOCID,'M1','0','0')
@@ -2534,7 +2543,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // $scope.EmergencyContactPhoneNumber.Patient=Storage.get('PatientID');
   // var timeout = function() {
   //  var Timeout = $ionicPopup.alert({
-    //    title: '连接超时',
+    //    title: '网络错误',
     //    template: '已超时,请检查您的网络',
     //    okText: '关闭',           
     //  });
