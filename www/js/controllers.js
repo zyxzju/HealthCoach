@@ -3704,6 +3704,9 @@ $scope.users.Birthday=Storage.get('b');
       //open a new page to collect patient info  
       $state.go('addpatient.riskquestion');
   }
+  $scope.onClickEvaluation1 = function(){
+    $state.go('Independent.riskquestion');
+  }
 
   $scope.slideHasChanged = function (_index){
     // console.log(_index);
@@ -3718,6 +3721,10 @@ $scope.users.Birthday=Storage.get('b');
       $state.go('addpatient.risk');
   }
 
+  $scope.onClickBackward1 = function(){
+      // $state.go("risk");
+      $state.go('Independent.risk');
+  }
   $scope.NextPage = function(){
     window.location.href="/#/addpatient/create"
   };
@@ -3779,6 +3786,9 @@ $scope.users.Birthday=Storage.get('b');
 
   $scope.clickCancel = function(){
     $state.go('addpatient.risk');
+  };
+  $scope.clickCancel1 = function(){
+    $state.go('Independent.risk');
   };
   // console.log($scope.SBP);
   $scope.clickSubmit = function(){
@@ -3853,7 +3863,14 @@ $scope.users.Birthday=Storage.get('b');
     })
     // console.log($scope.description);
     // Patients.
-    $state.go('addpatient.risk');
+    if (Storage.get('isManage') == "No")
+    {
+      $state.go('addpatient.risk');
+    }
+    else
+    {
+      $state.go('Independent.risk');
+    }
   }
 
 }])
