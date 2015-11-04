@@ -3085,7 +3085,7 @@ $scope.users.Birthday=Storage.get('b');
   // $scope.EmergencyContactPhoneNumber="";
 }])
 
-//LRZ 20151103
+//LRZ 20151104 几个bug修复
 .controller('RiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage',
   function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage){
   
@@ -3164,539 +3164,319 @@ $scope.users.Birthday=Storage.get('b');
       else $scope.newRisks[i].M2show = true;
     };    
     // $ionicSlideBoxDelegate.$getByHandle('slide1').enableSlide(true);
-    for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
-      if($scope.newRisks[i].num == $scope.whichone) {
-        $scope.index = i;
-        console.log($scope.newRisks[$scope.index]);
-        if(($scope.newRisks[$scope.index].M1show != $scope.newRisks[$scope.index].M2show)){
-            
-            // $ionicSlideBoxDelegate.$getByHandle('my-handle').slide(($scope.newRisks[$scope.index].M1show)?0:1,500);
-            console.log('参数不全，禁止了滑动');
-            // $ionicSlideBoxDelegate.$getByHandle('my-handle').enableSlide(false);
+    if($scope.whichone != undefined){
+      for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
+        if($scope.newRisks[i].num == $scope.whichone) {
+          $scope.index = i;
+          console.log($scope.newRisks[$scope.index]);
+          if(($scope.newRisks[$scope.index].M1show != $scope.newRisks[$scope.index].M2show)){
+              
+              // $ionicSlideBoxDelegate.$getByHandle('my-handle').slide(($scope.newRisks[$scope.index].M1show)?0:1,500);
+              console.log('参数不全，禁止了滑动');
+              // $ionicSlideBoxDelegate.$getByHandle('my-handle').enableSlide(false);
+          }
+          // else $ionicSlideBoxDelegate.$getByHandle('slide1').enableSlide(true);
+          break;
         }
-        // else $ionicSlideBoxDelegate.$getByHandle('slide1').enableSlide(true);
-        break;
-      }
-    };
+      };
 
     // console.log($scope.newRisks[$scope.index]);  
         // console.log("又画图了");
-        $scope.data1 =  {
+      $scope.data1 =  {
+        "type": "serial",
+        "theme": "light",
+          "dataProvider": [{
+              "type": "收缩压",
+              "state1": 40+80,
+              "state2": 20,
+              "state3": 20,
+              "state4": 20,
+              "state5": 20,
+              "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.SBP), //params
+              "target": 120               //params
+
+          }, {
+              "type": "舒张压",
+              "state1": 20+80,
+              "state2": 20,
+              "state3": 20,
+              "state4": 20,
+              "state5": 20,
+              "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.DBP),         //params
+              "target": 100             //params
+          }],
+          "valueAxes": [{
+              "stackType": "regular",
+              "axisAlpha": 0.3,
+              "gridAlpha": 0,
+               "minimum" :80
+          }],
+          "startDuration": 0.1,
+          "graphs": [{
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><120 mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很安全",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state1"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
+              "fillAlphas": 0.8,
+             // "labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "正常",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state2"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "良好",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state3"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很危险",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state4"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "极度危险",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state5"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 5,
+              "labelText": "[[value]]"+" 当前",
+              "clustered": false,
+              "lineAlpha": 1.5,
+              "stackable": false,
+              "columnWidth": 0.618,
+              "noStepRisers": true,
+              "title": "当前",
+              "type": "step",
+              "color": "#000000",
+              "valueField": "now"      
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 0,
+              "columnWidth": 0.618,
+              // "labelText": "[[value]]"+"目标",
+              "clustered": false,
+              "lineAlpha": 0.3,
+              "stackable": false,
+              "noStepRisers": true,
+              "title": "目标",
+              "type": "step",
+              "color": "#00FFCC",
+              "valueField": "target"      
+          }],
+          "categoryField": "type",
+          "categoryAxis": {
+              "gridPosition": "start",
+              "axisAlpha": 80,
+              "gridAlpha": 0,
+              "position": "left"
+          },
+          "export": {
+            "enabled": true
+           }
+      };
+      $scope.data2 = {
           "type": "serial",
           "theme": "light",
-            "dataProvider": [{
-                "type": "收缩压",
-                "state1": 40+80,
-                "state2": 20,
-                "state3": 20,
-                "state4": 20,
-                "state5": 20,
-                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.SBP), //params
-                "target": 120               //params
+          
+          "autoMargins": true,
+          "marginTop": 30,
+          "marginLeft": 80,
+          "marginBottom": 30,
+          "marginRight": 50,
+          "dataProvider": [{
+              "category": "血糖浓度  (mmol/L)",
+              "excelent": 4.6,
+              "good": 6.1-4.6,
+              "average": 7.2-6.1,
+              "poor": 8.8-7.2,
+              "bad": 1,
+              "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? -100:$scope.newRisks[$scope.index].M2.Glucose)
+          }],
+          "valueAxes": [{
+              "maximum": 10,
+              "stackType": "regular",
+              "gridAlpha": 0,
+              "offset":10,
+              "minimum" :3
 
-            }, {
-                "type": "舒张压",
-                "state1": 20+80,
-                "state2": 20,
-                "state3": 20,
-                "state4": 20,
-                "state5": 20,
-                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.DBP),         //params
-                "target": 100             //params
-            }],
-            "valueAxes": [{
-                "stackType": "regular",
-                "axisAlpha": 0.3,
-                "gridAlpha": 0,
-                 "minimum" :80
-            }],
-            "startDuration": 0.1,
-            "graphs": [{
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><120 mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "很安全",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state1"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
-                "fillAlphas": 0.8,
-               // "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "正常",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state2"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "良好",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state3"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "很危险",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state4"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "极度危险",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state5"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0,
-                "columnWidth": 0.5,
-                "lineThickness": 5,
-                "labelText": "[[value]]"+" 当前",
-                "clustered": false,
-                "lineAlpha": 1.5,
-                "stackable": false,
-                "columnWidth": 0.618,
-                "noStepRisers": true,
-                "title": "当前",
-                "type": "step",
-                "color": "#000000",
-                "valueField": "now"      
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0,
-                "columnWidth": 0.5,
-                "lineThickness": 0,
-                "columnWidth": 0.618,
-                // "labelText": "[[value]]"+"目标",
-                "clustered": false,
-                "lineAlpha": 0.3,
-                "stackable": false,
-                "noStepRisers": true,
-                "title": "目标",
-                "type": "step",
-                "color": "#00FFCC",
-                "valueField": "target"      
-            }],
-            "categoryField": "type",
-            "categoryAxis": {
-                "gridPosition": "start",
-                "axisAlpha": 80,
-                "gridAlpha": 0,
-                "position": "left"
-            },
-            "export": {
-              "enabled": true
-             }
-        };
-         $scope.data2 = {
-            "type": "serial",
-            "theme": "light",
-            
-            "autoMargins": true,
-            "marginTop": 30,
-            "marginLeft": 80,
-            "marginBottom": 30,
-            "marginRight": 50,
-            "dataProvider": [{
-                "category": "血糖浓度  (mmol/L)",
-                "excelent": 4.6,
-                "good": 6.1-4.6,
-                "average": 7.2-6.1,
-                "poor": 8.8-7.2,
-                "bad": 1,
-                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? -100:$scope.newRisks[$scope.index].M2.Glucose)
-            }],
-            "valueAxes": [{
-                "maximum": 10,
-                "stackType": "regular",
-                "gridAlpha": 0,
-                "offset":10,
-                "minimum" :3
-
-            }],
-            "startDuration": 0.13,
-            "graphs": [ {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#19d228",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "excelent"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#b4dd1e",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "good"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#f4fb16",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "average"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#f6d32b",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "poor"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#fb7116",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "bad"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
-                "clustered": false,
-                "columnWidth": 0.5,
-                "noStepRisers": true,
-                "lineThickness": 3,
-                "fillAlphas": 0,
-                "labelText": "[[value]]"+" 当前",
-                "lineColor": "#0080FF", 
-                "stackable": false,
-                "showBalloon": true,
-                "type": "step",
-                "valueField": "bullet"
-            }],
-            "rotate": false,
-            "columnWidth": 1,
-            "categoryField": "category",
-            "categoryAxis": {
-                "gridAlpha": 0,
-                "position": "left",
-               
-            }
-        };
-        $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
-        $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
-        
-        // console.log("又画图了");
-
-        $scope.data = { showDelete: false, showReorder: false };
-        $scope.dbtshow = false;
-    });
+          }],
+          "startDuration": 0.13,
+          "graphs": [ {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#19d228",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "excelent"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#b4dd1e",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "good"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f4fb16",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "average"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f6d32b",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "poor"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#fb7116",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "bad"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
+              "clustered": false,
+              "columnWidth": 0.5,
+              "noStepRisers": true,
+              "lineThickness": 5,
+              "fillAlphas": 0,
+              "labelText": "[[value]]"+" 当前",
+              "lineColor": "#000000", 
+              "stackable": false,
+              "showBalloon": true,
+              "type": "step",
+              "valueField": "bullet"
+          }],
+          "rotate": false,
+          "columnWidth": 1,
+          "categoryField": "category",
+          "categoryAxis": {
+              "gridAlpha": 0,
+              "position": "left",
+             
+          }
+      };
+      $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
+      $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
+    }
+    $scope.data = { showDelete: false, showReorder: false };
+    $scope.dbtshow = false;
+  });
     
-
-
-
- 
-  // });
-
-
-  
 
   $scope.doRefresh = function(){
     console.log("doing refreshing");
     // $scope.userid = Storage.get('UID');
     // $scope.userid = "PID201506170002";
     $scope.userid = Storage.get('PatientID');
-    Patients.getEvalutionResults($scope.userid).then(function(data){
-    $scope.risks = data;
-    $scope.maxsortno = 243;
-    for (var i = $scope.risks.length - 1; i >= 0; i--) {
-      // var temp = 
+    Patients.getEvalutionResults($scope.userid).then(function(dat){
+      $scope.risks = dat;
+      $scope.maxsortno = 243;
+      for (var i = $scope.risks.length - 1; i >= 0; i--) {
+        // var temp = 
 
-      switch ($scope.risks[i].AssessmentType){
-        case 'M1' : $scope.risks[i].AssessmentName = "高血压模块";       
-                    var temp = $scope.risks[i].Result.split("||",8);
-                    //分割字符串 获得血压数据 SBP||DBP||5 factors
-                    $scope.risks[i].Result = temp[0];
-                    $scope.risks[i].SBP = temp[1];
-                    $scope.risks[i].DBP = temp[2];
-                    $scope.risks[i].f1 = temp[3];
-                    $scope.risks[i].f2 = temp[4];
-                    $scope.risks[i].f3 = temp[5];
-                    $scope.risks[i].f4 = temp[6];
-                    $scope.risks[i].f5 = temp[7];
-        case 'M2' : $scope.risks[i].AssessmentName = "糖尿病模块";
-                    var temp = $scope.risks[i].Result.split("||",3);
-                    $scope.risks[i].Result = temp[0];
-                    $scope.risks[i].Period = temp[1];
-                    $scope.risks[i].Glucose = temp[2];
-                    //分割字符串 获得血糖数据 我也不知道有什么数据 8个
-      } 
-    };
+        switch ($scope.risks[i].AssessmentType){
+          case 'M1' : $scope.risks[i].AssessmentName = "高血压模块";       
+                      var temp = $scope.risks[i].Result.split("||",8);
+                      //分割字符串 获得血压数据 SBP||DBP||5 factors
+                      $scope.risks[i].Result = temp[0];
+                      $scope.risks[i].SBP = temp[1];
+                      $scope.risks[i].DBP = temp[2];
+                      $scope.risks[i].f1 = temp[3];
+                      $scope.risks[i].f2 = temp[4];
+                      $scope.risks[i].f3 = temp[5];
+                      $scope.risks[i].f4 = temp[6];
+                      $scope.risks[i].f5 = temp[7];
+          case 'M2' : $scope.risks[i].AssessmentName = "糖尿病模块";
+                      var temp = $scope.risks[i].Result.split("||",3);
+                      $scope.risks[i].Result = temp[0];
+                      $scope.risks[i].Period = temp[1];
+                      $scope.risks[i].Glucose = temp[2];
+                      //分割字符串 获得血糖数据 我也不知道有什么数据 8个
+        } 
+      };
 
-    //整合对象
-    $scope.newRisks = [];
-    for (var i = 0; i <= $scope.risks.length - 1; i++) {
-        if(i == 0) {
-          switch($scope.risks[i].AssessmentType){
-              case 'M1' : var temp = {num: $scope.risks[i].SortNo, M1:$scope.risks[i],M2:undefined};break;
-              case 'M2' : var temp = {num: $scope.risks[i].SortNo, M2:$scope.risks[i],M3:undefined};
-          }
-          $scope.newRisks.push(temp);
-        }
-        else{
-          if($scope.risks[i].SortNo == $scope.newRisks[$scope.newRisks.length-1].num){
-              switch($scope.risks[i].AssessmentType){
-                case 'M1' : $scope.newRisks[$scope.newRisks.length-1].M1 = $scope.risks[i];break;
-                case 'M2' : $scope.newRisks[$scope.newRisks.length-1].M2 = $scope.risks[i];
-              }
+      //整合对象
+      $scope.newRisks = [];
+      for (var i = 0; i <= $scope.risks.length - 1; i++) {
+          if(i == 0) {
+            switch($scope.risks[i].AssessmentType){
+                case 'M1' : var temp = {num: $scope.risks[i].SortNo, M1:$scope.risks[i],M2:undefined};break;
+                case 'M2' : var temp = {num: $scope.risks[i].SortNo, M2:$scope.risks[i],M3:undefined};
+            }
+            $scope.newRisks.push(temp);
           }
           else{
-              switch($scope.risks[i].AssessmentType){
-                case 'M1' : var temp = {num: $scope.risks[i].SortNo, M1:$scope.risks[i]};break;
-                case 'M2' : var temp = {num: $scope.risks[i].SortNo, M2:$scope.risks[i]};
-              }
-              $scope.newRisks.push(temp);            
-          }
-        }        
-    };
-
-    //不显示没填写的项目 lrz20151103
-    for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
-      if(typeof($scope.newRisks[i].M1) == 'undefined' 
-        || typeof($scope.newRisks[i].M1.SBP) == 'undefined' 
-        || typeof($scope.newRisks[i].M1.DBP) == 'undefined')
-        $scope.newRisks[i].M1show = false;
-      else  $scope.newRisks[i].M1show = true;
-        console.log($scope.newRisks[i].M1show);
-      if(typeof($scope.newRisks[i].M2) == 'undefined' || 
-         typeof($scope.newRisks[i].M2.AssessmentTime) == 'undefined' ||
-         typeof($scope.newRisks[i].M2.Period) == 'undefined' ||
-         typeof($scope.newRisks[i].M2.Glucose) == 'undefined')
-        $scope.newRisks[i].M2show = false;
-      else $scope.newRisks[i].M2show = true;
-    };
-
-    console.log($scope.newRisks);
-    });
-    // console.log("in controller");
-    // console.log($scope.risks);
-        $scope.data1 =  {
-          "type": "serial",
-          "theme": "light",
-            "dataProvider": [{
-                "type": "收缩压",
-                "state1": 40+80,
-                "state2": 20,
-                "state3": 20,
-                "state4": 20,
-                "state5": 20,
-                "now": (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.SBP), //params
-                "target": 120               //params
-
-            }, {
-                "type": "舒张压",
-                "state1": 20+80,
-                "state2": 20,
-                "state3": 20,
-                "state4": 20,
-                "state5": 20,
-                "now":  (typeof($scope.newRisks[$scope.index].M1) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M1.DBP),         //params
-                "target": 100             //params
-            }],
-            "valueAxes": [{
-                "stackType": "regular",
-                "axisAlpha": 0.3,
-                "gridAlpha": 0,
-                 "minimum" :80
-            }],
-            "startDuration": 0.1,
-            "graphs": [{
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><120 mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "很安全",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state1"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
-                "fillAlphas": 0.8,
-               // "labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "正常",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state2"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "良好",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state3"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "很危险",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state4"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
-                "fillAlphas": 0.8,
-                //"labelText": "[[value]]",
-                "lineAlpha": 0.3,
-                "title": "极度危险",
-                "type": "column",
-                "color": "#000000",
-                "columnWidth": 0.618,
-                "valueField": "state5"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0,
-                "columnWidth": 0.5,
-                "lineThickness": 5,
-                "labelText": "[[value]]"+" 当前",
-                "clustered": false,
-                "lineAlpha": 0.3,
-                "stackable": false,
-                "columnWidth": 0.618,
-                "noStepRisers": true,
-                "title": "当前",
-                "type": "step",
-                "color": "#cc4488",
-                "valueField": "now"      
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
-                "fillAlphas": 0,
-                "columnWidth": 0.5,
-                "lineThickness": 0,
-                "columnWidth": 0.618,
-                // "labelText": "[[value]]"+"目标",
-                "clustered": false,
-                "lineAlpha": 0.3,
-                "stackable": false,
-                "noStepRisers": true,
-                "title": "目标",
-                "type": "step",
-                "color": "#00FFCC",
-                "valueField": "target"      
-            }],
-            "categoryField": "type",
-            "categoryAxis": {
-                "gridPosition": "start",
-                "axisAlpha": 80,
-                "gridAlpha": 0,
-                "position": "left"
-            },
-            "export": {
-              "enabled": true
-             }
-        };
-         $scope.data2 = {
-            "type": "serial",
-            "theme": "light",
-            
-            "autoMargins": true,
-            "marginTop": 30,
-            "marginLeft": 80,
-            "marginBottom": 30,
-            "marginRight": 50,
-            "dataProvider": [{
-                "category": "血糖浓度  (mmol/L)",
-                "excelent": 4.6,
-                "good": 6.1-4.6,
-                "average": 7.2-6.1,
-                "poor": 8.8-7.2,
-                "bad": 1,
-                "bullet": (typeof($scope.newRisks[$scope.index].M2) === 'undefined' ? -1000:$scope.newRisks[$scope.index].M2.Glucose)
-            }],
-            "valueAxes": [{
-                "maximum": 10,
-                "stackType": "regular",
-                "gridAlpha": 0,
-                "offset":10,
-                "minimum" :3
-
-            }],
-            "startDuration": 0.13,
-            "graphs": [ {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#19d228",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "excelent"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#b4dd1e",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "good"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#f4fb16",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "average"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#f6d32b",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "poor"
-            }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
-                "fillAlphas": 0.8,
-                "lineColor": "#fb7116",
-                "showBalloon": true,
-                "type": "column",
-                "valueField": "bad"
-            }, {
-                "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
-                "clustered": false,
-                "columnWidth": 0.5,
-                "noStepRisers": true,
-                "lineThickness": 3,
-                "fillAlphas": 0,
-                "labelText": "[[value]]"+" 当前",
-                "lineColor": "#0080FF", 
-                "stackable": false,
-                "showBalloon": true,
-                "type": "step",
-                "valueField": "bullet"
-            }],
-            "rotate": false,
-            "columnWidth": 1,
-            "categoryField": "category",
-            "categoryAxis": {
-                "gridAlpha": 0,
-                "position": "left",
-               
+            if($scope.risks[i].SortNo == $scope.newRisks[$scope.newRisks.length-1].num){
+                switch($scope.risks[i].AssessmentType){
+                  case 'M1' : $scope.newRisks[$scope.newRisks.length-1].M1 = $scope.risks[i];break;
+                  case 'M2' : $scope.newRisks[$scope.newRisks.length-1].M2 = $scope.risks[i];
+                }
             }
-        };
-        $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
-        $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
-    $scope.data = { showDelete: false, showReorder: false };
-    $scope.dbtshow = false;
-    $scope.$broadcast('scroll.refreshComplete'); 
+            else{
+                switch($scope.risks[i].AssessmentType){
+                  case 'M1' : var temp = {num: $scope.risks[i].SortNo, M1:$scope.risks[i]};break;
+                  case 'M2' : var temp = {num: $scope.risks[i].SortNo, M2:$scope.risks[i]};
+                }
+                $scope.newRisks.push(temp);            
+            }
+          }        
+      };
+
+      //不显示没填写的项目 lrz20151103
+      for (var i = $scope.newRisks.length - 1; i >= 0; i--) {
+        if(typeof($scope.newRisks[i].M1) == 'undefined' 
+          || typeof($scope.newRisks[i].M1.SBP) == 'undefined' 
+          || typeof($scope.newRisks[i].M1.DBP) == 'undefined')
+          $scope.newRisks[i].M1show = false;
+        else  $scope.newRisks[i].M1show = true;
+          console.log($scope.newRisks[i].M1show);
+        if(typeof($scope.newRisks[i].M2) == 'undefined' || 
+           typeof($scope.newRisks[i].M2.AssessmentTime) == 'undefined' ||
+           typeof($scope.newRisks[i].M2.Period) == 'undefined' ||
+           typeof($scope.newRisks[i].M2.Glucose) == 'undefined')
+          $scope.newRisks[i].M2show = false;
+        else $scope.newRisks[i].M2show = true;
+      };
+
+
+      $scope.data = { showDelete: false, showReorder: false };
+      $scope.dbtshow = false;
+      $scope.$broadcast('scroll.refreshComplete'); 
+    });
   }
 
   
@@ -3771,12 +3551,15 @@ $scope.users.Birthday=Storage.get('b');
   }
 
    // console.log("controller初始化的函数跑了一遍结束"); 
- 
+  $scope.$on('NewEvaluationSubmit', function () {
+    console.log("检测到有新的提交，刷新");
+    $scope.doRefresh();
+  })
 }])
 
 
-//调查问卷的controller state riskquestions;//LRZ 20151101
-.controller('RiskQuestionCtrl',['$scope','$state','Patients','Storage',function($scope,$state,Patients,Storage){
+//调查问卷的controller state riskquestions;//LRZ 20151104 几个bug修复
+.controller('RiskQuestionCtrl',['$scope','$state','$rootScope','Patients','Storage',function($scope,$state,$rootScope,Patients,Storage){
  
   $scope.userid = Storage.get('PatientID');
   // $scope.userid = "PID201506170002";
@@ -3793,10 +3576,11 @@ $scope.users.Birthday=Storage.get('b');
   // console.log($scope.SBP);
   $scope.clickSubmit = function(){
     //upload 
+    // $rootScope.$broadcast("NewEvaluationSubmit");
     Patients.getMaxSortNo($scope.userid).then(function(data){
       var maxsortno = data.result; 
       // console.log("赫赫");
-      // console.log(data);
+      console.log(data);
    
     // console.log($scope.userid);
     //get sbp description 
@@ -3806,59 +3590,70 @@ $scope.users.Birthday=Storage.get('b');
       // var DBP = parseInt(70 + 10 * Math.random());
       // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
     // console.log($scope.SBP);
-    Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
-        // console.log(data);
+      Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
+          // console.log(data);
 
-        var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
-        // console.log(t);
-        var time2 = new Date();
-        time2.setHours(time2.getHours()+8);
-        // console.log(time2);
-        var temp = {
+          var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
+          // console.log(t);
+          var time2 = new Date();
+          time2.setHours(time2.getHours()+8);
+          // console.log(time2);
+          var temp = {
+            "UserId": $scope.userid,
+            "SortNo": parseInt(maxsortno)+1,
+            "AssessmentType": "M1",
+            "AssessmentName": "高血压",
+            "AssessmentTime": time2,
+            "Result": t ,
+            "revUserId": "sample string 7",
+            "TerminalName": "sample string 8",
+            "TerminalIP": "sample string 9",
+            "DeviceType": 10
+          }
+        if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
+          // console.log("上传血压数据");
+          Patients.postTreatmentIndicators(temp).then(function(res){
+            if(res.result == "数据插入成功"){
+              console.log("broadcasting h");
+              $rootScope.$broadcast("NewEvaluationSubmit");
+            }
+          });
+          // console.log(tt);
+        }
+
+        var t1;
+        if($scope.value.glucose<6.1) t1 = "正常血糖.";
+        else if($scope.value.glucose<7.0) t1 = "糖尿病前期.";
+        else  t1 = "糖尿病.";
+        var temp =  {
           "UserId": $scope.userid,
           "SortNo": parseInt(maxsortno)+1,
-          "AssessmentType": "M1",
-          "AssessmentName": "高血压",
+          "AssessmentType": "M2",
+          "AssessmentName": "糖尿病",
           "AssessmentTime": time2,
-          "Result": t ,
+          "Result": t1 + "||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
           "revUserId": "sample string 7",
           "TerminalName": "sample string 8",
           "TerminalIP": "sample string 9",
           "DeviceType": 10
+        };
+        // console.log(temp.Result);
+        if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
+          // console.log("上传血糖数据");
+          Patients.postTreatmentIndicators(temp).then(function(res){
+            if(res.result == "数据插入成功"){
+              console.log("broadcasting d");
+              $rootScope.$broadcast("NewEvaluationSubmit");
+            }
+          });
         }
-      if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
-        // console.log("上传血压数据");
-        var tt = Patients.postTreatmentIndicators(temp);
-        // console.log(tt);
-      }
-
-      var t1;
-      if($scope.value.glucose<6.1) t1 = "正常血糖.";
-      else if($scope.value.glucose<7.0) t1 = "糖尿病前期.";
-      else  t1 = "糖尿病.";
-      var temp =  {
-        "UserId": $scope.userid,
-        "SortNo": parseInt(maxsortno)+1,
-        "AssessmentType": "M2",
-        "AssessmentName": "糖尿病",
-        "AssessmentTime": time2,
-        "Result": t1 + "||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
-        "revUserId": "sample string 7",
-        "TerminalName": "sample string 8",
-        "TerminalIP": "sample string 9",
-        "DeviceType": 10
-      };
-      // console.log(temp.Result);
-      if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
-        // console.log("上传血糖数据");
-        Patients.postTreatmentIndicators(temp);
-      }
-      //POST RESULT
-      // console.log($scope.description);
-      //
-      
-      
-    })
+        //POST RESULT
+        // console.log($scope.description);
+        //
+        //全局广播更新
+        // console.log("broadcasting");
+        // $rootScope.$broadcast("NewEvaluationSubmit");
+      })
     // console.log($scope.description);
     })
     // console.log($scope.description);
