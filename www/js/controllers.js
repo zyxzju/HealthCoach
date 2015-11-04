@@ -100,11 +100,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.userName='';
   $scope.birthday="点击设置";
   var upload={
-    "UserId": "",
-    "UserName": "",
-    "Birthday": "",
-    "Gender": "",
-    "IDNo": "sample string 5",
+    "id": "",
+    "name": "",
+    "birthday": "",
+    "gender": "",
+    "idno": "sample string 5",
     "InvalidFlag": 0,
     "piUserId": "sample string 7",
     "piTerminalName": "sample string 8",
@@ -120,7 +120,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       var yyyy=val.getFullYear();
       var d=dd<10?('0'+String(dd)):String(dd);
       var m=mm<10?('0'+String(mm)):String(mm);
-      upload.Birthday=parseInt(yyyy+m+d);
+      upload.birthday=parseInt(yyyy+m+d);
       var birthday=yyyy+'/'+m+'/'+d;
       $scope.birthday=birthday;
     }
@@ -153,43 +153,79 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.infoSetup = function(userName,userGender){
     $scope.logStatus='';
     if(userName!='' && userGender!='' && $scope.birthday!='' && $scope.birthday!='点击设置'){
-      upload.UserName=userName;
-      upload.Gender=userGender == '男'?1:2;
+      upload.name=userName;
+      upload.gender=userGender == '男'?1:2;
       var saveUID = function(){
         UIDpromise=userservice.UID('PhoneNo',$rootScope.userId)
         .then(function(data){
           if(data.result!=null){
             Storage.set('UID', data.result);
-            upload.UserId=Storage.get('UID');
-            Users.myTrial(upload).then(function(data){
+            Storage.set('USERNAME', $rootScope.userId);
+            upload.id=Storage.get('UID');
+            console.log(upload);
+            Users.postDoctorInfo(upload).then(function(data){
+              loading.loadingBarFinish($scope);
               $scope.logStatus=data.result;
               if(data.result=="数据插入成功"){
                 $scope.logStatus='注册成功！';
                 $timeout(function(){$state.go('upload');} , 500);
               }
+            },function(data){
+              loading.loadingBarFinish($scope);
+              $scope.logStatus='网络错误1！';
             });            
+          }else{
+            loading.loadingBarFinish($scope);
+            $scope.logStatus='系统错误！';
           }
         },function(data){
+          loading.loadingBarFinish($scope);
+          $scope.logStatus='网络错误2！';
         });
       }
       loading.loadingBarStart($scope);
       userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach")
       .then(function(data){
-        loading.loadingBarFinish($scope);
-        userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach').then(function(data){
+        userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach')
+        .then(function(data){
           if(data.result.substr(0,4)=="登陆成功"){
             Storage.set('TOKEN', data.result.substr(12));
+            saveUID();
+          }
+        },function(data){
+          if(data.data.result=='暂未激活'){
+            //Storage.set('TOKEN', data.result.substr(12));
+            saveUID();
+          }else{
+            loading.loadingBarFinish($scope);
+            $scope.logStatus='网络错误3！';
           }
         });
-        Storage.set('USERNAME', $rootScope.userId);
-        saveUID();
-      },function(data){
-        loading.loadingBarFinish($scope);
-        if(data.data==null && data.status==0){
-          $scope.logStatus='网络错误！';
+      },function(data){        
+        if(data.data.result=='同一用户名的同一角色已经存在'){
+          userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach')
+          .then(function(data){
+            if(data.result.substr(0,4)=="登陆成功"){
+              Storage.set('TOKEN', data.result.substr(12));
+              saveUID();
+            }
+          },function(data){
+            if(data.data.result=='暂未激活'){
+              //Storage.set('TOKEN', data.result.substr(12));
+              saveUID();
+            }else{
+              loading.loadingBarFinish($scope);
+              $scope.logStatus='网络错误4！';
+            }
+          });
+        }else if(data.data==null && data.status==0){
+          loading.loadingBarFinish($scope);
+          $scope.logStatus='网络错误5！';
           return;          
+        }else{
+          loading.loadingBarFinish($scope);
+          $scope.logStatus=data.data.result;          
         }     
-        $scope.logStatus=data.data.result;
       });
     }else{
       $scope.logStatus='请输入完整信息！';
@@ -463,7 +499,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 }])
 
-//lrz20151102
+//lrz20151104
 .controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG',
   function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG) { //LRZ
 
@@ -500,12 +536,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress : temp.PhotoAddress
+          photoAddress : temp.PhotoAddress,
+          photoAddress_Check : temp.ActivatePhotoAddr  //LRZ1104
         }
-          // //console.log( $scope.userInfo.DtInfo);
+          // console.log( $scope.userInfo.DtInfo);
           
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ 
-          (typeof($scope.userInfo.DtInfo.photoAddress) =='undefined'?'non.jpg':$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ 
+          (($scope.userInfo.DtInfo.photoAddress_Check) == null ?'greenadd.jpg':$scope.userInfo.DtInfo.photoAddress_Check);//LRZ1104
+          // console.log($scope.imgURI);
            // var objStr=JSON.stringify($scope.userInfo);
            // Storage.set("userInfo",objStr);   
      });
@@ -587,11 +625,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Users.postDoctorInfo($scope.userInfo.BasicInfo).then(function(res){
       //console.log(res);
       if(res.result == "数据插入成功"){
-        Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
-        //console.log(res);
-        if(res.result == "数据插入成功")
-        $state.go('coach.i');
-        });                  
+        if($scope.userInfo.DtInfo.photoAddress_Check != null)
+          Users.postDoctorDtlInfo_Check($scope.userInfo.DtInfo).then(function(res){
+          //console.log(res);
+            if(res.result == "数据插入成功")
+              $state.go('coach.i');
+          });
+        else
+          Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
+            //console.log(res);
+              if(res.result == "数据插入成功")
+                $state.go('coach.i');
+            });                  
       }
 
     });
@@ -637,9 +682,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(res){
           var d = new Date();
           var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
          } 
       })
     }, function(err) {
@@ -653,9 +698,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(res){
           var d = new Date();
           var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
          } 
       })
     }, function(err) {
@@ -1398,9 +1443,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     .scan()
     .then(function(data) {
       // Success! Barcode data is here
-      var s = "Result: " + data.text + "<br/>" +
-      "Format: " + data.format + "<br/>" +
-      "Cancelled: " + data.cancelled;
+      // var s = "Result: " + data.text + "<br/>" +
+      // "Format: " + data.format + "<br/>" +
+      // "Cancelled: " + data.cancelled;
       for(var i in PIDlist){
         if(data.text==PIDlist[i]){
           isMyPID=1;
