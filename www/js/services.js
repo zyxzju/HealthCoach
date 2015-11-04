@@ -19,10 +19,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 .constant('CONFIG', {
-
-  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器
+ 
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
   ImageAddressIP: "http://121.43.107.106:8088",
-  ImageAddressFile_Check : "/PersonalPhotoCheck",  //lrz20151104
   ImageAddressFile : "/PersonalPhoto",
   wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
@@ -88,7 +87,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
       Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:20000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
       
@@ -502,14 +501,14 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return jpushServiceFactory;
 }])
-//照相机服务 LRZ 20151104
+//照相机服务 LRZ 20151102
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
     getPicture: function() {
 
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 0, 
           sourceType : 1, 
           allowEdit : true,
@@ -536,7 +535,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
     getPictureFromPhotos: function(){
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 0, 
           sourceType : 0, 
           allowEdit : true,
@@ -594,62 +593,27 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
       
     },
-    uploadPicture_Check : function(imgURI,fileName){
-        // document.addEventListener('deviceready', onReadyFunction,false);
-        // function onReadyFunction(){
-          var uri = encodeURI(CONFIG.ImageAddressIP + "/upload_check.php");
-          var options = {
-            fileKey : "file",
-            fileName : fileName,
-            chunkedMode : true,
-            mimeType : "image/jpeg"
-          };
-          var q = $q.defer();
-          // console.log("jinlaile");
-          $cordovaFileTransfer.upload(uri,imgURI,options)
-            .then( function(r){
-              console.log("Code = " + r.responseCode);
-              console.log("Response = " + r.response);
-              console.log("Sent = " + r.bytesSent);
-              q.resolve(r);        
-            }, function(err){
-              alert("An error has occurred: Code = " + error.code);
-              console.log("upload error source " + error.source);
-              console.log("upload error target " + error.target);
-              q.resolve(error);          
-            }, function (progress) {
-              console.log(progress);
-            })
 
-            ;
-          return q.promise;  
-        // }
+  downloadPicture: function(url,userid){ 
 
+    var q = $q.defer();
+    var targetPath = cordova.file.documentsDirectory + userid+".jpg";
+    var trustHosts = true;
+    var options = {};
 
-        // var ft = new FileTransfer();
-        // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
-      
-    },
-    downloadPicture: function(url,userid){ 
+    $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+      .then(function(r) {
+        q.resolve(r);  
+      }, function(err) {
+        q.resolve(err); 
+      }, function (progress) {
+      });
 
-      var q = $q.defer();
-      var targetPath = cordova.file.documentsDirectory + userid+".jpg";
-      var trustHosts = true;
-      var options = {};
-
-      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-        .then(function(r) {
-          q.resolve(r);  
-        }, function(err) {
-          q.resolve(err); 
-        }, function (progress) {
-        });
-
-      return q.promise;  
-    }
-
-
+    return q.promise;  
   }
+
+
+}
   
 }])
 
@@ -797,7 +761,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress: data.photoAddress
     };
 
-    var temp = [{
+  var temp = [{
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
                 "ItemCode": "Contact001_4",
@@ -873,107 +837,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151104
-  self.postDoctorDtlInfo_Check = function (data) {
-    var DoctorInfo = {
-      UserId: Storage.get('UID'),
-      unitname:data.unitname,
-      jobTitle: data.jobTitle,
-      level: data.level,
-      dept: data.dept,
-      photoAddress: data.photoAddress,
-      photoAddress_Check: data.photoAddress_Check
-    };
-
-    var temp = [{
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_4",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_5",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.unitname,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"    
-                },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_6",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.jobTitle,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"   
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_7",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.level,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"  
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_8",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.dept,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"  
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_9",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress_Check,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"  
-              }
-    ];
-
-    console.log(temp);
-    var deferred = $q.defer();
-    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
-      deferred.resolve(data);
-    }, function (err) {
-      deferred.reject(err);
-    });
-    return deferred.promise;
-  };  
 //LRZ 20151102
   self.getDocInfo = function (userid) {
     
@@ -1205,7 +1068,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicInfo = function (arr){
+  self.PatientBasicInfo = function (arr){
     var deferred = $q.defer();
     Data.Users.PatientBasicInfo(arr,function (data,headers) {
       deferred.resolve(data);
@@ -1230,7 +1093,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicDtlInfo = function(arr){
+  self.PatientBasicDtlInfo = function(arr){
     var deferred = $q.defer();
     Data.Users.PatientBasicDtlInfo(arr,function (data,headers) {
     deferred.resolve(data);
@@ -1591,9 +1454,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return deferred.promise;
     };
 
-    self.GetSMSDialogue = function (Reciever,SendBy) {
+    self.GetSMSDialogue = function (Reciever,SendBy,top,skip) {
       var deferred = $q.defer();
-      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy}, function (data, headers) {
+      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy, $orderby:"SendDateTime desc", $top:top,$skip:skip}, function (data, headers) {
         deferred.resolve(data);
       }, function (err) {
         deferred.reject(err);
