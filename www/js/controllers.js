@@ -4004,7 +4004,7 @@ $scope.users.Birthday=Storage.get('b');
 
     $scope.onClickBackward = function(){
       $ionicHistory.goBack();
-  };
+    };
 
     $scope.GetTasks = function ()
     {
@@ -4157,13 +4157,13 @@ $scope.users.Birthday=Storage.get('b');
             {
                 $scope.TaskList.Weight = data.Value;
             }
-            GetDenDateTime();
+            GetEndDateTime();
         }, function(data) {  
         }); 
     }
 
     //获取结束日期
-    function GetDenDateTime()
+    function GetEndDateTime()
     {
         //PatientId, PlanNo, Module, Status
         var promise = PlanInfo.GetPlanList("", PlanNo, "", 5);  
@@ -4615,8 +4615,12 @@ $scope.users.Birthday=Storage.get('b');
     var PlanNo = localStorage.getItem("CurrentPlanNo");  
     $scope.task = {};
     $scope.task.list;
-    $scope.$watch('$ionicView.enter', function() { 
+    $scope.$on('$ionicView.enter', function() { 
         GettaskList();      
+    });
+
+    $scope.$on('$ionicView.leave', function() { 
+        $scope.Confirm();   
     });
     var arry = new Array();
 
@@ -4678,14 +4682,15 @@ $scope.users.Birthday=Storage.get('b');
               {
                   if (data.result == "数据插入成功")
                   {
-                    if (localStorage.getItem("isManage") == "No")
-                    {
-                      window.location.href = "#/addpatient/taskList";  
-                    }
-                    else
-                    {
-                      window.location.href = "#/manage/taskList"; 
-                    }    
+                  // {
+                  //   if (localStorage.getItem("isManage") == "No")
+                  //   {
+                  //     window.location.href = "#/addpatient/taskList";  
+                  //   }
+                  //   else
+                  //   {
+                  //     window.location.href = "#/manage/taskList"; 
+                  //   }    
                   }
               },function(data){              
               });    
@@ -4696,19 +4701,19 @@ $scope.users.Birthday=Storage.get('b');
                          "Type":"TD", 
                          "Code":"TD0000", 
                          "SortNo":'1'}];
-            var promise1 = PlanInfo.DeleteTask(DeleteList);
+            var promise1 = PlanInfo.DeleteTask(tempData);
             promise1.then(function(data) 
             {
                 if ((data.result == "数据删除成功") || (data.result == "数据未找到"))
                 {
-                    if (localStorage.getItem("isManage") == "No")
-                    {
-                      window.location.href = "#/addpatient/taskList";  
-                    }
-                    else
-                    {
-                      window.location.href = "#/manage/taskList"; 
-                    } 
+                    // if (localStorage.getItem("isManage") == "No")
+                    // {
+                    //   window.location.href = "#/addpatient/taskList";  
+                    // }
+                    // else
+                    // {
+                    //   window.location.href = "#/manage/taskList"; 
+                    // } 
                 }
             },function(data){
             });  
@@ -4717,7 +4722,15 @@ $scope.users.Birthday=Storage.get('b');
 
     //返回   
     $scope.onClickBackward = function(){
-        $ionicHistory.goBack();
+        //$ionicHistory.goBack();
+        if (localStorage.getItem("isManage") == "No")
+        {
+          window.location.href = "#/addpatient/taskList";  
+        }
+        else
+        {
+          window.location.href = "#/manage/taskList"; 
+        }    
     }
 }])
 
@@ -4780,7 +4793,7 @@ $scope.users.Birthday=Storage.get('b');
         }
         for (var i=0; i < $scope.task.list.length; i++)
         {
-            if (($scope.task.list[i].ControlType)) //插入数据
+            if (($scope.task.list[i].ControlType) && (!arry[i])) //插入数据
             { 
                 AddList.push({"PlanNo":PlanNo, 
                              "Type":$scope.task.list[i].Type, 
@@ -4852,13 +4865,13 @@ $scope.users.Birthday=Storage.get('b');
                     else
                     {
                          if (localStorage.getItem("isManage") == "No")
-                              {
-                                window.location.href = "#/addpatient/TD";
-                              }
-                              else
-                              {
-                                window.location.href = "#/manage/TD";
-                              }
+                          {
+                            window.location.href = "#/addpatient/TD";
+                          }
+                          else
+                          {
+                            window.location.href = "#/manage/TD";
+                          }
                     }                   
                 }
             },function(data){              
@@ -4874,13 +4887,13 @@ $scope.users.Birthday=Storage.get('b');
                     if (data.result == "数据删除成功")
                     {
                         if (localStorage.getItem("isManage") == "No")
-                              {
-                                window.location.href = "#/addpatient/TD";
-                              }
-                              else
-                              {
-                                window.location.href = "#/manage/TD";
-                              }
+                        {
+                          window.location.href = "#/addpatient/TD";
+                        }
+                        else
+                        {
+                          window.location.href = "#/manage/TD";
+                        }
                     }
                 },function(data){
                 });  
@@ -4888,13 +4901,13 @@ $scope.users.Birthday=Storage.get('b');
             else
             {
                  if (localStorage.getItem("isManage") == "No")
-                              {
-                                window.location.href = "#/addpatient/TD";
-                              }
-                              else
-                              {
-                                window.location.href = "#/manage/TD";
-                              }
+                  {
+                    window.location.href = "#/addpatient/TD";
+                  }
+                  else
+                  {
+                    window.location.href = "#/manage/TD";
+                  }
             }     
         }
     }
@@ -5140,27 +5153,30 @@ $scope.users.Birthday=Storage.get('b');
         {
             AddList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0001", "SortNo":(i+1).toString(), "Instruction":$scope.task.list[i].Instruction, "piUserId":"1",  "piTerminalName":"1",  "piTerminalIP":"1",  "piDeviceType":0});
         }
-        // if ($scope.task.DeleteList.length > 0)
-        // {
-        //     if($scope.task.list.length = 0)
-        //     {
-        //         $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1'}); //删除父级条目
-        //         DeleteTask($scope.task.DeleteList);
-        //     }
-        //     else
-        //     {
-        //          var promise = PlanInfo.DeleteTask($scope.task.DeleteList);
-        //           promise.then(function(data) 
-        //           {
-        //               if (data.result == "数据删除成功")
-        //               {
-        //                   SetTask(AddList);
-        //               }
-        //           },function(data){
-        //           });  
-        //     }
-        // }
-        SetTask(AddList);
+        if ($scope.task.DeleteList.length > 0)
+        {
+            if($scope.task.list.length = 0)
+            {
+                $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1'}); //删除父级条目
+                DeleteTask($scope.task.DeleteList);
+            }
+            else
+            {
+                 var promise = PlanInfo.DeleteTask($scope.task.DeleteList);
+                  promise.then(function(data) 
+                  {
+                      if (data.result == "数据删除成功")
+                      {
+                          SetTask(AddList);
+                      }
+                  },function(data){
+                  });  
+            }
+        }
+        else
+        {
+            SetTask(AddList);
+        }
     }
 
     function SetTask(obj)
@@ -5184,7 +5200,7 @@ $scope.users.Birthday=Storage.get('b');
         {
             if (data.result == "数据删除成功")
             {
-                //console.log("数据删除成功");
+                $ionicHistory.goBack();
             }
         },function(data){
         });   
@@ -5207,6 +5223,7 @@ $scope.users.Birthday=Storage.get('b');
         $ionicHistory.goBack();
     }
 }])
+
 
 //临床信息控制器 ZXF 20151031
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
