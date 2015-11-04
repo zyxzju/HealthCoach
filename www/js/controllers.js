@@ -5411,6 +5411,9 @@ $scope.synclinicinfo=function(){
     $scope.gender=data.GenderText;
   }, function(data) {
   })
+  $scope.backtocoach=function(){
+    $state.go('coach.home');
+  }
 })
 
 // 依从率图的控制器amcharts部分 ZXF 20151102
@@ -5780,6 +5783,7 @@ function createStockChart(ChartData,title,unit) {
  .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
 
      var PatintId=Storage.get('PatientID');
+     console.log(PatintId);
       GetBasicInfo.GetBasicInfoByPid(PatintId).then(function(barsigns){
       $scope.Name=barsigns.UserName;
       $scope.gender=barsigns.GenderText;
@@ -5939,8 +5943,8 @@ function createStockChart(ChartData,title,unit) {
   $scope.bowerdata=function(){
    var startjikan=Storage.get("StartDateforvitasign");
     var endjikan=Storage.get("EndDateforvitasign");
-    //console.log(startjikan);
-
+    console.log(startjikan);
+    console.log(endjikan);
     showthetable(PatintId,startjikan,endjikan);
   };
 
