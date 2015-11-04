@@ -19,7 +19,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 	$state.go('signin');
   }
 }])
-
 // --------登录注册、设置修改密码-熊佳臻---------------- 
 //登录  
 .controller('SignInCtrl', ['$scope','$state', '$timeout', 'userservice','Storage','loading','PageFunc' , 'jpushService',function($scope, $state, $timeout, userservice, Storage,loading,PageFunc,jpushService) {
@@ -74,7 +73,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
           saveUID();
-          //alert('未激活,这个跳转在controller 73行');
           PageFunc.confirm('未认证，激活,这个跳转在controller 77行');
           $timeout(function(){$state.go('coach.home');} , 500);  
           return;        
@@ -95,7 +93,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Storage.set('setPasswordState','reset');
   } 
 }])
-
 //注册 
 .controller('userdetailCtrl',['$scope','$state','$cordovaDatePicker','$rootScope','$timeout' ,'userservice','Storage','loading','Users' ,function($scope,$state,$cordovaDatePicker,$rootScope,$timeout,userservice,Storage,loading,Users){
   $scope.barwidth="width:0%";
@@ -115,7 +112,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
-      //console.log('No date selected');
     } else {
       $scope.datepickerObject.inputDate=val;
       var dd=val.getDate();
@@ -175,14 +171,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         },function(data){
         });
       }
-      // $rootScope.NAME=userName;
-      // $rootScope.GENDER=userGender;
-      // $rootScope.BIRTHDAY=$scope.birthday;
       loading.loadingBarStart($scope);
       userservice.userRegister("PhoneNo",$rootScope.userId, userName, $rootScope.password,"HealthCoach")
       .then(function(data){
         loading.loadingBarFinish($scope);
-        //console.log($rootScope.userId,$rootScope.password);
         userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach').then(function(data){
           if(data.result.substr(0,4)=="登陆成功"){
             Storage.set('TOKEN', data.result.substr(12));
@@ -203,7 +195,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   }
 }])
-
 //设置密码   
 .controller('setPasswordCtrl', ['$scope','$state','$rootScope' ,'$timeout' , 'userservice','Storage','loading' ,function($scope,$state,$rootScope,$timeout,userservice,Storage,loading) {
   $scope.barwidth="width:0%";
@@ -250,7 +241,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   }
 }])
-//修改密码   $scope.nvGoback李山加的，不明
+//修改密码   
 .controller('changePasswordCtrl',['$scope','$state','$timeout', '$ionicHistory', 'userservice','Storage','loading' , function($scope , $state,$timeout, $ionicHistory, userservice,Storage,loading){
   $scope.barwidth="width:0%";
   $scope.ishide=true;
@@ -264,11 +255,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.logStatus1='验证成功';
       $timeout(function(){$scope.ishide=false;} , 500);
     },function(data){
-
       loading.loadingBarFinish($scope);
       if(data.data==null && data.status==0){
         $scope.logStatus1='网络错误！';
         return;          
+      }
+      if(data.data.result=="暂未激活"){
+        $scope.logStatus1='验证成功';
+        $timeout(function(){$scope.ishide=false;} , 500);
+        return;
       }      
       $scope.logStatus1='密码错误';
     });
@@ -283,9 +278,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         .then(function(data){
           loading.loadingBarFinish($scope);
           $scope.logStatus2='修改成功';
-          $timeout(function(){$scope.change={originalPassword:"",newPassword:"",confirmPassword:""};
-          $state.go('coach.i');
-          $scope.ishide=true;
+          $timeout(function(){
+            $scope.change={originalPassword:"",newPassword:"",confirmPassword:""};
+            $state.go('coach.i');
+            $scope.ishide=true;
           } , 500);
         },function(data){
           loading.loadingBarFinish($scope);
