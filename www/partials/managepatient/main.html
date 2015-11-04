@@ -2,23 +2,22 @@
 <!-- 顶部标签 -->
 <ion-header-bar class="bar-dark">
 <div class="buttons">
-  <button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
+  <!-- <button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button> -->
 </div>
 <h1 class="title">患者管理</h1>
 <div class="buttons">
-  <button class="button icon-right ion-android-home" href="#/coach/patients"></button>
+  <button class="button icon-right ion-android-home" ng-click="backtocoach()"></button>
 </div>
 </ion-header-bar>
 <ion-header-bar class="bar-subheader bar-stable">
-<label class="item item-input item-select">
-  <div >
-    <h2>{{Name}}      {{gender}}        {{age}}岁</h2>
-  </div>
-  <select>
-    <option selected>高血压模块</option>
-    <option>糖尿病模块</option>
-  </select>
-</label>
+    <div class="row">
+      <div class="col col-80">
+        <h2>{{Name}}      {{gender}}        {{age}}岁</h2>
+      </div>
+      <div class="col">
+        <button class="button icon-right" ng-click="backtocoach()">返回主页</button>
+      </div>
+    </div>
 </ion-header-bar>
 
 
