@@ -16,7 +16,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // }else{
       // $state.go('signin');
     // }
-	$state.go('signin');
+  $state.go('signin');
   }
 }])
 // --------登录注册、设置修改密码-熊佳臻---------------- 
@@ -1405,7 +1405,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(data.text==PIDlist[i]){
           isMyPID=1;
           Storage.set("viewPID",data.text);
-          $state.go('config');
+          $state.go('manage.plan');
           break; 
         }
       }
@@ -1425,7 +1425,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               text: '<b>确定</b>',
               type: 'button-small button-positive ',
               onTap: function(e) {
-                $state.go('signin');
+                Storage.set("newPatientID",data.text);
+                $state.go('addpatient.basicinfo');
               }
             }
           ]
@@ -2357,7 +2358,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $state.go('addpatient.basicinfo')
           }
           else{
-            Storage.set('PatientID',id);
+            Storage.set('newPatientID',id);
             hide();
             $state.go('addpatient.basicinfo') 
           }
@@ -2407,7 +2408,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     
 
-  $scope.users.UserId=Storage.get('PatientID');
+  $scope.users.UserId=Storage.get('newPatientID');
   
 
   $scope.B="点击设置";
@@ -2453,7 +2454,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
   };  
 
-    $scope.patientid = Storage.get('PatientID');
+    $scope.patientid = Storage.get('newPatientID');
     $scope.HomeAddress={
       "Patient":$scope.patientid,
       "CategoryCode":"Contact",
@@ -2867,12 +2868,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           function(data){
                             hide();
                             a();
+                            Storage.set("PatientID",Storage.get("newPatientID"));
                             $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
                             hide();
                             a();
-                            $state.go('addpatient.clinicinfo');
+                            //$state.go('addpatient.clinicinfo');
                           });
                       }
                     },function(e){
@@ -2906,7 +2908,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 $scope.users.UserId=data.result;
                 console.log($scope.patientid);
                 console.log($scope.users.UserId);
-                Storage.set('PatientID',data.result);
+                Storage.set('newPatientID',data.result);
                 $scope.HomeAddress.Patient=data.result;
                 $scope.PhoneNumber.Patient=data.result;
                 $scope.Nationality.Patient=data.result;
@@ -2924,12 +2926,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           function(data){
                             hide();
                             a();
+                            Storage.set("PatientID",Storage.get("newPatientID"));
                             $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
                             hide();
                             a();
-                            $state.go('addpatient.clinicinfo');
+                            //$state.go('addpatient.clinicinfo');
                           });
                       }
                     },function(e){
@@ -3034,7 +3037,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.reset = function(){
     $scope.users={
-      "UserId":Storage.get('PatientID'),
+      "UserId":Storage.get('newPatientID'),
       "UserName": "",
       "Birthday": "",
       "Gender": "",
@@ -3049,7 +3052,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "piDeviceType": 13
     };
     $scope.HomeAddress={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_2",
         "ItemSeq":1,
@@ -3062,7 +3065,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.PhoneNumber={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_1",
         "ItemSeq":1,
@@ -3075,7 +3078,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.Nationality={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact001_3",
         "ItemSeq":1,
@@ -3088,7 +3091,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.Occupation={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact001_2",
         "ItemSeq":1,
@@ -3101,7 +3104,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.EmergencyContact={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_3",
         "ItemSeq":1,
@@ -3114,7 +3117,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         "DeviceType":1
       };
       $scope.EmergencyContactPhoneNumber={
-        "Patient":Storage.get('PatientID'),
+        "Patient":Storage.get('newPatientID'),
         "CategoryCode":"Contact",
         "ItemCode":"Contact002_4",
         "ItemSeq":1,
