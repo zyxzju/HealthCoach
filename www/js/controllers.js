@@ -499,7 +499,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 }])
 
-//lrz20151102
+//lrz20151104
 .controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG',
   function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG) { //LRZ
 
@@ -536,12 +536,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           jobTitle: temp.JobTitle,
           level: temp.Level,
           dept: temp.Dept,
-          photoAddress : temp.PhotoAddress
+          photoAddress : temp.PhotoAddress,
+          photoAddress_Check : temp.ActivatePhotoAddr  //LRZ1104
         }
-          // //console.log( $scope.userInfo.DtInfo);
+          // console.log( $scope.userInfo.DtInfo);
           
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ 
-          (typeof($scope.userInfo.DtInfo.photoAddress) =='undefined'?'non.jpg':$scope.userInfo.DtInfo.photoAddress);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ 
+          (($scope.userInfo.DtInfo.photoAddress_Check) == null ?'greenadd.jpg':$scope.userInfo.DtInfo.photoAddress_Check);//LRZ1104
+          // console.log($scope.imgURI);
            // var objStr=JSON.stringify($scope.userInfo);
            // Storage.set("userInfo",objStr);   
      });
@@ -623,11 +625,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Users.postDoctorInfo($scope.userInfo.BasicInfo).then(function(res){
       //console.log(res);
       if(res.result == "数据插入成功"){
-        Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
-        //console.log(res);
-        if(res.result == "数据插入成功")
-        $state.go('coach.i');
-        });                  
+        if($scope.userInfo.DtInfo.photoAddress_Check != null)
+          Users.postDoctorDtlInfo_Check($scope.userInfo.DtInfo).then(function(res){
+          //console.log(res);
+            if(res.result == "数据插入成功")
+              $state.go('coach.i');
+          });
+        else
+          Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
+            //console.log(res);
+              if(res.result == "数据插入成功")
+                $state.go('coach.i');
+            });                  
       }
 
     });
@@ -673,9 +682,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(res){
           var d = new Date();
           var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
          } 
       })
     }, function(err) {
@@ -689,9 +698,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if(res){
           var d = new Date();
           var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
+          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
+          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
          } 
       })
     }, function(err) {
@@ -700,6 +709,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
 }])
+
 
 // Coach HomePage/Me Controller 主页的controller 主要负责从home状态跳转到 其他三个状态/读取localstorage的数据
 // ----------------------------------------------------------------------------------------
