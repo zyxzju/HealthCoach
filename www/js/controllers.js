@@ -73,7 +73,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
           saveUID();
-          PageFunc.confirm('未认证，激活,这个跳转在controller 77行');
+          //PageFunc.confirm('未认证，激活,这个跳转在controller 77行');
+          $state.go('upload');
           $timeout(function(){$state.go('coach.home');} , 500);  
           return;        
         }        
