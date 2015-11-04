@@ -20,7 +20,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 .constant('CONFIG', {
  
-  baseUrl: 'http://localhost:7516/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
   wsServerIP : "ws://" + "121.43.107.106" + ":4141",
