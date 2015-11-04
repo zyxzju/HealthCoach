@@ -57,7 +57,7 @@
   </div>
 </div>
 
-<ion-slide-box on-slide-changed="slideHasChanged($index)"  ng-repeat ="item in newRisks | filter:{ num : whichone} ">
+<ion-slide-box on-slide-changed="slideHasChanged($index)"  ng-repeat ="item in newRisks | filter:{ num : whichone} "  delegate-handle="my-handle">
   <ion-slide>
     <div>
   <div class="card" >
