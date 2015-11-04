@@ -2180,6 +2180,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 
   $scope.DietChange = function(obj){
+      $scope.DietHabbitData = "";
      for(var i = 0; i < $scope.DietHabbit.length; i++)
       {
         var f =i+1;
