@@ -1568,7 +1568,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //GL 20151103 交流
 .controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
-{   
+{ 
     $scope.Dialog = {};
     $scope.DoctorId = "DOC201506180002";
     $scope.DoctorName =  "何疆春";
@@ -1601,10 +1601,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //     // 目前好像不存在userid不对的情况，都会返回一个结果
     //   });  
 
+    $scope.Dialog.DisplayOnes; //显示的消息
+    $scope.Dialog.UnitCount = 9;//每次点击加载的条数
+    $scope.Dialog.Skip = $scope.Dialog.UnitCount;//跳过的条数
+    //加载更多
+    $scope.DisplayMore = function ()
+    { 
+        GetSMSDialogue($scope.Dialog.Skip);
+        $scope.Dialog.Skip = $scope.Dialog.Skip + $scope.Dialog.UnitCount;
+    }
 
-    var footerBar; // gets set in $ionicView.enter
-    var scroller;
-    var txtInput; // ^^^
 
     //socket初始化
     $scope.SocketInit = function ()
@@ -1621,7 +1627,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
               if(DataArry[1] == $scope.PatientId)
               {
-                  $scope.Dialog.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
+                  $scope.Dialog.DisplayOnes.push({"IDFlag": "Receive","SendDateTime": DataArry[2],"Content":DataArry[3]});
                   //console.log($scope.Dialog);
                   $ionicScrollDelegate.scrollBottom(true);
                   $scope.$apply();
@@ -1643,21 +1649,38 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       return false;
     },
 
-    //获取消息对话
-    $scope.GetSMSDialogue = function(Reciever,SendBy)
+     //获取消息对话
+    GetSMSDialogue = function(skip)
     {
-        var promise = MessageInfo.GetSMSDialogue(Reciever,SendBy);
+        var promise = MessageInfo.GetSMSDialogue($scope.PatientId, $scope.DoctorId,$scope.Dialog.UnitCount,skip);
         promise.then(function(data) 
-        {  
-            $scope.Dialog = data;
-            $ionicScrollDelegate.scrollBottom(true);
+        { 
+            if(data.length > 0)
+            {
+                var NewData = data.reverse(); //倒序
+                if($scope.Dialog.DisplayOnes)
+                {
+                    $scope.Dialog.DisplayOnes = NewData.concat($scope.Dialog.DisplayOnes);
+                }
+                else
+                {
+                    $scope.Dialog.DisplayOnes = NewData;
+                }
+            } 
+            $scope.$broadcast('scroll.refreshComplete');           
+            //$ionicScrollDelegate.scrollBottom(true);
         }, 
         function(data) {   
         });      
     }
 
+
+    var footerBar; // gets set in $ionicView.enter
+    var scroller;
+    var txtInput; // ^^^
+
     $scope.$watch('$viewContentLoaded', function() {  
-        $scope.GetSMSDialogue($scope.DoctorId, $scope.PatientId);
+        GetSMSDialogue(0);
         $scope.SocketInit();
         footerBar = document.body.querySelector('#userMessagesView .bar-footer');
         scroller = document.body.querySelector('#userMessagesView .scroll-content');
@@ -1683,7 +1706,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     {
                         data.Time = "";
                     }
-                    $scope.Dialog.push({"IDFlag": "Send","SendDateTime": data.Time,"Content":$scope.Dialog.SMScontent});
+                    $scope.Dialog.DisplayOnes.push({"IDFlag": "Send","SendDateTime": data.Time,"Content":$scope.Dialog.SMScontent});
                     $ionicScrollDelegate.scrollBottom(true);
                     $scope.SocketSubmit(Receiver +  "||" + SendBy + "||" + data.Time + "||" + $scope.Dialog.SMScontent);
                     $scope.Dialog.SMScontent = "";
