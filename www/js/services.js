@@ -212,7 +212,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
               GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
               SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
-              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'POST', params:{route: 'deleteTask'},timeout: 10000},
               GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
               GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
               SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
