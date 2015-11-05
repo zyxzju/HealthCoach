@@ -500,8 +500,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //lrz20151104
-.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG) { //LRZ
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG','PageFunc',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG,PageFunc) { //LRZ
 
   //获得信息
    // $scope.imgURI = Storage.get(14);
