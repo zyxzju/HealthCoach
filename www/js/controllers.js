@@ -1762,7 +1762,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
     }
 
-
+    $scope.Dialog.SMSbottom = "44px";
     $scope.$on('taResize', function(e, ta) {
         //console.log('taResize');
         if (!ta) return;
@@ -1776,7 +1776,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         newFooterHeight = (newFooterHeight > 44) ? newFooterHeight : 44;
         
         footerBar.style.height = newFooterHeight + 'px';
-        scroller.style.bottom = newFooterHeight + 'px'; 
+        scroller.style.bottom = newFooterHeight + 'px';
+        $scope.Dialog.SMSbottom = newFooterHeight + 'px';
     });
 
      // this keeps the keyboard open on a device only after sending a message, it is non obtrusive
