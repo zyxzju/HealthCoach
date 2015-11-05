@@ -1,5 +1,18 @@
-<ion-nav-view >
-<ion-content class="padding">
+<ion-view title="临床信息">
+<ion-header-bar class="bar-subheader bar-stable">
+<div class="row" style="padding:0px">
+	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+
+	</h3></div>
+	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+	</button></div>
+	
+</div>
+
+
+</ion-header-bar>
+<ion-content class="padding has-subheader">
+
 <div class="row">
 	<div class="col">
 		<div class="item item-select" style="height:52px"> 
@@ -21,49 +34,49 @@
 
 <div class="row">
 	<div class="row">
-	<div class="col col-80">
+		<div class="col col-80">
 
-		<ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
-		<button class="button button-block button-positive" >起始日期{{tt}}</button>
-	</ionic-datepicker>
-	
+			<ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
+			<button class="button button-block button-positive" >起始日期{{tt}}</button>
+		</ionic-datepicker>
+		
 
-</div>
+	</div>
 	<div class="col ">
-<button class="button button-block button-positive" ng-click="synclinicinfo()" >同步</button>
-</div>
+		<button class="button button-block button-positive" ng-click="synclinicinfo()" >同步</button>
+	</div>
 </div>
 </div>
 
 <div style="width: 100% ">
 	<ion-nav-view name="clinicinfo" style="height=100px;border-style: ridge">
 
-<ion-list >
+	<ion-list >
 
 
 
-<ion-item ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
-<div class="row">
-	<h2 >出院时间：{{item.DischargeDate}} </h2>
-</div>
-<div class="row">
-	<h2 >出院时间：{{item.DischargeDate}} </h2>
-	
-</div>
+	<ion-item ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
+	<div class="row">
+		<h2 >出院时间：{{item.DischargeDate}} </h2>
+	</div>
+	<div class="row">
+		<h2 >出院时间：{{item.DischargeDate}} </h2>
+		
+	</div>
 
-<div class="row">
-	<h2 >就诊号：{{item.VisitId}}</h2>
-</div>
-<div>
-<div class="col col-50">查看详情：<button ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
-<button ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
-<button ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button></div>
+	<div class="row">
+		<h2 >就诊号：{{item.VisitId}}</h2>
+	</div>
+	<div>
+		<div class="col col-50">查看详情：<button ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
+			<button ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
+			<button ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button></div>
 </div>		<!-- <option selected >查看详细信息</option>
 		<option ng-model='examValue' ng-change="openinfomodal(examValue)">检查信息</option>
 		<option ng-model='drugValue' ng-change="openinfomodal(drugValue)">用药信息</option>
 		<option >诊断信息</option> -->
-	
-</div>
+		
+	</div>
 <!-- 
 <div class="row"> ng-click="openinfomodal()"
 <h2 class="col col-50">开始时间：{{item.StartDateTime}}</h2>
@@ -80,7 +93,7 @@
 
 
 </ion-content>
-</ion-nav-view>
+</ion-view>
 <!-- 
 <div class="row">
 	<div class="button-bar">

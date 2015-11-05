@@ -1,5 +1,18 @@
-<ion-nav-view>
-<ion-content >
+<ion-view title="计划情况">
+<ion-header-bar class="bar-subheader bar-stable">
+
+<div class="row" style="padding:0px">
+  <div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+
+  </h3></div>
+  <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+  </button></div>
+  
+</div>
+
+</ion-header-bar>
+<ion-content class="padding has-subheader">
+
 
 
 <div>
@@ -8,74 +21,38 @@
    <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 
    <a class="button"  href="#/Independent/risk" >风险评估</a>
  </div>
-<!-- ng-change="changeplan()" -->
+
 
  <div >
   <div class="row">
     <div class="rol ">
       <p>计划选择：</p>
-     <select ng-model="planList" ng-change="changeplan(planList)" style="height=28px">
-      <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
-      <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
-    </select >
+      <select ng-model="planList" ng-change="changeplan(planList)" style="height=28px">
+        <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
+        <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
+      </select >
 
-<!--  <select ng-model="planInfo" ng-change="changeplanInfo(planInfo)" ng-options="option.PlanNo for option in planinfo" class="select-block select-calm">{{option.PlanName}}:{{option.PlanNo }}
-    </select>
- -->
-    <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm"  style="height=28px">
-    </select>
+
+      <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm"  style="height=28px">
+      </select>
+    </div>
+
   </div>
-
-</div>
   <div class="row">
     <div class="col">
       <p>单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</p>
     </div>
   </div>
-
-
 </div>
 <div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
 <div id='chartdiv3'></div>
-
 <div style="text-align:center;margin-top:20px;">    
   <p style="color:#2894FF;font-size:16px;">计划进度20%，离结束还有20天</p>
 </div>
 </div>
+</ion-content> 
+</ion-view>
 
 
 
-
-<!-- <div > 
-
- <table border="1">
-  <tr>
-   <th width=22%><div >Month</div></th>
-     <th width=22%><div align=center>Month</div></th>
-    <th width=22%><div align=center>Month</div></th>    
-    <th width=22%><div align=center>Month</div></th>
- <th width=22%><div align=center>Month</div></th>
-  </tr>
-  <tr>
-    <td><div align=center>January</div></td>
-    <td><div align=center>$100</div></td>
-      <td><div align=center>January</div></td>
-    <td><div align=center>$100</div></td>
-      <td><div align=center>January</div></td>
-  </tr>
-</table>                         
- </div> -->
-
-
-
-
-                        </ion-content> 
-
-                      </ion-nav-view>
-
-
-<!--    <div>
-     <a class="button"  href="#/tab/plan/lucosegraph" ng-click="showglucosechart()">血糖</a>
-   
-   </div> -->
 

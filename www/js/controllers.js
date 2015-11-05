@@ -1613,8 +1613,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 })
 
 //GL 20151103 交流
-.controller('ChatDetailCtrl' ,function($scope, $http, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,Data) 
+.controller('ChatDetailCtrl' ,function($scope, $http,$state, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,GetBasicInfo,Data) 
 { 
+
+    // $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+    //   var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+    //     promise.then(function(data){
+    //       $scope.clinicinfo=data;
+    //       //console.log($scope.clinicinfo)
+    //       $scope.Name=data.UserName;
+    //       $scope.age=data.Age;
+    //       $scope.gender=data.GenderText;
+    //     }, function(data) {
+    //     })
+    //    });
+  
+  
+    // $scope.backtocoach=function(){
+    //   $state.go('coach.home');
+    // };
     $scope.Dialog = {};
     $scope.DoctorId = localStorage.getItem("UID");
     $scope.DoctorName =  localStorage.getItem("DoctorName");
@@ -1800,8 +1817,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // $scope.
 })
 
-.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', function($scope,$state,$http, $ionicHistory, $stateParams, Storage) {
+.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $stateParams, Storage,GetBasicInfo) {
   
+  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+       var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+        promise.then(function(data){
+          $scope.clinicinfo=data;
+          //console.log($scope.clinicinfo)
+          $scope.Name=data.UserName;
+          $scope.age=data.Age;
+          $scope.gender=data.GenderText;
+        }, function(data) {
+        })
+       });
+  //进入页面获取患者的基本信息
+  
+  $scope.backtocoach=function(){
+    $state.go('coach.home');
+  }
+
   var UserId = Storage.get('UID');
   //var Module = $stateParams.Module;
   $scope.onClickBackward = function(){
@@ -5140,7 +5174,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //临床信息控制器 ZXF 20151031
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
-  GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo) {
+  GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo) {
+
+  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+       var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+        promise.then(function(data){
+          $scope.clinicinfo=data;
+          //console.log($scope.clinicinfo)
+          $scope.Name=data.UserName;
+          $scope.age=data.Age;
+          $scope.gender=data.GenderText;
+        }, function(data) {
+        })
+       });
+  //进入页面获取患者的基本信息
+  
+  $scope.backtocoach=function(){
+    $state.go('coach.home');
+  }
   //首先获取pid
     var PatientID=Storage.get("PatientID");
     console.log(PatientID);
@@ -5320,24 +5371,40 @@ $scope.synclinicinfo=function(){
 
 //抽象页面上用户信息的控制器 ZXF 20151102
 .controller('mainCtrl',function($scope, $state,$http, Storage,GetBasicInfo){
-  var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-  promise.then(function(data){
-    $scope.clinicinfo=data;
-    //console.log($scope.clinicinfo)
-    $scope.Name=data.UserName;
-    $scope.age=data.Age;
-    $scope.gender=data.GenderText;
-  }, function(data) {
-  })
-  $scope.backtocoach=function(){
-    $state.go('coach.home');
-  }
+  // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+  // promise.then(function(data){
+  //   $scope.clinicinfo=data;
+  //   //console.log($scope.clinicinfo)
+  //   $scope.Name=data.UserName;
+  //   $scope.age=data.Age;
+  //   $scope.gender=data.GenderText;
+  // }, function(data) {
+  // })
+  // $scope.backtocoach=function(){
+  //   $state.go('coach.home');
+  // }
 })
 
 // 依从率图的控制器amcharts部分 ZXF 20151102
 .controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
+  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+      var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+        promise.then(function(data){
+          $scope.clinicinfo=data;
+          //console.log($scope.clinicinfo)
+          $scope.Name=data.UserName;
+          $scope.age=data.Age;
+          $scope.gender=data.GenderText;
+        }, function(data) {
+        })
+       });
+  
+  
+  $scope.backtocoach=function(){
+    $state.go('coach.home');
+  }
+  var PatintId = Storage.get('PatientID');
 
-var PatintId = Storage.get('PatientID');
 // var PatintId ="PID201506180013";
 console.log(PatintId);
 //进入页面，调用函数获取任务列表（当前、往期计划）
@@ -5701,15 +5768,27 @@ function createStockChart(ChartData,title,unit) {
 })
 
 //ZXF 20151102 体征列表
- .controller('vitaltableCtrl', function($scope,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
+ .controller('vitaltableCtrl', function($scope,$state,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
+
+      $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+            var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+              promise.then(function(data){
+                $scope.clinicinfo=data;
+                //console.log($scope.clinicinfo)
+                $scope.Name=data.UserName;
+                $scope.age=data.Age;
+                $scope.gender=data.GenderText;
+              }, function(data) {
+              })
+             });
+        
+  
+      $scope.backtocoach=function(){
+        $state.go('coach.home');
+      }
 
      var PatintId=Storage.get('PatientID');
-     // console.log(PatintId);
-      GetBasicInfo.GetBasicInfoByPid(PatintId).then(function(barsigns){
-      $scope.Name=barsigns.UserName;
-      $scope.gender=barsigns.GenderText;
-      $scope.age=barsigns.Age;
-     });
+     
      var setstate;
      $scope.getbackgroundcolor = function(index){
       // var temp='{background-color:#EEEEEE}'

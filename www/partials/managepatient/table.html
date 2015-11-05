@@ -1,22 +1,22 @@
-<ion-header-bar class="bar-dark">
+<ion-header-bar class="bar-positive">
 <div class="buttons">
-  <button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
+	<button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
 </div>
 <h1 class="title">患者管理</h1>
-<div class="buttons">
-  <button class="button">Right Button</button>
-</div>
+
 </ion-header-bar>
+
 <ion-header-bar class="bar-subheader bar-stable">
-<label class="item item-input item-select">
-  <div >
-    <h2>{{Name}}      {{gender}}        {{age}}岁</h2>
-  </div>
-  <select>
-    <option selected>高血压模块</option>
-    <option>糖尿病模块</option>
-  </select>
-</label>
+<div class="row" style="padding:0px">
+	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+
+	</h3></div>
+	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+	</button></div>
+	
+</div>
+
+
 </ion-header-bar>
 
 <ion-nav-view name="tablelist" >
@@ -24,7 +24,7 @@
 </ion-nav-view >
 
 
-<ion-tabs class="tabs-dark tabs-icon-top">
+<ion-tabs class="tabs-positive tabs-icon-top">
 <ion-tab title="计划情况"  icon="ion-stats-bars " href="#/manage/plan">
 
 </ion-tab>
