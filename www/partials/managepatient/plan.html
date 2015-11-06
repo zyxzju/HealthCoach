@@ -1,55 +1,45 @@
 <ion-view title="计划情况">
-<ion-header-bar class="bar-subheader bar-stable">
-
-<div class="row" style="padding:0px">
-  <div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
-
-  </h3></div>
-  <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
-  </button></div>
-  
+<ion-header-bar class="bar-positive">
+<div class="buttons">
+  <button class="button icon-right ion-android-home" ng-click="backtocoach()"></button>
 </div>
-
 </ion-header-bar>
-<ion-content class="padding has-subheader">
 
-
-
-<div>
+<ion-header-bar class="bar-subheader bar-stable">
+  <div class="row" style="padding:0px">
+    <div class="col-75">
+      <h3>{{Name}}      {{gender}}        {{age}}岁</h3>
+    </div>
+      <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页</button>
+    </div>  
+  </div>
+</ion-header-bar>
+<ion-content class="has-subheader">
   <div class="button-bar ">
-   <a class="button"  >依从率图</a>
-   <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 
-   <a class="button"  href="#/Independent/risk" >风险评估</a>
- </div>
-
-
- <div >
-  <div class="row">
-    <div class="rol ">
-      <p>计划选择：</p>
-      <select ng-model="planList" ng-change="changeplan(planList)" style="height=28px">
-        <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
-        <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
-      </select >
-
-
-      <select ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm"  style="height=28px">
-      </select>
-    </div>
-
+    <a class="button"  >依从率图</a>
+    <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 
+    <a class="button"  href="#/Independent/risk" >风险评估</a>
   </div>
-  <div class="row">
-    <div class="col">
-      <p>单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</p>
+  <div >
+    <div class="row" style="padding-bottom:0;min-height:30px">
+      <div class="col-67" style="padding-right:2%">
+        <select style="width:100%" ng-model="planList" ng-change="changeplan(planList)" >
+          <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
+          <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
+        </select >
+      </div>
+      <div class="col-33">
+        <select style="width:100%" ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm" >
+        </select>
+      </div>
     </div>
   </div>
-</div>
-<div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
-<div id='chartdiv3'></div>
-<div style="text-align:center;margin-top:20px;">    
-  <p style="color:#2894FF;font-size:16px;">计划进度20%，离结束还有20天</p>
-</div>
-</div>
+  <div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
+  <div id='chartdiv3'></div>
+  <div class="text-center" style="margin:0;font-size:0.8em">单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</div>
+  <div style="text-align:center;background-color:#DDDDDD">    
+    <p style="color:#2894FF;font-size:16px;">计划进度20%，离结束还有20天</p>
+  </div>
 </ion-content> 
 </ion-view>
 

@@ -28,7 +28,7 @@
       <input type="search" ng-model="query" placeholder="Search">
     </label>
   </div> -->
-<div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important">
+<div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#999999 1px solid">
     <div style="width:50%" class="item item-input item-select">
       <div class="input-label">
         筛选
@@ -50,11 +50,11 @@
       </select>
     </div>
   </div>
-  <ion-content class="has-subheader" padding="true">       
+  <ion-content class="has-subheader content-item-list" padding="true">       
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <ion-item style="padding:0" ng-repeat="patient in patients track by $index" ng-click="PIDdetail(patient)" >
+      <ion-item class="item-margin" ng-repeat="patient in patients track by $index" ng-click="PIDdetail(patient)" >
         <!-- <img ng-src="img/male.png"> -->
         <div class="row">
           <!-- <div class="col-10 "><div class="row"><h2>类别</h2><br></div><div class="row"><h2>消息</h2></div></div>  -->
@@ -82,8 +82,8 @@
             </div>
             <div class="row">
         
-          <b style="padding:0 10px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 计划进度</b>
-          <div style="background-color:#f9efe8; border:#DDDDDD 1px solid;width:100%">
+          <b style="padding:0 15px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 计划进度 </b>
+          <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
           <div ng-style="setwidth(patient)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Age}}%</p></div>
           </div>
         
