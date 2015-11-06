@@ -1,22 +1,15 @@
 
 <!-- 顶部标签 -->
-<ion-header-bar class="bar-dark">
-<div class="buttons">
-  <!-- <button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button> -->
-</div>
+<ion-header-bar class="bar-positive">
 <h1 class="title">患者管理</h1>
 <div class="buttons">
   <button class="button icon-right ion-android-home" ng-click="backtocoach()"></button>
 </div>
 </ion-header-bar>
-<ion-header-bar class="bar-subheader bar-stable">
-        <h2>{{Name}}      {{gender}}        {{age}}岁<button class="button icon-right" ng-click="backtocoach()">返回主页</button></h2>
-
-        
-</ion-header-bar>
 
 
-<ion-tabs class="tabs-dark tabs-icon-top">
+
+<ion-tabs class="tabs-positive tabs-icon-top">
 <ion-tab title="计划情况"  icon="ion-stats-bars " href="#/manage/plan">
 <ion-nav-view name="plan-tab"></ion-nav-view>
 </ion-tab>

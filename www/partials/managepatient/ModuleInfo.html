@@ -3,21 +3,32 @@
     <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward()"></a>
     <h2 class="title">慢病信息</h2> -->
     <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
-<!-- </ion-header-bar> -->
+    <!-- </ion-header-bar> -->
+    <ion-header-bar class="bar-subheader bar-stable">
+    <div class="row" style="padding:0px">
+      <div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
 
+      </h3></div>
+      <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+      </button></div>
+      
+    </div>
+
+    
+  </ion-header-bar>
+  <ion-content class="padding has-subheader">
 
 
   
-  <ion-content>
-    <div>    
-      <ion-list>
-        <div collection-repeat='Module in ModuleInfo'>
-          <ion-item href="#/manage/ModuleInfo/{{Module.ModuleCode}}">
-            <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.ModuleCode}}">{{Module.ModuleName}}</a>
-          </ion-item>
-        </div>
-      </ion-list>
-    </div>
-    
-  </ion-content>
+  <div>    
+    <ion-list>
+    <div collection-repeat='Module in ModuleInfo'>
+      <ion-item href="#/manage/ModuleInfo/{{Module.ModuleCode}}">
+      <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.ModuleCode}}">{{Module.ModuleName}}</a>
+    </ion-item>
+  </div>
+</ion-list>
+</div>
+
+</ion-content>
 </ion-view>
