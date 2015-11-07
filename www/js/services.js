@@ -1017,6 +1017,54 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
 
+  //TDy 20151106
+  self.addnewpatient = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Doctor": DoctorId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Patient",
+      "ItemSeq": 1,
+      "Value": PatientId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    }];
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewhealthcoach = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Doctor",
+      "ItemSeq": 1,
+      "Value": DoctorId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    }];
+    var deferred = $q.defer();
+    Data.Users.setPatientDetailInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
   //TDY 20151030
   self.getquestionnaire = function(UserId,CategoryCode) {
     var temp = $resource(CONFIG.baseUrl + ':path/:UserId/:CategoryCode', {
