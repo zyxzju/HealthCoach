@@ -1876,6 +1876,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var UserId = Storage.get('UID');
   var PatientID = Storage.get('PatientID');
   var Module = $stateParams.Module;
+  $scope.getStatus = "";
   $scope.test = {"test":{"Type":"1","Name":"是"}};
 
   if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
@@ -2228,6 +2229,36 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           
       }
     };
+    if (Storage.get(Module)=="Yes")
+    {
+      Users.addnewpatient(UserId,PatientID,Module).then(function(data,status){
+        $scope.getStatus = data;
+        if (data.result == "数据插入成功")
+        {
+          Users.addnewhealthcoach(UserId,PatientID,Module).then(function(data,status){
+            $scope.getStatus = data;
+            if (data.result == "数据插入成功")
+            {
+              Storage.Set(Module,"No");
+            }
+            else
+            {
+              console.log(data.result);
+              return;
+            }
+          },function(data,status){
+            $scope.getStatus = status;
+            return;
+          });
+        }
+        else
+        {
+          console.log(data.result);
+        }
+      },function(data,status){
+        $scope.getStatus = status;
+      });
+    }
       
       Users.setPatientDetailInfo($scope.obj).then(function(data,status){
         $scope.getStatus = data;
@@ -3921,6 +3952,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
 
     $scope.backtomain=function(){
+      localStorage.removeItem("M1");
+      localStorage.removeItem("M2");
+      localStorage.removeItem("M3");
       $state.go('coach.patients');
     };
 
