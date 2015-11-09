@@ -1,11 +1,15 @@
 <ion-view title="计划情况">
-<ion-header-bar class="bar-positive">
+<ion-nav-bar class="bar-positive">
+    <ion-nav-buttons side="left">
+      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+<!-- <ion-header-bar class="bar-positive">
 <div class="buttons">
   <button class="button icon-right ion-android-home" ng-click="backtocoach()"></button>
 </div>
-</ion-header-bar>
-
-<ion-header-bar class="bar-subheader bar-stable">
+</ion-header-bar> -->
+<!-- <ion-header-bar class="bar-subheader bar-stable">
   <div class="row" style="padding:0px">
     <div class="col-75">
       <h3>{{Name}}      {{gender}}        {{age}}岁</h3>
@@ -13,8 +17,11 @@
       <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页</button>
     </div>  
   </div>
-</ion-header-bar>
-<ion-content class="has-subheader">
+</ion-header-bar> -->
+<ion-content has-bouncing="false"  class="content-item-list">
+  <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
+    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}岁</h3>
+  </div>
   <div class="button-bar ">
     <a class="button"  >依从率图</a>
     <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 

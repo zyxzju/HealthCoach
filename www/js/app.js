@@ -211,7 +211,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient',{
     url:'/addpatient',
     abstract:true,
-    template:'<ion-view/><ion-nav-view/>'
+    template:'<ion-nav-view/><ion-nav-view/>'
   })
 
   .state('addpatient.newpatient',{
@@ -553,7 +553,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('Independent',{
     abstract:true,
     url:"/Independent",
-    template:'<ion-nav-view/>'
+    template:'<ion-nav-view></ion-nav-view>'
   })
 
   .state('Independent.risk',{

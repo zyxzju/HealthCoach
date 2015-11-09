@@ -4,7 +4,7 @@
     <button class ="button button-icon ion-minus-circled" ng-click ="data.showDelete = !data.showDelete; showReorder = false;"></button>
     <button class ="button button-icon ion-navicon" ng-click ="data.showReorder = !data.showReorder; showDelete = false;"></button>
   </ion-header-bar>
-  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#999999 1px solid">
+  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#EEEEEE 1px solid">
     <div style="width:50%" class="item item-input item-select">
       <div class="input-label">
         筛选
@@ -25,7 +25,8 @@
       </select>
     </div>
   </div>
-  <ion-content class="has-subheader content-item-list" padding="true">       
+  <div class="sub-bar-shadow"></div>
+  <ion-content class="has-subheader content-item-list">       
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list>
       <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left item-margin"  >

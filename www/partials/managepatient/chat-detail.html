@@ -4,6 +4,11 @@
 
         
 </ion-header-bar> -->
+  <ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
     <ion-content class="padding" start-y="120">
         <div style="position:relative;bottom:{{Dialog.SMSbottom}}">
             <ion-refresher pulling-text="下拉加载更多。。。" spinner='ripple' refreshing-text="努力加载中" on-refresh="DisplayMore()">
