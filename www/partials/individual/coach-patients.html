@@ -65,7 +65,7 @@
                 <div class="item-row">
                   <div class="col-40">
                     <div class="row"><p>依从率</p></div>
-                    <div class="row" ><h3 ng-style="{'color':({{patient.Age}}>50?'#33cd5f':'#fb6a1b'),'font-size':'1.4em'}">{{patient.Age}}%</h3></div>
+                    <div class="row" ><h3 ng-style="{'color':({{patient.Age}}>50?'#33cd5f':'#fb6a1b'),'font-size':'1.4em'}">{{patient.ComplianceRate}}%</h3></div>
                   </div>
            <!--        <i ng-hide="!ishide(patient)" style="font-size:2em;color:#fb6a1b" class="icon ion-sad"></i>
                   <i ng-hide="ishide(patient)" style="font-size:2em;color:#33cd5f" class="icon ion-happy"></i> -->
@@ -76,7 +76,7 @@
         
           <b style="padding:0 8px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 进度 </b>
           <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
-          <div ng-style="setwidth(patient)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Age}}%</p></div>
+          <div ng-style="setwidth(patient)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
           </div>
         
             </div>
