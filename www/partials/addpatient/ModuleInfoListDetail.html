@@ -10,7 +10,7 @@
       <ion-list>
         <div ng-repeat='ModuleInfoListDetail in ModuleInfoList'>
           <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='YesNoType'">
-            <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+            <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <select style="width:65%" ng-options="YesNoTypeValue.Name for YesNoTypeValue in YesNoType" ng-model="ModuleInfoListDetail.Description">
               <option value="">请选择</option>
               <!-- <option ng-repeat="YesNoType in YesNoType">{{YesNoType.Name}}</option> -->
@@ -18,7 +18,7 @@
             <!-- <h2>{{ModuleInfoListDetail.Description}}</h2> -->
           </ion-item>
           <ion-item style="padding:0px 0px 10px 0px"  ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstHypertensionDrug'">
-          <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+          <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <div class="row">
               <div class="col-33" style="padding-left:5px" ng-click="addhyperdrug()"><b ><i class="ion-plus-circled" style="color: #417D9A"></i> 添加一条 </b></div>
               <div class="col-33" ng-click="deletehyperdrug()"><b> <i class="ion-trash-a" style="color: #EF473A"></i> 删除最后一条</b></div>
@@ -27,7 +27,7 @@
               <!-- </div> -->
             </div>
       <!--       <div>
-              <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+              <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
               <a class="button button-clear button-positive" ng-click="addhyperdrug()">添加</a>
               <a class="button button-clear button-positive" ng-click="deletehyperdrug()">删除</a>
             </div> -->
@@ -44,13 +44,13 @@
             </div>
           </ion-item>
           <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstDiabetesDrug'">
-          <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+          <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <div class="row">
               <div class="col-33" style="padding-left:5px" ng-click="adddiabetesdrug()"><b ><i class="ion-plus-circled" style="color: #417D9A"></i> 添加一条 </b></div>
               <div class="col-33" ng-click="deletediabetesdrug()"><b> <i class="ion-trash-a" style="color: #EF473A"></i> 删除最后一条</b></div>
             </div>          
    <!--          <div>
-              <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+              <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
               <a class="button button-clear button-positive" ng-click="adddiabetesdrug()">添加</a>
               <a class="button button-clear button-positive" ng-click="deletediabetesdrug()">删除</a>
             </div> -->
@@ -66,16 +66,16 @@
             </div>
           </ion-item>
           <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory==''">
-            <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+            <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <input style="width:100%" placeholder="填写信息"  type="text" ng-model="ModuleInfoListDetail.Description">
             <!-- <h2>{{ModuleInfoListDetail.Description}}</h2> -->
           </ion-item>
           <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DietHabbit'">
-            <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+            <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <p ng-click="addDietHabbit()">{{DietHabbitValue}}</p>
           </ion-item>
           <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DrinkFrequency'">
-            <h2 style="color:#417D9A;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
+            <h2 style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</h2>
             <select style="width:65%" ng-options="DrinkFrequency.Name for DrinkFrequency in DrinkFrequency" ng-model="ModuleInfoListDetail.Description">
               <option selected value="">请选择</option>
               <!-- <option ng-repeat="DrinkFrequency in DrinkFrequency">{{DrinkFrequency.Name}}</option> -->
