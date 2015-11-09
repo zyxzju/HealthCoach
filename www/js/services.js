@@ -93,8 +93,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
       PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
-
-      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
+      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true}
 		})
 	}
 	var Service = function(){
@@ -1084,6 +1084,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       "piTerminalName": "sample string 9",
       "piTerminalIP": "sample string 10",
       "piDeviceType": 2  
+    },
+    {
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "InvalidFlag",
+      "ItemSeq": 1,
+      "Value": "0",
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2 
     }];
     var deferred = $q.defer();
     Data.Users.setPatientDetailInfo(temp, function (data, headers) {
@@ -1489,6 +1502,16 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   
+  self.getiHealthCoachList = function(PatientId){
+    var deferred = $q.defer();
+    Data.Users.getiHealthCoachList({PatientId:PatientId},function(data,headers){
+      deferred.resolve(data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
   return self;
 }])
 

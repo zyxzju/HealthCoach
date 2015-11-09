@@ -1225,23 +1225,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
   //更改科室
   $scope.onClickEditDept = function(){
-    var results = ["神经科","肛肠科","泌尿科","整形科",'口腔科','肿瘤科'];
+    var results = [{no:'210403',dept:'心内科门诊'},{no:'210103',dept:"内分泌科"}];
     $scope.selection = {  
       inces: results
     };
     $scope.ince = {  // <select>默认值
       selected: results[0]
     };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择科室', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
+    PageFunc.selection('<select ng-options="_ince.dept for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择科室', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
       if(res){
-        
-        $scope.userInfo.DtInfo.dept = res;
+        $scope.userInfo.DtInfo.deptNO = res.no
+        $scope.userInfo.DtInfo.dept = res.dept;
       }
       else{
         $scope.isEdited = false;
       }
     }); 
   };
+
 
 }])
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
@@ -1716,7 +1717,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.backtocoach=function(){
       $state.go('coach.home');
     }
-    $scope.Dialog.DisplayOnes; //显示的消息
+    $scope.Dialog.DisplayOnes = new Array(); //显示的消息
     $scope.Dialog.UnitCount = 9;//每次点击加载的条数
     $scope.Dialog.Skip = $scope.Dialog.UnitCount;//跳过的条数
     //加载更多
@@ -1892,6 +1893,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   var UserId = Storage.get('UID');
+  var PatientId = Storage.get('PatientID');
+  Storage.set('M1','No');
+  Storage.set('M2','No');
+  Storage.set('M3','No');
+
   //var Module = $stateParams.Module;
   $scope.onClickBackward = function(){
       $ionicHistory.goBack();
@@ -1900,6 +1906,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $http.get('partials/data1.json').success(function(data) {
       $scope.ModuleInfo = data;
+  });
+
+  GetBasicInfo.getiHealthCoachList(PatientId).then(function(data,status){
+    for (var i=0;i<data.length;i++)
+    {
+      if (data[i].Module != "")
+      {
+        Storage.set(data[i].Module,'Yes');
+      }
+    }
+  },function(data,status){
+    $scope.getStatus = status;
   });
 
   $scope.NextPage =function(){
@@ -2562,7 +2580,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "IDNo": "",
     "DoctorId": DoctorId,
     "InsuranceType": "",
-    "InvalidFlag": 9,
+    "InvalidFlag": 0,
     "piUserId": "lzn",
     "piTerminalName": "sample string 11",
     "piTerminalIP": "sample string 12",
@@ -3226,7 +3244,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "IDNo": "",
       "DoctorId": "",
       "InsuranceType": "",
-      "InvalidFlag": 9,
+      "InvalidFlag": 0,
       "piUserId": "lzn",
       "piTerminalName": "sample string 11",
       "piTerminalIP": "sample string 12",
