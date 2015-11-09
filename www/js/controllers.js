@@ -872,7 +872,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','$timeout' ,'Storage',function($scope,$state,$ionicHistory,$ionicPopup,$timeout,Storage) { //LRZ
   $scope.onClickBackward = function(){
-      $ionicHistory.goBack();
+      $state.go('coach.home');
   };
 
   $scope.onClickChangePassword = function(){
@@ -1477,13 +1477,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var divwidth=patient.Age + '%';
     return {width:divwidth}; 
   };
-  $scope.ishide=function(patient){
-    if(patient.Age>=50){
-      return false;
-    }else{
-      return true;
-    } 
-  };
     //扫一扫，具体跳转再改
   $scope.QRscan = function(){
     var isMyPID=0;
@@ -1497,7 +1490,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       for(var i in PIDlist){
         if(data.text==PIDlist[i]){
           isMyPID=1;
-          Storage.set("viewPID",data.text);
+          Storage.set("PatientID",data.text);
+          for(var i in PatientsBasic){
+            if(PatientsBasic[i].PatientID == data.text){
+              Storage.set("PatientName",PatientsBasic[i].UserName);
+              Storage.set('PatientAge',PatientsBasic[i].Age);
+              Storage.set('PatientGender',PatientsBasic[i].GenderText);     
+              Storage.set("PatientPhotoAddress",PatientsBasic[i].photoAddress); 
+              break;             
+            }
+          }
           $state.go('manage.plan');
           break; 
         }
@@ -1710,7 +1712,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //   function (err) {
     //     // 目前好像不存在userid不对的情况，都会返回一个结果
     //   });  
-
+    $scope.backtocoach=function(){
+      $state.go('coach.home');
+    }
     $scope.Dialog.DisplayOnes; //显示的消息
     $scope.Dialog.UnitCount = 9;//每次点击加载的条数
     $scope.Dialog.Skip = $scope.Dialog.UnitCount;//跳过的条数
@@ -2444,7 +2448,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 .controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicLoading){
 
-  
+  $scope.onClickBack = function(){
+    $state.go('coach.home');
+  }
   
   // $scope.PhoneNo="";
   $scope.PhoneNo={pn:''};
