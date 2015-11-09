@@ -1,9 +1,11 @@
 <ion-view view-title="{{task.Title}}">
+<ion-nav-bar class="bar-positive">
 	<ion-nav-buttons side="primary">
 		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
 		</button>
 	</ion-nav-buttons>
-
+</ion-nav-bar>
+<div class="bar-shadow"></div>
 	<ion-content>
 		<ion-checkbox ng-model = "item.ControlType" ng-repeat = "item in task.list">
         {{item.Name}}

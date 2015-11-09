@@ -1,126 +1,87 @@
-<ion-view view-title="个人信息" hide-nav-bar="true">
-  <ion-header-bar class="bar-positive">
+<ion-view view-title="个人信息">
+<!--   <ion-header-bar class="bar-positive">
     <button class="button button-icon icon ion-arrow-left-a" ng-click="onClickBackward()">返回</button>
     <div class="h1 title">个人信息</div>
 
         <button class="button button-icon icon ion-compose" ng-click="onClickSave()">保存</button>
-  </ion-header-bar>
+  </ion-header-bar> -->
 
-<!--   <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
+  <ion-nav-bar class="bar-positive nav-title-slide-ios7">
     <ion-nav-buttons side="left">
-      <button class="button button-icon icon ion-navicon " ng-click="doSomething()"></button>
+      <button class="button button-icon icon ion-arrow-left-a" ng-click="onClickBackward()"></button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-      <button class="button button-icon icon ion-compose " ng-click="onClickSave()">保存</button>
+      <button class="button button-icon icon ion-compose" ng-click="onClickSave()">保存</button>
     </ion-nav-buttons>
-
-  </ion-nav-bar> -->
-<!--   <ion-refresher
-    pulling-text="Pull to refresh..."
-    on-refresh="DoctorId = 1 ">
-  </ion-refresher> -->
-
- 
-
-<!--    <p>DoctorId 
-
-DoctorName  
-
-Birthday  
-
-Gender  
-
-IDNo
-
-
-PhotoAddress  
-
-UnitName  
-
-JobTitle  
-
-Level 
-
-Dept  
-
-</p> -->
-
-
-
-
+  </ion-nav-bar>
   <ion-content>
 
     <div class="list">
-      <a href="#" class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
+      <div class="item item-divider">基本信息</div>
+      <a  class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
         <img src="{{imgURI}}" alt="Avatar">
-    <!--     <h2>Item 07</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore necessitatibus, facilis nihil illo eligendi ipsum blanditiis repellat eveniet obcaecati at. Esse est porro, odit, maiores dolorum provident earum error omnis.</p> -->
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray"></i>
 
       </a>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
+      <a  class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray"></i>
       </a>
 
       <ionic-datepicker input-obj="datepickerObject">
-      <a href="#" class="item item-icon-left item-icon-right" >
+      <a  class="item item-icon-left item-icon-right" >
         
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthdayforshow}}
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray"></i>
 
       </a>
       </ionic-datepicker>
       
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditGender()">
+      <a  class="item item-icon-left item-icon-right" ng-click = "onClickEditGender()">
         <i class="icon ion-male" ng-show="userInfo.BasicInfo.gender == '男'"></i>
         <i class="icon ion-female" ng-show="userInfo.BasicInfo.gender != '男'"></i>
+
        {{userInfo.BasicInfo.gender}}
-<!--         <span class="item-note">
-          Record
-        </span> -->
-        <i class="icon ion-chevron-right"></i>
+
+        <i class="icon ion-chevron-right icon-gray"></i>
       </a>
 
-      <a href="#" class="item">
+      <a class="item">
         ID No.
         <span class="badge badge-balanced">{{userInfo.BasicInfo.id}}</span>
       </a>
+
       <div class="item item-divider">详细信息</div>
     
- <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
-        <i class="icon ion-calendar"></i>
+ <a  class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
+        <i class="icon ion-ios-location"></i>
          {{userInfo.DtInfo.unitname}}
   
-          <i class="icon ion-chevron-right"></i>
+          <i class="icon ion-chevron-right icon-gray icon-stable"></i>
 
       </a>
 
- <a href="#" class="item item-icon-left item-icon-right "  ng-click = "onClickEditJobTitle()">
+ <a  class="item item-icon-left item-icon-right "  ng-click = "onClickEditJobTitle()">
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.jobTitle}}
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray"></i>
       </a>
 
- <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditLevel()">
-        <i class="icon ion-calendar"></i>
+ <a  class="item item-icon-left item-icon-right" ng-click = "onClickEditLevel()">
+        <i class="icon ion-arrow-graph-up-left"></i>
        {{userInfo.DtInfo.level}}
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray"></i>
       </a>
       
-  <a href="#" class="item item-icon-left item-icon-right" ng-click ="onClickEditDept()">
+  <a  class="item item-icon-left item-icon-right" ng-click ="onClickEditDept()">
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.dept}}
-        <i class="icon ion-chevron-right"></i>
+        <i class="icon ion-chevron-right icon-gray icon-clear"></i>
       </a>
       
 </div>
-
-
-
-
     </ion-content>
 </ion-view>

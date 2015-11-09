@@ -1,4 +1,4 @@
-<ion-header-bar class="bar-positive">
+<!-- <ion-header-bar class="bar-positive">
 <div class="buttons">
 	<button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
 </div>
@@ -6,25 +6,38 @@
 
 </ion-header-bar>
 
+
 <ion-header-bar class="bar-subheader bar-stable">
 <div class="row" style="padding:0px">
 	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
-
 	</h3></div>
 	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
-	</button></div>
-	
+	</button></div>	
 </div>
+</ion-header-bar> -->
+
+<ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+        <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
 
 
-</ion-header-bar>
+<!-- <ion-header-bar class="bar-subheader bar-stable">
+<div class="row" style="padding:0px">
+	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+	</h3></div>
+	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+	</button></div>	
+</div>
+</ion-header-bar> -->
 
 <ion-nav-view name="tablelist" >
 
 </ion-nav-view >
 
-
-<ion-tabs class="tabs-positive tabs-icon-top">
+  <div class="footer-shadow"></div>
+<ion-tabs class="tabs-stable tabs-icon-top">
 <ion-tab title="计划情况"  icon="ion-stats-bars " href="#/manage/plan">
 
 </ion-tab>

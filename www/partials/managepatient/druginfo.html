@@ -1,11 +1,13 @@
-<ion-modal-view>
-<ion-header-bar align-title="middle" class="bar-positive">
-  <div class="buttons">
+<ion-view >
+<ion-nav-bar align-title="middle" class="bar-positive">
+	<ion-nav-buttons side="primary">
+		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="closedrugModal()">
+		</button>
+	</ion-nav-buttons>
+<!--   <div class="buttons">
     <button class="button" ng-click="closedrugModal()">返回</button>
-  </div>
-  <h1 class="title">用药信息</h1>
-  
-</ion-header-bar>
+  </div>  --> 
+</ion-nav-bar>
    <ion-content scroll='true'>
 <ion-list >
 	<ion-item  ng-if=show>
@@ -34,5 +36,5 @@
 
 </ion-list>
 </ion-content>
-  </ion-modal-view>
+  </ion-view>
 

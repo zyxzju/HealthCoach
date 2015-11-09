@@ -1,14 +1,22 @@
-<ion-view view-title="风险评估" hide-nav-bar="true">
+<ion-view title="风险评估">
 
 
-<ion-header-bar>
-  <div class="h1 title">风险评估</div>    
+<ion-nav-bar class="bar-positive nav-title-slide-ios7">   
+  <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>
+  </ion-nav-bar> 
+  <ion-nav-buttons side="right">
+    <button class="button button-icon ion-help-circled " ng-click="onClickEvaluation1()">新增</button>
+  </ion-nav-buttons>
+</ion-nav-bar>
+<!-- <ion-header-bar>
+  <div class="h1 title">风险评估</div> -->    
 <!--   <button class="button button-icon ion-minus-circled" ng-click="data.showDelete = !data.showDelete; showReorder = false;">
   </button> -->
-  <button class="button button-icon ion-help-circled" ng-click="onClickEvaluation1()">
+<!--   <button class="button button-icon ion-help-circled" ng-click="onClickEvaluation1()">
     新增
-  </button>
-</ion-header-bar>
+  </button> -->
+<!-- </ion-header-bar> -->
 
 <!--   <ion-header-bar class="bar-balanced">
     <h2 class="title">item List</h2>

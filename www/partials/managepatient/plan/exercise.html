@@ -1,15 +1,18 @@
 <ion-view view-title="锻炼">
+<ion-nav-bar class="bar-positive">
 	<ion-nav-buttons side="primary">
 		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
 		</button>
 	</ion-nav-buttons>
+</ion-nav-bar>
 	<!-- <ion-nav-buttons side="secondary">
 		<a class="button" ng-click="ShowIcon()">编辑</a>		
 	</ion-nav-buttons> -->
-	<ion-content>
+	<div class="bar-shadow"></div>
+	<ion-content >
 		<div class="list">
-			<div class = "item item-icon-right" ng-repeat = "item in task.list">
-				<ion-checkbox ng-model = "item.ControlType">
+			<div class = "item item-icon-right item-margin" style="padding-right:60px !important" ng-repeat = "item in task.list">
+				<ion-checkbox style="border:0px" ng-model = "item.ControlType">
 				{{item.Name}}							
 				</ion-checkbox>	
 				<div style="color:blue;" class = "markDisplay{{item.ControlType}}">{{item.Instruction}}</div>
