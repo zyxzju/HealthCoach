@@ -2449,9 +2449,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 .controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicLoading){
 
-  $scope.onClickBack = function(){
-    $state.go('coach.home');
-  }
+  
   
   // $scope.PhoneNo="";
   $scope.PhoneNo={pn:''};
@@ -2564,7 +2562,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "IDNo": "",
     "DoctorId": DoctorId,
     "InsuranceType": "",
-    "InvalidFlag": 0,
+    "InvalidFlag": 9,
     "piUserId": "lzn",
     "piTerminalName": "sample string 11",
     "piTerminalIP": "sample string 12",
@@ -2579,6 +2577,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.users.UserId=Storage.get('newPatientID');
   
+  if($scope.users.UserId!=null && $scope.PhoneNo==null){
+    Users.PhoneNo($scope.users.UserId).then(
+      function(data){
+        console.log(data);
+        $scope.PhoneNo=data;
+      },function(e){
+          console.log(e);
+      });
+  }
 
   $scope.B="点击设置";
       var datePickerCallback = function (val) {
@@ -2985,37 +2992,37 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           };
           if(p==1){
             Users.PatientBasicInfo($scope.users).then(
-        function(data){
-          console.log($scope.users.InsuranceType);
-          console.log($scope.users.Gender);
-          console.log($scope.users.BloodType);
-          console.log($scope.users.Birthday);
-          
-          if(data.result=='数据插入成功'){
-            Users.PatientBasicDtlInfo(detail).then(
               function(data){
+                console.log($scope.users.InsuranceType);
+                console.log($scope.users.Gender);
+                console.log($scope.users.BloodType);
+                console.log($scope.users.Birthday);
                 
+                if(data.result=='数据插入成功'){
+                  Users.PatientBasicDtlInfo(detail).then(
+                    function(data){
+                      
+                      
+                      hide();
+                      a();
+                      $state.go('addpatient.clinicinfo');
+                    },function(e){
+                      
+                      console.log(e);
+                      hide();
+                      // a();
+                      // $state.go('addpatient.clinicinfo');
+                    });
+                  }
+                },function(e){
+                  console.log($scope.users);
+                  console.log($scope.users.Birthday);
+                  console.log(e);
                 
-                hide();
-                a();
-                $state.go('addpatient.clinicinfo');
-              },function(e){
-                
-                console.log(e);
-                hide();
-                a();
-                $state.go('addpatient.clinicinfo');
-              });
-            }
-          },function(e){
-            console.log($scope.users);
-            console.log($scope.users.Birthday);
-            console.log(e);
-          
-            hide();
-            b();
-          });
-          }
+                  hide();
+                  b();
+                });
+                }
           if(p==0){
             userservice.userRegister("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
         function(data){
@@ -3042,7 +3049,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           },function(e){
                             console.log(e);
                             hide();
-                            a();
+                            // a();
                             //$state.go('addpatient.clinicinfo');
                           });
                       }
@@ -3055,6 +3062,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
               },function(e){
                 console.log(e);
+                hide();
               });
           }
         // },function(e){
@@ -3065,6 +3073,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         //   console.log('qwrwewerest'+p);别管后4行
         },function(e){
             console.log(e);
+            hide();
         });
     }
     else{
@@ -3114,14 +3123,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
               },function(e){
                 console.log(e);
+                hide();
               });
           }
         },function(e){
             console.log()
             console.log(e);
+            hide();
         });
           
     }
+    Storage.set('PatientID',$scope.users.UserId);
     // console.log(p);
     // if(p!=1){
     //  Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
@@ -3214,7 +3226,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "IDNo": "",
       "DoctorId": "",
       "InsuranceType": "",
-      "InvalidFlag": 0,
+      "InvalidFlag": 9,
       "piUserId": "lzn",
       "piTerminalName": "sample string 11",
       "piTerminalIP": "sample string 12",

@@ -91,7 +91,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
-      
+      PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
 
       setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
@@ -1313,6 +1313,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     deferred.resolve(data);
     }, function (err) {
          deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+   self.PhoneNo = function(_UserId){
+    var deferred = $q.defer();
+    Data.Users.PhoneNo({UserId:_UserId},function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+        deferred.reject(err);
     });
     return deferred.promise;
   };
