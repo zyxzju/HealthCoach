@@ -384,7 +384,8 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       views:{
         "chat":{
           templateUrl:'partials/managepatient/chat-detail.html',
-          controller:'ChatDetailCtrl'
+          controller:'ChatDetailCtrl',
+          cache:false
         }
       }
       
