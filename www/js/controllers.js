@@ -1894,9 +1894,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   var UserId = Storage.get('UID');
   var PatientId = Storage.get('PatientID');
-  Storage.set('M1','No');
-  Storage.set('M2','No');
-  Storage.set('M3','No');
+  Storage.set('HM1','No');
+  Storage.set('HM2','No');
+  Storage.set('HM3','No');
 
   //var Module = $stateParams.Module;
   $scope.onClickBackward = function(){
@@ -1949,6 +1949,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var UserId = Storage.get('UID');
   var PatientID = Storage.get('PatientID');
   var Module = $stateParams.Module;
+  var HModule = "H" + Module;
   $scope.getStatus = "";
   $scope.test = {"test":{"Type":"1","Name":"是"}};
 
@@ -2302,7 +2303,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           
       }
     };
-    if (Storage.get(Module)=="No")
+    if (Storage.get(HModule)=="No")
     {
       Users.addnewpatient(UserId,PatientID,Module).then(function(data,status){
         $scope.getStatus = data;
@@ -2312,7 +2313,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $scope.getStatus = data.result;
             if (data.result == "数据插入成功")
             {
-              Storage.set(Module,"Yes");
+              Storage.set(HModule,"Yes");
             }
             else
             {
