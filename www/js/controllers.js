@@ -1397,7 +1397,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
   var getPIDlist = function(){
-    userINFO.GetPatientsList(DOCID,'M1','0','0')
+    userINFO.GetPatientsList(DOCID,'HM1','0','0')
     .then(function(data){
       var datastr=JSON.stringify(data);
       var datastr=JSON.parse(datastr);
@@ -1406,7 +1406,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         PIDlist.push(PatientsList1[i].PatientId);
       }
       
-      userINFO.GetPatientsList(DOCID,'M2','0','0')
+      userINFO.GetPatientsList(DOCID,'HM2','0','0')
       .then(function(data){
         var datastr=JSON.stringify(data);
         var datastr=JSON.parse(datastr);
@@ -2557,7 +2557,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "IDNo": "",
     "DoctorId": DoctorId,
     "InsuranceType": "",
-    "InvalidFlag": 9,
+    "InvalidFlag": 0,
     "piUserId": "lzn",
     "piTerminalName": "sample string 11",
     "piTerminalIP": "sample string 12",
@@ -3207,7 +3207,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "IDNo": "",
       "DoctorId": "",
       "InsuranceType": "",
-      "InvalidFlag": 9,
+      "InvalidFlag": 0,
       "piUserId": "lzn",
       "piTerminalName": "sample string 11",
       "piTerminalIP": "sample string 12",
