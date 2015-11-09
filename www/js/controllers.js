@@ -499,7 +499,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 }])
 
-//lrz20151104
+//lrz20151109
 .controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG','PageFunc',
   function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG,PageFunc) { //LRZ
 
@@ -674,38 +674,59 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    $timeout(function() {
      hideSheet();
    }, 2000);
-  };
-   
+  }; 
   $scope.takePicture = function() {
    Camera.getPicture().then(function(data) {
-      PageFunc.confirm("是否上传","确认").then(function(res){
-        if(res){
-          var d = new Date();
-          var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
-         } 
-      })
+      $timeout(function(){
+        PageFunc.confirm("是否上传","确认").then(function(res){
+          if(res){
+            $scope.isEdited = true;
+            var d = new Date();
+            var temp = d.getTime();
+            var filename = Storage.get('UID')+'_'+String(temp)+'.jpg';
+            Camera.uploadPicture_Check(data,filename).then(function(r){
+              if(r.res){
+                $scope.userInfo.DtInfo.photoAddress_Check = filename;
+                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress);
+                // Storage.set('doctorphoto',$scope.imgURI);
+                PageFunc.message("上传成功"+Storage.get("UID"),1000,"确认")
+              }
+              else  PageFunc.message("上传失败"+Storage.get("UID"),1000,"确认")             
+            });
+           } 
+        })
+      },2000);
     }, function(err) {
       PageFunc.message("上传失败", 1000, "消息");
-    });
+    });   
   };
   
   $scope.choosePhotos = function() {
    Camera.getPictureFromPhotos().then(function(data) {
-      PageFunc.confirm("是否上传","确认").then(function(res){
-        if(res){
-          var d = new Date();
-          var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress_Check = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture_Check(data,$scope.userInfo.DtInfo.photoAddress_Check);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
-         } 
-      })
+      $timeout(function(){
+        PageFunc.confirm("是否上传","确认").then(function(res){
+          if(res){
+            $scope.isEdited = true;
+            var d = new Date();
+            var temp = d.getTime();
+            var filename = Storage.get('UID')+'_'+String(temp)+'.jpg';
+            Camera.uploadPicture_Check(data,filename).then(function(r){
+              if(r.res){
+                $scope.userInfo.DtInfo.photoAddress_Check = filename;
+                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
+                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress);
+                // Storage.set('doctorphoto',$scope.imgURI);
+                PageFunc.message("上传成功"+Storage.get("UID"),1000,"确认")
+              }
+              else  PageFunc.message("上传失败"+Storage.get("UID"),1000,"确认")             
+            });
+           } 
+        })
+      },2000);
     }, function(err) {
       PageFunc.message("上传失败", 1000, "消息");
-    });
+    });   
   }
 
 }])
@@ -891,313 +912,45 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 // Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
 // ----------------------------------------------------------------------------------------
-.controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users','$ionicActionSheet','Camera','CONFIG',
-  function($scope,$state,$ionicHistory,Storage,PageFunc,Users,$ionicActionSheet,Camera,CONFIG) {
-   //获得信息
-   // $scope.imgURI = Storage.get(14);
-   // $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-   $scope.userInfo = {BasicInfo:{},DtInfo:{}};
-   Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
-      var temp = data;
-      // //console.log(data);
-      $scope.userInfo.BasicInfo = {
-       name:temp.DoctorName ,
-       gender:temp.Gender==1?'男':'女',
-       birthday:temp.Birthday,
-       id:temp.DoctorId,
-       idno:temp.IDNo
-     }
-     // var temp2 = String($scope.userInfo.BasicInfo.bithday);
-     // //console.log($scope.userInfo.BasicInfo.birthday);
-     var t = String($scope.userInfo.BasicInfo.birthday);
-     //console.log(t);
-
-     $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
-       Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
-        var temp = data;
-        // //console.log(data);
-        $scope.userInfo.DtInfo = {
-          unitname: temp.UnitName,
-          jobTitle: temp.JobTitle,
-          level: temp.Level,
-          dept: temp.Dept,
-          photoAddress : temp.PhotoAddress
-       }
-        // //console.log( $scope.userInfo.DtInfo.photoAddress);
-        if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined')
-         $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
-        else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-        Storage.set('doctorphoto',$scope.imgURI);
-           var objStr=JSON.stringify($scope.userInfo);
-           Storage.set("userInfo",objStr);
-     });
-   });
-
-   
-
-
-   // $scope.imgURIback = $scope.imgURI;
-
-  // date picker -------------------------------
-  var datePickerCallback = function (val) {
-    if (typeof(val) === 'undefined') {
-      //console.log('No date selected');
-    } else {
-      $scope.datepickerObject.inputDate=val;
-      var dd=val.getDate();
-      var mm=val.getMonth()+1;
-      var yyyy=val.getFullYear();
-      var birthday=yyyy+'/'+mm+'/'+dd;
-      $scope.userInfo.BasicInfo.birthday= String(yyyy) + (String(mm).length>1?String(mm):('0'+String(mm)))+ (String(dd).length>1?String(dd):('0'+String(dd))) ;
-      $scope.userInfo.BasicInfo.birthdayforshow = birthday;
-      alert($scope.userInfo.BasicInfo.birthday);
-    }
-  };
-  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-  var weekDaysList=["日","一","二","三","四","五","六"];
-  $scope.datepickerObject = {
-      titleLabel: '出生日期',  //Optional
-      todayLabel: '今天',  //Optional
-      closeLabel: '取消',  //Optional
-      setLabel: '设置',  //Optional
-      setButtonType : 'button-assertive',  //Optional
-      todayButtonType : 'button-assertive',  //Optional
-      closeButtonType : 'button-assertive',  //Optional
-      inputDate: new Date(),    //Optional
-      mondayFirst: false,    //Optional
-      //disabledDates: disabledDates, //Optional
-      weekDaysList: weekDaysList,   //Optional
-      monthList: monthList, //Optional
-      templateType: 'popup', //Optional
-      showTodayButton: 'false', //Optional
-      modalHeaderColor: 'bar-positive', //Optional
-      modalFooterColor: 'bar-positive', //Optional
-      from: new Date(1900, 1, 1),   //Optional
-      to: new Date(),    //Optional
-      callback: function (val) {    //Mandatory
-        datePickerCallback(val);
-      }
-  };  
+.controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','$timeout' ,'Storage',function($scope,$state,$ionicHistory,$ionicPopup,$timeout,Storage) { //LRZ
   $scope.onClickBackward = function(){
-    if($scope.isEdited == true)
-      PageFunc.confirm("是否放弃修改","确认").then( 
-        function(res){
-          if(res){
-           // //console.log("点了queren");
-           //复原备份
-           // //console.log($scope.backup);
-           $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-           //console.log($scope.userInfo);
-           $state.go('coach.i');
-          }
-        });
-    else{
-          $scope.userInfo = JSON.parse(Storage.get("userInfo"));
-          $state.go('coach.i'); 
-      }  
-
+      $ionicHistory.goBack();
   };
-  //点击保存上传更新
-  $scope.onClickSave = function(){
-    PageFunc.confirm("是否上传新信息","确认").then( 
-        function(res){
-          if(res){
-           // //console.log("点了queren");
-              // 这两个service里面还没有写好 
-              // ----------------------------------------------------------
-              var objStr=JSON.stringify($scope.userInfo);
-              Storage.set("userInfo",objStr);
-              Users.postDoctorInfo($scope.userInfo.BasicInfo).then(function(res){
-                //console.log(res);
-                if(res.result == "数据插入成功"){
-                  Users.postDoctorDtlInfo($scope.userInfo.DtInfo).then(function(res){
-                  //console.log(res);
-                  if(res.result == "数据插入成功")
-                  $state.go('coach.i');
-                  });                  
-                }
 
-              });
-              
-              
+  $scope.onClickChangePassword = function(){
+    $state.go('changepassword');
+  }
+  $scope.onClickSignOut = function(){
+    var myPopup = $ionicPopup.show({
+      template: '<center>确定要退出登录吗?</center>',
+      title: '退出',
+      //subTitle: '2',
+      scope: $scope,
+      buttons: [
+        { text: '取消',
+          type: 'button-small',
+          onTap: function(e) {
+            
           }
-          else{
-            // $scope.imgURI = $scope.imgURIback;
-            // $scope.userInfo = Storage.get('userinfo');
-          }
-        });    
-  };
-  // 更改头像
-  $scope.onClickChangeHead = function(){  
-   // Show the action sheet
-   var hideSheet = $ionicActionSheet.show({
-     buttons: [
-       { text: '选择照相机' },
-       { text: '选择相册' }
-     ],
-     // destructiveText: 'Delete',
-     titleText: '上传认证照片',
-     cancelText: '取消',
-     cancel: function() {
-          // add cancel code..
         },
-     buttonClicked: function(index) {
-      switch(index){
-        case 0 :  $scope.takePicture(); break;
-        case 1 :  $scope.choosePhotos();
-      }
-       return true;
-     }
-   });
-
-   // For example's sake, hide the sheet after two seconds
-   $timeout(function() {
-     hideSheet();
-   }, 2000);
-  };
-  //拍照
-  $scope.takePicture = function() {
-   Camera.getPicture().then(function(data) {
-      PageFunc.confirm("是否上传","确认").then(function(res){
-        if(res){
-          $scope.isEdited = true;
-          var d = new Date();
-          var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-          Storage.set('doctorphoto',$scope.imgURI);
-         } 
-      })
-    }, function(err) {
-      PageFunc.message("上传失败", 1000, "消息");
-    });
-  };
-  //选择相册
-  $scope.choosePhotos = function() {
-   Camera.getPictureFromPhotos().then(function(data) {
-      PageFunc.confirm("是否上传","确认").then(function(res){
-        if(res){
-          $scope.isEdited = true;
-          var d = new Date();
-          var temp = d.getTime();
-          $scope.userInfo.DtInfo.photoAddress = Storage.get('UID')+'_'+String(temp)+'.jpg';
-          Camera.uploadPicture(data,$scope.userInfo.DtInfo.photoAddress);
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-         } 
-      })
-    }, function(err) {
-      PageFunc.message("上传失败", 1000, "消息");
+        {
+          text: '<b>确定</b>',
+          type: 'button-small button-positive ',
+          onTap: function(e) {
+              var USERNAME=Storage.get('USERNAME');
+              Storage.clear();
+              Storage.set('USERNAME',USERNAME);
+              $timeout(function(){
+              $ionicHistory.clearHistory();
+              $ionicHistory.clearCache();
+              $state.go('signin');
+              },100);
+              
+          }
+        }
+      ]
     });
   }  
-  //更改姓名
-  $scope.onClickEditName = function(){
-    PageFunc.edit("姓名","修改").then(function(res){
-      if(res){
-        $scope.isEdited = true;
-        $scope.userInfo.BasicInfo.name = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    });
-  };
-  //更改性别
-  $scope.onClickEditGender = function(){
-    var results = ['男','女'];
-    $scope.selection = {  
-      inces: results
-    };
-    $scope.ince = {  // <select>默认值
-      selected: results[0]
-    };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择性别', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
-      if(res){
-        
-        $scope.userInfo.BasicInfo.gender = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    });    
-  };
-  //更改单位
-  $scope.onClickEditUnitName = function(){
-    var results = ["海军总医院","浙医二院","浙医一院"];
-    $scope.selection = {  
-      inces: results
-    };
-    $scope.ince = {  // <select>默认值
-      selected: results[0]
-    };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择工作单位', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
-      if(res){
-        
-        $scope.userInfo.DtInfo.unitname = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    }); 
-  };
-  //更改职称
-  $scope.onClickEditJobTitle = function(){
-    var results = ["医士","住院医师","主治医师","副主任医师","主任医师"];
-    $scope.selection = {  
-      inces: results
-    };
-    $scope.ince = {  // <select>默认值
-      selected: results[0]
-    };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择职务', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
-      if(res){
-        
-        $scope.userInfo.DtInfo.jobTitle = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    }); 
-  };
-  //更改级别
-  $scope.onClickEditLevel = function(){
-    var results = ["正高","副高","中级","初级"];
-    $scope.selection = {  
-      inces: results
-    };
-    $scope.ince = {  // <select>默认值
-      selected: results[0]
-    };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择级别', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
-      if(res){
-        
-        $scope.userInfo.DtInfo.level = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    }); 
-  };
-  //更改科室
-  $scope.onClickEditDept = function(){
-    var results = ["神经科","肛肠科","泌尿科","整形科",'口腔科','肿瘤科'];
-    $scope.selection = {  
-      inces: results
-    };
-    $scope.ince = {  // <select>默认值
-      selected: results[0]
-    };
-    PageFunc.selection('<select ng-options="_ince for _ince in selection.inces" ng-model="ince.selected"></select>', '请选择科室', 'ince', $scope).then(function (res) {  // 传入模板, 标题, 返回值, $scope
-      if(res){
-        
-        $scope.userInfo.DtInfo.dept = res;
-      }
-      else{
-        $scope.isEdited = false;
-      }
-    }); 
-  };
-
 }])
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------

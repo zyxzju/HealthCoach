@@ -575,12 +575,14 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Code = " + r.responseCode);
               console.log("Response = " + r.response);
               console.log("Sent = " + r.bytesSent);
+              r.res = true;
               q.resolve(r);        
             }, function(err){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
-              q.resolve(error);          
+              q.resolve(error); 
+              r.res = false;         
             }, function (progress) {
               console.log(progress);
             })
@@ -611,11 +613,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Code = " + r.responseCode);
               console.log("Response = " + r.response);
               console.log("Sent = " + r.bytesSent);
+              r.res = true;
               q.resolve(r);        
             }, function(err){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
+              r.res = false;
               q.resolve(error);          
             }, function (progress) {
               console.log(progress);
@@ -973,7 +977,32 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       deferred.reject(err);
     });
     return deferred.promise;
-  };  
+  }; 
+//LRZ 20151105   
+  self.postDoctorDtlInfo_Single = function (userid,code,value) {
+    var temp = [{
+                "Doctor": userid,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_" + String(code),
+                "ItemSeq": "1",
+                "Value": value,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"
+              }
+    ];
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };      
   //LRZ 20151102
   self.getDocInfo = function (userid) {
     
