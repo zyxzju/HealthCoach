@@ -2229,7 +2229,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           
       }
     };
-    if (Storage.get(Module)=="Yes")
+    if (Storage.get(Module)=="No")
     {
       Users.addnewpatient(UserId,PatientID,Module).then(function(data,status){
         $scope.getStatus = data;
@@ -2239,7 +2239,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $scope.getStatus = data;
             if (data.result == "数据插入成功")
             {
-              Storage.Set(Module,"No");
+              Storage.set(Module,"Yes");
             }
             else
             {
@@ -2264,13 +2264,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.getStatus = data;
         if (data.result == "数据插入成功")
         {
-          if (Storage.get("isManage") == "No")
+          if (Storage.get("isManage") == "Yes")
           {
-            window.location.href="#/addpatient/ModuleInfo/" +Module;
+            window.location.href="#/manage/ModuleInfo/" +Module;
           }
           else
           {
-            window.location.href="#/manage/ModuleInfo/" +Module;
+            window.location.href="#/addpatient/ModuleInfo/" +Module;            
           }
         }
         else
@@ -3837,13 +3837,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     })
     // console.log($scope.description);
     // Patients.
-    if (Storage.get('isManage') == "No")
+    if (Storage.get('isManage') == "Yes")
     {
-      $state.go('addpatient.risk');
+      $state.go('Independent.risk');
     }
     else
     {
-      $state.go('Independent.risk');
+      $state.go('addpatient.risk');
     }
   }
 
@@ -4344,13 +4344,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
-                              if (localStorage.getItem("isManage") == "No")
+                              if (localStorage.getItem("isManage") == "Yes")
                               {
-                                window.location.href = "#/addpatient/taskList";
+                                window.location.href = "#/manage/taskList";
                               }
                               else
                               {
-                                window.location.href = "#/manage/taskList";
+                                window.location.href = "#/addpatient/taskList";
                               } 
                             }
                         },function(data){
@@ -4358,15 +4358,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     }
                     else
                     {
-                         if (localStorage.getItem("isManage") == "No")
+                         if (localStorage.getItem("isManage") == "Yes")
                               {
-                                window.location.href = "#/addpatient/taskList";
+                                window.location.href = "#/manage/taskList";
                               }
                               else
                               {
-                                window.location.href = "#/manage/taskList";
-                              } 
-                    }                   
+                                window.location.href = "#/addpatient/taskList";
+                              }            
+                    }
                 }
             },function(data){              
             });    
@@ -4380,13 +4380,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        if (localStorage.getItem("isManage") == "No")
+                        if (localStorage.getItem("isManage") == "Yes")
                               {
-                                window.location.href = "#/addpatient/taskList";
+                                window.location.href = "#/manage/taskList";
                               }
                               else
                               {
-                                window.location.href = "#/manage/taskList";
+                                window.location.href = "#/addpatient/taskList";
                               } 
                     }
                 },function(data){
@@ -4394,15 +4394,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }
             else
             {
-                 if (localStorage.getItem("isManage") == "No")
-                  {
-                    window.location.href = "#/addpatient/taskList";
-                  }
-                  else
-                  {
-                    window.location.href = "#/manage/taskList";
-                  } 
-            }     
+                 if (localStorage.getItem("isManage") == "Yes")
+                      {
+                        window.location.href = "#/manage/taskList";
+                      }
+                      else
+                      {
+                        window.location.href = "#/addpatient/taskList";
+                      } 
+            }
         }
     }
 
@@ -4704,13 +4704,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //返回   
     $scope.onClickBackward = function(){
         //$ionicHistory.goBack();
-        if (localStorage.getItem("isManage") == "No")
+        if (localStorage.getItem("isManage") == "Yes")
         {
-          window.location.href = "#/addpatient/taskList";  
+          window.location.href = "#/manage/taskList";  
         }
         else
         {
-          window.location.href = "#/manage/taskList"; 
+          window.location.href = "#/addpatient/taskList"; 
         }    
     }
 }])
@@ -4830,13 +4830,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         {
                             if (data.result == "数据删除成功")
                             {
-                              if (localStorage.getItem("isManage") == "No")
+                              if (localStorage.getItem("isManage") == "Yes")
                               {
-                                window.location.href = "#/addpatient/TD";
+                                window.location.href = "#/manage/TD";
                               }
                               else
                               {
-                                window.location.href = "#/manage/TD";
+                                window.location.href = "#/addpatient/TD";
                               }
                                 
                             }
@@ -4845,13 +4845,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     }
                     else
                     {
-                         if (localStorage.getItem("isManage") == "No")
+                         if (localStorage.getItem("isManage") == "Yes")
                           {
-                            window.location.href = "#/addpatient/TD";
+                            window.location.href = "#/manage/TD";
                           }
                           else
                           {
-                            window.location.href = "#/manage/TD";
+                            window.location.href = "#/addpatient/TD";
                           }
                     }                   
                 }
@@ -4867,13 +4867,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 {
                     if (data.result == "数据删除成功")
                     {
-                        if (localStorage.getItem("isManage") == "No")
+                        if (localStorage.getItem("isManage") == "Yes")
                         {
-                          window.location.href = "#/addpatient/TD";
+                          window.location.href = "#/manage/TD";
                         }
                         else
                         {
-                          window.location.href = "#/manage/TD";
+                          window.location.href = "#/addpatient/TD";
                         }
                     }
                 },function(data){
@@ -4881,13 +4881,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }
             else
             {
-                 if (localStorage.getItem("isManage") == "No")
+                 if (localStorage.getItem("isManage") == "Yes")
                   {
-                    window.location.href = "#/addpatient/TD";
+                    window.location.href = "#/manage/TD";
                   }
                   else
                   {
-                    window.location.href = "#/manage/TD";
+                    window.location.href = "#/addpatient/TD";
                   }
             }     
         }
