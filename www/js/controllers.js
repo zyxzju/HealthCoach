@@ -1989,7 +1989,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if (data.result == "数据插入成功")
         {
           Users.addnewhealthcoach(UserId,PatientID,Module).then(function(data,status){
-            $scope.getStatus = data;
+            $scope.getStatus = data.result;
             if (data.result == "数据插入成功")
             {
               Storage.set(Module,"Yes");
