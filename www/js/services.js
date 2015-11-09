@@ -510,7 +510,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
       var options = { 
           quality : 150, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 1, 
           allowEdit : true,
           encodingType: 0,
@@ -523,7 +523,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
      var q = $q.defer();
 
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
@@ -537,7 +537,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     getPictureFromPhotos: function(){
       var options = { 
           quality : 150, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 0, 
           allowEdit : true,
           encodingType: 0,
@@ -547,7 +547,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         //从相册获得的照片不能被裁减 调研~
      var q = $q.defer();
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
