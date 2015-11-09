@@ -3,7 +3,10 @@
   <ion-content>
       <ion-list>
         <ion-item ng-repeat='Module in ModuleInfoList' ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
-          <h2>{{Module.ItemName}}</h2>
+          <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">
+              {{Module.ItemName}}
+              <i class="icon ion-chevron-right icon-gray"></i>
+          </a>
         </ion-item>
     </ion-list>
   <div>
