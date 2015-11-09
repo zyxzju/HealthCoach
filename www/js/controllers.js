@@ -1156,6 +1156,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Storage.set("PatientID",Patient.UserId);
     Storage.set("isManage","Yes");
     Storage.set("PatientName",Patient.UserName);
+    Storage.set('PatientAge',Patient.Age);
+    Storage.set('PatientGender',Patient.GenderText);     
     Storage.set("PatientPhotoAddress",Patient.photoAddress);
     $state.go('manage.plan');
   }
@@ -1573,15 +1575,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $stateParams, Storage,GetBasicInfo) {
   
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-       var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-        promise.then(function(data){
-          $scope.clinicinfo=data;
-          //console.log($scope.clinicinfo)
-          $scope.Name=data.UserName;
-          $scope.age=data.Age;
-          $scope.gender=data.GenderText;
-        }, function(data) {
-        })
+    $scope.Name=Storage.get('PatientName');
+    $scope.age=Storage.get('PatientAge');
+    $scope.gender=Storage.get('PatientGender');
+       // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+       //  promise.then(function(data){
+       //    $scope.clinicinfo=data;
+       //    //console.log($scope.clinicinfo)
+       //    $scope.Name=data.UserName;
+       //    $scope.age=data.Age;
+       //    $scope.gender=data.GenderText;
+       //  }, function(data) {
+       //  })
        });
   //进入页面获取患者的基本信息
   
@@ -3612,8 +3617,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.$watch('$viewContentLoaded', function() { 
         GetPlanList();
     }); 
-
-
+    $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+      $scope.Name=Storage.get('PatientName');
+      $scope.age=Storage.get('PatientAge');
+      $scope.gender=Storage.get('PatientGender');
+    }, function(data) {
+    });
+    $scope.onClickBackward = function(){
+      $state.go('coach.home');
+    }
+       
     //获取计划列表
     function GetPlanList()
     {
@@ -3710,10 +3723,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       localStorage.removeItem("M3");
       $state.go('coach.patients');
     };
-
-    $scope.onClickBackward = function(){
-      $ionicHistory.goBack();
-  };
 }])
 
 //GL 20151101 一级任务列表
@@ -4964,15 +4973,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo) {
 
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-       var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-        promise.then(function(data){
-          $scope.clinicinfo=data;
-          //console.log($scope.clinicinfo)
-          $scope.Name=data.UserName;
-          $scope.age=data.Age;
-          $scope.gender=data.GenderText;
-        }, function(data) {
-        })
+    $scope.Name=Storage.get('PatientName');
+    $scope.age=Storage.get('PatientAge');
+    $scope.gender=Storage.get('PatientGender');    
+       // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
+       //  promise.then(function(data){
+       //    $scope.clinicinfo=data;
+       //    //console.log($scope.clinicinfo)
+       //    $scope.Name=data.UserName;
+       //    $scope.age=data.Age;
+       //    $scope.gender=data.GenderText;
+       //  }, function(data) {
+       //  })
 
   //进入页面获取患者的基本信息
   
@@ -5163,12 +5175,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 // 依从率图的控制器amcharts部分 ZXF 20151102
 .controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+    $scope.Name=Storage.get('PatientName');
+    $scope.age=Storage.get('PatientAge');
+    $scope.gender=Storage.get('PatientGender');
     var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
     promise.then(function(data){
       $scope.clinicinfo=data;
-      $scope.Name=data.UserName;
-      $scope.age=data.Age;
-      $scope.gender=data.GenderText;
+      // $scope.Name=data.UserName;
+      // $scope.age=data.Age;
+      // $scope.gender=data.GenderText;    
     }, function(data) {
     })
   var PatintId = Storage.get('PatientID');
