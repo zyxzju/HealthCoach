@@ -687,8 +687,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             Camera.uploadPicture_Check(data,filename).then(function(r){
               if(r.res){
                 $scope.userInfo.DtInfo.photoAddress_Check = filename;
-                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress);
+                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
+                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress_Check);
                 // Storage.set('doctorphoto',$scope.imgURI);
                 PageFunc.message("上传成功"+Storage.get("UID"),1000,"确认")
               }
@@ -714,8 +714,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             Camera.uploadPicture_Check(data,filename).then(function(r){
               if(r.res){
                 $scope.userInfo.DtInfo.photoAddress_Check = filename;
-                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
-                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress);
+                $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ $scope.userInfo.DtInfo.photoAddress_Check;
+                Users.postDoctorDtlInfo_Single(Storage.get('UID'),9,$scope.userInfo.DtInfo.photoAddress_Check);
                 // Storage.set('doctorphoto',$scope.imgURI);
                 PageFunc.message("上传成功"+Storage.get("UID"),1000,"确认")
               }
