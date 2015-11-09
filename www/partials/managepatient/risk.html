@@ -1,10 +1,12 @@
 <ion-view title="风险评估">
 
 
-<ion-nav-bar class="bar-positive nav-title-slide-ios7">   
-  <ion-nav-back-button class="button-icon ion-arrow-left-c">
-    </ion-nav-back-button>
-  </ion-nav-bar> 
+<ion-nav-bar class="bar-positive nav-title-slide-ios7">  
+  <ion-nav-buttons side="left">
+    <button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward12()"></button>
+  </ion-nav-buttons> 
+<!--     <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button -->>
   <ion-nav-buttons side="right">
     <button class="button button-icon ion-help-circled " ng-click="onClickEvaluation1()">新增</button>
   </ion-nav-buttons>
@@ -40,6 +42,7 @@
       <input type="search" ng-model="query" placeholder="Search">
     </label>
   </div>
+    <!-- <div class="sub-bar-shadow"></div>  -->
 <ion-pane>
   <ion-content class="has-subheader">
     <ion-refresher on-refresh="doRefresh()">

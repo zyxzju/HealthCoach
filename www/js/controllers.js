@@ -3439,6 +3439,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // $state.go("risk");
       $state.go('Independent.risk');
   }
+  $scope.onClickBackward12 = function(){
+      // $state.go("risk");
+      $state.go('manage.plan');
+  }
   $scope.NextPage = function(){
     window.location.href="#/addpatient/create"
   };
