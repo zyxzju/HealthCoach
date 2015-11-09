@@ -577,12 +577,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Sent = " + r.bytesSent);
               r.res = true;
               q.resolve(r);        
-            }, function(err){
+            }, function(error){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
+              error.res = false;         
               q.resolve(error); 
-              r.res = false;         
             }, function (progress) {
               console.log(progress);
             })
@@ -615,11 +615,11 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Sent = " + r.bytesSent);
               r.res = true;
               q.resolve(r);        
-            }, function(err){
+            }, function(error){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
-              r.res = false;
+              error.res = false;
               q.resolve(error);          
             }, function (progress) {
               console.log(progress);
