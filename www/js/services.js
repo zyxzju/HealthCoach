@@ -509,7 +509,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     getPicture: function() {
 
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 1, 
           sourceType : 1, 
           allowEdit : true,
@@ -536,7 +536,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
     getPictureFromPhotos: function(){
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 1, 
           sourceType : 0, 
           allowEdit : true,
