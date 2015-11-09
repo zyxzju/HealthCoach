@@ -1683,6 +1683,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // $scope.backtocoach=function(){
     //   $state.go('coach.home');
     // };
+    
     $scope.Dialog = {};
     $scope.DoctorId = localStorage.getItem("UID");
     $scope.DoctorName =  localStorage.getItem("DoctorName");
@@ -1768,7 +1769,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      //获取消息对话
     GetSMSDialogue = function(skip)
     {
-        var promise = MessageInfo.GetSMSDialogue($scope.PatientId, $scope.DoctorId,$scope.Dialog.UnitCount,skip);
+        var promise = MessageInfo.GetSMSDialogue($scope.DoctorId,$scope.PatientId, $scope.Dialog.UnitCount,skip);
         promise.then(function(data) 
         { 
             if(data.length > 0)
@@ -1911,9 +1912,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   GetBasicInfo.getiHealthCoachList(PatientId).then(function(data,status){
     for (var i=0;i<data.length;i++)
     {
-      if (data[i].Module != "")
+      if (data[i].moduleCode != "")
       {
-        Storage.set(data[i].Module,'Yes');
+        Storage.set(data[i].moduleCode,'Yes');
       }
     }
   },function(data,status){
