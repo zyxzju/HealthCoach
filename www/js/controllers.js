@@ -1394,6 +1394,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   var netError = function(){
     $ionicLoading.hide();
+    refreshing=0;
     PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
   var getPIDlist = function(){
