@@ -5303,21 +5303,56 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //临床信息控制器 ZXF 20151031
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
-  GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo) {
+  GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo,PageFunc) {
 
-  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+  
+ $scope.synclinicinfo=function(){//同步动作
+  $http({
+    method:'GET',
+    url:'http://10.12.43.56:57772/csp/hz_mb/Bs.WebService.cls?soap_method=GetPatient',
+    params:{
+      'UserId':Storage.get("PatientID"),
+      'PatientId':$scope.HJZYYID,
+      'StartDateTime': $scope.tt,
+      'HospitalCode':'HJZYY'
+    },
+    timeout: 30000,
+      // }).success(function(data,header,config,status){
+      }).success(function(data,header){
+        var status=data.slice(data.search('Status'),data.search('/Status'));
+        console.log(data.slice(data.search('Status'),data.search('/Status')));
+        var wetherhaveerr1=data.match("Error");//查看是否包含error，有则认定同步不成功
+        var wetherhaveerr2=data.match("error");
+
+        var noArr=status.match(/\d+/g);
+        // console.log(noArr);
+        //根据status内的内容判断是否同步成功，输出不同弹框
+       if (wetherhaveerr1==null&&wetherhaveerr2==null) {
+                if (!(noArr[1]==0&&noArr[3]==0&&noArr[5]==0&&noArr[7]==0&&noArr[9]==0&&noArr[11]==0)) {
+                  var sysResult="诊断："+noArr[1]+"条"+"、"+"检查："+noArr[3]+"条"+"、"+"化验："+noArr[5]+"条"+"、"+"用药："+noArr[7]+"条"+"、"+"手术："+noArr[9]+"条"+"、"+"体征："+noArr[11]+"条";
+                PageFunc.message(sysResult,20000,"同步成功");
+                }else if ($scope.HJZYYID==0) {
+                  PageFunc.message("无医院就诊ID",20000,"同步失败");
+                }else{
+                  PageFunc.message("可能原因：就诊ID错误或者时间设置过短",20000,"同步失败");
+                };
+              }else{
+                PageFunc.message("系统错误",20000,"同步失败");
+              };
+        
+      //响应成功
+
+    }).error(function(data,header){
+      //处理响应失败
+    });
+  }; 
+
+
+
+    $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
     $scope.gender=Storage.get('PatientGender');    
-       // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-       //  promise.then(function(data){
-       //    $scope.clinicinfo=data;
-       //    //console.log($scope.clinicinfo)
-       //    $scope.Name=data.UserName;
-       //    $scope.age=data.Age;
-       //    $scope.gender=data.GenderText;
-       //  }, function(data) {
-       //  })
 
   //进入页面获取患者的基本信息
   
@@ -5429,7 +5464,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   //datepicker函数
   var d=new Date();
-  $scope.tt=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  var month=(d.getMonth()+1);
+  var day=d.getDate();
+  if(month<10){
+    month='0'+(d.getMonth()+1);
+  };
+  if (day<10) {
+    day='0'+d.getDate();
+  };
+  $scope.tt=d.getFullYear()+'-'+month+'-'+day;
   });
   var weekDaysList = ["日", "一", "二", "三", "四", "五", "六"];
   var monthList = ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"];
@@ -5460,10 +5503,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         if (typeof(val) === 'undefined') {
           //console.log('No date selected');
         } else {
-      // var d=new Date(val);
-      $scope.tt=val.getFullYear()+'-'+(val.getMonth()+1)+'-'+val.getDate();
-      //console.log('Selected date is : ', val)
-      //console.log(val)
+          var truemonth=(val.getMonth()+1);
+          var trueday=val.getDate();
+          if(truemonth<10){
+            truemonth='0'+(d.getMonth()+1);
+          };
+          if (trueday<10) {
+            trueday='0'+d.getDate();
+          };
+      $scope.tt=val.getFullYear()+'-'+truemonth+'-'+trueday;
     }
   };
 
@@ -5474,19 +5522,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $state.go('addpatient.ModuleInfo');
   };
 
-  //这是同步的button事件根据pid拿到最近十条就诊记录
-  $scope.synclinicinfo=function(){
-    // UserId:"@UserId",HospitalCode:'@HospitalCode'
-    var a={UserId:PatientID,HospitalCode:'HJZYY'};
-    var promise=GetHZID.GetHUserIdByHCode(a);
-    promise.then(function(data){
-      //拿到海总的就诊号用于后续同步
-      $scope.HJZYYID=data.result;
-      //console.log($scope.HJZYYID)
-    //调用webservice
-    }, function(data) {
-    })
-  };  
+ 
 })
 
 //抽象页面上用户信息的控制器 ZXF 20151102
