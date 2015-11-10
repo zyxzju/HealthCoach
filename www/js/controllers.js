@@ -671,9 +671,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    });
 
    // For example's sake, hide the sheet after two seconds
-   $timeout(function() {
-     hideSheet();
-   }, 2000);
+   // $timeout(function() {
+   //   hideSheet();
+   // }, 2000);
   }; 
   $scope.takePicture = function() {
    Camera.getPicture().then(function(data) {
@@ -917,7 +917,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    //获得信息
    // $scope.userInfo = JSON.parse(Storage.get("userInfo"));
    // Storage.set('UID','DOC201506180002');
-
+   
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
@@ -1076,9 +1076,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    });
 
    // For example's sake, hide the sheet after two seconds
-   $timeout(function() {
-     hideSheet();
-   }, 2000);
+   // $timeout(function() {
+   //   hideSheet();
+   // }, 2000);
   };
   //拍照
   $scope.takePicture = function() {
@@ -1137,7 +1137,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }  
   //更改姓名
   $scope.onClickEditName = function(){
-    PageFunc.edit("姓名","修改").then(function(res){
+    PageFunc.edit("姓名","修改姓名").then(function(res){
       if(res){
         $scope.isEdited = true;
         $scope.userInfo.BasicInfo.name = res;

@@ -75,15 +75,30 @@ Dept
       </a>
       </ionic-datepicker>
       
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditGender()">
+      <label class="item item-icon-left item-input-right item-select">
         <i class="icon ion-male" ng-show="userInfo.BasicInfo.gender == '男'"></i>
         <i class="icon ion-female" ng-show="userInfo.BasicInfo.gender != '男'"></i>
-       {{userInfo.BasicInfo.gender}}
+        <div class="input-label">
+          性别
+        </div>
+        <select ng-model="userInfo.BasicInfo.gender">
+          <option>男</option>
+          <option>女</option>
+        </select>
+      </label>
+
+<!--       <a href="#" class="item item-icon-left item-icon-right">
+        <i class="icon ion-male" ng-show="userInfo.BasicInfo.gender == '男'"></i>
+        <i class="icon ion-female" ng-show="userInfo.BasicInfo.gender != '男'"></i>
+       {{userInfo.BasicInfo.gender}} -->
 <!--         <span class="item-note">
           Record
         </span> -->
-        <i class="icon ion-chevron-right"></i>
-      </a>
+<!--         <select ng-model="userInfo.BasicInfo.gender">
+          <option> 男 </option>
+          <option> 女 </option>
+        </select>
+      </a> -->
 
       <a href="#" class="item">
         ID No.
@@ -91,7 +106,57 @@ Dept
       </a>
       <div class="item item-divider">详细信息</div>
     
- <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
+
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-home" ></i>
+        <div class="input-label">
+          工作单位
+        </div>
+        <select ng-model="userInfo.DtInfo.unitname">
+          <option>海军总医院 </option>
+          <option>其他 </option>
+        </select>
+      </label>
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-person"></i>
+        <div class="input-label">
+          职务
+        </div>
+        <select ng-model="userInfo.DtInfo.jobTitle">
+          <option>医士 </option>
+          <option>住院医师  </option>
+          <option>主治医师  </option>
+          <option>副主任医师 </option>
+          <option>主任医师 </option>
+        </select>
+      </label>
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-ios-pulse-strong" ></i>
+        <div class="input-label">
+          科室
+        </div>
+        <select ng-model="userInfo.DtInfo.dept">
+          <option>心内科门诊 </option>
+          <option>内分泌科 </option>
+        </select>
+      </label> 
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-arrow-graph-up-left" ></i>
+        <div class="input-label">
+          等级
+        </div>
+        <select ng-model="userInfo.DtInfo.level">
+          <option>初级 </option>
+          <option>中级 </option>
+          <option>正高 </option>
+          <option>副高 </option>
+        </select>
+      </label>                              
+<!--  <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
         <i class="icon ion-calendar"></i>
          {{userInfo.DtInfo.unitname}}
   
@@ -115,7 +180,7 @@ Dept
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.dept}}
         <i class="icon ion-chevron-right"></i>
-      </a>
+      </a> -->
       
 </div>
 
