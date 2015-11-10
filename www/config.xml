@@ -55,7 +55,6 @@
   <gap:plugin name="cordova-plugin-splashscreen" source="npm" />
   <!-- <gap:plugin name="org.apache.cordova.vibration" source="npm"/> -->
   <gap:plugin name="cordova-plugin-statusbar" source="npm" />
-  <gap:plugin name="cn.jpush.phonegap.JPushPlugin" source="npm" />
   <gap:plugin name="phonegap-plugin-barcodescanner" source="npm" />
   <!-- <gap:plugin name="nl.x-services.plugins.socialsharing" source="npm"/> -->
   <gap:plugin name="ionic-plugin-keyboard" source="npm"/>
