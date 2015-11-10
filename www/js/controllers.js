@@ -2472,6 +2472,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   
   
   // $scope.PhoneNo="";
+  $scope.onClickBack=function(){
+    $state.go('coach.home')
+  }
   $scope.PhoneNo={pn:''};
   var loading = function() {
       $ionicLoading.show({
@@ -3963,7 +3966,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
        
     //获取计划列表
-    function GetPlanList()
+     function GetPlanList()
     {
         var PatientId = localStorage.getItem("PatientID");
         var promise = PlanInfo.GetPlanList(PatientId, "NULL", "", 0);  //PatientId, PlanNo, Module, Status
@@ -3972,6 +3975,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
                 if((data[i].Status =="3") || (data[i].Status =="4"))
                 {
+                    if (data[i].StartDate != "")
+                    {
+                        data[i].StartDate = data[i].StartDate.substr(0, 4) + '/' + data[i].StartDate.substr(4, 2) + '/' + data[i].StartDate.substr(6, 2)
+                    }
+                    if(data[i].EndDate != "")
+                    {
+                        data[i].EndDate = data[i].EndDate.substr(0, 4) + '/' + data[i].EndDate.substr(4, 2) + '/' + data[i].EndDate.substr(6, 2)
+                    }
+
                     $scope.create.PlanList.push(data[i]);
                 }
                 if(($scope.create.AddFlag) && (data[i].Status =="3"))
@@ -4697,7 +4709,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         GettaskList();      
     });
 
-    $scope.$on('$ionicView.leave', function() { 
+    $scope.$on('$ionicView.enter', function() { 
         $scope.Confirm();   
     });
     var arry = new Array();
@@ -4794,11 +4806,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     // } 
                 }
             },function(data){
+
             });  
         }        
     }
 
-    //返回   
+    //返回  
     $scope.onClickBackward = function(){
         //$ionicHistory.goBack();
         if (localStorage.getItem("isManage") == "Yes")
