@@ -396,7 +396,8 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     views: {
       'plan-tab': {
         templateUrl: "partials/managepatient/plan.html",
-        controller:'planCtrl'
+        controller:'planCtrl',
+        cache:false
       }
     }
   })
