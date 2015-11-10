@@ -1683,7 +1683,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // $scope.backtocoach=function(){
     //   $state.go('coach.home');
     // };
-    
+
     $scope.Dialog = {};
     $scope.DoctorId = localStorage.getItem("UID");
     $scope.DoctorName =  localStorage.getItem("DoctorName");
@@ -2442,7 +2442,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }); 
   };
   $scope.deletehyperdrug = function(){
-    if (a >1) {
+    if (a >0) {
       a--;
       $scope.HypertensionDrugArray.pop({"ID":a+1,"Type":"","Name":""});
       $scope.HypertensionDrugData.pop({"ID":a+1,"Type":"","Name":""});
@@ -2459,7 +2459,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }); 
     };
   $scope.deletediabetesdrug = function(){
-    if (b >1) {
+    if (b >0) {
       b--;
       $scope.DiabetesDrugArray.pop({"ID":b+1,"Type":"","Name":""});
       $scope.DiabetesDrugData.pop({"ID":b+1,"Type":"","Name":""});
