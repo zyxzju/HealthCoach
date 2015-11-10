@@ -671,9 +671,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    });
 
    // For example's sake, hide the sheet after two seconds
-   $timeout(function() {
-     hideSheet();
-   }, 2000);
+   // $timeout(function() {
+   //   hideSheet();
+   // }, 2000);
   }; 
   $scope.takePicture = function() {
    Camera.getPicture().then(function(data) {
@@ -1076,9 +1076,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    });
 
    // For example's sake, hide the sheet after two seconds
-   $timeout(function() {
-     hideSheet();
-   }, 2000);
+   // $timeout(function() {
+   //   hideSheet();
+   // }, 2000);
   };
   //拍照
   $scope.takePicture = function() {
@@ -2403,7 +2403,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 
   $scope.DietChange = function(obj){
-      $scope.DietHabbitData = "";
      for(var i = 0; i < $scope.DietHabbit.length; i++)
       {
         var f =i+1;
@@ -2413,16 +2412,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               $scope.DietHabbitValue = $scope.DietHabbitValue + "," + obj.Name;
               $scope.DietHabbitData = $scope.DietHabbitData + "," + f;
             }
-            else if ($scope.DietHabbitValue.indexOf(obj.Name)) {
+            else  {
               var check = $scope.DietHabbitValue.split(',');
+              var flag = $scope.DietHabbitData.split(',');
               $scope.DietHabbitValue = "";
+              $scope.DietHabbitData = "";
               for (var j=0; j<check.length;j++) {
                 if (check[j] == obj.Name)
+                {
                   check[j] = "";
+                  flag[j] = "";
+                }
               };
               for (var j=0; j<check.length;j++) {
                 if (check[j] !="")
+                {
                   $scope.DietHabbitValue = $scope.DietHabbitValue + "," +check[j];
+                  $scope.DietHabbitData = $scope.DietHabbitData + "," +flag[j];
+                }
               };
             };
             break;
