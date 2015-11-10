@@ -5353,9 +5353,97 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 if (!(noArr[1]==0&&noArr[3]==0&&noArr[5]==0&&noArr[7]==0&&noArr[9]==0&&noArr[11]==0)) {
                   var sysResult="诊断："+noArr[1]+"条"+"、"+"检查："+noArr[3]+"条"+"、"+"化验："+noArr[5]+"条"+"、"+"用药："+noArr[7]+"条"+"、"+"手术："+noArr[9]+"条"+"、"+"体征："+noArr[11]+"条";
                 PageFunc.message(sysResult,20000,"同步成功");
-                }else if ($scope.HJZYYID==0) {
-                  PageFunc.message("无医院就诊ID",20000,"同步失败");
-                }else{
+                //同步成功 刷新页面
+                  GetClinicalList.GetClinicalInfoListbyUID({UserId:Storage.get("PatientID")}).then(function(data){
+                      $scope.cliniclist=data.DT_InPatientInfo;
+
+                      //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
+                      $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
+                        scope: $scope,
+                        animation: 'slide-in-up'
+                      }).then(function(modal) {
+                        $scope.modalexam = modal;
+                      });
+                      $scope.onClickBackward = function(){
+                        $ionicHistory.goBack();
+                      };
+                      $scope.openexaminfomodal = function(index) {
+                        $scope.modalexam.show();
+                        var promise1=Getexaminfo.Getexaminfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
+                        promise1.then(function(data1){
+                          $scope.Examinationinfo=data1;
+                          $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
+                        }, function(data1) {  
+                        });
+                      };
+
+                      $scope.closeexamModal = function() {
+                        $scope.modalexam.hide();
+                      };
+                      $scope.$on('$destroy', function() {
+                        $scope.modalexam.remove();
+                      });
+                      //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
+                      $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
+                        scope: $scope,
+                        animation: 'slide-in-up'
+                      }).then(function(modal) {
+                        $scope.modaldiag = modal;
+                      });
+
+                      $scope.opendiaginfomodal = function(index) {
+                        $scope.modaldiag.show();
+                        var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
+                        promise0.then(function(data0){
+                          $scope.Diagnosisinfo=data0;
+                          $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
+
+                          //console.log($scope.Diagnosisinfo);
+                        },
+                        function(data0) {
+                        }
+                        )
+                      };
+
+                      $scope.closediagModal = function() {
+                        $scope.modaldiag.hide();
+                      };
+                      $scope.$on('$destroy', function() {
+                        $scope.modaldiag.remove();
+                      });
+
+                      //点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
+                      $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
+                        scope: $scope,
+                        animation: 'slide-in-up'
+                      }).then(function(modal) {
+                        $scope.modaldrug = modal;
+                      });
+
+                      $scope.opendruginfomodal = function(index) {
+                        $scope.modaldrug.show();
+                          // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
+                          var promise1=Getdruginfo.Getdruginfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
+                          promise1.then(function(data2){
+                            $scope.DrugRecordinfo=data2;
+                            $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
+
+
+                            //console.log($scope.DrugRecordinfo);
+                          }, function(data2) {  
+                          }
+                          )
+                        };
+
+                      $scope.closedrugModal = function() {
+                        $scope.modaldrug.hide();
+                      };
+                      $scope.$on('$destroy', function() {
+                        $scope.modaldrug.remove();
+                      });
+                  }, function(data) {
+                  });
+                }else if ($scope.HJZYYID!=""){
                   PageFunc.message("可能原因：就诊ID错误或者时间设置过短",20000,"同步失败");
                 };
               }else{
@@ -5366,6 +5454,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     }).error(function(data,header){
       //处理响应失败
+      PageFunc.message("响应超时",20000,"同步失败");
     });
   }; 
 
@@ -5528,10 +5617,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           var truemonth=(val.getMonth()+1);
           var trueday=val.getDate();
           if(truemonth<10){
-            truemonth='0'+(d.getMonth()+1);
+            truemonth='0'+(val.getMonth()+1);
           };
           if (trueday<10) {
-            trueday='0'+d.getDate();
+            trueday='0'+val.getDate();
           };
       $scope.tt=val.getFullYear()+'-'+truemonth+'-'+trueday;
     }
