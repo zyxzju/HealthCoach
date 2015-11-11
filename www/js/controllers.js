@@ -2842,23 +2842,60 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $ionicScrollDelegate.scrollTop(true);
     };
 
+  $scope.$on('$ionicView.enter', function() { 
+   
+
+    $scope.PhoneNo=Storage.get('phoneno');
     
 
-  $scope.PhoneNo=Storage.get('phoneno');
-  var DoctorId = Storage.get('UID');
+    // $scope.UserId,$scope.UserId,$scope.Birthday,$scope.Gender,$scope.BloodType,$scope.IDNo,$scope.DoctorId,$scope.InsuranceType
+    // $scope.Gender="";
 
-  // $scope.UserId,$scope.UserId,$scope.Birthday,$scope.Gender,$scope.BloodType,$scope.IDNo,$scope.DoctorId,$scope.InsuranceType
-  // $scope.Gender="";
+    // $scope.g=""
+    $scope.users={
+      "UserId": "",
+      "UserName": "",
+      "Birthday": "",
+      "Gender": "",
+      "BloodType": "",
+      "IDNo": "",
+      "DoctorId": DoctorId,
+      "InsuranceType": "",
+      "InvalidFlag": 0,
+      "piUserId": "lzn",
+      "piTerminalName": "sample string 11",
+      "piTerminalIP": "sample string 12",
+      "piDeviceType": 13
+      };
+      
 
-  // $scope.g=""
+      
+      
+
+      
+
+    $scope.users.UserId=Storage.get('newPatientID');
+
+
+    
+    if($scope.users.UserId!=null && $scope.PhoneNo==null){
+      Users.PhoneNo($scope.users.UserId).then(
+        function(data){
+          console.log(data);
+          $scope.PhoneNo=data;
+        },function(e){
+            console.log(e);
+        });
+    }
+  });
   $scope.users={
-    "UserId": "",
+    "UserId":Storage.get('newPatientID'),
     "UserName": "",
     "Birthday": "",
     "Gender": "",
     "BloodType": "",
     "IDNo": "",
-    "DoctorId": DoctorId,
+    "DoctorId": Storage.get('UID'),
     "InsuranceType": "",
     "InvalidFlag": 0,
     "piUserId": "lzn",
@@ -2867,24 +2904,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "piDeviceType": 13
     };
     
-
-    
-    
-
-    
-
-  $scope.users.UserId=Storage.get('newPatientID');
-  
-  if($scope.users.UserId!=null && $scope.PhoneNo==null){
-    Users.PhoneNo($scope.users.UserId).then(
-      function(data){
-        console.log(data);
-        $scope.PhoneNo=data;
-      },function(e){
-          console.log(e);
-      });
-  }
-
   $scope.B="点击设置";
       var datePickerCallback = function (val) {
         if (typeof(val) === 'undefined') {
@@ -3033,7 +3052,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //    Timeout.close();
     //  },5000)
   // };
-  
+   
       
   Dict.Type("AboBloodType").then(
       function(data){
@@ -3092,7 +3111,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                           if($scope.users.BloodType=='5') $scope.users.BloodType='其他';
 
                           $scope.users.IDNo=data.IDNo;
-                          $scope.users.DoctorId=DoctorId;
+                          $scope.users.DoctorId= Storage.get('UID');
                           $scope.users.InsuranceType=data.InsuranceType;
                           console.log($scope.users);
                           
@@ -3131,11 +3150,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         console.log(e);
     });
 
-  
+
   
   var detail = [$scope.HomeAddress,$scope.PhoneNumber,$scope.Nationality,$scope.Occupation,$scope.EmergencyContact,$scope.EmergencyContactPhoneNumber];
   
-
+ 
   
   var loading = function() {
       $ionicLoading.show({
