@@ -1497,12 +1497,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           if(data.text==PIDlist[i]){
             isMyPID=1;
             Storage.set("PatientID",data.text);
-            for(var i in PatientsBasic){
-              if(PatientsBasic[i].PatientID == data.text){
-                Storage.set("PatientName",PatientsBasic[i].PatientName);
-                Storage.set('PatientAge',PatientsBasic[i].Age);
-                Storage.set('PatientGender',PatientsBasic[i].GenderText);     
-                Storage.set("PatientPhotoAddress",PatientsBasic[i].photoAddress); 
+            for(var i in PatientsList){
+              if(PatientsBasic[i].PatientId == data.text){
+                Storage.set("PatientName",PatientsList[i].PatientName);
+                Storage.set('PatientAge',PatientsList[i].Age);
+                Storage.set('PatientGender',PatientsList[i].GenderText);     
+                Storage.set("PatientPhotoAddress",PatientsList[i].photoAddress); 
                 break;             
               }
             }
@@ -2901,7 +2901,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "piUserId": "lzn",
     "piTerminalName": "sample string 11",
     "piTerminalIP": "sample string 12",
-    "piDeviceType": 13
+    "piDevi ceType": 13
     };
     
   $scope.B="点击设置";
