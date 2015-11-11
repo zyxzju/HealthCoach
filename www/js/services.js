@@ -877,7 +877,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151104
+//LRZ 20151110
   self.postDoctorDtlInfo_Check = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -889,19 +889,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress_Check: data.photoAddress_Check
     };
 
-    var temp = [{
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_4",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"
-              },
+    var temp = [
               {
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
@@ -947,19 +935,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 "ItemCode": "Contact001_8",
                 "ItemSeq": "1",
                 "Value": DoctorInfo.dept,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"  
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_9",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress_Check,
                 "Description": "null",
                 "SortNo": "1",
                 "piUserId": "sample string 8",
