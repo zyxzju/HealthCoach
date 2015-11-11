@@ -1498,7 +1498,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             isMyPID=1;
             Storage.set("PatientID",data.text);
             for(var i in PatientsList){
-              if(PatientsBasic[i].PatientId == data.text){
+              if(PatientsList[i].PatientId == data.text){
                 Storage.set("PatientName",PatientsList[i].PatientName);
                 Storage.set('PatientAge',PatientsList[i].Age);
                 Storage.set('PatientGender',PatientsList[i].GenderText);     
