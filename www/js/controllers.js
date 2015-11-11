@@ -2859,7 +2859,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       "Gender": "",
       "BloodType": "",
       "IDNo": "",
-      "DoctorId": DoctorId,
+      "DoctorId": Storage.get('UID'),
       "InsuranceType": "",
       "InvalidFlag": 0,
       "piUserId": "lzn",
