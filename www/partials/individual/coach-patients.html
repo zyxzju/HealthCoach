@@ -5,8 +5,8 @@
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
     </div>  
     <h1 class="title">现有病人</h1>
- <!--    <div class="buttons">
-      <button class="button button-icon icon ion-search" ng-click="QRscan()"></button>
+<!--     <div class="buttons">
+      <button class="button button-icon icon ion-search" ng-click="openSearch()"></button>
     </div> -->
   </ion-header-bar>
   
@@ -14,11 +14,11 @@
     <ion-nav-buttons side="left">
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
     </ion-nav-buttons>
- <!--    <ion-nav-buttons side="right">
-      <button class="button button-icon icon ion-search " ng-click="QRscan()"></button>
+<!--     <ion-nav-buttons side="right">
+      <button class="button button-icon icon ion-search " ng-click="openSearch()"></button>
     </ion-nav-buttons> -->
 <!--   </ion-nav-bar> -->
-  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#EEEEEE 1px solid">
+<!--   <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#EEEEEE 1px solid">
     <div style="width:50%" class="item item-input item-select">
       <div class="input-label">
         筛选
@@ -39,13 +39,22 @@
         <option>依从率</option>
       </select>
     </div>
-  </div>
+  </div> -->
+  <div class="bar bar-subheader item-input-inset bar-light">
+    <div class="item-input-wrapper">
+      <i class="icon ion-android-search placeholder-icon"></i>
+      <input type="search" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="Search">
+      <i class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+    </div>
+  </div>  
   <div class="sub-bar-shadow"></div>
-  <ion-content class="has-subheader content-item-list" >       
+  <ion-content class="has-subheader content-item-list" >   
+  
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <ion-item  ng-repeat="patient in patients track by $index" class="item-thumbnail-left item-margin " ng-click="PIDdetail(patient)" >
+      <div  collection-repeat="patient in patients" collection-item-height="107px"  ng-click="PIDdetail(patient)" >
+      <ion-item class="item-thumbnail-left item-margin ">
         <img src="{{patient.photoAddress}}">
         <div style=" padding-left:84px">
         <div class="row">
@@ -54,8 +63,8 @@
             <!-- <div class="row"> -->
               <div class="col-75">
                 <div class="row " style="padding-right:0">
-                  <div class="col-50"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.UserName}}</h3></div>
-                  <div class="col-50"><h1 >{{patient.Age}}岁      {{patient.GenderText[0]}}</h1></div>
+                  <div class="col-67"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}</h3></div>
+                  <div class="col-33"><h1 >{{patient.Age}}      {{patient.GenderText[0]}}</h1></div>
                 </div>
                 <div class="row">
                   <div class="col-100"><b><i class="icon ion-pie-graph"></i> {{patient.Module}}</b></div>
@@ -65,7 +74,7 @@
                 <div class="item-row">
                   <div class="col-40">
                     <div class="row"><p>依从率</p></div>
-                    <div class="row" ><h3 ng-style="{'color':({{patient.Age}}>50?'#33cd5f':'#fb6a1b'),'font-size':'1.4em'}">{{patient.ComplianceRate}}%</h3></div>
+                    <div class="row" ><h3 ng-style="tcolor(patient.ComplianceRate)">{{patient.ComplianceRate}}%</h3></div>
                   </div>
            <!--        <i ng-hide="!ishide(patient)" style="font-size:2em;color:#fb6a1b" class="icon ion-sad"></i>
                   <i ng-hide="ishide(patient)" style="font-size:2em;color:#33cd5f" class="icon ion-happy"></i> -->
@@ -76,14 +85,16 @@
         
           <b style="padding:0 8px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 进度 </b>
           <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
-          <div ng-style="setwidth(patient)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
+          <div ng-style="setwidth(patient.Process)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
           </div>
         
             </div>
           </div>
           <!-- </div>   -->
         <!-- </div>         -->
-      </ion-item>
+        </ion-item>
+      </div>
+      
     </ion-list>
   <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
   </ion-content>

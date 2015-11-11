@@ -100,6 +100,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       //     controller:'CoachIdUploadCtrl'          
       //   }
       // }
+      cache:false,
           templateUrl:'partials/individual/coach-idupload.html',
           controller:'CoachIdUploadCtrl'  
     })
@@ -122,6 +123,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       //     controller: 'CoachPersonalInfoCtrl'
       //   }
       // }
+      cache:false,
       templateUrl: 'partials/individual/coach-personalinfo.html',
       controller: 'CoachPersonalInfoCtrl'      
     })
