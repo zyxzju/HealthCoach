@@ -1,145 +1,64 @@
-<ion-view view-title = "健康专员主页 "  >
+<ion-view view-title = "主页 " hide-nav-bar="true">
 
-<!--   <ion-header-bar >
-    <button class="button button-icon icon ion-qr-scanner">扫一扫</button>
-    <div class="h1 title">健康专员主页({{state}})</div>
-    <button class="button button-clear button-dark button-icon icon ion-plus-round">添加</button>
-  </ion-header-bar> -->
-
-  <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
+  <ion-header-bar class="bar-positive nav-title-slide-ios7">
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()">扫一扫</button>
+    <div class="h1 title">主页</div>
+    <button class="button button-icon icon ion-plus-round" ng-click="addpatient()">新患者</button>
+  </ion-header-bar>
+<!-- 
+  <ion-nav-bar class="bar-positive nav-title-slide-ios7">
 
     <ion-nav-buttons side="left">
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()">扫一扫</button>
     </ion-nav-buttons>
     <ion-nav-buttons side="right">
-      <button class="button button-clear button-dark button-icon icon ion-plus-round" ng-click="addpatient()">添加新患者</button>
+      <button class="button button-icon icon ion-plus-round" ng-click="addpatient()">添加新患者</button>
     </ion-nav-buttons>
-  </ion-nav-bar>
-
+  </ion-nav-bar> -->
+<div class="bar-shadow"></div>
 <ion-content>
-  <div class="padding">
-    <button class="button button-block button-primary" ng-click="onClickCheck()" ng-hide="state ==  '已激活'">
-      进入审核页面 {{state}}
-    </button>
-  </div>
-  <div class="list card">
-
-    
+  <div class="list card" style="border:#BBBBBB 1px solid">
     <div class="item item-avatar">
       <img ng-src="{{imgURI}}">
-      <h2>{{ userInfo.BasicInfo.name }}</h2>
-      <p>{{userInfo.DtInfo.unitname}}</p>
-      <span class="badge badge-balanced">{{userInfo.BasicInfo.id}}</span>      
+      <h3>{{ userInfo.BasicInfo.name }}  </h3>
+      <h2>{{userInfo.DtInfo.unitname}}</h2>
+      <div class="badge badge-balanced">{{userInfo.BasicInfo.id}}</div> 
     </div>
-
-    <div class="item item-body">
-      <!-- <img class="avatar" ng-src= "{{imgURI}}" > -->
-  
-      <p>
-        {{userInfo.DtInfo.dept}}
-      </p>
-      <p>{{userInfo.DtInfo.jobTitle}}</p>
-
-          <p>
-         {{userInfo.DtInfo.level}}
-      </p>
-      <p>
-        <a href="#" class="subdued">1 Like</a>
-        <a href="#" class="subdued">5 Comments</a>
-      </p>
+    <div class = "item item-divider">        
+    </div>     
+    <div class ="item item-icon-left" >
+      <i class="icon ion-android-contact"></i>
+      {{userInfo.DtInfo.dept}}
     </div>
-
-    <div class="item tabs tabs-secondary tabs-icon-left">
-      <a class="tab-item" href="#">
-        <i class="icon ion-thumbsup"></i>
-        Like
-      </a>
-      <a class="tab-item" href="#">
-        <i class="icon ion-chatbox"></i>
-        Comment
-      </a>
-      <a class="tab-item" href="#">
-        <i class="icon ion-share"></i>
-        Share
-      </a>
+    <div class ="item item-icon-left">
+      <i class="icon ion-android-contact"></i>
+      {{userInfo.DtInfo.jobTitle}}
+    </div>        
+    <div class ="item item-icon-left">
+      <i class="icon ion-android-contact"></i>
+      {{userInfo.DtInfo.level}}
     </div>
-
-  </div>
-
-  <div>
-      <p>
-        
-      </p>
   </div>
   <ion-list>
+    <div class ="padding ">
+            <button class="button button-block  button-energized" ng-click="onClickCheck()" ng-hide="state == '已激活'">
+      进入审核页面 {{state}}
+    </button>
+    
+        <span class="button button-block  icon ion-information-circled" ng-click="onClickPersonalInfo()" href='#/personalinfo'>
+          个人信息
+        </span>
 
-<!--     <ion-nav-view name="coach-config"></ion-nav-view>
-    <ion-nav-view name="coach-personalinfo"></ion-nav-view>
-    <ion-nav-view name="coach-schedule"></ion-nav-view> -->
-    <span class="button button-block button-clear icon ion-information-circled" ng-click="onClickPersonalInfo()" href='#/personalinfo'>
-      个人信息
-    </span>
+        <span class="button button-block  icon ion-gear-a" ng-click="onClickPersonalConfig()">
+          设置
+        </span>
 
-<!--     <span class="button button-block button-clear icon ion-ios-calendar" ng-click="onClickPersonalSchedule()" href='#/schedule'>
-      我的日程
-    </span> -->
 
-    <span class="button button-block button-clear icon ion-gear-a" ng-click="onClickPersonalConfig()">
-      设置
-    </span>
+
+    </div>
 
   </ion-list>
 
 </ion-content>
 
-<!--   <ion-footer-bar>
-    <ion-tabs class="tabs-icon-top tabs-color-active-positive">
-
-      <ion-tab title="My patients" icon = "ion-ios-people" >
-        我的患者
-      </ion-tab>
-
-      <ion-tab title="New" icon="icon ion-android-person-add">
-        新患者
-      </ion-tab>
-
-      <ion-tab title="Notification" icon="icon ion-android-mail" badge="5" badge-style="badge-assertive">
-        通知
-      </ion-tab>
-
-      <ion-tab title="Me" icon="ion-ios-person">
-        我
-      </ion-tab>
-
-    </ion-tabs>  
-  </ion-footer-bar > -->
-
-
 </ion-view>
-
-
-<!-- 
-<ion-tabs class="tabs-icon-top tabs-color-active-positive">
-
-
-  <ion-tab title="主页" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/coach/home">
-    <ion-nav-view name="coach-home"></ion-nav-view>
-  </ion-tab>
-
-<!--   <ion-tab title="上传信息" icon-off="ion-ios-pulse" icon-on="ion-ios-pulse-strong" href="#/coach/upload">
-    <ion-nav-view name="coach-upload"></ion-nav-view>
-  </ion-tab>
- -->
-<!--   <ion-tab title="设置" icon-off="ion-ios-chatboxes-outline" icon-on="ion-ios-chatboxes" href="#/coach/config">
-    <ion-nav-view name="coach-config"></ion-nav-view>
-  </ion-tab>
-
-  <ion-tab title="个人信息23333" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/coach/personalinfo">
-    <ion-nav-view name="coach-personalinfo"></ion-nav-view>
-  </ion-tab>
-
-  <ion-tab title="schedule" icon-off="ion-ios-gear-outline" icon-on="ion-ios-gear" href="#/coach/schedule">
-    <ion-nav-view name="coach-schedule"></ion-nav-view>
-  </ion-tab>
-
-</ion-tabs> -->

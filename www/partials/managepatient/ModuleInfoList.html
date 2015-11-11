@@ -1,25 +1,14 @@
 <ion-view title="慢病信息">
-<!-- <ion-header-bar>
-    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward1()"></a>
-    <h2 class="title">慢病信息</h2> -->
-    <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a>-->
-<!-- </ion-header-bar> -->
-
-
-
-  
+ <div class="bar-shadow"></div>
   <ion-content>
-    <div>
       <ion-list>
-      <div ng-repeat='Module in ModuleInfoList'>
-        <ion-item ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
-          <a class="item item-icon-right" ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">{{Module.ItemName}}<!-- <div class="markDisplay dflag[$index].Flag">
-            <i class="icon ion-ios-checkmark-empty"></i>
-          </div> --></a>
+        <ion-item ng-repeat='Module in ModuleInfoList' ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
+          <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">
+              {{Module.ItemName}}
+              <i class="icon ion-chevron-right icon-gray"></i>
+          </a>
         </ion-item>
-      </div>
     </ion-list>
-  </div>
   <div>
     <button class="button button-block button-positive" ng-click="onClickBackward3()">完成</button>
   </div>

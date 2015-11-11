@@ -91,10 +91,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
-      
+      PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
-
-      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
+      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true}
 		})
 	}
 	var Service = function(){
@@ -212,7 +212,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
               GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
               SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
-              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'POST', params:{route: 'deleteTask'},timeout: 10000},
               GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
               GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
               SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
@@ -509,7 +509,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     getPicture: function() {
 
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 1, 
           sourceType : 1, 
           allowEdit : true,
@@ -536,7 +536,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
     getPictureFromPhotos: function(){
       var options = { 
-          quality : 150, 
+          quality : 75, 
           destinationType : 1, 
           sourceType : 0, 
           allowEdit : true,
@@ -877,7 +877,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151104
+//LRZ 20151110
   self.postDoctorDtlInfo_Check = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -889,19 +889,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress_Check: data.photoAddress_Check
     };
 
-    var temp = [{
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_4",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"
-              },
+    var temp = [
               {
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
@@ -947,19 +935,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 "ItemCode": "Contact001_8",
                 "ItemSeq": "1",
                 "Value": DoctorInfo.dept,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"  
-              },
-              {
-                "Doctor": DoctorInfo.UserId,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_9",
-                "ItemSeq": "1",
-                "Value": DoctorInfo.photoAddress_Check,
                 "Description": "null",
                 "SortNo": "1",
                 "piUserId": "sample string 8",
@@ -1039,6 +1014,67 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     var deferred = $q.defer();
     temp.myTrialGET({}, function (data, headers) {
       // console.log("获得了数据"+data)
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewpatient = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Doctor": DoctorId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Patient",
+      "ItemSeq": 1,
+      "Value": PatientId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    }];
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewhealthcoach = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Doctor",
+      "ItemSeq": 1,
+      "Value": DoctorId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    },
+    {
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "InvalidFlag",
+      "ItemSeq": 1,
+      "Value": "0",
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2 
+    }];
+    var deferred = $q.defer();
+    Data.Users.setPatientDetailInfo(temp, function (data, headers) {
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
@@ -1268,6 +1304,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
+   self.PhoneNo = function(_UserId){
+    var deferred = $q.defer();
+    Data.Users.PhoneNo({UserId:_UserId},function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+        deferred.reject(err);
+    });
+    return deferred.promise;
+  };
 
     return self;
 }])
@@ -1432,6 +1477,16 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   
+  self.getiHealthCoachList = function(PatientId){
+    var deferred = $q.defer();
+    Data.Users.getiHealthCoachList({PatientId:PatientId},function(data,headers){
+      deferred.resolve(data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
   return self;
 }])
 

@@ -1,15 +1,18 @@
 <ion-view view-title="建议饮食结构">
+<ion-nav-bar class="bar-positive">
 	<ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
+		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
 		</button>
 	</ion-nav-buttons>
-	<ion-content>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
+	<ion-content class="content-item-list">
 		<div class="list">
-			<div class="item" ng-repeat="item in task.list">
-				<ion-checkbox  ng-model = "item.ControlType">
+			<div class="item item-margin" ng-repeat="item in task.list">
+				<ion-checkbox style="border:0px"  ng-model = "item.ControlType">
 	            	{{item.Name}}
 	        	</ion-checkbox>
-	        	<label class="item item-input">
+	        	<label style="-moz-box-shadow:1px 2px 2px #999;-webkit-box-shadow:1px 2px 2px #999;box-shadow:1px 1.5px 2px #999" class="item item-input">
 	    			<span class="input-label">建议摄入量（克）</span>
 	    			<input type="number" ng-model="item.Instruction">
 	  			</label>	 		

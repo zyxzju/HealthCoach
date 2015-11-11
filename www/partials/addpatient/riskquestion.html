@@ -1,27 +1,13 @@
+<ion-view title="信息录入" >
 
-
-
-<!-- <ion-tabs class="tabs-icon-top tabs-color-active-balanced">
- 
-
-	  <ion-tab title="高血压模块" icon-off="ion-ios-heart-outline" icon-on="ion-ios-heart" href="#/riskquestion/hypertension">
-	    <ion-nav-view name="riskquestion-hypertension"></ion-nav-view>
-	  </ion-tab>  
-
-	  <ion-tab title="糖尿病模块" icon-off="ion-ios-pint-outline" icon-on="ion-ios-pint" href="#/riskquestion/diabetes">
-	    <ion-nav-view name="riskquestion-diabetes"></ion-nav-view>
-	  </ion-tab>  
-
- </ion-tabs> -->
-
-
- <ion-view view-title="风险评估" hide-nav-bar="true">
-
-
-<ion-header-bar>
-  <div class="h1 title">信息录入</div>    
-</ion-header-bar>
-
+<ion-nav-bar class="bar-positive nav-title-slide-ios7"> 
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>  
+<!--   <ion-nav-buttons side="left">
+    <button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
+  </ion-nav-buttons> -->
+</ion-nav-bar>
+  <div class="bar-shadow"></div> 
 <ion-content>
 
       <div class = "row">
@@ -54,7 +40,7 @@
           <span class="input-label">当前舒张压</span>
           <input type="number" placeholder="mmHg" ng-model="value.DBP">
         </label>
-
+<div class="item item-divider" style = "background-color:#FFFFFF">  </div>
     </div>
     
   </ion-slide>
@@ -85,12 +71,7 @@
               <option>睡前</option>
             </select>
           </label>
-
-
-
-          
-
-    
+ <div class="item item-divider" style = "background-color:#FFFFFF">  </div>   
     </div>
   </ion-slide>
 </ion-slide-box>

@@ -1,19 +1,20 @@
-<ion-view view-title="计划列表">
-	<!-- <ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="$onClickBackward()">
-		</button>
-	</ion-nav-buttons> -->
-	<ion-nav-buttons side="secondary">
-		<div class="markDisplay{{create.AddFlag}}">
-			<button class="button icon-right" ng-click="CreatePlan()">
-				<i class="icon ion-plus"></i>
-			</button>
-		</div>
+<ion-view  cache-view="false" title="计划列表">
+<ion-nav-bar class="bar-positive">
+	<ion-nav-buttons side="primary">
+		<button class="button icon button-icon ion-android-home" ng-click="onClickBackward()"></button>
 	</ion-nav-buttons>
-	<ion-content>
+	<ion-nav-buttons side="secondary">
+			<button class="button icon button-icon ion-plus markDisplay{{create.AddFlag}}" ng-click="CreatePlan()"></button>
+	</ion-nav-buttons>
+</ion-nav-bar>
+	<ion-content has-bouncing="false">
+		<div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF">	
+			<h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}  岁</h3>
+		</div>	
 		<div class="list">
+
 			<a class="item" href="#/manage/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
-			{{item.PlanNo}}---{{item.PlanName}}：{{item.StartDate}}-{{item.EndDate}}
+			{{item.PlanName}}：{{item.StartDate}}-{{item.EndDate}}
 	        </a>
     	</div>
     	<!-- <div style="text-align:center;padding:20px;">

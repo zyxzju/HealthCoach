@@ -4,25 +4,42 @@
     <h2 class="title">慢病信息</h2> -->
     <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
 <!-- </ion-header-bar> -->
+<div class="bar-shadow"></div>
   <ion-content>
+  <div>
     <div>    
       <ion-list>
         <div ng-repeat='ModuleInfoListDetail in ModuleInfoList'>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='YesNoType'">
-            <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='YesNoType'">
+           <label class="item item-input item-select" style="background-color:#F1F1F1;padding:3px 0px 2px 0px">
+            <div class="input-label">
+              {{ModuleInfoListDetail.ItemName}} :
+            </div>
             <select ng-options="YesNoTypeValue.Name for YesNoTypeValue in YesNoType" ng-model="ModuleInfoListDetail.Description">
               <option value="">请选择</option>
-              <!-- <option ng-repeat="YesNoType in YesNoType">{{YesNoType.Name}}</option> -->
             </select>
-            <!-- <h2>{{ModuleInfoListDetail.Description}}</h2> -->
+          </label>
+            <!--<h2>{{ModuleInfoListDetail.ItemName}} :</h2>
+            <select ng-options="YesNoTypeValue.Name for YesNoTypeValue in YesNoType" ng-model="ModuleInfoListDetail.Description">
+              <option value="">请选择</option>
+            </select> -->
           </ion-item>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstHypertensionDrug'">
-            <div>
-              <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
-              <a class="button button-clear button-positive" ng-click="addhyperdrug()">添加</a>
-              <a class="button button-clear button-positive" ng-click="deletehyperdrug()">删除</a>
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstHypertensionDrug'">
+            <!-- <div> -->
+            <label class="item item-input" style="background-color:#F1F1F1;padding:3px 0px 2px 0px">
+              <div class="input-label">
+                {{ModuleInfoListDetail.ItemName}} :
+              </div>
+              </label>
+            <div class="row">
+              <div class="col-33" style="padding-left:5px" ng-click="addhyperdrug()"><b ><i class="ion-plus-circled" style="color: #689F38"></i> 添加一条 </b></div>
+              <div class="col-33" ng-click="deletehyperdrug()"><b> <i class="ion-trash-a" style="color: #EF473A"></i> 删除最后一条</b></div>
+                 <!--<a class="button button-clear button-positive" ng-click="addhyperdrug()">添加</a>
+                <a class="button button-clear button-positive" ng-click="deletehyperdrug()">删除</a> -->
+              <!-- </div> -->
             </div>
-            <div ng-repeat="HypertensionDrug in HypertensionDrugArray">
+          
+            <div class="row" ng-repeat="HypertensionDrug in HypertensionDrugArray">
               <select ng-options="HyperTensionDrugType.Name for HyperTensionDrugType in HypertensionDrug.Type" ng-change="getHyperTensionDrugNameByType(HypertensionDrugData[$index].Type, $index)" ng-model="HypertensionDrugData[$index].Type">
                 <option selected value="">请选择</option>
               <!-- <option ng-repeat="HyperTensionDrugTypeName in HyperTensionDrugTypeName">{{HyperTensionDrugTypeName.Name}}</option> -->
@@ -32,15 +49,22 @@
               <!-- <option ng-repeat="HyperTensionDrugName in HyperTensionDrugName">{{HyperTensionDrugName.Name}}</option> -->
               </select>
 
-            </div>
+            </div>          
           </ion-item>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstDiabetesDrug'">
-            <div>
-              <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
-              <a class="button button-clear button-positive" ng-click="adddiabetesdrug()">添加</a>
-              <a class="button button-clear button-positive" ng-click="deletediabetesdrug()">删除</a>
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='Cm.MstDiabetesDrug'">
+            <label class="item item-input" style="background-color:#F1F1F1;padding:3px 0px 2px 0px">
+              <div class="input-label">
+                {{ModuleInfoListDetail.ItemName}} :
+              </div>
+              </label>
+            <div class="row">
+              <div class="col-33" style="padding-left:5px" ng-click="adddiabetesdrug()"><b ><i class="ion-plus-circled" style="color: #689F38"></i> 添加一条 </b></div>
+              <div class="col-33" ng-click="deletediabetesdrug()"><b> <i class="ion-trash-a" style="color: #EF473A"></i> 删除最后一条</b></div>
             </div>
-            <div ng-repeat="Diabetesdrug in DiabetesDrugArray">
+              <!-- <a class="button button-clear button-positive" ng-click="adddiabetesdrug()">添加</a> -->
+              <!-- <a class="button button-clear button-positive" ng-click="deletediabetesdrug()">删除</a> -->
+            <!-- </div> -->
+            <div class="row" ng-repeat="Diabetesdrug in DiabetesDrugArray">
               <select ng-options="DiabetesDrugType.Name for DiabetesDrugType in Diabetesdrug.Type"  ng-change="getDiabetesDrugNameByType(DiabetesDrugData[$index].Type, $index)" ng-model="DiabetesDrugData[$index].Type">
                 <option selected value="">请选择</option>
                 <!-- <option ng-repeat="HyperTensionDrugTypeName in HyperTensionDrugTypeName">{{HyperTensionDrugTypeName.Name}}</option> -->
@@ -51,22 +75,27 @@
               </select>
             </div>
           </ion-item>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory==''">
-            <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
-            <input type="text" ng-model="ModuleInfoListDetail.Description">
-            <!-- <h2>{{ModuleInfoListDetail.Description}}</h2> -->
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory==''">
+            <label class="item item-input item-stacked-label">
+              <span class="input-label" style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</span>
+              <input type="text" placeholder="填写信息" ng-model="ModuleInfoListDetail.Description">
+            </label>
           </ion-item>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DietHabbit'">
-            <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
-            <p ng-click="addDietHabbit()">{{DietHabbitValue}}</p>
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DietHabbit'">
+            <label class="item item-input item-stacked-label" ng-click="addDietHabbit()">
+              <span style="background-color:#F1F1F1;padding:3px 0px 2px 0px">{{ModuleInfoListDetail.ItemName}} :</span>
+              <p >{{DietHabbitValue}}</p>
+            </label>
           </ion-item>
-          <ion-item ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DrinkFrequency'">
-            <h2>{{ModuleInfoListDetail.ItemName}} :</h2>
-            <select ng-options="DrinkFrequency.Name for DrinkFrequency in DrinkFrequency" ng-model="ModuleInfoListDetail.Description">
-              <option selected value="">请选择</option>
-              <!-- <option ng-repeat="DrinkFrequency in DrinkFrequency">{{DrinkFrequency.Name}}</option> -->
-            </select>
-            <!-- <h2>{{ModuleInfoListDetail.Description}}</h2> -->
+          <ion-item style="padding:0px 0px 10px 0px" ng-if="ModuleInfoListDetail.ParentCode==ListName&&ModuleInfoListDetail.OptionCategory=='DrinkFrequency'">
+            <label class="item item-input item-select" style="background-color:#F1F1F1;padding:3px 0px 2px 0px">
+              <div class="input-label">
+                {{ModuleInfoListDetail.ItemName}} :
+              </div>
+              <select ng-options="DrinkFrequency.Name for DrinkFrequency in DrinkFrequency" ng-model="ModuleInfoListDetail.Description">
+                <option selected value="">请选择</option>
+              </select>
+            </label>
           </ion-item>
         </div>
       </ion-list>

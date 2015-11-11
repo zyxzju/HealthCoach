@@ -1,5 +1,14 @@
-<ion-nav-view >
-<ion-content > 
+<ion-view  cache-view="false" title="计划情况">
+<ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+        <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+<div class="footer-shadow"></div>
+<ion-content class="content-item-list"> 
+  <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
+    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}岁</h3>
+  </div>
 <style>
 #table{
 .col {
@@ -18,102 +27,52 @@
 }
 </style>
 <div>
-  <div class="button-bar ">
+  <div has-bouncing="false" class="button-bar ">
    <a class="button"  href="#/manage/plan" >依从率图</a>
    <a class="button"  href="#/Independent/table" ng-click="showvitalsigns()"> 体征表</a> 
    <a class="button"  href="#/Independent/risk" >风险评估</a>
  </div>
-
-<!-- dayepicker -->
-<!-- <div class="list"> -->
-<!-- <div class="row">
-
-		<div class="rol">
-		<datepicker>
-      <button class="button button-block button-positive"
-		ng-click="startpick()">起始日期</button>
-	</div>
-
-   <div class="rol">
-		<button class="button button-block button-positive"
-		ng-click="endpick()">起始日期</button>
-	</div>
-
-<div class="rol">
-	<button class="button button-block button-positive" ng-click="bowerdata()">查询</button>
-</div>
-</div>
- -->
-
-<!--    <ionic-datepicker input-obj="datepickerObject">
-        <div>
-        <span>生日</span>
-        <span class="item-note ">
-          {{birthday}}
-        </span>
+ <div style="padding:5px">
+<div class="row item-margin" style="border:#E3E3E3 1px solid;margin:0;background-color:#FFFFFF">
+  <div class="col-80">
+    <div  class="item-row">
+      <div class="col-50 text-center">
+        <ionic-datepicker input-obj="datepickerObject">
+        <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">起始日期</h4>
+        
+          <div  ng-click="setStart()"><b  style="color:#689f38;padding-top: 3px">{{selectedstartdate}}</b></div>
+        </ionic-datepicker>
+      </div>  
+      <div class="col-50  text-center">
+        <ionic-datepicker input-obj="datepickerObject" >
+        <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">结束日期</h4>
+        
+          <div ng-click="setEnd()"><b  style="color:#689f38;padding-top: 3px">{{selecrtedenddate}}</b></div>
+        </ionic-datepicker>
       </div>
-        </ionic-datepicker> -->
-
-<!-- 
-    <ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
-    <button class="button button-block button-positive" >起始日期{{selectedstartdate}}</button>
-  </ionic-datepicker> -->
-
-<div class="row" >
-
-          <div class="col">
-
-               <ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
-    <button class="button button-block button-positive"  ng-click="setStart()">起始日期{{selectedstartdate}}</button>
-  </ionic-datepicker>
-
-          </div>  
-<!--           <div class="col" ng-click="setStart()">
-               
-               <ionic-datepicker input-obj="datepickerObject"> 
-               <span>
-                {{selectedstartdate}}
-                </span>
-             </ionic-datepicker>
-
-         </div> -->
-
-                  <div class="col">
-
-               <ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
-    <button class="button button-block button-positive" ng-click="setEnd()">结束日期{{selecrtedenddate}}</button>
-  </ionic-datepicker>
-
-          </div>  
-
-
-<!--          <div class="col">
-            <span class="input-label">结束日期</span> 
-          </div>
-
-          <div class="col" ng-click="setEnd()">
-              <ionic-datepicker input-obj="datepickerObject">
-               <span>
-                {{selecrtedenddate}}
-                </span>
-             </ionic-datepicker>
-
-         </div> -->
-        </div>
-<div class="row">
-  <button  class="button button-block button-positive" ng-click="bowerdata()">查询</button>
+    </div> 
+  </div> 
+  <div class="col-20">
+    <button style="padding:0;margin:0;width:100%"  class="button button-balanced" ng-click="bowerdata()">查询</button>
+  </div>
 </div>
+<!-- <div class="row" style="padding-bottom:0;margin-bottom:0"> -->
+  <!-- <button style="padding:0;margin-bottom:0;margin-top:4px"  class="button button-block button-stable" ng-click="bowerdata()"><h3>查询</h3></button> -->
+<!-- </div> -->
+<!-- </div> -->
 <!-- </div>	 -->
 
 
 <!-- table -->
-<div class="row text-center" id="table">
-  <div class="col"><b>日期</b></div>
-  <div class="col"><b>时间</b></div>
-  <div class="col"><b>体征</b></div>
-  <div class="col"><b>值</b></div>
-  <div class="col"><b>单位</b></div>
+<div class="item-margin" style="min-height:250px;background-color:#FFFFFF;margin-left:0px;margin-right:0px">
+<div class="row text-center" style="border-bottom:#CCCCCC 1px solid" id="table">
+  <div class="col-20"><b>日期</b></div>
+  <div class="col-20"><b>时间</b></div>
+  <div class="col-20"><b>体征</b></div>
+  <div class="col-20"><b>值</b></div>
+  <div class="col-20"><b>单位</b></div>
 </div>
+<div ng-if=displaytable style="text-align:center"><b>期间无体征数据</b></div>
 
 <ion-list  ng-repeat='item in allsigns |orderBy : "-RecordDate" track by $index'>
 
@@ -128,10 +87,10 @@
   <div class="col">{{item.Value}}</div>
   <div class="col">{{item.Unit}}</div>
 </div>
-
+</div>
 
 
   </ion-list>
 
 </ion-content> 
-</ion-nav-view >
+</ion-view >

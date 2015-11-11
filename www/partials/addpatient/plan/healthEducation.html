@@ -1,8 +1,11 @@
 <ion-view view-title="健康教育">
+<ion-nav-bar class="bar-positive">
 	<ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="onClickBackward()">
+		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
 		</button>
 	</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
 	<ion-content>
 		<div class="list">
 			<a class="item item-icon-right" ng-repeat = "item in  task.list" href="#/addpatient/healthEducationDetail" ng-click="SelectType(item.Code)">         
