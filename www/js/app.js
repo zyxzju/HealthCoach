@@ -26,7 +26,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       url: '/phonevalid',
       cache: false,
       templateUrl: 'partials/login/phonevalid.html',
-	    controller: 'phonevalidCtrl'
+      controller: 'phonevalidCtrl'
     })
     .state('setpassword', {
       //cache:false,
@@ -218,12 +218,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.newpatient',{
     url:'/newpatient',
+    cache: false,
     templateUrl:'partials/addpatient/newpatient.html',
     controller:'newpatientCtrl'
   })
 
   .state('addpatient.basicinfo',{
     url:'/newbasicinfo',
+    cache: false,
     templateUrl:'partials/addpatient/basicinfo.html',
     controller:'newbasicinfoCtrl'    
   })  
@@ -255,18 +257,21 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.ModuleInfo',{
     url:'/ModuleInfo',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfo.html',
     controller:'ModuleInfoCtrl'
   })
 
   .state('addpatient.ModuleList',{
     url:'/ModuleInfo/:Module',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoList.html',
     controller:'ModuleInfoListDetailCtrl'
   })
 
   .state('addpatient.ModuleListDetail',{
     url:'/ModuleInfo/:Module/:ListName',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
     controller:'ModuleInfoListDetailCtrl'   
   })
@@ -444,6 +449,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/ModuleInfo",
     views:{
       'ModuleInfo':{
+        cache: false,
         templateUrl:"partials/managepatient/ModuleInfo.html",
         controller:"ModuleInfoCtrl"
       }
@@ -453,6 +459,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module',
     views:{
       "ModuleInfo":{
+        cache: false,
         templateUrl:'partials/managepatient/ModuleInfoList.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -463,6 +470,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module/:ListName',
     views:{
       "ModuleInfo":{
+        cache: false,
         templateUrl:'partials/managepatient/ModuleInfoListDetail.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -562,6 +570,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('Independent.risk',{
     url:'/risk',
+    cache: false,
     templateUrl:'partials/managepatient/risk.html',
     controller:'RiskCtrl'
   })
@@ -583,6 +592,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/table",
     views: {
       '': {
+        cache: false,
         templateUrl: "partials/managepatient/table.html",
         controller: 'vitaltableCtrl'
       }
@@ -592,6 +602,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/tablelist",
     views: {
       'tablelist': {
+        cache: false,
         templateUrl: "partials/managepatient/tablelist.html",
         
       }
