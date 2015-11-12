@@ -2778,7 +2778,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 }])
 
-.controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading',function($scope,$state,Storage,Users,Dict,$ionicLoading){
+.controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
 
   
   
@@ -2797,7 +2797,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $ionicLoading.hide();
     };
 
-    
+    var netError = function(){
+        $ionicLoading.hide();
+   
+        PageFunc.confirm('网络好像不太稳定', '网络错误');   
+    };
 
   $scope.test = function()
   {
@@ -2865,12 +2869,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         },function(e){
           console.log(e);
+          netError();
         });     
     }
   }
 
 }])
-.controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading','userservice','GetBasicInfo','BasicDtlInfo',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading,userservice,GetBasicInfo,BasicDtlInfo){
+.controller('newbasicinfoCtrl',['$scope','$state','Storage','Users','Dict','$ionicPopup','$timeout','$ionicScrollDelegate','$ionicLoading','userservice','GetBasicInfo','BasicDtlInfo','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicPopup,$timeout,$ionicScrollDelegate,$ionicLoading,userservice,GetBasicInfo,BasicDtlInfo,PageFunc){
   $scope.scrollBottom = function() {
       $ionicScrollDelegate.scrollBottom(true);
     };
@@ -2878,7 +2883,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $ionicScrollDelegate.scrollTop(true);
     };
 
-  $scope.$on('$ionicView.enter', function() { 
+  $scope.$on('$ionicView.beforeEnter', function() { 
    
 
     $scope.PhoneNo=Storage.get('phoneno');
@@ -2913,17 +2918,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.users.UserId=Storage.get('newPatientID');
 
 
-    
-    if($scope.users.UserId!=null && $scope.PhoneNo==null){
+    var  phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+    if($scope.users.UserId!=null && !phoneReg.test($scope.PhoneNo)){
       Users.PhoneNo($scope.users.UserId).then(
         function(data){
           console.log(data);
-          $scope.PhoneNo=data;
+          var s="";
+          for(var i=0;i<11;i++){
+        
+            s=s+data[i];
+          };
+
+          $scope.PhoneNo=s;
+          console.log($scope.PhoneNo);
         },function(e){
             console.log(e);
         });
     }
   });
+
+  $scope.$on('$ionicView.afterLeave', function() {
+    Storage.rm('newPatientID');
+    Storage.rm('phoneno');
+  });
+
   $scope.users={
     "UserId":Storage.get('newPatientID'),
     "UserName": "",
@@ -2937,7 +2955,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     "piUserId": "lzn",
     "piTerminalName": "sample string 11",
     "piTerminalIP": "sample string 12",
-    "piDevi ceType": 13
+    "piDeviceType": 13
     };
     
   $scope.B="点击设置";
@@ -3202,7 +3220,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // },10000);
         
     };
-
+  var netError = function(){
+    $ionicLoading.hide();
+   
+    PageFunc.confirm('网络好像不太稳定', '网络错误');   
+    };
     var hide = function() {
         $ionicLoading.hide();
     };
@@ -3358,11 +3380,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                       
                       hide();
                       a();
+                      Storage.set("PatientID",Storage.get("newPatientID"));
                       $state.go('addpatient.clinicinfo');
                     },function(e){
                       
                       console.log(e);
-                      hide();
+                      netError();
+                      // hide();
                       // a();
                       // $state.go('addpatient.clinicinfo');
                     });
@@ -3401,7 +3425,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                             $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
-                            hide();
+                            netError();
+                            // hide();
                             // a();
                             //$state.go('addpatient.clinicinfo');
                           });
@@ -3426,7 +3451,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         //   console.log('qwrwewerest'+p);别管后4行
         },function(e){
             console.log(e);
-            hide();
+            netError();
+            // hide();
         });
     }
     else{
@@ -3461,7 +3487,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                             $state.go('addpatient.clinicinfo');
                           },function(e){
                             console.log(e);
-                            hide();
+                            netError();
+                            // hide();
                             a();
                             //$state.go('addpatient.clinicinfo');
                           });
@@ -3476,17 +3503,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
               },function(e){
                 console.log(e);
-                hide();
+                netError();
+                // hide();
               });
           }
         },function(e){
             console.log()
             console.log(e);
-            hide();
+            netError();
+            // hide();
         });
           
     }
-    Storage.set('PatientID',$scope.users.UserId);
+    // Storage.set('PatientID',$scope.users.UserId);
     // console.log(p);
     // if(p!=1){
     //  Users.Register("PhoneNo",$scope.PhoneNo,$scope.users.UserName,"123456","Patient").then(
