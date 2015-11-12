@@ -499,13 +499,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 }])
 
-//lrz20151110
-.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','$cordovaDatePicker','CONFIG','PageFunc',
-  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,$cordovaDatePicker,CONFIG,PageFunc) { //LRZ
+//lrz20151112
+.controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','CONFIG','PageFunc','$cordovaDatePicker',
+  function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,CONFIG,PageFunc,$cordovaDatePicker) { //LRZ
 
   //获得信息
    // $scope.imgURI = Storage.get(14);
    // $scope.userInfo = JSON.parse(Storage.get("userInfo"));
+   $scope.loadingDone = false;
+   $scope.datepickerObject = {};
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
@@ -532,18 +534,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         birthday:$scope.userInfo.BasicInfo.birthday,
         id: Storage.get('UID')
       }
-      $scope.userInfo.BasicInfo.dateforshow = new Date();
+      $scope.userInfo.BasicInfo.dateforshow = new Date(1979,0,1);
       if (typeof($scope.userInfo.BasicInfo.birthday) == 'undefined' || $scope.userInfo.BasicInfo.birthday == null || $scope.userInfo.BasicInfo.birthday == 'null') $scope.userInfo.BasicInfo.birthdayforshow = "未设定";
       else {
         $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
 
         $scope.userInfo.BasicInfo.dateforshow.setDate(t[6] + t[7])    ;
         $scope.userInfo.BasicInfo.dateforshow.setMonth(t[4] + t[5])   ;
+        $scope.userInfo.BasicInfo.dateforshow.setMonth( $scope.userInfo.BasicInfo.dateforshow.getMonth() -1 )   ;
         $scope.userInfo.BasicInfo.dateforshow.setFullYear(t[0] + t[1] + t[2] + t[3])  ;
       }
-      $scope.datepickerObject.inputDate = $scope.userInfo.BasicInfo.dateforshow;
-      console.log( $scope.userInfo.BasicInfo.dateforshow);
-      console.log($scope.datepickerObject.inputDate);
+      // $scope.datepickerObject.inputDate = $scope.userInfo.BasicInfo.dateforshow;
+      // console.log( $scope.userInfo.BasicInfo.dateforshow);
+      
+      // console.log($scope.datepickerObject.inputDate);
        Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
         console.log(data);
@@ -561,7 +565,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           (($scope.userInfo.DtInfo.photoAddress_Check) == null ?'DefaultAvatar.jpg':$scope.userInfo.DtInfo.photoAddress_Check);//LRZ1104
           // console.log($scope.imgURI);
            // var objStr=JSON.stringify($scope.userInfo);
-           // Storage.set("userInfo",objStr);   
+           // Storage.set("userInfo",objStr); 
+           initDatePicker($scope.userInfo.BasicInfo.dateforshow);  
+           $scope.loadingDone = true;
      });
    });
 
@@ -573,45 +579,56 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if (typeof(val) === 'undefined') {
       //console.log('No date selected');
     } else {
-      $scope.datepickerObject.inputDate=val;      
+      // console.log(val);
+      $scope.datepickerObject.inputDate = val;      
       var dd=val.getDate();
       var mm=val.getMonth()+1;
       var yyyy=val.getFullYear();
       var birthday=yyyy+'/'+mm+'/'+dd;
       $scope.userInfo.BasicInfo.birthday= String(yyyy) + (String(mm).length>1?String(mm):('0'+String(mm)))+ (String(dd).length>1?String(dd):('0'+String(dd))) ;
       $scope.userInfo.BasicInfo.birthdayforshow = birthday;
+      // console.log($scope.datepickerObject);
       // alert(birthday);
       // alert($scope.userInfo.BasicInfo.birthday);
     }
   };
-  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-  var weekDaysList=["日","一","二","三","四","五","六"];
-  $scope.datepickerObject = {
-    titleLabel: '出生日期',  //Optional
-    todayLabel: '今天',  //Optional
-    closeLabel: '取消',  //Optional
-    setLabel: '设置',  //Optional
-    setButtonType : 'button-assertive',  //Optional
-    todayButtonType : 'button-assertive',  //Optional
-    closeButtonType : 'button-assertive',  //Optional
-    inputDate: $scope.userInfo.BasicInfo.dateforshow,    //Optional
-    mondayFirst: false,    //Optional
-    //disabledDates: disabledDates, //Optional
-    weekDaysList: weekDaysList,   //Optional
-    monthList: monthList, //Optional
-    templateType: 'popup', //Optional
-    showTodayButton: 'false', //Optional
-    modalHeaderColor: 'bar-positive', //Optional
-    modalFooterColor: 'bar-positive', //Optional
-    from: new Date(1900, 1, 1),   //Optional
-    to: new Date(),    //Optional
-    callback: function (val) {    //Mandatory
-      datePickerCallback(val);
-    }
-  };   
-  console.log($scope.datepickerObject);
 
+  // console.log($scope.datepickerObject);
 
+  var initDatePicker = function(v)
+  {
+    console.log("enter initial date function");
+    var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+    var weekDaysList=["日","一","二","三","四","五","六"];
+    console.log($scope.datepickerObject);
+    console.log(v);
+    $scope.datepickerObject = {
+      titleLabel: '出生日期',  //Optional
+      todayLabel: '今天',  //Optional
+      closeLabel: '取消',  //Optional
+      setLabel: '设置',  //Optional
+      setButtonType : 'button-assertive',  //Optional
+      todayButtonType : 'button-assertive',  //Optional
+      closeButtonType : 'button-assertive',  //Optional
+      inputDate: v,    //Optional
+      mondayFirst: false,    //Optional
+      // disabledDates: disabledDates, //Optional
+      weekDaysList: weekDaysList,   //Optional
+      monthList: monthList, //Optional
+      templateType:'popup', //Optional
+      showTodayButton: 'false', //Optional
+      modalHeaderColor: 'bar-positive', //Optional
+      modalFooterColor: 'bar-positive', //Optional
+      from: new Date(1900, 1, 1),   //Optional
+      to: new Date(),    //Optional
+      closeOnSelect: false, //Optional
+      callback: function (val) {    //Mandatory
+        datePickerCallback(val);
+      }
+
+    };
+    console.log("finish initial date function");       
+  }
   // $scope.state = "未提交";
   //填表的预设数据 和需要填写的项目
   // $scope.imgURI = "img/Barot_Bellingham_tn.jpg";
@@ -634,7 +651,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $rootScope.$broadcast("onClickSubmit");
       // $state.go('coach.i');
   };
-
   //upload
   $scope.upload = function(info){
     if($scope.userInfo.BasicInfo.name == null || 
@@ -895,7 +911,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if($scope.state != "已通过" ) $scope.state = "待审核";
   })     
 }])
-// Coach Personal Config Controller 个人设置页面的controller  还没啥用
+// Coach Personal Config Controller 个人设置页面的controller  
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalConfigCtrl', ['$scope','$state','$ionicHistory','$ionicPopup','$timeout' ,'Storage',function($scope,$state,$ionicHistory,$ionicPopup,$timeout,Storage) { //LRZ
   $scope.onClickBackward = function(){
@@ -937,7 +953,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     });
   }  
 }])
-// Coach Personal Infomation Controller 个人信息页面的controller  主要负责 修改数据  上传从localstorage读取个人信息 
+// Coach Personal Infomation Controller 20151112
 // ----------------------------------------------------------------------------------------
 .controller('CoachPersonalInfoCtrl', ['$scope','$state','$ionicHistory','Storage','PageFunc','Users','$ionicActionSheet','Camera','CONFIG','$timeout','$rootScope',
   function($scope,$state,$ionicHistory,Storage,PageFunc,Users,$ionicActionSheet,Camera,CONFIG,$timeout,$rootScope) {
@@ -946,6 +962,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
    // Storage.set('UID','DOC201506180002');
 
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
+   $scope.loadingDone = false;
+
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
       console.log(data);
@@ -966,8 +984,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      // //console.log($scope.userInfo.BasicInfo.birthday);
      var t = String($scope.userInfo.BasicInfo.birthday);
      //console.log(t);
-     if($scope.userInfo.BasicInfo.birthday == undefined) $scope.userInfo.BasicInfo.birthdayforshow = "未填写生日";
-     else $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
+      $scope.userInfo.BasicInfo.dateforshow = new Date(1979,0,1);
+      if (typeof($scope.userInfo.BasicInfo.birthday) == 'undefined' || $scope.userInfo.BasicInfo.birthday == null || $scope.userInfo.BasicInfo.birthday == 'null') $scope.userInfo.BasicInfo.birthdayforshow = "未填写生日";
+      else {
+        $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
+
+        $scope.userInfo.BasicInfo.dateforshow.setDate(t[6] + t[7])    ;
+        $scope.userInfo.BasicInfo.dateforshow.setMonth(t[4] + t[5])   ;
+        $scope.userInfo.BasicInfo.dateforshow.setMonth( $scope.userInfo.BasicInfo.dateforshow.getMonth() -1 )   ;
+        $scope.userInfo.BasicInfo.dateforshow.setFullYear(t[0] + t[1] + t[2] + t[3])  ;
+      }
        Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
         // console.log(data);
@@ -985,8 +1011,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
         // $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         Storage.set('doctorphoto',$scope.imgURI);
-           var objStr=JSON.stringify($scope.userInfo);
-           Storage.set("userInfo",objStr);
+        initialDatePicker($scope.userInfo.BasicInfo.dateforshow);
+        $scope.loadingDone = true;
+           // var objStr=JSON.stringify($scope.userInfo);
+           // Storage.set("userInfo",objStr);
      });
    });
 
@@ -1010,31 +1038,35 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // alert($scope.userInfo.BasicInfo.birthday);
     }
   };
-  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
-  var weekDaysList=["日","一","二","三","四","五","六"];
-  $scope.datepickerObject = {
-      titleLabel: '出生日期',  //Optional
-      todayLabel: '今天',  //Optional
-      closeLabel: '取消',  //Optional
-      setLabel: '设置',  //Optional
-      setButtonType : 'button-assertive',  //Optional
-      todayButtonType : 'button-assertive',  //Optional
-      closeButtonType : 'button-assertive',  //Optional
-      inputDate: new Date(),    //Optional
-      mondayFirst: false,    //Optional
-      //disabledDates: disabledDates, //Optional
-      weekDaysList: weekDaysList,   //Optional
-      monthList: monthList, //Optional
-      templateType: 'popup', //Optional
-      showTodayButton: 'false', //Optional
-      modalHeaderColor: 'bar-positive', //Optional
-      modalFooterColor: 'bar-positive', //Optional
-      from: new Date(1900, 1, 1),   //Optional
-      to: new Date(),    //Optional
-      callback: function (val) {    //Mandatory
-        datePickerCallback(val);
-      }
-  };  
+
+  var initialDatePicker = function(v){
+    var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+    var weekDaysList=["日","一","二","三","四","五","六"];
+    $scope.datepickerObject = {
+        titleLabel: '出生日期',  //Optional
+        todayLabel: '今天',  //Optional
+        closeLabel: '取消',  //Optional
+        setLabel: '设置',  //Optional
+        setButtonType : 'button-assertive',  //Optional
+        todayButtonType : 'button-assertive',  //Optional
+        closeButtonType : 'button-assertive',  //Optional
+        inputDate: v,    //Optional
+        mondayFirst: false,    //Optional
+        //disabledDates: disabledDates, //Optional
+        weekDaysList: weekDaysList,   //Optional
+        monthList: monthList, //Optional
+        templateType: 'popup', //Optional
+        showTodayButton: 'false', //Optional
+        modalHeaderColor: 'bar-positive', //Optional
+        modalFooterColor: 'bar-positive', //Optional
+        from: new Date(1900, 1, 1),   //Optional
+        to: new Date(),    //Optional
+        callback: function (val) {    //Mandatory
+          datePickerCallback(val);
+        }
+    };  
+  }
+
   $scope.onClickBackward = function(){
     if($scope.isEdited == true)
       PageFunc.confirm("是否放弃修改","确认").then( 

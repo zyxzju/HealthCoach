@@ -1,36 +1,27 @@
-<ion-view title="信息录入">
-<ion-nav-bar class="bar-positive nav-title-slide-ios7">   
+<ion-view title="信息录入" >
+
+<ion-nav-bar class="bar-positive nav-title-slide-ios7"> 
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>  
 <!--   <ion-nav-buttons side="left">
     <button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
   </ion-nav-buttons> -->
-    <ion-nav-back-button class="button-icon ion-arrow-left-c">
-    </ion-nav-back-button>
 </ion-nav-bar>
-<!-- 
-<ion-header-bar>
-  <div class="h1 title">信息录入</div>    
-</ion-header-bar> -->
   <div class="bar-shadow"></div> 
 <ion-content>
 
-      <div class = "row">
-        <div class ="col col-50">
-          <div class = "padding">
-            <button class="button button-block button-primary" ng-click="clickCancel1()">取消</button>
-          </div>
-        </div>
-        <div class = "col col-50">
-          <div class="padding">
-          <button class="button button-block button-primary" ng-click="clickSubmit()">提交信息</button>
-        </div>
-        </div>
-      </div>
+
 
 
 <ion-slide-box on-slide-changed="slideHasChanged($index)">
+
+
+
   <ion-slide>
+  <div class = "padding">
+      <div class = "padding">
         <div class="card">
-    	  <div class="item item-divider">
+        <div class="item item-divider">
     <h2>高血压风险描述<h2>
   </div>
         <label class="item item-input">
@@ -45,16 +36,19 @@
         </label>
 
     </div>
-    
+    </div>
+    </div>
   </ion-slide>
 
 
   <ion-slide>
+    <div class = "padding">
+      <div class = "padding">
 <div class="card">
-    	  <div class="item item-divider">
+        <div class="item item-divider">
     <h2>糖尿病风险描述<h2>
   </div>
-		<label class="item item-input">
+    <label class="item item-input">
           <span class="input-label">当前血糖值</span>
           <input type="number" placeholder="mmol/L" ng-model="value.glucose">
         </label>
@@ -74,13 +68,29 @@
               <option>睡前</option>
             </select>
           </label>
-
-
-
-          
-
-    
+ 
     </div>
+        </div>
+        </div>
   </ion-slide>
+
+  
 </ion-slide-box>
+
+
+
+      <div class = "row">
+        <div class ="col col-50">
+          <div class = "padding">
+            <button class="button button-block button-primary" ng-click="clickCancel()">取消</button>
+          </div>
+        </div>
+        <div class = "col col-50">
+          <div class="padding">
+          <button class="button button-block button-positive" ng-click="clickSubmit()">提交信息</button>
+        </div>
+        </div>
+      </div>
+
+
 </ion-content>
