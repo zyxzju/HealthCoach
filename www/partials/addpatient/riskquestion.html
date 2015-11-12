@@ -10,24 +10,18 @@
   <div class="bar-shadow"></div> 
 <ion-content>
 
-      <div class = "row">
-        <div class ="col col-50">
-          <div class = "padding">
-            <button class="button button-block button-primary" ng-click="clickCancel()">取消</button>
-          </div>
-        </div>
-        <div class = "col col-50">
-          <div class="padding">
-          <button class="button button-block button-primary" ng-click="clickSubmit()">提交信息</button>
-        </div>
-        </div>
-      </div>
+
 
 
 <ion-slide-box on-slide-changed="slideHasChanged($index)">
+
+
+
   <ion-slide>
+  <div class = "padding">
+      <div class = "padding">
         <div class="card">
-    	  <div class="item item-divider">
+        <div class="item item-divider">
     <h2>高血压风险描述<h2>
   </div>
         <label class="item item-input">
@@ -40,18 +34,21 @@
           <span class="input-label">当前舒张压</span>
           <input type="number" placeholder="mmHg" ng-model="value.DBP">
         </label>
-<div class="item item-divider" style = "background-color:#FFFFFF">  </div>
+
     </div>
-    
+    </div>
+    </div>
   </ion-slide>
 
 
   <ion-slide>
+    <div class = "padding">
+      <div class = "padding">
 <div class="card">
-    	  <div class="item item-divider">
+        <div class="item item-divider">
     <h2>糖尿病风险描述<h2>
   </div>
-		<label class="item item-input">
+    <label class="item item-input">
           <span class="input-label">当前血糖值</span>
           <input type="number" placeholder="mmol/L" ng-model="value.glucose">
         </label>
@@ -71,8 +68,29 @@
               <option>睡前</option>
             </select>
           </label>
- <div class="item item-divider" style = "background-color:#FFFFFF">  </div>   
+ 
     </div>
+        </div>
+        </div>
   </ion-slide>
+
+  
 </ion-slide-box>
+
+
+
+      <div class = "row">
+        <div class ="col col-50">
+          <div class = "padding">
+            <button class="button button-block button-primary" ng-click="clickCancel()">取消</button>
+          </div>
+        </div>
+        <div class = "col col-50">
+          <div class="padding">
+          <button class="button button-block button-positive" ng-click="clickSubmit()">提交信息</button>
+        </div>
+        </div>
+      </div>
+
+
 </ion-content>

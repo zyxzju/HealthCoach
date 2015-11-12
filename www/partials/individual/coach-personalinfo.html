@@ -48,31 +48,31 @@ Dept
 
 
 
-  <ion-content>
+  <ion-content >
 
     <div class="list">
-      <a href="#" class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
+      <div class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
         <img src="{{imgURI}}" alt="Avatar">
     <!--     <h2>Item 07</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore necessitatibus, facilis nihil illo eligendi ipsum blanditiis repellat eveniet obcaecati at. Esse est porro, odit, maiores dolorum provident earum error omnis.</p> -->
         <i class="icon ion-chevron-right"></i>
 
-      </a>
+      </div>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
+      <div  class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
         <i class="icon ion-chevron-right"></i>
-      </a>
+      </div>
 
-      <ionic-datepicker input-obj="datepickerObject">
-      <a href="#" class="item item-icon-left item-icon-right" >
+      <ionic-datepicker input-obj="datepickerObject" ng-if = "loadingDone">
+      <div  class="item item-icon-left item-icon-right" >
         
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthdayforshow}}
         <i class="icon ion-chevron-right"></i>
-
-      </a>
+        
+      </div>
       </ionic-datepicker>
       
       <label class="item item-icon-left item-input-right item-select">
