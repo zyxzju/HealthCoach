@@ -2212,15 +2212,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var HModule = "H" + Module;
   $scope.getStatus = "";
   $scope.test = {"test":{"Type":"1","Name":"是"}};
+  $scope.isloaded = false;
 
   //loading图标显示
-  // $ionicLoading.show({
-  //   content: '加载中',
-  //   animation: 'fade-in',
-  //   showBackdrop: true,
-  //   maxWidth: 200,
-  //   showDelay: 0
-  // });
+  $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
+
 
   if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
   {
@@ -2450,6 +2452,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.ModuleInfoListDetail.splice(temparray[i]-count,1);
       count++;
     }
+    $scope.isloaded = true;
+    $ionicLoading.hide();
     //console.log($scope.ModuleInfoListDetail);
   },function(data,status){
     $scope.getStatus = status;

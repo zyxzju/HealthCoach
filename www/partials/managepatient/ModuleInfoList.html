@@ -1,4 +1,4 @@
-<ion-view title="慢病信息">
+<ion-view cache-view="false" title="慢病信息">
  <div class="bar-shadow"></div>
   <ion-content>
       <ion-list>
@@ -10,7 +10,7 @@
         </ion-item>
     </ion-list>
   <div>
-    <button class="button button-block button-positive" ng-click="onClickBackward3()">完成</button>
+    <button class="button button-block button-positive" ng-click="onClickBackward3()" ng-if="isloaded">完成</button>
   </div>
   </ion-content>
 </ion-view>
