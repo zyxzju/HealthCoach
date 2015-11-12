@@ -1,224 +1,117 @@
-<ion-view title="基本信息">
+<ion-view cache-view="false" title="基本信息">
 	
-	<ion-header-bar>
-		<h2 class="title">基本信息</h2>
-		<a class="button icon-right ion-arrow-up-a" ng-click="scrollTop()">        
+	<ion-nav-bar class="bar-positive nav-title-slide-ios7">
+		<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+		    <ion-nav-buttons side="right">
+      <button class="button button-clear icon-right ion-arrow-up-a" ng-click="scrollTop()"></button>
+      <button class="button button-clear icon-right ion-arrow-down-a" ng-click="scrollBottom()"></button>
+    </ion-nav-buttons>
+	<!-- 	<a class="button button-clear icon-right ion-arrow-up-a" ng-click="scrollTop()">        
         </a>
-        <a class="button icon-right ion-arrow-down-a" ng-click="scrollBottom()">
-        </button>
-        <a class="button icon-right ion-android-home" href='#/coach/i'>
-		</a>
-	</ion-header-bar>
+        <a class="button button-clear icon-right ion-arrow-down-a" ng-click="scrollBottom()"></a> -->
+	</ion-nav-bar>
 
 	
-	
+	<div class="bar-shadow"></div>
 	<ion-content scroll='true'>
-	<h4>患者建档进度：</h4><progress max="100" value="15"></progress>
-	<!-- <div class='row responsive-sm'>
-		<div class='col col-75'>
-			<div class='row responsive-sm'>
-				<div class='col col-33'>
-					<div class="item item-image" style="border-style: none">
-						<img src="img/doctor.jpg">
-					</div>
-				</div>
-				<div class='col col-67 col-center'>
-					<div class="list">
-						<label class="item item-input item-select item-dark">
-							<div class="input-label">
-								<b>医院</b>
-							</div>
-							<select ng-model="Hospital">
-								<option>海军总医院</option>
-							</select>
-						</label>
-						<label class="item item-input item-dark">
-							<b>就诊号：</b><input type="text" ng-model="users.DoctorId" style="color:#FCFC9D">
-						</label>
-					</div>
-				</div>
-			</div>	
-		</div>
-		<div class='col col-20 col-center'>
-			<button class="button button-block button-stable button-assertive" style="background-color:#FF1111" ng-click="">
-					同步</button>
-		</div>
-	</div> -->
-	<div class="list">
-		<div class="bar bar-header bar-positive">
-			<div class="h1 title">个人基本信息</div>
-		</div><br><br>
-		<div class="content has-header">
-			<div class='row responsive-sm'>
-				<div class='col'>
-					<label class="item item-input">
-						手机号：<input type="text" ng-model="PhoneNo" disabled="disabled">
-					</label>
-				</div>
-				<div class='col'>	
-					<label class="item item-input">
-						ID：<input type="text" ng-model="users.UserId" disabled="disabled">
-					</label>
-				</div>
+<!-- <progress  max="100" value="15"></progress> -->
+		<div class = "list item-list">
+			<div class="item item-divider ">
+			个人基本信息
 			</div>
-			<div class='row responsive-sm'>
-				<div class='col'>	
-					<label class="item item-input">
-						*姓名：<input type="text" ng-model="users.UserName">
-					</label>
+			<label class="item item-input  trial">
+				手机号：<input type="text" ng-model="PhoneNo" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				ID：<input type="text" ng-model="users.UserId" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				*姓名：<input type="text" placeholder="" ng-model="users.UserName">
+			</label>
+			<ionic-datepicker input-obj="datepickerObject">											
+				<label class="item">		        
+		        	<div>
+		        		<span>*生日</span>
+		        		<span class="item-note">
+		          		{{B}}
+		        		</span>
+		      		</div>
+	     	 	</label>
+	     	</ionic-datepicker>
+			<label class="item item-input item-select">
+				<div class="input-label">
+					*性别
 				</div>
-				<div class='col'>
-					<a class="item" href="#">
-			        
-				        <ionic-datepicker input-obj="datepickerObject">
-				        	<div>
-				        		<span>*生日</span>
-				        		<span class="item-note">
-				          		{{B}}
-				        		</span>
-				      		</div>
-				        </ionic-datepicker>
-			     	 </a>
-	      		</div>
-	      	</div>	
-			<div class='row responsive-sm'>
-				<div class='col'>
-					<label class="item item-input item-select">
-						<div class="input-label">
-							*性别
-						</div>
-						<select ng-model="users.Gender">
-							<option selected>男</option>
-							<option>女</option>
-						</select>
-					</label>
+				<select ng-model="users.Gender" ng-options="Gender for Gender in Genders">
+					<option selected value="">请选择</option>
+					<!-- <option selected>男</option>
+					<option>女</option> --> 
+				</select>
+			</label>
+			<label class="item item-input item-select">
+				<div class="input-label">
+					*血型
 				</div>
-				<div class='col'>
-					<label class="item item-input item-select">
-						<div class="input-label">
-							*血型
-						</div>
-						<select ng-model="users.BloodType">
-							<option>A型</option>
-							<option>B型</option>
-							<option>O型</option>
-							<option>AB型</option>
-							<option>其他</option>
-						</select>
-					</label>
-				</div>
-			</div>
-			<div class='row responsive-sm'>
-				<div class='col'>
-					<label class="item item-input">
-						*身份证号码：<input type="text" ng-model="users.IDNo">
-					</label>
-				</div>
-				<div class='col'>
+				<select ng-model="users.BloodType" ng-options="BloodType for BloodType in BloodTypes">
+					<option selected value="">请选择</option>
+				</select>
+			</label>
+			<label class="item item-input">
+				*身份证号码：<input type="text" ng-model="users.IDNo">
+			</label>
 					<label class="item item-input item-select">
 						<div class="input-label">
 							*医保类型
 						</div>
-						<select ng-model="users.InsuranceType" ng-options="InsuranceType.Name for InsuranceType in InsuranceTypes">
+						<select ng-model="users.InsuranceType" ng-options="InsuranceType for InsuranceType in InsuranceTypes">
 							<option selected value="">请选择</option>
-
-							<!-- <option>医保</option>
-							<option>免费</option>
-							<option>包干</option>
-							<option>军半费</option>
-							<option>基本医保</option>
-							<option>大病统筹</option>
-							<option>公费医疗</option>
-							<option>中青医保</option>
-							<option>其他医保</option>
-							<option>自费</option>
-							<option>公费</option>
-							<option>贵宾</option>
-							<option>其他</option>
-							<option>老年无业</option>
-							<option>儿童医保</option>
-							<option>停用</option>
-							<option>离休医保</option>
-							<option>医疗照顾</option>
-							<option>外地医保</option>
-							<option>合作医疗</option>
-							<option>慈善儿童</option>
-							<option>不孕不育</option>
-							<option>军休干部</option>
-							<option>军队医改</option> -->
 						</select>
 
 					</label>
-				</div>
-			</div>	
-		</div>
-	</div>
-		
-		
-		
-		
-		<!-- <label class="item item-input">
-			身高(cm)：<input type="text" ng-model="Height">
-		</label>
-		<label class="item item-input">
-			体重(kg)：<input type="text" ng-model="Weight">
-		</label> -->
-	<div class="list">
-		<div class="bar bar-header bar-positive">
-			<div class="h1 title">详细个人信息</div>
-		</div>
-	
-		<div class="content has-header">
-			<div class='row responsive-sm'>
-				<div class='col'>
-					<label class="item item-input">
+			<div class="item item-divider ">
+				详细个人信息
+			</div>
+					<label class="item item-input trial">
 						家庭住址：<input type="text" ng-model="HomeAddress.Value">
 					</label>
-				</div>
-				<div class='col'>
 					<label class="item item-input">
 						联系电话：<input type="text" ng-model="PhoneNumber.Value">
-					</label>
-				</div>
-			</div>
-			<div class='row responsive-sm'>
-				<div class='col'>
-					<label class="item item-input">
+					</label>		
+				<label class="item item-input">
 						国籍：<input type="text" ng-model="Nationality.Value">
 					</label>
-				</div>
-				<div class='col'>
 					<label class="item item-input">
 						职业：<input type="text" ng-model="Occupation.Value">
 					</label>
-				</div>
-			</div>
-			<div class='row responsive-sm'>
-				<div class='col'>
 					<label class="item item-input">
 						紧急联系人：<input type="text" ng-model="EmergencyContact.Value">
 					</label>
-				</div>
-				<div class='col'>
 					<label class="item item-input">
 						紧急联系人电话：<input type="text" ng-model="EmergencyContactPhoneNumber.Value">
 					</label>
-				</div>
+					<div class="item item-divider ">
+				
 			</div>
-		</div>
-	</div><br>
-	<div class='row responsive-sm'>
-		<div class='col col-20'></div>
-		<div class='col col-20'></div>
-		<div class='col col-10'><button class="button  button-block icon-left ion-checkmark button-stable"
-			 ng-click="save()">保存</button></div>
-		<div class='col col-10'><button class="button  button-block icon-left ion-checkmark button-stable"
-			ng-click="reset()">重置</button></div>
-		
-		
-	</div>
+	  			<p style="color:#FF0000">{{logStatus}}</p>
+	  			
+	  		
 
-	</div>
+
+
+
+
+	  		<div class ="padding">
+	  		
+				<button class="button  button-block button-primary icon-left ion-checkmark button-stable"
+						 ng-click="save()">保存</button>
+				<button class="button  button-block  button-primary icon-left ion-refresh button-stable"
+						ng-click="reset()">重置</button>
+		
+			</div>	
+
+
 	
 	</ion-content>
 </ion-view>
+		
+		

@@ -1,27 +1,27 @@
 <ion-modal-view>
 <ion-header-bar align-title="middle" class="bar-positive">
-  <div class="buttons">
-    <button class="button" ng-click="closeexamModal()">返回</button>
-  </div>
-  <h1 class="title">检查信息</h1>
-  
+<div class="buttons">
+  <button class="button" ng-click="closeexamModal()">返回</button>
+</div>
+<h1 class="title">检查信息</h1>
+
 </ion-header-bar>
 <ion-content scroll='true'>
 <ion-list >
-	<ion-item  ng-if=show>
-		<h2>无检查数据</h2>
-	</ion-item>
-    <ion-item ng-repeat='item in Examinationinfo' >
+<ion-item  ng-if=show>
+<h2>无检查数据</h2>
+</ion-item>
+<ion-item ng-repeat='item in Examinationinfo' >
 
 
-<h2>检查时间：{{item.ExamDate}}</h2>
-      <h2>检查项目：{{item.ExamTypeName}}</h2>
-<h2>检查描述：{{item.Description}}</h2>
-<h2>检查结果：{{item.Impression}}</h2>
- </ion-item>
+<h2 style="white-space:pre-wrap">检查时间：{{item.ExamDate}}</h2>
+<h2 style="white-space:pre-wrap">检查项目：{{item.ExamTypeName}}</h2>
+<h2 style="white-space:pre-wrap">检查描述：{{item.Description}}</h2>
+<h2 style="white-space:pre-wrap">检查结果：{{item.Impression}}</h2>
+</ion-item>
 
 
-  </ion-list>
+</ion-list>
 </ion-content>
-  </ion-modal-view>
+</ion-modal-view>
 

@@ -1,0 +1,34 @@
+<ion-view cache-view="false" view-title="{{PatientName}}" id = "userMessagesView">   
+<!-- <ion-header-bar class="bar-subheader bar-stable">
+        <h2>{{Name}}      {{gender}}        {{age}}岁<button class="button icon-right" ng-click="backtocoach()">返回主页</button></h2>
+
+        
+</ion-header-bar> -->
+  <ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+    <ion-content class="padding" start-y="120">
+        <div style="position:relative;bottom:{{Dialog.SMSbottom}};top:20px">
+            <ion-refresher pulling-text="下拉加载更多。。。" spinner='ripple' refreshing-text="努力加载中" on-refresh="DisplayMore()">
+            </ion-refresher>
+            <div ng-repeat="item in Dialog.DisplayOnes">
+                <my-smsdrt time="{{item.Time}}" content="{{item.Content}}" type="{{item.IDFlag}}" face="{{item.IDFlag === 'Send' && myImage || imageURL}}"></my-smsdrt> 
+            </div>
+            <br><br> 
+        </div>    
+    </ion-content>     
+    <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
+        <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+            <label class="item-input-wrapper">
+                <textarea ng-model="Dialog.SMScontent" value="" placeholder="请输入..." required minlength="1" maxlength="500" msd-elastic></textarea>
+            </label>
+            <div class="footer-btn-wrap">
+                <button class="button button-icon icon ion-android-send footer-btn" type="submit"
+                ng-disabled="!Dialog.SMScontent || Dialog.SMScontent === ''" ng-click="submitSMS()">
+                </button>
+            </div>
+        </ion-footer-bar>
+    </form>
+</ion-view>

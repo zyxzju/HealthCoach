@@ -5,7 +5,7 @@ navigation history that also transitions its views in and out.
 -->
 
 
-<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+
 
   
 <!--   <ion-tab title="主页" icon-off="ion-ios-home" icon-on="ion-ios-home-outline" href="#/coach/home">
@@ -31,11 +31,12 @@ navigation history that also transitions its views in and out.
   <ion-nav-view name="coach-personalinfo"></ion-nav-view>
   <ion-nav-view name="coach-schedule"></ion-nav-view> -->
 <!-- <ion-footer-bar> -->
-  <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
+  <ion-nav-bar class="bar-positive nav-title-slide-ios7">
     <ion-nav-back-button class="button-icon ion-arrow-left-c">
     </ion-nav-back-button>
   </ion-nav-bar> 
-     
+  <div class="footer-shadow"></div>
+  <ion-tabs class="tabs-icon-top tabs-color-active-positive">  
   <ion-tab title="我的患者" icon-off="ion-ios-people-outline" icon-on="ion-ios-people" href="#/coach/patients">
     <ion-nav-view name="coach-patients"></ion-nav-view>
   </ion-tab>  
@@ -44,9 +45,9 @@ navigation history that also transitions its views in and out.
     <ion-nav-view name="coach-newpatients"></ion-nav-view>
   </ion-tab>  
 
-  <ion-tab title="通知" icon-off="ion-android-mail" icon-on="ion-android-mail"  badge="130" badge-style="badge-assertive" href="#/coach/message">
+  <!-- <ion-tab title="通知" icon-off="ion-android-mail" icon-on="ion-android-mail"  badge="130" badge-style="badge-assertive" href="#/coach/message">
     <ion-nav-view name="coach-message"></ion-nav-view>
-  </ion-tab>
+  </ion-tab> -->
   <ion-tab title="我" icon-off="ion-ios-person-outline" icon-on="ion-ios-person" href="#/coach/i">
     <ion-nav-view name="coach-me"></ion-nav-view>
   </ion-tab>

@@ -4,7 +4,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   $ionicConfigProvider.platform.android.tabs.position('bottom');
   $ionicConfigProvider.platform.android.navBar.alignTitle('center');
 
-  //用户管理（登录及注册相关）
+    //用户管理（登录及注册相关）
   $stateProvider
     .state('starting',{
       url:'/starting',
@@ -26,7 +26,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       url: '/phonevalid',
       cache: false,
       templateUrl: 'partials/login/phonevalid.html',
-	    controller: 'phonevalidCtrl'
+      controller: 'phonevalidCtrl'
     })
     .state('setpassword', {
       //cache:false,
@@ -44,44 +44,44 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       templateUrl:'partials/login/userDetail.html',
       controller:'userdetailCtrl'
     })
-    .state('qrcode', {
-      url: '/qrcode',
-      templateUrl: 'partials/home/QRgenerate.html'
-    })
-    .state('tabs', {
-      url: '/tab',
-      abstract: true,
-      templateUrl: 'partials/home/tabs.html'
-    })
-    .state('tabs.home', {
-      url: '/home',
-      views: {
-        'home-tab': {
-          templateUrl: 'partials/home/home.html',
-          controller: 'HomeTabCtrl'
-        }
-      }
-    })
-    .state('tabs.phones', {
-      url:'/phones',
-      views: {
-        'list-tab': {
-          // templateUrl: 'partials/login/changePassword.html',
-          // controller:'changePasswordCtrl'
-          templateUrl: 'partials/phonelist/phones.html',
-          controller:'phonesCtrl'
-        }
-      }
-    })
-    .state('tabs.details', {
-      url: '/phones/:phoneId',
-      views: {
-        'list-tab': {
-        templateUrl: 'partials/phonelist/phone-detail.html',
-        controller: 'PhoneDetailCtrl'}
-      }
-    });
-   //个人信息管理
+    // .state('qrcode', {
+    //   url: '/qrcode',
+    //   templateUrl: 'partials/home/QRgenerate.html'
+    // })
+    // .state('tabs', {
+    //   url: '/tab',
+    //   abstract: true,
+    //   templateUrl: 'partials/home/tabs.html'
+    // })
+    // .state('tabs.home', {
+    //   url: '/home',
+    //   views: {
+    //     'home-tab': {
+    //       templateUrl: 'partials/home/home.html',
+    //       controller: 'HomeTabCtrl'
+    //     }
+    //   }
+    // })
+    // .state('tabs.phones', {
+    //   url:'/phones',
+    //   views: {
+    //     'list-tab': {
+    //       // templateUrl: 'partials/login/changePassword.html',
+    //       // controller:'changePasswordCtrl'
+    //       templateUrl: 'partials/phonelist/phones.html',
+    //       controller:'phonesCtrl'
+    //     }
+    //   }
+    // })
+    // .state('tabs.details', {
+    //   url: '/phones/:phoneId',
+    //   views: {
+    //     'list-tab': {
+    //     templateUrl: 'partials/phonelist/phone-detail.html',
+    //     controller: 'PhoneDetailCtrl'}
+    //   }
+    // });
+    //个人信息管理
    $stateProvider
 
   // setup an abstract state for the tabs directive
@@ -100,6 +100,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       //     controller:'CoachIdUploadCtrl'          
       //   }
       // }
+      cache:false,
           templateUrl:'partials/individual/coach-idupload.html',
           controller:'CoachIdUploadCtrl'  
     })
@@ -122,6 +123,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       //     controller: 'CoachPersonalInfoCtrl'
       //   }
       // }
+      cache:false,
       templateUrl: 'partials/individual/coach-personalinfo.html',
       controller: 'CoachPersonalInfoCtrl'      
     })
@@ -205,23 +207,25 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   })
 
-  //新建患者
-$stateProvider
+    //新建患者
+  $stateProvider
   
   .state('addpatient',{
     url:'/addpatient',
     abstract:true,
-    template:'<ion-view/><ion-nav-view/>'
+    template:'<ion-nav-view/><ion-nav-view/>'
   })
 
   .state('addpatient.newpatient',{
     url:'/newpatient',
+    cache: false,
     templateUrl:'partials/addpatient/newpatient.html',
     controller:'newpatientCtrl'
   })
 
   .state('addpatient.basicinfo',{
     url:'/newbasicinfo',
+    cache: false,
     templateUrl:'partials/addpatient/basicinfo.html',
     controller:'newbasicinfoCtrl'    
   })  
@@ -253,18 +257,21 @@ $stateProvider
 
   .state('addpatient.ModuleInfo',{
     url:'/ModuleInfo',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfo.html',
     controller:'ModuleInfoCtrl'
   })
 
   .state('addpatient.ModuleList',{
     url:'/ModuleInfo/:Module',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoList.html',
     controller:'ModuleInfoListDetailCtrl'
   })
 
   .state('addpatient.ModuleListDetail',{
     url:'/ModuleInfo/:Module/:ListName',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
     controller:'ModuleInfoListDetailCtrl'   
   })
@@ -367,13 +374,253 @@ $stateProvider
     }
       
   })
+  
+   //患者管理
+ $stateProvider
 
-   //$urlRouterProvider.otherwise('/signin');
-   $urlRouterProvider.otherwise('/starting');
+  $stateProvider
+   .state('manage', {
+    url: "/manage",
+    abstract: true,
+    templateUrl: "partials/managepatient/main.html",
+    controller:"mainCtrl"
+  })
+
+   .state('manage.chat',{
+      url:'/chat',
+      views:{
+        "chat":{
+          templateUrl:'partials/managepatient/chat-detail.html',
+          controller:'ChatDetailCtrl',
+          cache:false
+        }
+      }
+      
+    })
+
+   .state('manage.plan', {
+    url: "/plan",
+    views: {
+      'plan-tab': {
+        templateUrl: "partials/managepatient/plan.html",
+        controller:'planCtrl',
+        cache:false
+      }
+    }
+  })
+  .state('manage.clinic', {
+    url: "/clinic",
+    views: {
+      'clinic-tab': {
+        templateUrl: "partials/managepatient/clinic.html",
+        controller:'datepickerCtrl',
+       cache:true
+      }
+    }
+  })
+  .state('manage.clinic.examinationinfo', {
+    url: "/examinationinfo",
+    views: {
+      'allmsg': {
+        templateUrl: "partials/managepatient/examinationinfo.html",
+        // controller:'examinationinfoCtrl'
+      }
+    }
+  })
+  .state('manage.clinic.druginfo', {
+    url: "/druginfo",
+    views: {
+      'allmsg': {
+        templateUrl: "partials/managepatient/druginfo.html",
+        // controller:'druginfoCtrl'
+      }
+    }
+  })
+  .state('manage.clinic.DiagnosisInfo', {
+    url: "/DiagnosisInfo",
+    views: {
+      'allmsg': {
+        templateUrl: "partials/managepatient/DiagnosisInfo.html",
+        // controller:'DiagnosisInfoCtrl'
+      }
+    }
+  })
+  .state('manage.ModuleInfo',{
+    url:"/ModuleInfo",
+    views:{
+      'ModuleInfo':{
+        cache: false,
+        templateUrl:"partials/managepatient/ModuleInfo.html",
+        controller:"ModuleInfoCtrl"
+      }
+    }
+  })
+  .state('manage.ModuleList',{
+    url:'/ModuleInfo/:Module',
+    views:{
+      "ModuleInfo":{
+        cache: false,
+        templateUrl:'partials/managepatient/ModuleInfoList.html',
+        controller:'ModuleInfoListDetailCtrl'
+      }
+    }
+    
+  })
+  .state('manage.ModuleListDetail',{
+    url:'/ModuleInfo/:Module/:ListName',
+    views:{
+      "ModuleInfo":{
+        cache: false,
+        templateUrl:'partials/managepatient/ModuleInfoListDetail.html',
+        controller:'ModuleInfoListDetailCtrl'
+      }
+    }
+    
+  })
+  .state('manage.task', {
+  url: '/:tt',
+  views:{
+    "changeplan":{
+      templateUrl: function ($stateParams){
+      if($stateParams.tt=='create')  //计划第一层 创建计划
+      {
+        return 'partials/managepatient/plan/create.html';  
+      }
+       else if(($stateParams.tt=='TA')||($stateParams.tt=='TG')) //计划第三层 体重管理与风险评估
+      {
+        return 'partials/managepatient/plan/weight.html';  
+      }
+      else if($stateParams.tt=='TB')  //计划第三层 饮食建议
+      {
+        return 'partials/managepatient/plan/food.html';  
+      }
+      else if($stateParams.tt=='TC')  //计划第三层 锻炼
+      {
+        return 'partials/managepatient/plan/exercise.html';  
+      }
+      else if($stateParams.tt=='TD')  //计划第三层 健康教育
+      {
+        return 'partials/managepatient/plan/healthEducation.html';  
+      }
+      else if($stateParams.tt=='TE')  //计划第三层 药物治疗
+      {
+        return 'partials/managepatient/plan/drug.html';  
+      }  
+      else if($stateParams.tt=='TF')  //计划第三层 体征测量
+      {
+        return 'partials/managepatient/plan/measure.html';  
+      }
+      else if($stateParams.tt=='TY')  //计划第三层 其他
+      {
+        return 'partials/managepatient/plan/others.html';  
+      }
+      else if($stateParams.tt=='TZ')  //计划第三层 个性化制定
+      {
+        return 'partials/managepatient/plan/personal.html';  
+      }
+      else if($stateParams.tt=='healthEducationDetail')  //计划第四层 健康教育详细
+      {
+        return 'partials/managepatient/plan/healthEducationDetail.html';  
+      }            
+   
+      else  //计划第二层
+      {
+        return 'partials/managepatient/plan/taskList.html'; 
+      }      
+      },
+      controllerProvider: function($stateParams) {
+        if($stateParams.tt=='create')
+        {
+          return 'CreateCtrl';
+        }
+         else if(($stateParams.tt=='TA')||($stateParams.tt=='TB')||($stateParams.tt=='TC')||($stateParams.tt=='TF')||($stateParams.tt=='TG'))
+        {
+          return 'MainPlanCtrl';
+        }    
+        else if($stateParams.tt=='TD')
+        {
+          return 'healthEducationCtrl';
+        }
+        else if($stateParams.tt=='TE')
+        {
+          return 'DrugCtrl';
+        }
+      
+        else if($stateParams.tt=='healthEducationDetail')
+        {
+          return 'healthEducationDetailCtrl';
+        }
+        else
+        {
+          return 'TaskListCtrl';
+        }
+      }
+    }
+  }
+    
+      
+  })
+  
+
+  .state('Independent',{
+    abstract:true,
+    url:"/Independent",
+    template:'<ion-nav-view></ion-nav-view>'
+  })
+
+  .state('Independent.risk',{
+    url:'/risk',
+    cache: false,
+    templateUrl:'partials/managepatient/risk.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('Independent.riskdetail',{
+    url:'/risk/:num',
+    cache: false,
+    templateUrl:'partials/managepatient/riskdetail.html',
+    controller:'RiskCtrl'
+  })
+
+  .state('Independent.riskquestion',{
+    url:'/riskquestion',
+    cache: false,
+    templateUrl:'partials/managepatient/riskquestion.html',
+    controller:'RiskQuestionCtrl'
+  })
+  .state('Independent.table',{
+    url:"/table",
+    views: {
+      '': {
+        cache: false,
+        templateUrl: "partials/managepatient/table.html",
+        controller: 'vitaltableCtrl'
+      }
+    }
+  })
+  .state('Independent.table.tablelist',{
+    url:"/tablelist",
+    views: {
+      'tablelist': {
+        cache: false,
+        templateUrl: "partials/managepatient/tablelist.html",
+        
+      }
+    }
+  })
+
+   $urlRouterProvider.otherwise('/signin');
+   // $urlRouterProvider.otherwise('/starting');
 
 }])
 
-.run(function($cordovaSplashscreen) {
+.run(function($state ,$cordovaSplashscreen,$ionicPlatform,Storage) {
+  $ionicPlatform.ready(function(){
+    var isSignIN=Storage.get("isSignIN");
+    if(isSignIN=='YES'){
+      $state.go('coach.home');
+    }
+  })
   /*setTimeout(function() {
     $cordovaSplashscreen.hide()
   }, 1000)*/

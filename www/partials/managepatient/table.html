@@ -1,0 +1,60 @@
+<!-- <ion-header-bar class="bar-positive">
+<div class="buttons">
+	<button class="ion-chevron-left" data-tags="arrow, left" data-pack="default" ng-click="doSomething()"></button>
+</div>
+<h1 class="title">患者管理</h1>
+
+</ion-header-bar>
+
+
+<ion-header-bar class="bar-subheader bar-stable">
+<div class="row" style="padding:0px">
+	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+	</h3></div>
+	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+	</button></div>	
+</div>
+</ion-header-bar> -->
+
+<ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+        <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+
+
+<!-- <ion-header-bar class="bar-subheader bar-stable">
+<div class="row" style="padding:0px">
+	<div class="col-75"><h3>{{Name}}      {{gender}}        {{age}}岁
+	</h3></div>
+	<div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页
+	</button></div>	
+</div>
+</ion-header-bar> -->
+
+<ion-nav-view name="tablelist" >
+
+</ion-nav-view >
+
+  <div class="footer-shadow"></div>
+<ion-tabs class="tabs-stable tabs-icon-top">
+<ion-tab title="计划情况"  icon="ion-stats-bars " href="#/manage/plan">
+
+</ion-tab>
+
+<ion-tab title="临床信息" icon="ion-document-text "  href="#/manage/clinic" >
+
+</ion-tab>
+
+<ion-tab title="慢病信息" icon="ion-ios-barcode"  href="#/manage/ModuleInfo">
+
+</ion-tab>
+
+<ion-tab title="计划调整" icon="ion-ios-loop-strong "  href="#/manage/create">
+
+</ion-tab>
+
+<ion-tab title="消息发送" icon="ion-ios-chatbubble"  href="#/manage/message">
+
+</ion-tab>
+</ion-tabs>

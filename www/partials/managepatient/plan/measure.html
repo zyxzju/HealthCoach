@@ -1,0 +1,27 @@
+<ion-view view-title="体征测量">
+<ion-nav-bar class="bar-positive">
+	<ion-nav-buttons side="primary">
+		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+		</button>
+	</ion-nav-buttons>
+</ion-nav-bar>
+<div class="bar-shadow"></div>
+	<ion-content class="content-item-list">
+		<div class="list">
+			<div class = "item item-icon-right item-margin"style="padding-right:60px !important"  ng-repeat = "item in task.list">
+				<ion-checkbox style="border:0px" ng-model = "item.ControlType">
+				{{item.Name}}							
+				</ion-checkbox>	
+				<div style="color:blue;" class = "markDisplay{{item.ControlType}}">{{item.Instruction}}</div>
+				<div class = "markDisplay{{item.ControlType}}" ng-click="EditTask(item)">
+				    <i class="icon ion-edit"></i>	
+				</div>						
+			</div>
+		</div>
+		<div style="text-align:center;padding:20px;">
+			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()">
+			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
+			</button>
+		</div>	
+	</ion-content>
+</ion-view>

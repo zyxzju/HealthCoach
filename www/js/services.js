@@ -19,10 +19,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 .constant('CONFIG', {
-
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
+ 
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
+  ImageAddressFile_Check : "/PersonalPhotoCheck",  //lrz20151104
+  wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
   consReceiptUploadPath: 'cons/receiptUpload',
   userResUploadPath: 'user/resUpload',
@@ -85,11 +87,14 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsList',DoctorId:'@DoctorId',ModuleType:'@ModuleType',Plan:'@Plan',Compliance:'@Compliance',Goal:'@Goal'},timeout:20000},
+      Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
+      PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
-      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
+      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true}
 		})
 	}
 	var Service = function(){
@@ -112,6 +117,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           getDietHabbit:{method:'GET',params:{route: 'Type/DietHabbit'},isArray:true, timeout: 10000},
           getDrinkFrequency:{method:'GET',params:{route: 'Type/DrinkFrequency'},isArray:true, timeout: 10000},
           GetInsuranceType:{method:'GET',isArray:true, params:{route:'GetInsuranceType'},timeout:10000},
+          Type:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
           GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000}
     })
   }
@@ -122,7 +128,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 // GetSignsDetailByPeriod: {method:'GET', params:{route: 'VitalSigns'}, timeout: 10000}
               });
   };
-
+  var BasicDtlInfo = function () {
+      return $resource(CONFIG.baseUrl + ':path/:UserId/BasicDtlInfo',{path:'Users',UserId:'@UserId'},
+      { 
+        GetBasicDtlInfo:{method:'GET',timeout:10000}
+      })
+    };
   var HJZYYID = function () {//ZXF
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetLatestHUserIdByHCode',UserId:"@UserId",HospitalCode:'@HospitalCode'},
         {
@@ -201,13 +212,48 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
               GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
               SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
-              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'POST', params:{route: 'deleteTask'},timeout: 10000},
               GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
               GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
               SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
           });
       };
 
+    //ZXF的
+  var PlanInfo1 = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'Plan',PatientId:'@PatientId',PlanNo:'@PlanNo',Module:'@Module',Status:'@Status'},
+        {
+              
+              GetplaninfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+
+  var PlanchartInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'PlanInfoChart'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              
+              GetchartInfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+  var VitalSigns=function(){
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'VitalInfo',route:'VitalSigns',UserId:'@UserId',StartDate:'@StartDate',EndDate:'@EndDate'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              // GET Api/v1/VitalInfo/VitalSigns?UserId={UserId}&StartDate={StartDate}&EndDate={EndDate}
+              GetVitalSignsbydate:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+
+      }
+  var MessageInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
+              {
+                submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
+        
+        });
+    };
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -216,6 +262,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.Service = Service();
         serve.Dict = Dict();
         serve.BasicInfo = BasicInfo();
+        serve.BasicDtlInfo = BasicDtlInfo();
         serve.HJZYYID = HJZYYID();
         serve.ClinicalInfoList = ClinicalInfoList();
         serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -224,12 +271,17 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.druginfo = druginfo();
         serve.RiskInfo = RiskInfo();
         serve.PlanInfo = PlanInfo(); 
+        serve.PlanInfo1 = PlanInfo1();
+        serve.PlanchartInfo = PlanchartInfo();
+        serve.VitalSigns = VitalSigns();
+        serve.MessageInfo = MessageInfo();
         }, 0, 1);  
 	}
     serve.Users = Users();
     serve.Service = Service();
     serve.Dict = Dict();
     serve.BasicInfo = BasicInfo();
+    serve.BasicDtlInfo = BasicDtlInfo();
     serve.HJZYYID = HJZYYID();
     serve.ClinicalInfoList = ClinicalInfoList();
     serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -237,14 +289,27 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.diaginfo = diaginfo();
     serve.druginfo = druginfo();
     serve.RiskInfo = RiskInfo();
-    serve.PlanInfo = PlanInfo(); 
+    serve.PlanInfo = PlanInfo();
+    serve.PlanInfo1 = PlanInfo1();
+    serve.PlanchartInfo = PlanchartInfo();
+    serve.VitalSigns = VitalSigns(); 
+    serve.MessageInfo = MessageInfo();
     return serve;
 }])
 
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){	 //XJZ
 	var serve = {};
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-
+    serve.Roles = function (_UserId){
+      var deferred = $q.defer();
+      Data.Users.Roles({UserId:_UserId},
+        function(data){
+          deferred.resolve(data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    }
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
         	return 7; 
@@ -326,40 +391,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     		})
     	return deferred.promise;
     }
-
-
-    //var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
-    //var passReg2=/^.[A-Za-z0-9]+$/;
-	// var isPassValid = function(pass){
-		// if(pass.length >18  ||  pass.length<6){
-			// return 4;
-		// }else if(!passReg1.test(pass)){
-			// return 5;
-		// }else if(!passReg2.test(pass)){
-            // return 6;
-		// }else{
-			// return 0;
-		// }
-	// }
-	// serve.isTokenValid = function(){
-		// var isToken=Storage.get('token');
-		// if(isToken==null){
-			// return 0;
-		// }else{
-			// $http({
-				// method:'GET',
-				// url:'',
-				// headers:{token:isToken},
-			// })
-			// .success(function(data,status,headers,config){
-
-			// })
-			// .error(function(data,status,headers,config){
-
-			// });
-		// }
-	// }
-
 	return serve;
 }])
 .factory('userINFO',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){
@@ -376,10 +407,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
-    serve.GetPatientsList = function(_DoctorId,_ModuleType,_Plan,_Compliance,_Goal){
+    serve.GetPatientsList = function(_DoctorId,_Module,_VitalType,_VitalCode){
         var deferred = $q.defer();   
-        Data.Users.GetPatientsList({DoctorId:_DoctorId,ModuleType:_ModuleType,Plan:_Plan,Compliance:_Compliance,Goal:_Goal},
-        function(data,hearders,status){ 
+        Data.Users.GetPatientsList({DoctorId:_DoctorId,Module:_Module,VitalType:_VitalType,VitalCode:_VitalCode},
+        function(data){ 
             deferred.resolve(data);
         },
         function(err){
@@ -471,7 +502,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return jpushServiceFactory;
 }])
-//照相机服务 LRZ 20151102
+//照相机服务 LRZ 20151104
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
@@ -479,7 +510,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
       var options = { 
           quality : 75, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 1, 
           allowEdit : true,
           encodingType: 0,
@@ -492,7 +523,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
      var q = $q.defer();
 
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
@@ -506,7 +537,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     getPictureFromPhotos: function(){
       var options = { 
           quality : 75, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 0, 
           allowEdit : true,
           encodingType: 0,
@@ -516,7 +547,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         //从相册获得的照片不能被裁减 调研~
      var q = $q.defer();
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
@@ -527,13 +558,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI,userid){
+    uploadPicture : function(imgURI,fileName){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var options = {
             fileKey : "file",
-            fileName : userid + ".jpg",
+            fileName : fileName,
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
@@ -544,11 +575,51 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Code = " + r.responseCode);
               console.log("Response = " + r.response);
               console.log("Sent = " + r.bytesSent);
+              r.res = true;
               q.resolve(r);        
-            }, function(err){
+            }, function(error){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
+              error.res = false;         
+              q.resolve(error); 
+            }, function (progress) {
+              console.log(progress);
+            })
+
+            ;
+          return q.promise;  
+        // }
+
+
+        // var ft = new FileTransfer();
+        // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
+      
+    },
+    uploadPicture_Check : function(imgURI,fileName){
+        // document.addEventListener('deviceready', onReadyFunction,false);
+        // function onReadyFunction(){
+          var uri = encodeURI(CONFIG.ImageAddressIP + "/upload_check.php");
+          var options = {
+            fileKey : "file",
+            fileName : fileName,
+            chunkedMode : true,
+            mimeType : "image/jpeg"
+          };
+          var q = $q.defer();
+          // console.log("jinlaile");
+          $cordovaFileTransfer.upload(uri,imgURI,options)
+            .then( function(r){
+              console.log("Code = " + r.responseCode);
+              console.log("Response = " + r.response);
+              console.log("Sent = " + r.bytesSent);
+              r.res = true;
+              q.resolve(r);        
+            }, function(error){
+              alert("An error has occurred: Code = " + error.code);
+              console.log("upload error source " + error.source);
+              console.log("upload error target " + error.target);
+              error.res = false;
               q.resolve(error);          
             }, function (progress) {
               console.log(progress);
@@ -563,27 +634,26 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
       
     },
+    downloadPicture: function(url,userid){ 
 
-  downloadPicture: function(url,userid){ 
+      var q = $q.defer();
+      var targetPath = cordova.file.documentsDirectory + userid+".jpg";
+      var trustHosts = true;
+      var options = {};
 
-    var q = $q.defer();
-    var targetPath = cordova.file.documentsDirectory + userid+".jpg";
-    var trustHosts = true;
-    var options = {};
+      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+        .then(function(r) {
+          q.resolve(r);  
+        }, function(err) {
+          q.resolve(err); 
+        }, function (progress) {
+        });
 
-    $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-      .then(function(r) {
-        q.resolve(r);  
-      }, function(err) {
-        q.resolve(err); 
-      }, function (progress) {
-      });
+      return q.promise;  
+    }
 
-    return q.promise;  
+
   }
-
-
-}
   
 }])
 
@@ -692,10 +762,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改
-.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
+.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;
 
-//LRZ 20151102
+  //LRZ 20151102
   self.postDoctorInfo = function (data) {
     // console.log(data);
 
@@ -720,7 +790,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+  //LRZ 20151102
   self.postDoctorDtlInfo = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -731,7 +801,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress: data.photoAddress
     };
 
-  var temp = [{
+    var temp = [{
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
                 "ItemCode": "Contact001_4",
@@ -807,7 +877,108 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+//LRZ 20151110
+  self.postDoctorDtlInfo_Check = function (data) {
+    var DoctorInfo = {
+      UserId: Storage.get('UID'),
+      unitname:data.unitname,
+      jobTitle: data.jobTitle,
+      level: data.level,
+      dept: data.dept,
+      photoAddress: data.photoAddress,
+      photoAddress_Check: data.photoAddress_Check
+    };
+
+    var temp = [
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_5",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.unitname,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"    
+                },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_6",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.jobTitle,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"   
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_7",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.level,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_8",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.dept,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              }
+    ];
+
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }; 
+//LRZ 20151105   
+  self.postDoctorDtlInfo_Single = function (userid,code,value) {
+    var temp = [{
+                "Doctor": userid,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_" + String(code),
+                "ItemSeq": "1",
+                "Value": value,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"
+              }
+    ];
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };      
+  //LRZ 20151102
   self.getDocInfo = function (userid) {
     
     // Storage.set(13131313,userid);
@@ -843,6 +1014,67 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     var deferred = $q.defer();
     temp.myTrialGET({}, function (data, headers) {
       // console.log("获得了数据"+data)
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewpatient = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Doctor": DoctorId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Patient",
+      "ItemSeq": 1,
+      "Value": PatientId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    }];
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewhealthcoach = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Doctor",
+      "ItemSeq": 1,
+      "Value": DoctorId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    },
+    {
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "InvalidFlag",
+      "ItemSeq": 1,
+      "Value": "0",
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2 
+    }];
+    var deferred = $q.defer();
+    Data.Users.setPatientDetailInfo(temp, function (data, headers) {
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
@@ -918,9 +1150,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   //TDY 20151030
   self.getYesNoType = function(){
      var deferred = $q.defer();
-/*     do
-     {
-*/ 
       Data.Dict.getYesNoType({},
           function(data,status){
             var check = {results: data};
@@ -1041,9 +1270,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicInfo = function (arr){
+  self.PatientBasicInfo = function (arr){
     var deferred = $q.defer();
-    Data.Users.BasicInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicInfo(arr,function (data,headers) {
       deferred.resolve(data);
       }, function (err) {
           deferred.reject(err);
@@ -1066,12 +1295,21 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicDtlInfo = function(arr){
+  self.PatientBasicDtlInfo = function(arr){
     var deferred = $q.defer();
-    Data.Users.BasicDtlInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicDtlInfo(arr,function (data,headers) {
     deferred.resolve(data);
     }, function (err) {
          deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+   self.PhoneNo = function(_UserId){
+    var deferred = $q.defer();
+    Data.Users.PhoneNo({UserId:_UserId},function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+        deferred.reject(err);
     });
     return deferred.promise;
   };
@@ -1091,6 +1329,22 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   }
+
+  self.Type = function(_Category){
+    var deferred = $q.defer();
+    Data.Dict.Type({Category:_Category},function (data,headers) {
+      deferred.resolve(data);
+    },function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+ 
+
+
+
+
+
   self.GetNo = function(_NumberingType,_TargetDate){
     var deferred = $q.defer();
     Data.Dict.GetNo({NumberingType:_NumberingType,TargetDate:_TargetDate},function (data,headers) {
@@ -1223,6 +1477,31 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   
+  self.getiHealthCoachList = function(PatientId){
+    var deferred = $q.defer();
+    Data.Users.getiHealthCoachList({PatientId:PatientId},function(data,headers){
+      deferred.resolve(data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  return self;
+}])
+
+// LZN 20151103
+.factory('BasicDtlInfo',['$q','$http','Data',function($q,$http,Data){
+  var self = this;
+  self.GetBasicDtlInfo = function(_UserId){
+    var deferred = $q.defer();
+    Data.BasicDtlInfo.GetBasicDtlInfo({UserId:_UserId},function (data,headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
   return self;
 }])
 
@@ -1338,6 +1617,76 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return self;
 }])
 
+//ZXF 20151102
+.factory('GetVitalSigns', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetVitalSignsbydate = function (UserId,StartDate,EndDate) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.VitalSigns.GetVitalSignsbydate({UserId:UserId,StartDate:StartDate,EndDate:EndDate}, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanchartInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetchartInfobyPlanNo = function (arr) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.PlanchartInfo.GetchartInfobyPlanNo(arr, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetplaninfobyPlanNo = function (arr) {
+    var deferred = $q.defer();
+    Data.PlanInfo1.GetplaninfobyPlanNo(arr, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+// --------交流-苟玲----------------
+.factory('MessageInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+    var self = this;
+    self.submitSMS = function (SendBy,Content,Receiver,piUserId,piTerminalName,piTerminalIP,piDeviceType) {
+      var deferred = $q.defer();
+      Data.MessageInfo.submitSMS({SendBy:SendBy,Content:Content,Receiver:Receiver,piUserId:piUserId,piTerminalName:piTerminalName,piTerminalIP:piTerminalIP,piDeviceType:piDeviceType}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    self.GetSMSDialogue = function (Reciever,SendBy,top,skip) {
+      var deferred = $q.defer();
+      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy, $orderby:"SendDateTime desc", $top:top,$skip:skip}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    return self;
+}])
 //大师兄的弹窗业务service 可以随便调用
 .factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
   return {
