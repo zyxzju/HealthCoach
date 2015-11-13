@@ -635,6 +635,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       StatusBar.styleDefault();
     }
     //启动极光推送服务
+    document.addEventListener('jpush.openNotification', onOpenNotification, false); //监听打开推送消息事件
     window.plugins.jPushPlugin.init();
     window.plugins.jPushPlugin.setDebugMode(true);
     //window.plugins.jPushPlugin.setAlias("SimonTDY");
@@ -647,7 +648,19 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
    }  
    alert("ERROR in " + url + " (line #" + line + "): " + msg);  
    return false;  
-  };*/
+  };
+  
+  function onOpenNotification(){
+    var alertContent
+    if(device.platform == "Android"){
+        alertContent=window.plugins.jPushPlugin.openNotification.alert;
+    }else{
+        alertContent   = event.aps.alert;
+    }
+    //alert("open Notificaiton:"+alertContent);
+    $state.go('coach.i');
+  }  
+  */
 })
 
 // --------不同平台的相关设置----------------
