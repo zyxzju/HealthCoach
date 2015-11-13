@@ -1,52 +1,40 @@
 <ion-view cache-view="false" title="计划情况">
 <ion-nav-bar class="bar-positive">
-    <ion-nav-buttons side="left">
-      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
-    </ion-nav-buttons>
+<ion-nav-buttons side="left">
+<button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+</ion-nav-buttons>
 </ion-nav-bar>
-<!-- <ion-header-bar class="bar-positive">
-<div class="buttons">
-  <button class="button icon-right ion-android-home" ng-click="backtocoach()"></button>
-</div>
-</ion-header-bar> -->
-<!-- <ion-header-bar class="bar-subheader bar-stable">
-  <div class="row" style="padding:0px">
-    <div class="col-75">
-      <h3>{{Name}}      {{gender}}        {{age}}岁</h3>
-    </div>
-      <div  class="col-25 text-right"> <button class="button icon-right" ng-click="backtocoach()">返回主页</button>
-    </div>  
-  </div>
-</ion-header-bar> -->
 <ion-content has-bouncing="false"  class="content-item-list">
-  <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
-    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}岁</h3>
-  </div>
-  <div class="button-bar ">
-    <a class="button"  >依从率图</a>
-    <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 
-    <a class="button"  href="#/Independent/risk" >风险评估</a>
-  </div>
-  <div >
-    <div class="row" style="padding-bottom:0;min-height:30px">
-      <div class="col-67" style="padding-right:2%">
-        <select style="width:100%" ng-model="planList" ng-change="changeplan(planList)" >
-          <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
-          <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
-        </select >
-      </div>
-      <div class="col-33">
-        <select style="width:100%" ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm" >
-        </select>
-      </div>
+<div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
+  <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}</h3>
+</div>
+<div class="button-bar ">
+  <a class="button"  >依从率图</a>
+  <a class="button"  href="#/Independent/table/tablelist"> 体征表</a> 
+  <a class="button"  href="#/Independent/risk" >风险评估</a>
+</div>
+<div >
+  <div class="row" style="padding-bottom:0;min-height:30px">
+    <div class="col-67" style="padding-right:2%">
+      <select style="width:100%" ng-model="planList" ng-change="changeplan(planList)" >
+        <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
+        <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
+      </select>
+    </div>
+    <div class="col-33">
+      <select style="width:100%" ng-model="vitalInfo" ng-change="changeVitalInfo(vitalInfo)" ng-options="option.SignName for option in options" class="select-block select-calm" >
+      </select>
     </div>
   </div>
-  <div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
-  <div id='chartdiv3'></div>
-  <div class="text-center" style="margin:0;font-size:0.8em">单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</div>
-  <div style="text-align:center;background-color:#DDDDDD">    
-    <p style="color:#2894FF;font-size:16px;">计划进度20%，离结束还有20天</p>
-  </div>
+</div>
+<div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
+<div id='chartdiv3'></div>
+<div class="text-center" style="margin:0;font-size:0.8em">单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</div>
+<div style="text-align:center;background-color:#DDDDDD">    
+  <p style="color:#2894FF;font-size:16px" ng-if=before>计划已结束</p>
+  <p style="color:#2894FF;font-size:16px" ng-if=none>无计划进度信息</p>
+  <p style="color:#2894FF;font-size:16px" ng-if=now>计划进度{{process}}%，离结束还有{{undodays}}天</p>
+</div>
 </ion-content> 
 </ion-view>
 
