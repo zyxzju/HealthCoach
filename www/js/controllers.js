@@ -1692,7 +1692,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var orderConfig ="StartDate desc,EndDate,RemainingDays ";
   var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
-    DOCID='DOC201506180002';
     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
     .then(function(data){
       var temp={}
