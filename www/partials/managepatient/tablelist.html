@@ -7,29 +7,29 @@
 <div class="footer-shadow"></div>
 <ion-content class="content-item-list"> 
   <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
-    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}岁</h3>
+    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}</h3>
   </div>
 <style>
 #table{
 .col {
-  border: solid 1px grey;
+  border: solid 1px #C0C0C0;
   border-bottom-style: none;
   border-right-style: none;
 }
 
 .col:last-child {
-  border-right: solid 1px grey;
+  border-right: solid 1px #C0C0C0;
 }
 
 .row:last-child .col {
-  border-bottom: solid 1px grey;
+  border-bottom: solid 1px #C0C0C0;
 }
 }
 </style>
 <div>
   <div has-bouncing="false" class="button-bar ">
    <a class="button"  href="#/manage/plan" >依从率图</a>
-   <a class="button"  href="#/Independent/table" ng-click="showvitalsigns()"> 体征表</a> 
+   <a class="button"  href="#/Independent/table" ng-click="showvitalsigns()" ng-style="tablestyle"> 体征表</a> 
    <a class="button"  href="#/Independent/risk" >风险评估</a>
  </div>
  <div style="padding:5px">
