@@ -88,7 +88,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
       Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',$top:'@top',$skip:'@skip',$orderby:'@orderby',$filter:'@filter', DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
       PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
@@ -407,9 +407,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
-    serve.GetPatientsList = function(_DoctorId,_Module,_VitalType,_VitalCode){
-        var deferred = $q.defer();   
-        Data.Users.GetPatientsList({DoctorId:_DoctorId,Module:_Module,VitalType:_VitalType,VitalCode:_VitalCode},
+    serve.GetPatientsList = function(top,skip,orderby,filter,_DoctorId,_Module,_VitalType,_VitalCode){
+        var deferred = $q.defer(); 
+        Data.Users.GetPatientsList({$top:top,$skip:skip,$orderby:orderby,$filter:filter,DoctorId:_DoctorId,Module:_Module,VitalType:_VitalType,VitalCode:_VitalCode},
         function(data){ 
             deferred.resolve(data);
         },
