@@ -15,11 +15,11 @@
 	<ion-content>
 		<div class="list">
 			<a class="item" href="#/addpatient/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
-			{{item.PlanName}}：{{item.StartDate}}-{{item.EndDate}}
+			{{item.PlanName}}{{item.StartDate}}{{item.EndDate}}
 	        </a>
     	</div>
     	<div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="backtomain()">
+			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="backtomain()" ng-if="isloaded">
 			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
 			</button>
 		</div>

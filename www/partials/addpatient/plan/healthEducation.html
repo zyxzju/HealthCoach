@@ -1,14 +1,14 @@
 <ion-view view-title="健康教育">
 <ion-nav-bar class="bar-positive">
 	<ion-nav-buttons side="primary">
-		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+		<button class="button button-icon ion-arrow-left-c" ng-click="Confirm()">
 		</button>
 	</ion-nav-buttons>
 	</ion-nav-bar>
 	<div class="bar-shadow"></div>
 	<ion-content>
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat = "item in  task.list" href="#/addpatient/healthEducationDetail" ng-click="SelectType(item.Code)">         
+			<a class="item item-icon-right" ng-repeat = "item in  task.list" href="#" ng-click="ShowDetail(item.Code)">         
             {{item.Name}}
             <div class="markDisplay{{item.InvalidFlag}}">
 	        	<i class="icon ion-ios-checkmark-empty"></i>
@@ -17,7 +17,7 @@
         </div>
 
         <div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="onClickBackward()">
+			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm)" ng-if="isloaded">
 			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
 			</button>
 		</div>		

@@ -45,16 +45,16 @@
 		</div>
 				
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat="item in TaskList.taskList" href="#/addpatient/{{item.Type}}">         
-	        {{item.Name}}
-	        <div class="markDisplay{{item.InvalidFlag}}">
-	        	<i class="icon ion-ios-checkmark-empty"></i>
-	        </div>
+			<a class="item item-icon-left item-icon-right" ng-repeat="item in TaskList.taskList" href="#/manage/{{item.Type}}"> 
+			<i class="{{item.Description}}"></i>        
+	        {{item.Name}}	        
+	        <i class="icon ion-ios-checkmark-empty" ng-if = "item.ControlType"></i>
+	        <i ng-if = "!item.ControlType"></i>	        
 	        </a>       
         </div>			
 						
 		<div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="onClickBackward()">
+			<button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="onClickBackward()" ng-if="isloaded">
 			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
 			</button>
 		</div>					
