@@ -5676,21 +5676,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 //临床信息控制器 ZXF 20151031
-.controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,Storage,GetClinicInfoDetail,GetClinicalList,
+.controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,$ionicLoading,Storage,GetClinicInfoDetail,GetClinicalList,
   GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo,PageFunc) {
 
-  
+    //loading图标显示
+  // $ionicLoading.show({
+  //   content: '加载中',
+  //   animation: 'fade-in',
+  //   showBackdrop: true,
+  //   maxWidth: 200,
+  //   showDelay: 0
+  // });
+
  $scope.synclinicinfo=function(){//同步动作
+   $ionicLoading.show({
+    template:'同步需要时间较长，请耐心等候…',
+   });
   $http({
     method:'GET',
     url:'http://10.12.43.56:57772/csp/hz_mb/Bs.WebService.cls?soap_method=GetPatient',
+    // http://localhost:57772/csp/hz_mb/%25SOAP.WebServiceInvoke.cls?CLS=Bs.WebService&OP=GetBasicInfo
     params:{
       'UserId':Storage.get("PatientID"),
       'PatientId':$scope.HJZYYID,
       'StartDateTime': $scope.tt,
       'HospitalCode':'HJZYY'
     },
-    timeout: 30000,
+    timeout: 60000,
       // }).success(function(data,header,config,status){
       }).success(function(data,header){
         var status=data.slice(data.search('Status'),data.search('/Status'));
@@ -5699,113 +5711,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         var wetherhaveerr2=data.match("error");
 
         var noArr=status.match(/\d+/g);
+
         // console.log(noArr);
         //根据status内的内容判断是否同步成功，输出不同弹框
-       if (wetherhaveerr1==null&&wetherhaveerr2==null) {
+       if (wetherhaveerr1==null&&wetherhaveerr2==null) {  //响应成功
                 if (!(noArr[1]==0&&noArr[3]==0&&noArr[5]==0&&noArr[7]==0&&noArr[9]==0&&noArr[11]==0)) {
                   var sysResult="诊断："+noArr[1]+"条"+"、"+"检查："+noArr[3]+"条"+"、"+"化验："+noArr[5]+"条"+"、"+"用药："+noArr[7]+"条"+"、"+"手术："+noArr[9]+"条"+"、"+"体征："+noArr[11]+"条";
+                $ionicLoading.hide();
                 PageFunc.message(sysResult,20000,"同步成功");
                 //同步成功 刷新页面
-                  GetClinicalList.GetClinicalInfoListbyUID({UserId:Storage.get("PatientID")}).then(function(data){
-                      $scope.cliniclist=data.DT_InPatientInfo;
-
-                      //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
-                      $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
-                        scope: $scope,
-                        animation: 'slide-in-up'
-                      }).then(function(modal) {
-                        $scope.modalexam = modal;
-                      });
-                      $scope.onClickBackward = function(){
-                        $ionicHistory.goBack();
-                      };
-                      $scope.openexaminfomodal = function(index) {
-                        $scope.modalexam.show();
-                        var promise1=Getexaminfo.Getexaminfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
-                        promise1.then(function(data1){
-                          $scope.Examinationinfo=data1;
-                          $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
-                        }, function(data1) {  
-                        });
-                      };
-
-                      $scope.closeexamModal = function() {
-                        $scope.modalexam.hide();
-                      };
-                      $scope.$on('$destroy', function() {
-                        $scope.modalexam.remove();
-                      });
-                      //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
-                      $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
-                        scope: $scope,
-                        animation: 'slide-in-up'
-                      }).then(function(modal) {
-                        $scope.modaldiag = modal;
-                      });
-
-                      $scope.opendiaginfomodal = function(index) {
-                        $scope.modaldiag.show();
-                        var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
-                        promise0.then(function(data0){
-                          $scope.Diagnosisinfo=data0;
-                          $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
-
-                          //console.log($scope.Diagnosisinfo);
-                        },
-                        function(data0) {
-                        }
-                        )
-                      };
-
-                      $scope.closediagModal = function() {
-                        $scope.modaldiag.hide();
-                      };
-                      $scope.$on('$destroy', function() {
-                        $scope.modaldiag.remove();
-                      });
-
-                      //点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
-                      $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
-                        scope: $scope,
-                        animation: 'slide-in-up'
-                      }).then(function(modal) {
-                        $scope.modaldrug = modal;
-                      });
-
-                      $scope.opendruginfomodal = function(index) {
-                        $scope.modaldrug.show();
-                          // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
-                          var promise1=Getdruginfo.Getdruginfobypiduid({UserId:Storage.get("PatientID"),VisitId:$scope.cliniclist[index].VisitId});
-                          promise1.then(function(data2){
-                            $scope.DrugRecordinfo=data2;
-                            $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
-
-
-                            //console.log($scope.DrugRecordinfo);
-                          }, function(data2) {  
-                          }
-                          )
-                        };
-
-                      $scope.closedrugModal = function() {
-                        $scope.modaldrug.hide();
-                      };
-                      $scope.$on('$destroy', function() {
-                        $scope.modaldrug.remove();
-                      });
+                 GetClinicalList.GetClinicalInfoListbyUID({UserId:Storage.get("PatientID")}).then(function(data){
+                  $scope.cliniclist=data.DT_InPatientInfo;
                   }, function(data) {
-                  });
+                     });
                 }else if ($scope.HJZYYID!=""){
+                  $ionicLoading.hide();
                   PageFunc.message("可能原因：就诊ID错误或者时间设置过短",20000,"同步失败");
                 };
               }else{
+                $ionicLoading.hide();
                 PageFunc.message("系统错误",20000,"同步失败");
-              };
-        
-      //响应成功
-
+              };     
     }).error(function(data,header){
       //处理响应失败
+      $ionicLoading.hide();
       PageFunc.message("响应超时",20000,"同步失败");
     });
   }; 
@@ -5834,95 +5763,95 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //根据userid获取就诊信息列表（展示时用）
   var promise2=GetClinicalList.GetClinicalInfoListbyUID({UserId:PatientID});
   promise2.then(function(data){
-      $scope.cliniclist=data.DT_InPatientInfo;
+    $scope.cliniclist=data.DT_InPatientInfo;
+    console.log($scope.cliniclist.length);
 
-      //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
-      $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.modalexam = modal;
-      });
-      $scope.onClickBackward = function(){
-        $ionicHistory.goBack();
-      };
-      $scope.openexaminfomodal = function(index) {
-        $scope.modalexam.show();
-        var promise1=Getexaminfo.Getexaminfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
-        promise1.then(function(data1){
-          $scope.Examinationinfo=data1;
-          $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
-        }, function(data1) {  
-        });
-      };
-
-      $scope.closeexamModal = function() {
-        $scope.modalexam.hide();
-      };
-      $scope.$on('$destroy', function() {
-        $scope.modalexam.remove();
-      });
-      //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
-      $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.modaldiag = modal;
-      });
-
-      $scope.opendiaginfomodal = function(index) {
-        $scope.modaldiag.show();
-        var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
-        promise0.then(function(data0){
-          $scope.Diagnosisinfo=data0;
-          $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
-
-          //console.log($scope.Diagnosisinfo);
-        },
-        function(data0) {
-        }
-        )
-      };
-
-      $scope.closediagModal = function() {
-        $scope.modaldiag.hide();
-      };
-      $scope.$on('$destroy', function() {
-        $scope.modaldiag.remove();
-      });
-
-      //点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
-      $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
-        scope: $scope,
-        animation: 'slide-in-up'
-      }).then(function(modal) {
-        $scope.modaldrug = modal;
-      });
-
-      $scope.opendruginfomodal = function(index) {
-        $scope.modaldrug.show();
-          // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
-          var promise1=Getdruginfo.Getdruginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
-          promise1.then(function(data2){
-            $scope.DrugRecordinfo=data2;
-            $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
-
-
-            //console.log($scope.DrugRecordinfo);
-          }, function(data2) {  
-          }
-          )
-        };
-
-      $scope.closedrugModal = function() {
-        $scope.modaldrug.hide();
-      };
-      $scope.$on('$destroy', function() {
-        $scope.modaldrug.remove();
-      });
   }, function(data) {
   });
+   //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
+  $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalexam = modal;
+  });
+  $scope.onClickBackward = function(){
+    $ionicHistory.goBack();
+  };
+  $scope.openexaminfomodal = function(index) {
+    $scope.modalexam.show();
+    var promise1=Getexaminfo.Getexaminfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
+    promise1.then(function(data1){
+      $scope.Examinationinfo=data1;
+      $scope.Examinationinfo.length==0?$scope.show=true:$scope.show=false;
+    }, function(data1) {  
+    });
+  };
 
+  $scope.closeexamModal = function() {
+    $scope.modalexam.hide();
+  };
+  $scope.$on('$destroy', function() {
+    $scope.modalexam.remove();
+  });
+  //点击查看详情根据UserId、Type、VisitId、Date获取具体诊断信息modal形式展示
+  $ionicModal.fromTemplateUrl('partials/addpatient/DiagnosisInfo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modaldiag = modal;
+  });
+
+  $scope.opendiaginfomodal = function(index) {
+    $scope.modaldiag.show();
+    var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
+    promise0.then(function(data0){
+      $scope.Diagnosisinfo=data0;
+      $scope.Diagnosisinfo.length==0?$scope.show=true:$scope.show=false;
+
+      //console.log($scope.Diagnosisinfo);
+    },
+    function(data0) {
+    }
+    )
+  };
+
+  $scope.closediagModal = function() {
+    $scope.modaldiag.hide();
+  };
+  $scope.$on('$destroy', function() {
+    $scope.modaldiag.remove();
+  });
+
+  //点击查看详情根据UserId、Type、VisitId、Date获取具体用药信息modal形式展示
+  $ionicModal.fromTemplateUrl('partials/addpatient/druginfo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modaldrug = modal;
+  });
+
+  $scope.opendruginfomodal = function(index) {
+    $scope.modaldrug.show();
+      // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};
+      var promise1=Getdruginfo.Getdruginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
+      promise1.then(function(data2){
+        $scope.DrugRecordinfo=data2;
+        $scope.DrugRecordinfo.length==0?$scope.show=true:$scope.show=false;
+
+
+        //console.log($scope.DrugRecordinfo);
+      }, function(data2) {  
+      }
+      )
+    };
+
+    $scope.closedrugModal = function() {
+      $scope.modaldrug.hide();
+    };
+    $scope.$on('$destroy', function() {
+      $scope.modaldrug.remove();
+    });
 
 
   //datepicker函数
@@ -5956,8 +5885,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         showTodayButton: 'true', //Optional
         modalHeaderColor: 'bar-positive', //Optional
         modalFooterColor: 'bar-positive', //Optional
-        from: new Date(1880, 8, 2),   //Optional
-        to: new Date(2018, 8, 25),    //Optional
+        from: new Date(1950, 8, 2),   //Optional
+        to: new Date(),    //Optional
         callback: function (val) {    //Mandatory
           datePickerCallback(val);
         }
@@ -6006,6 +5935,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 // 依从率图的控制器amcharts部分 ZXF 20151102
 .controller('planCtrl',function($scope, $state,$http, Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
+
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
@@ -6013,231 +5943,260 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
     promise.then(function(data){
       $scope.clinicinfo=data;
-      // $scope.Name=data.UserName;
-      // $scope.age=data.Age;
-      // $scope.gender=data.GenderText;    
     }, function(data) {
     })
   var PatintId = Storage.get('PatientID');
 
-// var PatintId ="PID201506180013";
-console.log(PatintId);
-//进入页面，调用函数获取任务列表（当前、往期计划）
-var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
-promiseS1.then(function(data1){
-  //console.log(data1);
+  // var PatintId ="PID201506180013";
+  console.log(PatintId);
+  //进入页面，调用函数获取任务列表（当前、往期计划）
+  var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
+  promiseS1.then(function(data1){
+    //计划进度情况
+    if (data1.length!=0) {
+      $scope.now=true;
+      $scope.before=false;
+      var myDate = new Date();
+      var month=(myDate.getMonth()+1);
+      var day=myDate.getDate();
+      if ((myDate.getMonth()+1)<10) {
+        month='0'+''+(myDate.getMonth()+1);
+      };
+      if (myDate.getDate()<10) {
+         day='0'+''+myDate.getDate();
+      };
+      var today=myDate.getFullYear()+''+month+''+day;
+      console.log(today);   
+      var passday= parseInt(today)-parseInt(data1[0].StartDate);
+      var processingday= parseInt(data1[0].EndDate)-parseInt(today);
+      var planlength=parseInt(data1[0].EndDate)-parseInt(data1[0].StartDate);
+      $scope.process=Math.floor((passday/planlength)*100);
+      $scope.undodays=parseInt(data1[0].EndDate)-parseInt(today)
+      if ($scope.process==0) {$scope.process=1};
+    }else{
+      $scope.now=0;
+      $scope.before=0;
+      $scope.none=1;
+    };
+    
   //在调用同一函数，status=4，调取往期计划planno
-  GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'4'}).then(
-    function(s){
-      $scope.formerPlanInfo=s;
-      Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
-      //console.log($scope.formerPlanInfo);
-    }, function(e) {  
-    });
+    GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'4'}).then(
+      function(s){
+        $scope.formerPlanInfo=s;
+        Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
+        //console.log($scope.formerPlanInfo);
+      }, function(e) {  
+      });
 
-  if (data1.length==0) {
-  $scope.latestplan="无执行中的计划";
-  $scope.diaplaysm=true;
-}else{
-//页面载入时显示的当前计划，收缩压的图
-Storage.set("latestplanstartdate",data1[0].StartDate);
-Storage.set("latestplanenddate",data1[0].EndDate);
-Storage.set("latestplanno",data1[0].PlanNo);
-$scope.latestPlanInfo=data1;
-$scope.latestplan=data1[0].PlanNo;
-//console.log($scope.latestplan);
+    if (data1.length==0) {
+    $scope.latestplan="无执行中的计划";
+    $scope.diaplaysm=true;
+  }else{
+  //页面载入时显示的当前计划，收缩压的图
+  Storage.set("latestplanstartdate",data1[0].StartDate);
+  Storage.set("latestplanenddate",data1[0].EndDate);
+  Storage.set("latestplanno",data1[0].PlanNo);
+  $scope.latestPlanInfo=data1;
+  $scope.latestplan=data1[0].PlanNo;
+  //console.log($scope.latestplan);
 
-var d = {
-  UserId:PatintId,
-  PlanNo:data1[0].PlanNo,
-  StartDate:data1[0].StartDate,
-  EndDate:data1[0].EndDate,
-  ItemType:'Bloodpressure',
-  ItemCode:'Bloodpressure_1'
-};
-GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
-  function(data){
-    $scope.HPchartdate=data;
-    //console.log($scope.HPchartdate);
-      //调用绘图的方法 传参
-      createStockChart($scope.HPchartdate,"收缩压","mmHg");
-      $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-    }, function(data) {
-      /////
-    });
-  //点击切换各个体征的图
-  $scope.changeVitalInfo = function(option) {
-    // console.log(option);
-    Storage.set("selectedvitaltype",option.SignName);
-    // console.log(Storage.get("selectedvitaltype"));
-
- //传参调函画图
-drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
-
-
+  var d = {
+    UserId:PatintId,
+    PlanNo:data1[0].PlanNo,
+    StartDate:data1[0].StartDate,
+    EndDate:data1[0].EndDate,
+    ItemType:'Bloodpressure',
+    ItemCode:'Bloodpressure_1'
   };
-};
-
-}, function(e) {
-    ///// 
-  }
-  );
-
-// $scope.planList={"pl":""};
-$scope.changeplan= function(changedplan){
- $scope.planno=changedplan;
-
- $scope.localselectedname=Storage.get("selectedvitaltype");
-
-$scope.plan=angular.fromJson(Storage.get("formerplan"));
-
-
-if (changedplan==Storage.get("latestplanno")) {
-  $scope.startdate=Storage.get("latestplanstartdate");
-  $scope.enddate=Storage.get("latestplanenddate");
-}else{
-  for (var i = 0; i <= $scope.plan.length-1; i++) {
-    //console.log($scope.plan[i].PlanName);
-    if ($scope.plan[i].PlanNo==changedplan) {
-     $scope.startdate= $scope.plan[i].StartDate;
-     $scope.enddate=$scope.plan[i].EndDate;
-   };
- };
-};
-
-drawcharts($scope.localselectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
-
-$scope.changeVitalInfo = function(option) {
-   Storage.set("selectedvitaltype",option.SignName);
-   $scope.selectedname=option.SignName;
- //传参调函画图
-drawcharts($scope.selectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
-};
-};
-//提振参数选择下拉框选项 默认收缩压selected
-
-});  
-
-$scope.options = [{"SignName":"收缩压"},
-  {"SignName":"舒张压"},
-  {"SignName":"脉率"},
-  {"SignName":"凌晨血糖"},
-  {"SignName":"睡前血糖"},
-  {"SignName":"早餐前血糖"},
-  {"SignName":"早餐后血糖"},
-  {"SignName":"午餐前血糖"},
-  {"SignName":"午餐后血糖"},
-  {"SignName":"晚餐前血糖"},
-  {"SignName":"晚餐后血糖"},
-];  
-$scope.vitalInfo =$scope.options[0];
-console.log($scope.options[0]);
-console.log($scope.vitalInfo);
-  //切换体征选项后，重新绘制
-var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
-  if (param=="舒张压") {
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
-      function(data){
-        $scope.LPchartdate=data;
-        createStockChart($scope.LPchartdate,"舒张压","mmHg");
-        $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if (param=="收缩压") {
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
-      function(data){
-        $scope.HPchartdate=data;
+  GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
+    function(data){
+      $scope.HPchartdate=data;
         createStockChart($scope.HPchartdate,"收缩压","mmHg");
         $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
       }, function(data) {
-      /////
-    });
+        /////
+      });
+    //点击切换各个体征的图
+    $scope.changeVitalInfo = function(option) {
+      // console.log(option);
+      Storage.set("selectedvitaltype",option.SignName);
+      // console.log(Storage.get("selectedvitaltype"));
+
+   //传参调函画图
+  drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
+
+
+    };
   };
-  if (param=="脉率") {
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
-      function(data){
-        $scope.HBchartdate=data;
-        createStockChart($scope.HBchartdate,"脉率","次/分钟");
-        $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
+
+  }, function(e) {
+      ///// 
+    }
+    );
+
+  // $scope.planList={"pl":""};
+  $scope.changeplan= function(changedplan){
+   $scope.planno=changedplan;
+   $scope.localselectedname=Storage.get("selectedvitaltype");
+   $scope.plan=angular.fromJson(Storage.get("formerplan"));
+   if (changedplan==Storage.get("latestplanno")) {
+    $scope.now=1;
+    $scope.before=0;
+    $scope.none=0;
+    $scope.startdate=Storage.get("latestplanstartdate");
+    $scope.enddate=Storage.get("latestplanenddate");
+  }else{
+    if (changedplan=="无执行中的计划") {
+      $scope.now=0;
+      $scope.before=0;
+      $scope.none=1;
+    }else{
+     $scope.now=0;
+     $scope.before=1;
+     $scope.none=0;
+    };
+    for (var i = 0; i <= $scope.plan.length-1; i++) {
+      //console.log($scope.plan[i].PlanName);
+      if ($scope.plan[i].PlanNo==changedplan) {
+       $scope.startdate= $scope.plan[i].StartDate;
+       $scope.enddate=$scope.plan[i].EndDate;
+       };
+     };
+   };
+
+  drawcharts($scope.localselectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
+
+
+  $scope.changeVitalInfo = function(option) {
+     Storage.set("selectedvitaltype",option.SignName);
+     $scope.selectedname=option.SignName;
+   //传参调函画图
+  drawcharts($scope.selectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
+
   };
-  if(param=="凌晨血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
   };
-  if(param=="睡前血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
+  //提振参数选择下拉框选项 默认收缩压selected
+
+  });  
+
+  $scope.options = [{"SignName":"收缩压"},
+    {"SignName":"舒张压"},
+    {"SignName":"脉率"},
+    {"SignName":"凌晨血糖"},
+    {"SignName":"睡前血糖"},
+    {"SignName":"早餐前血糖"},
+    {"SignName":"早餐后血糖"},
+    {"SignName":"午餐前血糖"},
+    {"SignName":"午餐后血糖"},
+    {"SignName":"晚餐前血糖"},
+    {"SignName":"晚餐后血糖"},
+  ];  
+  $scope.vitalInfo =$scope.options[0];
+  console.log($scope.options[0]);
+  console.log($scope.vitalInfo);
+    //切换体征选项后，重新绘制
+  var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
+    if (param=="舒张压") {
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
+        function(data){
+          $scope.LPchartdate=data;
+          createStockChart($scope.LPchartdate,"舒张压","mmHg");
+          $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if (param=="收缩压") {
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
+        function(data){
+          $scope.HPchartdate=data;
+          createStockChart($scope.HPchartdate,"收缩压","mmHg");
+          $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+        /////
+      });
+    };
+    if (param=="脉率") {
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
+        function(data){
+          $scope.HBchartdate=data;
+          createStockChart($scope.HBchartdate,"脉率","次/分钟");
+          $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="凌晨血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="睡前血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    }
+    if(param=="早餐前血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="早餐后血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="午餐前血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="午餐后血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="晚餐前血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
+    if(param=="晚餐后血糖"){
+      GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
+        function(data){
+          $scope.BSchartdate=data;
+          createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
+          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+        }, function(data) {
+      });
+    };
   }
-  if(param=="早餐前血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if(param=="早餐后血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if(param=="午餐前血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if(param=="午餐后血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if(param=="晚餐前血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-  if(param=="晚餐后血糖"){
-    GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
-      function(data){
-        $scope.BSchartdate=data;
-        createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
-        $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-      }, function(data) {
-    });
-  };
-}
   //传参绘图
   function createStockChart(ChartData,title,unit) {
 
@@ -6314,10 +6273,19 @@ var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
          "position": "bottom-right"
        }
      })
-  }
-  $scope.backtocoach=function(){
-    $state.go('coach.home');
-  }
+
+    chart.addListener("rendered", zoomChart);
+
+    zoomChart();
+
+    function zoomChart() {
+        chart.zoomToIndexes(chart.dataProvider.length - 5, chart.dataProvider.length - 1);
+    }
+    }
+    //返回主页面
+    $scope.backtocoach=function(){
+      $state.go('coach.home');
+    };
 
 })
 
@@ -6385,7 +6353,7 @@ var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
      var yestoday=d.getDate()-1;
      var yestodaymonth=d.getMonth()+1;
      var yestodayyear=d.getFullYear();
-//这里应该会涉及到昨天是哪天的问题
+  //这里应该会涉及到昨天是哪天的问题
      if (d.getDate()<=9) {
       //console.log(d.getDate());
        day='0'+''+d.getDate();
@@ -6414,14 +6382,9 @@ var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
       yestodaymonth='0'+yestodaymonth;
      };
 
-
-
      $scope.selectedstartdate=yestodayyear+'-'+yestodaymonth+'-'+yestoday;
-      //console.log($scope.selectedstartdate);
      $scope.selecrtedenddate=date=year+'-'+month+'-'+day;
-     //console.log($scope.selecrtedenddate);
      $scope.StartDateforuse =parseInt(yestodayyear+''+yestodaymonth+''+yestoday);
-     //console.log($scope.StartDateforuse);
      $scope.EndDateforuse =parseInt(year+''+month+''+day);
      console.log($scope.EndDateforuse);
      Storage.set("EndDateforvitasign",$scope.EndDateforuse);
@@ -6447,22 +6410,16 @@ var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
             var chooenmonth=(val.getMonth()+1);
             var chooenday=val.getDate();
             if ((val.getMonth()+1)<10) {
-              // //console.log(val.getMonth());
               chooenmonth='0'+''+(val.getMonth()+1);
             };
             if (val.getDate()<10) {
                chooenday='0'+''+val.getDate();
             };
-
-
-
             var date=val.getFullYear()+'-'+chooenmonth+'-'+chooenday;    
-            // //console.log(date);         
             var dateuser=parseInt(val.getFullYear()+''+chooenmonth+''+chooenday);
-             //console.log(dateuser);
+
            if(setstate==0){
             $scope.selectedstartdate=date;
-           //console.log($scope.selectedstartdate);
              Storage.set("StartDateforvitasign",dateuser )
 
              }else if(setstate==1){
