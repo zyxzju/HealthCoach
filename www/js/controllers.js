@@ -5679,7 +5679,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('datepickerCtrl',function($scope,$state,$http,$ionicModal,$ionicHistory,$ionicLoading,Storage,GetClinicInfoDetail,GetClinicalList,
   GetHZID,Getexaminfo,Getdiaginfo,Getdruginfo,GetBasicInfo,PageFunc) {
 
-    //loading图标显示
+  //   loading图标显示
   // $ionicLoading.show({
   //   content: '加载中',
   //   animation: 'fade-in',
@@ -5949,7 +5949,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 })
 
 // 依从率图的控制器amcharts部分 ZXF 20151102
-.controller('planCtrl',function($scope, $state,$http,$ionicPopover,Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
+.controller('planCtrl',function($scope, $state,$http,$ionicPopover,$ionicLoading,Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
 
 
   //根据手机屏幕高度调整chart高度
@@ -5970,6 +5970,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+
+    // loading图标显示
+    $ionicLoading.show({
+      content: '加载中',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
+    });
     //默认进入依从图，button颜色改变
     $scope.mybuttonStyle={'color':'blue','font-weight':'bold'};
     $scope.Name=Storage.get('PatientName');
@@ -5990,6 +5999,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
   promiseS1.then(function(data1){
     // console.log(data1);
+
     //计划进度情况
     if (data1.length!=0) 
     {
@@ -6028,6 +6038,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if (data1.length==0) 
     {
     $scope.latestplan="无执行中的计划";
+    $ionicLoading.hide();
     $scope.diaplaysm=true;
     }else
     {
@@ -6050,28 +6061,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     GetPlanchartInfo.GetchartInfobyPlanNo(d).then(
     function(data){
       $scope.HPchartdate=data;
-        console.log(data);
-        $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         // if ($scope.diaplaysm=false) 
         //   {
-        //     var dataisnone=false;
-        //     for (var i = 0; i <= data.length-1; i++) 
-        //     {
-        //       console.log(i);
-        //       console.log(data[i].Value);
-        //       if (data[i].Value!='#') 
-        //       {
-        //         dataisnone=true;
-        //       };
-        //     };
-        //     if (dataisnone) 
-        //     {
-              createStockChart($scope.HPchartdate,"收缩压","mmHg");
-          //   }else
-          //   {
-          //     $scope.diaplaysm=true;
-          //   }
-          // };
+            var dataisnone=false;
+            for (var i = 0; i <= data.length-1; i++) 
+            {
+              if (data[i].Value!='#') 
+              {
+                dataisnone=true;
+                break;
+              };
+            };
+            console.log(dataisnone);
+          if ($scope.HPchartdate.length==0||dataisnone==false) 
+            {
+              $scope.diaplaysm=true
+            };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+            createStockChart($scope.HPchartdate,"收缩压","mmHg");
+          };
+              
+              $ionicLoading.hide();
       }, function(data) {
         /////
       });
@@ -6090,9 +6102,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // console.log(option);
       Storage.set("selectedvitaltype",option.SignName);
       // console.log(Storage.get("selectedvitaltype"));
-
+    $ionicLoading.show({
+      content: '加载中',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
+    });
    //传参调函画图
-  drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
+    drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
 
 
     };
@@ -6168,6 +6186,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if (param=="舒张压") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_2'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.LPchartdate=data;
           createStockChart($scope.LPchartdate,"舒张压","mmHg");
           $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6177,6 +6196,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if (param=="收缩压") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.HPchartdate=data;
           createStockChart($scope.HPchartdate,"收缩压","mmHg");
           $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6187,6 +6207,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if (param=="脉率") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.HBchartdate=data;
           createStockChart($scope.HBchartdate,"脉率","次/分钟");
           $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6196,6 +6217,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="凌晨血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6205,6 +6227,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="睡前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6214,6 +6237,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="早餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6223,6 +6247,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="早餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6232,6 +6257,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="午餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6241,6 +6267,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="午餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6250,6 +6277,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="晚餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
@@ -6259,6 +6287,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(param=="晚餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
         function(data){
+          $ionicLoading.hide();
           $scope.BSchartdate=data;
           createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
           $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
