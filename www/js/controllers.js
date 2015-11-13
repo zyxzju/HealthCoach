@@ -1345,20 +1345,253 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-.controller('myPatientCtrl', ['$cordovaBarcodeScanner','$filter','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG' ,function($cordovaBarcodeScanner,$filter, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG){
+// .controller('myPatientCtrl', ['$cordovaBarcodeScanner','$filter','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG' ,function($cordovaBarcodeScanner,$filter, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG){
+//   var PIDlist=new Array();//PID列表
+//   var PIDlistLength;//PID列表长度
+//   var loaditems=0;//已加载条目
+//   var PatientsList=new Array();//输出到页面的json  
+//   var refreshing=1;//控制连续刷新时序            
+//   // $scope.patients=PatientsBasic;
+//   $scope.moredata = true;  //控制上拉加载
+//   $scope.clearIt=true;
+//   var searchFlag=0;
+//     //-----------------------------------------------------------------------------//
+//   var DOCID=Storage.get('UID');
+   
+//   //loading图标显示
+//   $ionicLoading.show({
+//     content: '加载中',
+//     animation: 'fade-in',
+//     showBackdrop: true,
+//     maxWidth: 200,
+//     showDelay: 0
+//   });
+//   //搜索
+//   $scope.startSearch = function(query){
+//     if(query.length>0){
+//       $scope.clearIt=false;
+//     }
+//     var dosearch =function(){
+//       var filterdata= $filter('filter')(PatientsList,query);
+//       $scope.patients=filterdata;          
+//     }
+//     if(refreshing==0){
+//       dosearch();
+//     }else{
+//       $timeout(dosearch(),2000);
+//     }
+//   }
+//   $scope.clearSearch = function(){
+//     $scope.query="";
+//     $scope.clearIt=true;
+//     $scope.patients=PatientsList;
+//   }
+//   var onePatientBasic= function(PID,listIndex){
+//     userINFO.BasicInfo(PID).then(function(data){
+//       // console.log(data)
+//       // console.log(searchFlag,listIndex,PatientsList[listIndex]);
+//       PatientsList[listIndex].Age=data.Age+'岁';
+//       PatientsList[listIndex].GenderText=data.GenderText;
+//       if((listIndex+1)==PIDlistLength){
+//         searchFlag=1;
+//       }
+//       // $scope.patients=[];
+//       // $scope.patients=PatientsList.slice(0,loaditems);
+//     },function(data){
+//     }); 
+//   }
+//   var getPatientsBasic=function(list){
+//     // for(var p in list){        //3行无延时请求数据
+//     //   onePatientBasic(list[p]);
+//     // }
+//     var repeat=PIDlistLength;  
+//     var timer;
+//     timer = $interval(function(){
+//       if(repeat==0){
+//         $ionicLoading.hide();
+//         refreshing=0;$scope.$broadcast('scroll.refreshComplete');
+//         $interval.cancel(timer);
+//         timer=undefined;        
+//       }else{
+//       onePatientBasic(list[PIDlistLength-repeat],PIDlistLength-repeat);
+//       repeat--;
+//       }
+//     },20);
+//   }
+//   var netError = function(){
+//     $ionicLoading.hide();
+//     refreshing=0;
+//     PageFunc.confirm('网络好像不太稳定', '网络错误');   
+//   }
+//   var getPIDlist = function(){
+//     userINFO.GetPatientsList(DOCID,'HM1','0','0')
+//     .then(function(data){
+//       var temp={};console.log(data);
+//       for(var i=0;i<data.length;i++){  
+//         temp=data[i];
+//         if(temp.photoAddress=='' || temp.photoAddress==null){    
+//           temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//         }else{
+//           temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//         }
+//         temp.Age='';
+//         temp.GenderText='';
+//         temp.Module="高血压";
+//         PatientsList.push(temp);
+//         PIDlist.push(temp.PatientId);          
+//       } 
+//        userINFO.GetPatientsList(DOCID,'HM2','0','0')
+//         .then(function(data){
+//           for(var i=0;i<data.length;i++){
+//             temp=data[i];
+//             if(temp.photoAddress=='' || temp.photoAddress==null){    
+//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//             }else{
+//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//             }
+//             temp.Age='';
+//             temp.GenderText='';
+//             temp.Module="糖尿病";
+//             PatientsList.push(temp);
+//             PIDlist.push(temp.PatientId);          
+//           } 
+//           PIDlistLength=PIDlist.length;
+//           $scope.patients=PatientsList.slice(0,10);
+//           loaditems=10;$ionicLoading.hide();
+          
+//           $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+//           $timeout(function(){$scope.moredata = false;},50);
+//           getPatientsBasic(PIDlist);        
+//         },function(data){
+//           netError();
+//         })        
+//     },function(data){
+//       netError();
+//     });
+//   }
+//   //获取PIDlist并加载10条
+//   getPIDlist();
+
+//   $scope.PIDdetail = function(Patient){
+//     Storage.set("PatientID",Patient.PatientId);
+//     Storage.set("isManage","Yes");
+//     Storage.set("PatientName",Patient.PatientName);
+//     Storage.set('PatientAge',Patient.Age);
+//     Storage.set('PatientGender',Patient.GenderText);     
+//     Storage.set("PatientPhotoAddress",Patient.photoAddress);
+//     $state.go('manage.plan');
+//   }
+
+//   $scope.doRefresh =function() {
+//     if(refreshing==0){
+//       refreshing=1;searchFlag=0;
+//       PatientsList=[];PIDlist=[];
+//       loaditems=0;PIDlistLength=0;
+//       getPIDlist();
+//     }
+//   }
+//   $scope.loadMore = function(){
+//     if(PIDlistLength==loaditems && PIDlistLength!=0){
+//       $scope.moredata=true;
+//     } 
+//     if((PIDlistLength-loaditems)>10){
+//       loaditems+=10;
+//       $scope.patients=PatientsList.slice(0,loaditems);
+//     }else if(loaditems>=10){
+//       loaditems+=PIDlistLength-loaditems;
+//       $scope.patients=PatientsList;
+//     }  
+//    $scope.$broadcast('scroll.infiniteScrollComplete');
+//   }  
+//   $scope.tcolor=function(ComplianceRate){
+//     if(ComplianceRate>=50){
+//       return {'color':'#33cd5f','font-size':'1.4em'};
+//     }else{
+//       return {'color':'#fb6a1b','font-size':'1.4em'};
+//     }
+//   };
+//   $scope.setwidth=function(Process){
+//     var divwidth=Process + '%';
+//     return {width:divwidth}; 
+//   };
+//     // 扫一扫
+//   $scope.QRscan = function(){
+//     var isMyPID=0;
+//     $cordovaBarcodeScanner
+//     .scan()
+//     .then(function(data) {
+//       // Success! Barcode data is here
+//       // var s = "Result: " + data.text + "<br/>" +
+//       // "Format: " + data.format + "<br/>" +
+//       // "Cancelled: " + data.cancelled;
+//       if(data.cancelled!=true){
+//         for(var i in PIDlist){
+//           if(data.text==PIDlist[i]){
+//             isMyPID=1;
+//             Storage.set("PatientID",data.text);
+//             for(var i in PatientsList){
+//               if(PatientsList[i].PatientId == data.text){
+//                 Storage.set("PatientName",PatientsList[i].PatientName);
+//                 Storage.set('PatientAge',PatientsList[i].Age);
+//                 Storage.set('PatientGender',PatientsList[i].GenderText);     
+//                 Storage.set("PatientPhotoAddress",PatientsList[i].photoAddress); 
+//                 break;             
+//               }
+//             }
+//             $state.go('manage.plan');
+//             break; 
+//           }
+//         }
+//         if(isMyPID==0){
+//           var myPopup = $ionicPopup.show({
+//             template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+//             //title: '',
+//             //subTitle: '2',
+//             scope: $scope,
+//             buttons: [
+//               { text: '取消',
+//                 type: 'button-small',
+//                 onTap: function(e) {                
+//                 }
+//               },
+//               {
+//                 text: '<b>确定</b>',
+//                 type: 'button-small button-positive ',
+//                 onTap: function(e) {
+//                   Storage.set("newPatientID",data.text);
+//                   $state.go('addpatient.basicinfo');
+//                 }
+//               }
+//             ]
+//           });
+//         }        
+//       }
+//     }, function(error) {
+            
+//     });
+//   }         
+// }])
+.controller('myPatientCtrl', ['$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
-  var PIDlistLength;//PID列表长度
+  var PIDlistLength=0,PIDlistLengthshow//PID列表长度
   var loaditems=0;//已加载条目
   var PatientsList=new Array();//输出到页面的json  
   var refreshing=1;//控制连续刷新时序            
   // $scope.patients=PatientsBasic;
-  $scope.moredata = true;  //控制上拉加载
+  $scope.moredata = false;  //控制上拉加载
   $scope.clearIt=true;
-  var searchFlag=0;
     //-----------------------------------------------------------------------------//
   var DOCID=Storage.get('UID');
    
   //loading图标显示
+  $scope.$on('$ionicView.enter', function() {
+    $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+      scope: $scope,
+    }).then(function(popover) {
+      $scope.popover = popover;
+      $scope.ranks=ranks;
+    });    
+  });
   $ionicLoading.show({
     content: '加载中',
     animation: 'fade-in',
@@ -1366,10 +1599,44 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     maxWidth: 200,
     showDelay: 0
   });
+  var Props=['模块','计划状态','计划起始', '依从率','年龄'];
+  var categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false}],
+    [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
+    [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
+    [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
+    [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
+  var rankprops=[{'Name':'依从率','no':0,'ordername':'ComplianceRate' ,'reverse':false},
+    {'Name':'计划','no':1,'ordername':'Status','reverse':false},
+    {'Name':'进度','no':2,'ordername':'Process','reverse':false}];
+  var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate','clicked':false},
+    {'Name':'依从率高低','ordername':'ComplianceRate desc','clicked':false},
+    {'Name':'计划剩余天数','ordername':'RemainingDays','clicked':false},
+    {'Name':'只显示高血压','ordername':'StartDate','clicked':false},
+    {'Name':'只显示糖尿病','ordername':'StartDate','clicked':false}]
+
+    $scope.rankBy = function(index){
+      $scope.popover.hide();
+      if(index<3){
+        orderConfig=ranks[index].ordername;
+        ranks[index].clicked=true;
+        console.log(ranks[index].clicked);
+        refreshing=1;
+        PatientsList=[];PIDlist=[];
+        loaditems=0;PIDlistLength=0;
+        getPIDlist();
+      }
+
+      
+    }
+  // $scope.filterProps={PatientName:'te'};
   //搜索
+  var nowdata;
   $scope.startSearch = function(query){
-    if(query.length>0){
+    if(query.PatientName.length>0){
       $scope.clearIt=false;
+    }
+    if(query.PatientName.length==0){
+      $scope.clearIt=true;
     }
     var dosearch =function(){
       var filterdata= $filter('filter')(PatientsList,query);
@@ -1386,15 +1653,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.clearIt=true;
     $scope.patients=PatientsList;
   }
+
   var onePatientBasic= function(PID,listIndex){
     userINFO.BasicInfo(PID).then(function(data){
       // console.log(data)
-      // console.log(searchFlag,listIndex,PatientsList[listIndex]);
-      PatientsList[listIndex].Age=data.Age+'岁';
+      // console.log(,listIndex,PatientsList[listIndex]);
+      PatientsList[listIndex].Age=data.Age;
       PatientsList[listIndex].GenderText=data.GenderText;
-      if((listIndex+1)==PIDlistLength){
-        searchFlag=1;
-      }
       // $scope.patients=[];
       // $scope.patients=PatientsList.slice(0,loaditems);
     },function(data){
@@ -1423,10 +1688,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     refreshing=0;
     PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
+  // var addlength='&$top=15&$skip='+loaditems;
+  var orderConfig ="StartDate desc,EndDate,RemainingDays ";
+  var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
-    userINFO.GetPatientsList(DOCID,'HM1','0','0')
+    DOCID='DOC201506180002';
+    userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
     .then(function(data){
-      var temp={};console.log(data);
+      var temp={}
       for(var i=0;i<data.length;i++){  
         temp=data[i];
         if(temp.photoAddress=='' || temp.photoAddress==null){    
@@ -1440,37 +1709,47 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         PatientsList.push(temp);
         PIDlist.push(temp.PatientId);          
       } 
-       userINFO.GetPatientsList(DOCID,'HM2','0','0')
-        .then(function(data){
-          for(var i=0;i<data.length;i++){
-            temp=data[i];
-            if(temp.photoAddress=='' || temp.photoAddress==null){    
-              temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
-            }else{
-              temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
-            }
-            temp.Age='';
-            temp.GenderText='';
-            temp.Module="糖尿病";
-            PatientsList.push(temp);
-            PIDlist.push(temp.PatientId);          
-          } 
-          PIDlistLength=PIDlist.length;
-          $scope.patients=PatientsList.slice(0,10);
-          loaditems=10;$ionicLoading.hide();
-          
-          $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
-          $timeout(function(){$scope.moredata = false;},50);
-          getPatientsBasic(PIDlist);        
-        },function(data){
-          netError();
-        })        
+      userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM2','0','0')
+      .then(function(data){
+        for(var i=0;i<data.length;i++){
+          temp=data[i];
+          if(temp.photoAddress=='' || temp.photoAddress==null){    
+            temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+          }else{
+            temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+          }
+          temp.Age='';
+          temp.GenderText='';
+          temp.Module="糖尿病";
+          PatientsList.push(temp);
+          PIDlist.push(temp.PatientId);          
+        }
+        // PatientsList=$filter('orderBy')(PatientsList,['ComplianceRate','Process']);
+        // PatientsList1=PatientsList;
+        // PatientsList1 = FilterIt(PatientsList);
+        if((PIDlist.length-PIDlistLength)==15){
+          $scope.moredata = false;
+        }
+        
+        // PIDlistLength=PIDlist.length;
+        $scope.patients=PatientsList;
+        // console.log( PIDlistLength,PIDlist.length ,$scope.moredata);
+        PIDlistLength=PIDlist.length;
+        // console.log($scope.patients);
+        // loaditems=10;
+        $ionicLoading.hide();
+        $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+        // $timeout(function(){$scope.moredata = false;},50);
+        getPatientsBasic(PIDlist);        
+      },function(data){
+        netError();
+      })        
     },function(data){
       netError();
     });
   }
   //获取PIDlist并加载10条
-  getPIDlist();
+  // getPIDlist();
 
   $scope.PIDdetail = function(Patient){
     Storage.set("PatientID",Patient.PatientId);
@@ -1484,22 +1763,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   $scope.doRefresh =function() {
     if(refreshing==0){
-      refreshing=1;searchFlag=0;
+      refreshing=1;
       PatientsList=[];PIDlist=[];
       loaditems=0;PIDlistLength=0;
       getPIDlist();
     }
   }
   $scope.loadMore = function(){
-    if(PIDlistLength==loaditems && PIDlistLength!=0){
+    if($scope.moredata==false){
+      // console.log($scope.moredata);
       $scope.moredata=true;
-    } 
-    if((PIDlistLength-loaditems)>10){
-      loaditems+=10;
-      $scope.patients=PatientsList.slice(0,loaditems);
-    }else if(loaditems>=10){
-      loaditems+=PIDlistLength-loaditems;
-      $scope.patients=PatientsList;
+      getPIDlist();
     }  
    $scope.$broadcast('scroll.infiniteScrollComplete');
   }  
@@ -1530,7 +1804,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             isMyPID=1;
             Storage.set("PatientID",data.text);
             for(var i in PatientsList){
-              if(PatientsList[i].PatientId == data.text){
+              if(PatientsList[i].PatientID == data.text){
                 Storage.set("PatientName",PatientsList[i].PatientName);
                 Storage.set('PatientAge',PatientsList[i].Age);
                 Storage.set('PatientGender',PatientsList[i].GenderText);     
@@ -1567,263 +1841,189 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }        
       }
     }, function(error) {
-            
+
     });
-  }         
+  }  
+  //筛选
+  var minValue=20;
+  var maxValue=35;
+  // var fieldName='Age' ;
+  var filterAge=[];//fieldName, minValue, maxValue
+  var filterModule=[];
+  var filterStartDate='';
+  $scope.byRange = function () {
+    if (minValue === undefined) minValue = 0;
+    if (maxValue === undefined) maxValue = 100;
+    
+    return function predicateFunc(item) {
+      var flag=false;tempflag=false;
+      if(filterAge!=''){
+        for(var i in filterAge){
+          if(filterAge[i][0] <= item['Age'] && item['Age'] <=filterAge[i][1]){
+            tempflag=true;
+            break;
+          }
+        } 
+        if(tempflag==false){
+          return false;
+        }else{
+          tempflag=false;
+        }       
+      }
+
+      if(filterModule!=''){
+        for(var i in filterModule){
+          if(filterModule[i]==item['Module']){
+            tempflag=true;
+            break;
+          }
+        }
+        if(tempflag==false){
+          return flag;
+        }else{
+          tempflag=false;
+        }        
+      }
+      if(filterStartDate!=''){
+        if(filterStartDate<=String(item['StartDate'])){
+          tempflag=true;
+        }else{
+          tempflag=false;
+        }
+        if(tempflag==false){
+          return false;
+        }else{
+          tempflag=false;
+        } 
+      }
+      return true;
+      // return minValue <= item[fieldName] && item[fieldName] <= maxValue;
+      // return item[fieldName] == 'ssss';
+    };
+  };
+  $ionicModal.fromTemplateUrl('partials/individual/coach-patients-filter.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+    $scope.categories=categories[0];
+  });
+  $scope.switchTo = function(index){
+    $scope.categories=categories[index];
+    index1=index;
+    if(index==0 ||index==1)
+    if(index==2){
+      $scope.ownset=false;
+    }
+  }
+  $scope.modelopen = function() {
+    $scope.popover.hide();
+    $scope.modal.show();
+    $scope.props=Props;
+    // $scope.categories=categories[0];
+    $scope.rankprops=rankprops;
+    $scope.ownset=true;
+  };
+  var index1=0;
+  // $scope.moveItem = function(item, fromIndex, toIndex) {
+  //   $scope.rankprops.splice(fromIndex, 1);
+  //   $scope.rankprops.splice(toIndex, 0, item);
+  // };
+  $scope.checkit = function(index){
+    if(index1!=2){
+      categories[index1][index].checked=!categories[index1][index].checked;
+      // $scope.categories=categories[index1];      
+    }else{
+      // categories[index1][index].checked=!categories[index1][index].checked;
+      var t=!categories[index1][index].checked;
+      for(var i in categories[index1]){
+        categories[index1][i].checked=false;
+      }
+      // console.log(t);
+      categories[index1][index].checked=t;
+      // $scope.categories=categories[index1];
+    }
+
+  }
+  $scope.letusFilter =function(){
+    $scope.modal.hide();
+    //年龄
+    var temp=[];filterAge=[];
+    if(categories[4][0].checked){
+      temp.push([0,30]);
+    }
+    if(categories[4][1].checked){
+      temp.push([30,50]);
+    }
+    if(categories[4][2].checked){
+      temp.push([50,60]);
+    }
+    if(categories[4][3].checked){
+      temp.push([60,150]);
+    }
+    if(temp==''){
+      filterAge=[];     
+    }else{
+      for(var i=temp.length-1; i>0;i--){
+        if(temp[i][0]==temp[i-1][1]){
+          temp[i-1][1]=temp[i][1];
+        }else{
+          filterAge.push([temp[i][0],temp[i][1]]);
+        }
+      } 
+      filterAge.push([temp[0][0],temp[0][1]]);      
+    }
+    //模块
+    temp=[];
+    for(var i in categories[0]){
+      if(categories[0][i].checked==true){
+        temp.push(categories[0][i].Name)
+      }      
+    }
+    filterModule=temp;
+    //起始日期
+    // var d=new Date();
+    // var dd=val.getDate();
+    // var mm=val.getMonth();
+    // var yyyy=val.getFullYear();
+
+    if(categories[2][0].checked==true){
+      var uom = new Date(new Date()-14*86400000); 
+      uom = String(uom.getFullYear())  + String((uom.getMonth()+1)) + String(uom.getDate()); 
+      filterStartDate=parseInt(uom);
+      // if(dd>14){
+      //   timelength=String(yyyy)+String(mm)+String(dd-14);
+      // }else if(mm>1){
+      //   timelength=String(yyyy)+String(mm-1)+String(dd-14);
+      // }
+    }else if(categories[2][1].checked==true){
+      var uom = new Date(new Date()-31*86400000); 
+      uom = String(uom.getFullYear())  + String((uom.getMonth()+1))  + String(uom.getDate()); 
+      filterStartDate=parseInt(uom);     
+    }else if(categories[2][2].checked==true){
+      var uom = new Date(new Date()-92*86400000); 
+      uom = String(uom.getFullYear())  + String((uom.getMonth()+1))  + String(uom.getDate());
+      filterStartDate=parseInt(uom);
+    }else{
+      filterStartDate='';
+    }
+  }
+  $scope.closeFilter = function() {
+    $scope.modal.hide();
+  };
+  //Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });       
 }])
-// .controller('myPatientCtrl', ['$cordovaBarcodeScanner','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG' ,function($cordovaBarcodeScanner,$ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG){
-//   var PIDlist=new Array();//PID列表
-//   var PIDlistLength;//PID列表长度
-//   var loaditems=0;//已加载条目
-//   var PatientsList,PatientsList1,PatientsList2,PatientsListOrigin;
-//   var PatientsBasic=new Array();//输出到页面的json 
-//   var refreshing=0;//控制连续刷新时序            
-//   $scope.patients=PatientsBasic;
-//   $scope.moredata = true;  //控制上拉加载
-
-//     //-----------------------------------------------------------------------------//
-//   var DOCID=Storage.get('UID');
-//   var rankList = new Array();
-//   var rankPID = new Array();  
-//   $scope.rankBy='默认排序';   
-//   //loading图标显示
-//   $ionicLoading.show({
-//     content: '加载中',
-//     animation: 'fade-in',
-//     showBackdrop: true,
-//     maxWidth: 200,
-//     showDelay: 0
-//   });
-
-//   $scope.rankPatients=function(){
-//     var rank;var propertyName;
-//     rankList[0]=PatientsListOrigin;
-//     switch($scope.rankBy){
-//       case '计划进度':rank=1;propertyName='Process';break;
-//       case '依从率':rank=2;propertyName='ComplianceRate';break;
-//       default:rank=0;
-//     }
-//     if(rankPID[rank]==undefined){
-//       var compare=function(propertyName) { 
-//         return function (object1, object2) { 
-//           var value1 = object1[propertyName]; 
-//           var value2 = object2[propertyName]; 
-//           if (value2 < value1) { 
-//             return -1; 
-//           } 
-//           else if (value2 > value1) { 
-//             return 1; 
-//           } 
-//           else { 
-//             return 0; 
-//           } 
-//         } 
-//       } 
-//       rankList[rank]=PatientsListOrigin;
-//       rankList[rank].sort(compare(propertyName));
-//       var temp=new Array();
-//       for(var i in rankList[rank]){
-//         temp.push(rankList[rank][i].PatientId);
-        
-//       }
-//       rankPID[rank]=temp; 
-//     }
-//     PatientsBasic=[];loaditems=0;
-//     PIDlist=rankPID[rank];
-//     PatientsList=rankList[rank];
-//     firstget();
-//   }
-//   var onePatientBasic= function(PID){
-//     userINFO.BasicInfo(PID).then(function(data){
-//       var str=JSON.stringify(data);
-//       var str=JSON.parse(str);
-//       //两个JSON拼数据,把PatientsList中的字段加到PatientsBasic
-//       if(PatientsList[loaditems].photoAddress=='' || PatientsList[loaditems].photoAddress==null){    
-//         str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
-//       }else{
-//         str.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ PatientsList[loaditems].photoAddress;
-//       }
-//       str.PlanNo = PatientsList[loaditems].PlanNo;
-//       str.StartDate = PatientsList[loaditems].StartDate;
-//       str.Process = PatientsList[loaditems].Process;
-//       str.RemainingDays = PatientsList[loaditems].RemainingDays;
-//       str.VitalSign = PatientsList[loaditems].VitalSign;
-//       str.ComplianceRate = PatientsList[loaditems].ComplianceRate;
-//       str.TotalDays = PatientsList[loaditems].TotalDays;
-//       str.Status = PatientsList[loaditems].Status;
-//       PatientsBasic.push(str);
-//       loaditems++;
-//     },function(data){
-//     }); 
-//   }
-//   var getPatientsBasic=function(list){
-//     // for(var p in list){        //3行无延时请求数据
-//     //   onePatientBasic(list[p]);
-//     // }  
-//     var repeat=list.length;p=0;  
-//     var timer;
-//     timer = $interval(function(){
-//       if(repeat==0){
-//         $timeout(function(){$scope.moredata = false;},2000);
-//         $scope.patients=PatientsBasic;
-//         $interval.cancel(timer);
-//         timer=undefined;        
-//       }else{
-//       onePatientBasic(list[repeat-1]);
-//       repeat--;
-//       }
-//     },50);
-//   }
-//   var firstget =function(){
-//       if(PIDlistLength>=10){
-//       getPatientsBasic(PIDlist.slice(0,10));
-//       }else{
-//       getPatientsBasic(PIDlist);
-//       }
-//       $ionicLoading.hide();
-//       $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
-//       refreshing=0;
-//   }
-//   var netError = function(){
-//     $ionicLoading.hide();
-//     refreshing=0;
-//     PageFunc.confirm('网络好像不太稳定', '网络错误');   
-//   }
-//   var getPIDlist = function(){
-//     userINFO.GetPatientsList(DOCID,'HM1','0','0')
-//     .then(function(data){
-//       var datastr=JSON.stringify(data);
-//       var datastr=JSON.parse(datastr);
-//       PatientsList1=datastr;
-//       for(var i in PatientsList1){
-//         PIDlist.push(PatientsList1[i].PatientId);
-//       }
-      
-//       userINFO.GetPatientsList(DOCID,'HM2','0','0')
-//       .then(function(data){
-//         var datastr=JSON.stringify(data);
-//         var datastr=JSON.parse(datastr);
-//         PatientsList2=datastr;
-//         for(var i in PatientsList2){
-//           PIDlist.push(PatientsList2[i].PatientId);
-//         }
-//         PIDlistLength=PIDlist.length;
-        
-//         rankPID[0]=PIDlist;
-//         if(PatientsList1!='' && PatientsList2!=''){
-//           var s1=JSON.stringify(PatientsList1);
-//           var s2=JSON.stringify(PatientsList2);
-//           s1=s1.substring(0,s1.length-1);s1=s1.substr(1);
-//           s2=s2.substring(0,s2.length-1);s2=s2.substr(1);          
-//           PatientsList=JSON.parse('['+s1 + ',' + s2+ ']');
-//         }else{
-//           if(PatientsList1!=''){
-//             PatientsList=PatientsList1;
-//           }else if(PatientsList2!=''){
-//             PatientsList=PatientsList2;
-//           }else{
-//             PatientsList=[];
-//           }
-//         }
-//         PatientsListOrigin=PatientsList;
-//         firstget();         
-//       },function(data){
-//         netError();
-//       })
-//     },function(data){
-//       netError();
-//     });
-//   }
-//   //获取PIDlist并加载10条
-//   getPIDlist();
-
-//   $scope.PIDdetail = function(Patient){
-//     Storage.set("PatientID",Patient.UserId);
-//     Storage.set("isManage","Yes");
-//     Storage.set("PatientName",Patient.UserName);
-//     Storage.set('PatientAge',Patient.Age);
-//     Storage.set('PatientGender',Patient.GenderText);     
-//     Storage.set("PatientPhotoAddress",Patient.photoAddress);
-//     $state.go('manage.plan');
-//   }
-
-//   $scope.doRefresh =function() {
-//     if(refreshing==0){
-//       refreshing=1;$scope.rankBy='默认排序';
-//       PatientsBasic=[];PIDlist=[];
-//       loaditems=0;PIDlistLength=0;
-//       getPIDlist();
-//     }
-//   }
-//   $scope.loadMore = function(){
-//     if(PIDlistLength==loaditems && PIDlistLength!=0){
-//       $scope.moredata=true;
-//     } 
-//     if((PIDlistLength-loaditems)>10){
-//       getPatientsBasic(PIDlist.slice(loaditems,loaditems+10));
-//     }else if(loaditems>=10){
-//       getPatientsBasic(PIDlist.slice(loaditems));
-//     }  
-//    $scope.$broadcast('scroll.infiniteScrollComplete');
-//   }  
-//   $scope.setwidth=function(patient){
-//     var divwidth=patient.Age + '%';
-//     return {width:divwidth}; 
-//   };
-//     //扫一扫，具体跳转再改
-//   $scope.QRscan = function(){
-//     var isMyPID=0;
-//     $cordovaBarcodeScanner
-//     .scan()
-//     .then(function(data) {
-//       // Success! Barcode data is here
-//       // var s = "Result: " + data.text + "<br/>" +
-//       // "Format: " + data.format + "<br/>" +
-//       // "Cancelled: " + data.cancelled;
-//       for(var i in PIDlist){
-//         if(data.text==PIDlist[i]){
-//           isMyPID=1;
-//           Storage.set("PatientID",data.text);
-//           for(var i in PatientsBasic){
-//             if(PatientsBasic[i].PatientID == data.text){
-//               Storage.set("PatientName",PatientsBasic[i].UserName);
-//               Storage.set('PatientAge',PatientsBasic[i].Age);
-//               Storage.set('PatientGender',PatientsBasic[i].GenderText);     
-//               Storage.set("PatientPhotoAddress",PatientsBasic[i].photoAddress); 
-//               break;             
-//             }
-//           }
-//           $state.go('manage.plan');
-//           break; 
-//         }
-//       }
-//       if(isMyPID==0){
-//         var myPopup = $ionicPopup.show({
-//           template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
-//           //title: '',
-//           //subTitle: '2',
-//           scope: $scope,
-//           buttons: [
-//             { text: '取消',
-//               type: 'button-small',
-//               onTap: function(e) {                
-//               }
-//             },
-//             {
-//               text: '<b>确定</b>',
-//               type: 'button-small button-positive ',
-//               onTap: function(e) {
-//                 Storage.set("newPatientID",data.text);
-//                 $state.go('addpatient.basicinfo');
-//               }
-//             }
-//           ]
-//         });
-//       }
-//     }, function(error) {      
-//     });
-//   }         
-// }])
 .controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
   var PIDlist=new Array();
   var PIDlistLength;
@@ -1887,8 +2087,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
        $ionicLoading.hide();
       PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
+  var orderConfig ="StartDate desc,EndDate,RemainingDays ";
+  var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
-    userINFO.GetPatientsList(DOCID,'M1','0','0')
+    userINFO.GetPatientsList(100,0,orderConfig,filterConfig,DOCID,'M1','0','0')
     .then(function(data){
       var datastr=JSON.stringify(data);
       var datastr=JSON.parse(datastr);
