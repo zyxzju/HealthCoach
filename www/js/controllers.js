@@ -5467,7 +5467,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     $scope.task.detailList = new Array(); //全部三级任务详情
     $scope.task.secondlist; //某一项三级任务列表
-    $scope.task.secondarry; //某一项三级任务标志位列表
     $scope.task.AddList = new Array();
     $scope.task.DeleteList = new Array();
 
@@ -5513,24 +5512,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }, function(data) {  
             });   
         }
-    }
-
+    } 
     function ShowPop(index)
     {
         $scope.task.secondlist = $scope.task.detailList[index].Detail;
-        $scope.task.secondarry = $scope.task.detailList[index].OriginFlag;
-        //调试用
-        // var list1 = new Array();
-        // var list2 = new Array();
-        // for(var i = 0; i < $scope.task.secondlist.length; i++)
-        // {
-        //     list1[i] = $scope.task.secondlist[i].ControlType;
-        // }
-        // for(var i = 0; i < $scope.task.detailList[index].Detail.length; i++)
-        // {
-        //     list2[i] = $scope.task.detailList[index].Detail[i].ControlType;
-        // }
-
+        var Arry2 = $scope.task.detailList[index].OriginFlag;
         var piType = $scope.task.detailList[index].piType;
 
         var myPopup = $ionicPopup.show({
@@ -5544,40 +5530,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 text: '取消',
                 type: 'button-small', 
                 onTap: function(e) {
+                    for (var i = 0; i < Arry2.length; i++)
+                    {
+                        $scope.task.detailList[index].Detail[i].ControlType = Arry2[i];
+                    }
                     return 0;
                 }              
             },
             {
                 text: '确定',
                 type: 'button-small button-positive',  
-                onTap: function(e) { 
+                onTap: function(e) {                   
                     return 1;
                 }               
             }]
         });
-        myPopup.then(function(res) {
-            // for(var i = 0; i < $scope.task.secondlist.length; i++)
-            // {
-            //     list1[i] = $scope.task.secondlist[i].ControlType;
-            // }
-            // for(var i = 0; i < $scope.task.detailList[index].Detail.length; i++)
-            // {
-            //     list2[i] = $scope.task.detailList[index].Detail[i].ControlType;
-            // }
-           
+        myPopup.then(function(res) {           
             if (res == 1)
             {
-                $scope.task.detailList[index].Detail = $scope.task.secondlist;
-                for (var i = 0; i < $scope.task.secondlist.length; i++)
-                {
-                    $scope.task.detailList[index].OriginFlag[i] = $scope.task.secondlist[i].ControlType;
-                }
                 var FlagBefore = false;
                 var FlagNow = false;
 
-                for (var i=0; i < $scope.task.secondarry.length; i++)
+                for (var i=0; i < Arry2.length; i++)
                 {
-                    if ($scope.task.secondarry[i])
+                    if (Arry2[i])
                     {
                         FlagBefore = true;
                         break;
@@ -5593,7 +5569,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 }
                 for (var i=0; i < $scope.task.secondlist.length; i++)
                 {
-                    if (($scope.task.secondlist[i].ControlType) && (!$scope.task.secondarry[i])) //插入数据
+                    if (($scope.task.secondlist[i].ControlType) && (!Arry2[i])) //插入数据
                     { 
                         $scope.task.AddList.push({"PlanNo":PlanNo, 
                                      "Type":$scope.task.secondlist[i].Type, 
@@ -5605,7 +5581,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                                      "piTerminalIP":"1", 
                                      "piDeviceType":0});               
                     }
-                    if((!$scope.task.secondlist[i].ControlType) && ($scope.task.secondarry[i])) //删除数据
+                    if((!$scope.task.secondlist[i].ControlType) && (Arry2[i])) //删除数据
                     {
                         $scope.task.DeleteList.push({"PlanNo":PlanNo, 
                                          "Type":$scope.task.secondlist[i].Type, 
@@ -5650,8 +5626,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                         }
                     }  
                 }
+                $scope.task.detailList[index].Detail = $scope.task.secondlist;
+                for (var i = 0; i < $scope.task.secondlist.length; i++)
+                {
+                    $scope.task.detailList[index].OriginFlag[i] = $scope.task.secondlist[i].ControlType;
+                }
             }
-            $scope.task.secondlist = null; 
         });
     }
 
