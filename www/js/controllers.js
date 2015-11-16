@@ -1345,20 +1345,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-// .controller('myPatientCtrl', ['$cordovaBarcodeScanner','$filter','$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG' ,function($cordovaBarcodeScanner,$filter, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG){
+// .controller('myPatientCtrl', ['$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
 //   var PIDlist=new Array();//PID列表
-//   var PIDlistLength;//PID列表长度
+//   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
 //   var loaditems=0;//已加载条目
 //   var PatientsList=new Array();//输出到页面的json  
 //   var refreshing=1;//控制连续刷新时序            
 //   // $scope.patients=PatientsBasic;
-//   $scope.moredata = true;  //控制上拉加载
+//   $scope.moredata = false;  //控制上拉加载
 //   $scope.clearIt=true;
-//   var searchFlag=0;
 //     //-----------------------------------------------------------------------------//
 //   var DOCID=Storage.get('UID');
    
 //   //loading图标显示
+//   $scope.$on('$ionicView.enter', function() {
+//     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+//       scope: $scope,
+//     }).then(function(popover) {
+//       $scope.popover = popover;
+//       $scope.ranks=ranks;
+//     });    
+//   });
 //   $ionicLoading.show({
 //     content: '加载中',
 //     animation: 'fade-in',
@@ -1366,10 +1373,44 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //     maxWidth: 200,
 //     showDelay: 0
 //   });
+//   var Props=['模块','计划状态','计划起始', '依从率','年龄'];
+//   var categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false}],
+//     [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
+//     [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
+//     [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
+//     [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
+//   var rankprops=[{'Name':'依从率','no':0,'ordername':'ComplianceRate' ,'reverse':false},
+//     {'Name':'计划','no':1,'ordername':'Status','reverse':false},
+//     {'Name':'进度','no':2,'ordername':'Process','reverse':false}];
+//   var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate','clicked':false},
+//     {'Name':'依从率高低','ordername':'ComplianceRate desc','clicked':false},
+//     {'Name':'计划剩余天数','ordername':'RemainingDays','clicked':false},
+//     {'Name':'只显示高血压','ordername':'StartDate','clicked':false},
+//     {'Name':'只显示糖尿病','ordername':'StartDate','clicked':false}]
+
+//     $scope.rankBy = function(index){
+//       $scope.popover.hide();
+//       if(index<3){
+//         orderConfig=ranks[index].ordername;
+//         ranks[index].clicked=true;
+//         console.log(ranks[index].clicked);
+//         refreshing=1;
+//         PatientsList=[];PIDlist=[];
+//         loaditems=0;PIDlistLength=0;
+//         getPIDlist();
+//       }
+
+      
+//     }
+//   // $scope.filterProps={PatientName:'te'};
 //   //搜索
+//   var nowdata;
 //   $scope.startSearch = function(query){
-//     if(query.length>0){
+//     if(query.PatientName.length>0){
 //       $scope.clearIt=false;
+//     }
+//     if(query.PatientName.length==0){
+//       $scope.clearIt=true;
 //     }
 //     var dosearch =function(){
 //       var filterdata= $filter('filter')(PatientsList,query);
@@ -1386,15 +1427,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //     $scope.clearIt=true;
 //     $scope.patients=PatientsList;
 //   }
+
 //   var onePatientBasic= function(PID,listIndex){
 //     userINFO.BasicInfo(PID).then(function(data){
 //       // console.log(data)
-//       // console.log(searchFlag,listIndex,PatientsList[listIndex]);
-//       PatientsList[listIndex].Age=data.Age+'岁';
+//       // console.log(,listIndex,PatientsList[listIndex]);
+//       PatientsList[listIndex].Age=data.Age;
 //       PatientsList[listIndex].GenderText=data.GenderText;
-//       if((listIndex+1)==PIDlistLength){
-//         searchFlag=1;
-//       }
 //       // $scope.patients=[];
 //       // $scope.patients=PatientsList.slice(0,loaditems);
 //     },function(data){
@@ -1423,10 +1462,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //     refreshing=0;
 //     PageFunc.confirm('网络好像不太稳定', '网络错误');   
 //   }
+//   // var addlength='&$top=15&$skip='+loaditems;
+//   var orderConfig ="StartDate desc,EndDate,RemainingDays ";
+//   var filterConfig = "PatientName ge  ''";
 //   var getPIDlist = function(){
-//     userINFO.GetPatientsList(DOCID,'HM1','0','0')
+//     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
 //     .then(function(data){
-//       var temp={};console.log(data);
+//       var temp={}
 //       for(var i=0;i<data.length;i++){  
 //         temp=data[i];
 //         if(temp.photoAddress=='' || temp.photoAddress==null){    
@@ -1440,37 +1482,47 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //         PatientsList.push(temp);
 //         PIDlist.push(temp.PatientId);          
 //       } 
-//        userINFO.GetPatientsList(DOCID,'HM2','0','0')
-//         .then(function(data){
-//           for(var i=0;i<data.length;i++){
-//             temp=data[i];
-//             if(temp.photoAddress=='' || temp.photoAddress==null){    
-//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
-//             }else{
-//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
-//             }
-//             temp.Age='';
-//             temp.GenderText='';
-//             temp.Module="糖尿病";
-//             PatientsList.push(temp);
-//             PIDlist.push(temp.PatientId);          
-//           } 
-//           PIDlistLength=PIDlist.length;
-//           $scope.patients=PatientsList.slice(0,10);
-//           loaditems=10;$ionicLoading.hide();
-          
-//           $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
-//           $timeout(function(){$scope.moredata = false;},50);
-//           getPatientsBasic(PIDlist);        
-//         },function(data){
-//           netError();
-//         })        
+//       userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM2','0','0')
+//       .then(function(data){
+//         for(var i=0;i<data.length;i++){
+//           temp=data[i];
+//           if(temp.photoAddress=='' || temp.photoAddress==null){    
+//             temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//           }else{
+//             temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//           }
+//           temp.Age='';
+//           temp.GenderText='';
+//           temp.Module="糖尿病";
+//           PatientsList.push(temp);
+//           PIDlist.push(temp.PatientId);          
+//         }
+//         // PatientsList=$filter('orderBy')(PatientsList,['ComplianceRate','Process']);
+//         // PatientsList1=PatientsList;
+//         // PatientsList1 = FilterIt(PatientsList);
+//         if((PIDlist.length-PIDlistLength)==15){
+//           $scope.moredata = false;
+//         }
+        
+//         // PIDlistLength=PIDlist.length;
+//         $scope.patients=PatientsList;
+//         // console.log( PIDlistLength,PIDlist.length ,$scope.moredata);
+//         PIDlistLength=PIDlist.length;
+//         // console.log($scope.patients);
+//         // loaditems=10;
+//         $ionicLoading.hide();
+//         $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+//         // $timeout(function(){$scope.moredata = false;},50);
+//         getPatientsBasic(PIDlist);        
+//       },function(data){
+//         netError();
+//       })        
 //     },function(data){
 //       netError();
 //     });
 //   }
 //   //获取PIDlist并加载10条
-//   getPIDlist();
+//   // getPIDlist();
 
 //   $scope.PIDdetail = function(Patient){
 //     Storage.set("PatientID",Patient.PatientId);
@@ -1484,22 +1536,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 //   $scope.doRefresh =function() {
 //     if(refreshing==0){
-//       refreshing=1;searchFlag=0;
+//       refreshing=1;
 //       PatientsList=[];PIDlist=[];
 //       loaditems=0;PIDlistLength=0;
 //       getPIDlist();
 //     }
 //   }
 //   $scope.loadMore = function(){
-//     if(PIDlistLength==loaditems && PIDlistLength!=0){
+//     if($scope.moredata==false){
+//       // console.log($scope.moredata);
 //       $scope.moredata=true;
-//     } 
-//     if((PIDlistLength-loaditems)>10){
-//       loaditems+=10;
-//       $scope.patients=PatientsList.slice(0,loaditems);
-//     }else if(loaditems>=10){
-//       loaditems+=PIDlistLength-loaditems;
-//       $scope.patients=PatientsList;
+//       getPIDlist();
 //     }  
 //    $scope.$broadcast('scroll.infiniteScrollComplete');
 //   }  
@@ -1530,7 +1577,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //             isMyPID=1;
 //             Storage.set("PatientID",data.text);
 //             for(var i in PatientsList){
-//               if(PatientsList[i].PatientId == data.text){
+//               if(PatientsList[i].PatientID == data.text){
 //                 Storage.set("PatientName",PatientsList[i].PatientName);
 //                 Storage.set('PatientAge',PatientsList[i].Age);
 //                 Storage.set('PatientGender',PatientsList[i].GenderText);     
@@ -1567,11 +1614,190 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //         }        
 //       }
 //     }, function(error) {
-            
+
 //     });
-//   }         
+//   }  
+//   //筛选
+//   var minValue=20;
+//   var maxValue=35;
+//   // var fieldName='Age' ;
+//   var filterAge=[];//fieldName, minValue, maxValue
+//   var filterModule=[];
+//   var filterStartDate='';
+//   $scope.byRange = function () {
+//     if (minValue === undefined) minValue = 0;
+//     if (maxValue === undefined) maxValue = 100;
+    
+//     return function predicateFunc(item) {
+//       var flag=false;tempflag=false;
+//       if(filterAge!=''){
+//         for(var i in filterAge){
+//           if(filterAge[i][0] <= item['Age'] && item['Age'] <=filterAge[i][1]){
+//             tempflag=true;
+//             break;
+//           }
+//         } 
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         }       
+//       }
+
+//       if(filterModule!=''){
+//         for(var i in filterModule){
+//           if(filterModule[i]==item['Module']){
+//             tempflag=true;
+//             break;
+//           }
+//         }
+//         if(tempflag==false){
+//           return flag;
+//         }else{
+//           tempflag=false;
+//         }        
+//       }
+//       if(filterStartDate!=''){
+//         if(filterStartDate<=String(item['StartDate'])){
+//           tempflag=true;
+//         }else{
+//           tempflag=false;
+//         }
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         } 
+//       }
+//       return true;
+//       // return minValue <= item[fieldName] && item[fieldName] <= maxValue;
+//       // return item[fieldName] == 'ssss';
+//     };
+//   };
+//   $ionicModal.fromTemplateUrl('partials/individual/coach-patients-filter.html', {
+//     scope: $scope,
+//     animation: 'slide-in-up'
+//   }).then(function(modal) {
+//     $scope.modal = modal;
+//     $scope.categories=categories[0];
+//   });
+//   $scope.switchTo = function(index){
+//     $scope.categories=categories[index];
+//     index1=index;
+//     if(index==0 ||index==1)
+//     if(index==2){
+//       $scope.ownset=false;
+//     }
+//   }
+//   $scope.modelopen = function() {
+//     $scope.popover.hide();
+//     $scope.modal.show();
+//     $scope.props=Props;
+//     // $scope.categories=categories[0];
+//     $scope.rankprops=rankprops;
+//     $scope.ownset=true;
+//   };
+//   var index1=0;
+//   // $scope.moveItem = function(item, fromIndex, toIndex) {
+//   //   $scope.rankprops.splice(fromIndex, 1);
+//   //   $scope.rankprops.splice(toIndex, 0, item);
+//   // };
+//   $scope.checkit = function(index){
+//     if(index1!=2){
+//       categories[index1][index].checked=!categories[index1][index].checked;
+//       // $scope.categories=categories[index1];      
+//     }else{
+//       // categories[index1][index].checked=!categories[index1][index].checked;
+//       var t=!categories[index1][index].checked;
+//       for(var i in categories[index1]){
+//         categories[index1][i].checked=false;
+//       }
+//       // console.log(t);
+//       categories[index1][index].checked=t;
+//       // $scope.categories=categories[index1];
+//     }
+
+//   }
+//   $scope.letusFilter =function(){
+//     $scope.modal.hide();
+//     //年龄
+//     var temp=[];filterAge=[];
+//     if(categories[4][0].checked){
+//       temp.push([0,30]);
+//     }
+//     if(categories[4][1].checked){
+//       temp.push([30,50]);
+//     }
+//     if(categories[4][2].checked){
+//       temp.push([50,60]);
+//     }
+//     if(categories[4][3].checked){
+//       temp.push([60,150]);
+//     }
+//     if(temp==''){
+//       filterAge=[];     
+//     }else{
+//       for(var i=temp.length-1; i>0;i--){
+//         if(temp[i][0]==temp[i-1][1]){
+//           temp[i-1][1]=temp[i][1];
+//         }else{
+//           filterAge.push([temp[i][0],temp[i][1]]);
+//         }
+//       } 
+//       filterAge.push([temp[0][0],temp[0][1]]);      
+//     }
+//     //模块
+//     temp=[];
+//     for(var i in categories[0]){
+//       if(categories[0][i].checked==true){
+//         temp.push(categories[0][i].Name)
+//       }      
+//     }
+//     filterModule=temp;
+//     //起始日期
+//     // var d=new Date();
+//     // var dd=val.getDate();
+//     // var mm=val.getMonth();
+//     // var yyyy=val.getFullYear();
+
+//     if(categories[2][0].checked==true){
+//       var uom = new Date(new Date()-14*86400000); 
+//       uom = String(uom.getFullYear())  + String((uom.getMonth()+1)) + String(uom.getDate()); 
+//       filterStartDate=parseInt(uom);
+//       // if(dd>14){
+//       //   timelength=String(yyyy)+String(mm)+String(dd-14);
+//       // }else if(mm>1){
+//       //   timelength=String(yyyy)+String(mm-1)+String(dd-14);
+//       // }
+//     }else if(categories[2][1].checked==true){
+//       var uom = new Date(new Date()-31*86400000); 
+//       uom = String(uom.getFullYear())  + String((uom.getMonth()+1))  + String(uom.getDate()); 
+//       filterStartDate=parseInt(uom);     
+//     }else if(categories[2][2].checked==true){
+//       var uom = new Date(new Date()-92*86400000); 
+//       uom = String(uom.getFullYear())  + String((uom.getMonth()+1))  + String(uom.getDate());
+//       filterStartDate=parseInt(uom);
+//     }else{
+//       filterStartDate='';
+//     }
+//   }
+//   $scope.closeFilter = function() {
+//     $scope.modal.hide();
+//   };
+//   //Cleanup the modal when we're done with it!
+//   $scope.$on('$destroy', function() {
+//     $scope.modal.remove();
+//   });
+//   // Execute action on hide modal
+//   $scope.$on('modal.hidden', function() {
+//     // Execute action
+//   });
+//   // Execute action on remove modal
+//   $scope.$on('modal.removed', function() {
+//     // Execute action
+//   });       
 // }])
-.controller('myPatientCtrl', ['$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
+.controller('myPatientCtrl', ['$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
   var loaditems=0;//已加载条目
@@ -1584,6 +1810,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var DOCID=Storage.get('UID');
    
   //loading图标显示
+  $scope.scrollTop = function(){
+    $ionicScrollDelegate.scrollTop(true);
+  }
   $scope.$on('$ionicView.enter', function() {
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
       scope: $scope,
@@ -1599,23 +1828,21 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     maxWidth: 200,
     showDelay: 0
   });
-  var Props=['模块','计划状态','计划起始', '依从率','年龄'];
+  var Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
   var categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false}],
     [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
     [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
     [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
     [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
-  var rankprops=[{'Name':'依从率','no':0,'ordername':'ComplianceRate' ,'reverse':false},
-    {'Name':'计划','no':1,'ordername':'Status','reverse':false},
-    {'Name':'进度','no':2,'ordername':'Process','reverse':false}];
   var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate','clicked':false},
-    {'Name':'依从率高低','ordername':'ComplianceRate desc','clicked':false},
+    {'Name':'依从率最低','ordername':'ComplianceRate desc','clicked':false},
     {'Name':'计划剩余天数','ordername':'RemainingDays','clicked':false},
-    {'Name':'只显示高血压','ordername':'StartDate','clicked':false},
-    {'Name':'只显示糖尿病','ordername':'StartDate','clicked':false}]
-
+    {'Name':'只显示高血压','ordername':'高血压','clicked':false},
+    {'Name':'只显示糖尿病','ordername':'糖尿病','clicked':false}]
+    var rankindex=0;
     $scope.rankBy = function(index){
       $scope.popover.hide();
+      ranks[rankindex].clicked=false;
       if(index<3){
         orderConfig=ranks[index].ordername;
         ranks[index].clicked=true;
@@ -1624,13 +1851,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         PatientsList=[];PIDlist=[];
         loaditems=0;PIDlistLength=0;
         getPIDlist();
-      }
-
-      
+      }else if(index==3 ||index==4){
+        filterModule=[ranks[index].ordername];
+        ranks[index].clicked=true;
+        categories[0][index-3].checked=true;
+      }  
+      rankindex=index;    
+    }
+    $scope.resetfilter= function(){
+      $scope.popover.hide();
+      ranks[rankindex].clicked=false;
+      // index1=0;
+      Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
+      categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false}],
+      [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
+      [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
+      [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
+      [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
+      orderConfig="Status";
+      refreshing=1;
+      PatientsList=[];PIDlist=[];
+      loaditems=0;PIDlistLength=0;
+      getPIDlist();      
+      $scope.categories=categories[0];
+      $scope.letusFilter();
     }
   // $scope.filterProps={PatientName:'te'};
   //搜索
-  var nowdata;
   $scope.startSearch = function(query){
     if(query.PatientName.length>0){
       $scope.clearIt=false;
@@ -1656,8 +1903,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   var onePatientBasic= function(PID,listIndex){
     userINFO.BasicInfo(PID).then(function(data){
-      // console.log(data)
-      // console.log(,listIndex,PatientsList[listIndex]);
       PatientsList[listIndex].Age=data.Age;
       PatientsList[listIndex].GenderText=data.GenderText;
       // $scope.patients=[];
@@ -1689,7 +1934,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
   // var addlength='&$top=15&$skip='+loaditems;
-  var orderConfig ="StartDate desc,EndDate,RemainingDays ";
+  var orderConfig ="RemainingDays,StartDate desc";
   var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
@@ -1723,22 +1968,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           PatientsList.push(temp);
           PIDlist.push(temp.PatientId);          
         }
-        // PatientsList=$filter('orderBy')(PatientsList,['ComplianceRate','Process']);
-        // PatientsList1=PatientsList;
-        // PatientsList1 = FilterIt(PatientsList);
         if((PIDlist.length-PIDlistLength)==15){
           $scope.moredata = false;
         }
-        
-        // PIDlistLength=PIDlist.length;
         $scope.patients=PatientsList;
-        // console.log( PIDlistLength,PIDlist.length ,$scope.moredata);
         PIDlistLength=PIDlist.length;
-        // console.log($scope.patients);
-        // loaditems=10;
+        console.log($scope.patients);
         $ionicLoading.hide();
         $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
-        // $timeout(function(){$scope.moredata = false;},50);
         getPatientsBasic(PIDlist);        
       },function(data){
         netError();
@@ -1747,9 +1984,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       netError();
     });
   }
-  //获取PIDlist并加载10条
-  // getPIDlist();
-
   $scope.PIDdetail = function(Patient){
     Storage.set("PatientID",Patient.PatientId);
     Storage.set("isManage","Yes");
@@ -1790,6 +2024,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // 扫一扫
   $scope.QRscan = function(){
     var isMyPID=0;
+    var setData =function(thisPatient){
+      Storage.set("PatientID",thisPatient.PatientId);     
+      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+      Storage.set("PatientName",thisPatient.PatientName);
+      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+      }
+      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+        Storage.set('PatientAge',data.Age);
+        Storage.set('PatientGender',data.GenderText);
+        $state.go('manage.plan');
+      },function(data){
+        // fail请求数据
+      });
+      }
     $cordovaBarcodeScanner
     .scan()
     .then(function(data) {
@@ -1798,64 +2049,108 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // "Format: " + data.format + "<br/>" +
       // "Cancelled: " + data.cancelled;
       if(data.cancelled!=true){
-        for(var i in PIDlist){
-          if(data.text==PIDlist[i]){
-            isMyPID=1;
-            Storage.set("PatientID",data.text);
-            for(var i in PatientsList){
-              if(PatientsList[i].PatientID == data.text){
-                Storage.set("PatientName",PatientsList[i].PatientName);
-                Storage.set('PatientAge',PatientsList[i].Age);
-                Storage.set('PatientGender',PatientsList[i].GenderText);     
-                Storage.set("PatientPhotoAddress",PatientsList[i].photoAddress); 
-                break;             
+        var tempf="PatientId eq '"+data.text+"'";
+        userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
+        .then(function(data){
+          if(data.length==1){
+            setData(data[0]);
+          }else{
+            userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM2','0','0')
+            .then(function(data){
+              if(data.length==1){
+                setData(data[0]);
+              }else{
+                var myPopup = $ionicPopup.show({
+                  template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+                  //title: '',
+                  //subTitle: '2',
+                  scope: $scope,
+                  buttons: [
+                    { text: '取消',
+                      type: 'button-small',
+                      onTap: function(e) {                
+                      }
+                    },
+                    {
+                      text: '<b>确定</b>',
+                      type: 'button-small button-positive ',
+                      onTap: function(e) {
+                        Storage.set("newPatientID",data.text);
+                        $state.go('addpatient.basicinfo');
+                      }
+                    }
+                  ]
+                });
               }
-            }
-            $state.go('manage.plan');
-            break; 
+            },function(data){
+              // fail请求数据
+            })            
           }
-        }
-        if(isMyPID==0){
-          var myPopup = $ionicPopup.show({
-            template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
-            //title: '',
-            //subTitle: '2',
-            scope: $scope,
-            buttons: [
-              { text: '取消',
-                type: 'button-small',
-                onTap: function(e) {                
-                }
-              },
-              {
-                text: '<b>确定</b>',
-                type: 'button-small button-positive ',
-                onTap: function(e) {
-                  Storage.set("newPatientID",data.text);
-                  $state.go('addpatient.basicinfo');
-                }
-              }
-            ]
-          });
-        }        
-      }
+        },function(data){
+          // fail请求数据
+        })
+        // for(var i in PIDlist){
+        //   if(data.text==PIDlist[i]){
+        //     isMyPID=1;
+        //     Storage.set("PatientID",data.text);
+        //     for(var i in PatientsList){
+        //       if(PatientsList[i].PatientID == data.text){
+        //         Storage.set("PatientName",PatientsList[i].PatientName);
+        //         Storage.set('PatientAge',PatientsList[i].Age);
+        //         Storage.set('PatientGender',PatientsList[i].GenderText);     
+        //         Storage.set("PatientPhotoAddress",PatientsList[i].photoAddress); 
+        //         break;             
+        //       }
+        //     }
+        //     $state.go('manage.plan');
+        //     break; 
+        //   }
+        // }
+        // if(isMyPID==0){
+        //   var myPopup = $ionicPopup.show({
+        //     template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+        //     //title: '',
+        //     //subTitle: '2',
+        //     scope: $scope,
+        //     buttons: [
+        //       { text: '取消',
+        //         type: 'button-small',
+        //         onTap: function(e) {                
+        //         }
+        //       },
+        //       {
+        //         text: '<b>确定</b>',
+        //         type: 'button-small button-positive ',
+        //         onTap: function(e) {
+        //           Storage.set("newPatientID",data.text);
+        //           $state.go('addpatient.basicinfo');
+        //         }
+        //       }
+        //     ]
+        //   });
+        // }        
+      // }
+    }
     }, function(error) {
-
-    });
+      alert('FAILED');
+      // $ionicLoading.show({
+      // content: '请重新扫码',
+      // animation: 'fade-in',
+      // noBackdrop: true,
+      // // maxWidth: 200,
+      // showDelay: 2000
+  });
+    // });
   }  
   //筛选
-  var minValue=20;
-  var maxValue=35;
-  // var fieldName='Age' ;
-  var filterAge=[];//fieldName, minValue, maxValue
+  var filterAge=[];
   var filterModule=[];
   var filterStartDate='';
-  $scope.byRange = function () {
-    if (minValue === undefined) minValue = 0;
-    if (maxValue === undefined) maxValue = 100;
-    
+  var filterStatus=[];
+  var filterComplianceRate=[];
+  $scope.byRange = function () {   
     return function predicateFunc(item) {
-      var flag=false;tempflag=false;
+      var tempflag=false;
       if(filterAge!=''){
         for(var i in filterAge){
           if(filterAge[i][0] <= item['Age'] && item['Age'] <=filterAge[i][1]){
@@ -1878,7 +2173,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         }
         if(tempflag==false){
-          return flag;
+          return false;
         }else{
           tempflag=false;
         }        
@@ -1895,9 +2190,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           tempflag=false;
         } 
       }
+      if(filterStatus!=''){
+        if(filterStatus<=String(item['StartDate'])){
+          tempflag=true;
+        }else{
+          tempflag=false;
+        }
+        if(tempflag==false){
+          return false;
+        }else{
+          tempflag=false;
+        } 
+      }  
+      if(filterComplianceRate!=''){
+        for(var i in filterComplianceRate){
+          if(filterComplianceRate[i][0] <= item['ComplianceRate'] && item['ComplianceRate'] <=filterComplianceRate[i][1]){
+            tempflag=true;
+            break;
+          }
+        } 
+        if(tempflag==false){
+          return false;
+        }else{
+          tempflag=false;
+        }       
+      }    
+
       return true;
-      // return minValue <= item[fieldName] && item[fieldName] <= maxValue;
-      // return item[fieldName] == 'ssss';
     };
   };
   $ionicModal.fromTemplateUrl('partials/individual/coach-patients-filter.html', {
@@ -1920,14 +2239,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.modal.show();
     $scope.props=Props;
     // $scope.categories=categories[0];
-    $scope.rankprops=rankprops;
+    // $scope.rankprops=rankprops;
     $scope.ownset=true;
   };
   var index1=0;
-  // $scope.moveItem = function(item, fromIndex, toIndex) {
-  //   $scope.rankprops.splice(fromIndex, 1);
-  //   $scope.rankprops.splice(toIndex, 0, item);
-  // };
   $scope.checkit = function(index){
     if(index1!=2){
       categories[index1][index].checked=!categories[index1][index].checked;
@@ -1938,16 +2253,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       for(var i in categories[index1]){
         categories[index1][i].checked=false;
       }
-      // console.log(t);
       categories[index1][index].checked=t;
       // $scope.categories=categories[index1];
+    }
+    for(var i in categories[index1]){
+      if(categories[index1][i].checked == true){
+        Props[index1].checked=true;
+        break;
+      }
+      Props[index1].checked=false;
     }
 
   }
   $scope.letusFilter =function(){
     $scope.modal.hide();
     //年龄
-    var temp=[];filterAge=[];
+    var temp=[];
     if(categories[4][0].checked){
       temp.push([0,30]);
     }
@@ -1972,6 +2293,32 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       } 
       filterAge.push([temp[0][0],temp[0][1]]);      
     }
+    //依从率
+    temp=[];
+    if(categories[3][0].checked){
+      temp.push([0,30]);
+    }
+    if(categories[3][1].checked){
+      temp.push([30,60]);
+    }
+    if(categories[3][2].checked){
+      temp.push([60,80]);
+    }
+    if(categories[3][3].checked){
+      temp.push([80,150]);
+    }
+    if(temp==''){
+      filterComplianceRate=[];     
+    }else{
+      for(var i=temp.length-1; i>0;i--){
+        if(temp[i][0]==temp[i-1][1]){
+          temp[i-1][1]=temp[i][1];
+        }else{
+          filterComplianceRate.push([temp[i][0],temp[i][1]]);
+        }
+      } 
+      filterComplianceRate.push([temp[0][0],temp[0][1]]);      
+    }    
     //模块
     temp=[];
     for(var i in categories[0]){
@@ -1981,20 +2328,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
     filterModule=temp;
     //起始日期
-    // var d=new Date();
-    // var dd=val.getDate();
-    // var mm=val.getMonth();
-    // var yyyy=val.getFullYear();
-
     if(categories[2][0].checked==true){
       var uom = new Date(new Date()-14*86400000); 
       uom = String(uom.getFullYear())  + String((uom.getMonth()+1)) + String(uom.getDate()); 
       filterStartDate=parseInt(uom);
-      // if(dd>14){
-      //   timelength=String(yyyy)+String(mm)+String(dd-14);
-      // }else if(mm>1){
-      //   timelength=String(yyyy)+String(mm-1)+String(dd-14);
-      // }
     }else if(categories[2][1].checked==true){
       var uom = new Date(new Date()-31*86400000); 
       uom = String(uom.getFullYear())  + String((uom.getMonth()+1))  + String(uom.getDate()); 
@@ -2006,6 +2343,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }else{
       filterStartDate='';
     }
+    //计划
+    temp=[];
+    if(categories[1][0].checked==true){
+      temp.push('3');
+    }
+    if(categories[2][2].checked==true){
+      temp.push('0');   
+    }
+    filterStatus=temp;
   }
   $scope.closeFilter = function() {
     $scope.modal.hide();
