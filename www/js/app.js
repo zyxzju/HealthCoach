@@ -213,7 +213,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient',{
     url:'/addpatient',
     abstract:true,
-    template:'<ion-nav-view/><ion-nav-view/>'
+    template:'<ion-nav-view></ion-nav-view>'
   })
 
   .state('addpatient.newpatient',{
@@ -651,14 +651,19 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   };
   
   function onOpenNotification(){
-    var alertContent
+    var alertContent;
     if(device.platform == "Android"){
-        alertContent=window.plugins.jPushPlugin.openNotification.alert;
+        alertContent=window.plugins.jPushPlugin.openNotification;
     }else{
         alertContent   = event.aps.alert;
     }
+    if (alertContent.extras.cn.jpush.android.EXTRA.type == "新申请")
+    {
+      Storage.set('PatientID', alertContent.extras.cn.jpush.android.EXTRA.SenderID);
+      $state.go('');
+    }
     //alert("open Notificaiton:"+alertContent);
-    $state.go('coach.i');
+    //$state.go('coach.i');
   }  
   */
 })
