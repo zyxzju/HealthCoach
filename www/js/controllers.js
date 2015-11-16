@@ -5519,6 +5519,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         $scope.task.secondlist = $scope.task.detailList[index].Detail;
         $scope.task.secondarry = $scope.task.detailList[index].OriginFlag;
+        //调试用
+        // var list1 = new Array();
+        // var list2 = new Array();
+        // for(var i = 0; i < $scope.task.secondlist.length; i++)
+        // {
+        //     list1[i] = $scope.task.secondlist[i].ControlType;
+        // }
+        // for(var i = 0; i < $scope.task.detailList[index].Detail.length; i++)
+        // {
+        //     list2[i] = $scope.task.detailList[index].Detail[i].ControlType;
+        // }
+
         var piType = $scope.task.detailList[index].piType;
 
         var myPopup = $ionicPopup.show({
@@ -5531,7 +5543,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
                 text: '取消',
                 type: 'button-small', 
-                onTap: function(e) { 
+                onTap: function(e) {
                     return 0;
                 }              
             },
@@ -5544,6 +5556,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             }]
         });
         myPopup.then(function(res) {
+            // for(var i = 0; i < $scope.task.secondlist.length; i++)
+            // {
+            //     list1[i] = $scope.task.secondlist[i].ControlType;
+            // }
+            // for(var i = 0; i < $scope.task.detailList[index].Detail.length; i++)
+            // {
+            //     list2[i] = $scope.task.detailList[index].Detail[i].ControlType;
+            // }
+           
             if (res == 1)
             {
                 $scope.task.detailList[index].Detail = $scope.task.secondlist;
@@ -5630,6 +5651,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     }  
                 }
             }
+            $scope.task.secondlist = null; 
         });
     }
 
@@ -6033,7 +6055,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
         if ($scope.task.DeleteList.length > 0)
         {
-            if($scope.task.list.length = 0)
+            if($scope.task.list.length == 0)
             {
                 $scope.task.DeleteList.push({"PlanNo":PlanNo, "Type":Type, "Code":Type + "0000", "SortNo":'1'}); //删除父级条目
                 DeleteTask($scope.task.DeleteList);
