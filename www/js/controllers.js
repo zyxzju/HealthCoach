@@ -4606,6 +4606,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             {
                 //$scope.create.PlanList.push({PlanName:"当前计划", PlanNo:PlanNo, StartDate:"", EndDate: ""});
                 $scope.create.AddFlag = false;
+                localStorage.setItem("CurrentPlanNo", PlanNo);
                 if (localStorage.getItem("isManage") == "Yes") //新计划插入成功，页面直接跳转到任务列表
                 {
                   window.location.href = "#/manage/taskList";
@@ -4653,10 +4654,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
 
     $scope.backtomain=function(){
-      localStorage.removeItem("M1");
-      localStorage.removeItem("M2");
-      localStorage.removeItem("M3");
-      $state.go('coach.patients');
+        localStorage.removeItem("M1");
+        localStorage.removeItem("M2");
+        localStorage.removeItem("M3");
+        $state.go('coach.patients');
     };
 }])
 
@@ -4747,7 +4748,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 } 
             }       
             $scope.TaskList.taskList = data; 
-            console.log($scope.TaskList.taskList);
+            //console.log($scope.TaskList.taskList);
             GetSBP();
         }, function(data) {  
         });   
@@ -5464,9 +5465,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         });   
     } 
 
-    $scope.task.detailList = new Array();
-    $scope.task.secondlist;
-    $scope.task.secondarry;
+    $scope.task.detailList = new Array(); //全部三级任务详情
+    $scope.task.secondlist; //某一项三级任务列表
+    $scope.task.secondarry; //某一项三级任务标志位列表
     $scope.task.AddList = new Array();
     $scope.task.DeleteList = new Array();
 
@@ -5546,6 +5547,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             if (res == 1)
             {
                 $scope.task.detailList[index].Detail = $scope.task.secondlist;
+                for (var i = 0; i < $scope.task.secondlist.length; i++)
+                {
+                    $scope.task.detailList[index].OriginFlag[i] = $scope.task.secondlist[i].ControlType;
+                }
                 var FlagBefore = false;
                 var FlagNow = false;
 
@@ -5617,7 +5622,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                                      "SortNo":'1'});
                     for(var i = 0; i < $scope.task.list.length; i++)
                     {
-                        if ($scope.task.list[i].Code = piType)
+                        if ($scope.task.list[i].Code == piType)
                         {
                             $scope.task.list[i].ControlType = false;
                             break;
@@ -6096,6 +6101,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $ionicHistory.goBack();
     }
 }])
+
 
 
 //临床信息控制器 ZXF 20151031
