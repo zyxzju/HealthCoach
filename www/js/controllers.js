@@ -6209,6 +6209,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   });
    //点击查看详情根据UserId、Type、VisitId、Date获取具体检查信息modal形式展示
   $ionicModal.fromTemplateUrl('partials/addpatient/examinationinfo.html', {
+
     scope: $scope,
     animation: 'slide-in-up'
   }).then(function(modal) {
@@ -6226,7 +6227,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }, function(data1) {  
     });
   };
-
+  $scope.descstyle=[];
+  var judgement1=true;
+  $scope.showalldesc=function(index){
+    console.log(index);
+    judgement1 = !judgement1;
+    console.log(judgement1);
+    if (judgement1) {
+      $scope.descstyle[index]='nowrap';
+    }else{
+      $scope.descstyle[index]='pre-wrap';
+    };
+  };
+  var judgement2=true;
+  $scope.resultstyle=[];
+  $scope.showallresult=function(index){
+    console.log(index);
+    judgement2 = !judgement2;
+    console.log(judgement2);
+    if (judgement2) {
+      $scope.resultstyle[index]='nowrap';
+    }else{
+      $scope.resultstyle[index]='pre-wrap';
+    };
+  };
   $scope.closeexamModal = function() {
     $scope.modalexam.hide();
   };
@@ -6240,7 +6264,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }).then(function(modal) {
     $scope.modaldiag = modal;
   });
-
+  $scope.DiagnosisNamestyle=[];
+  var judgement4=true;
+  $scope.showallDiagnosisName=function(index){
+    console.log(index);
+    judgement4 = !judgement4;
+    console.log(judgement4);
+    if (judgement4) {
+      $scope.DiagnosisNamestyle[index]='nowrap';
+    }else{
+      $scope.DiagnosisNamestyle[index]='pre-wrap';
+    };
+  };
   $scope.opendiaginfomodal = function(index) {
     $scope.modaldiag.show();
     var promise0=Getdiaginfo.Getdiaginfobypiduid({UserId:PatientID,VisitId:$scope.cliniclist[index].VisitId});
@@ -6269,7 +6304,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }).then(function(modal) {
     $scope.modaldrug = modal;
   });
-
+  $scope.OrderContentstyle=[];
+  var judgement3=true;
+  $scope.showallOrderContent=function(index){
+    console.log(index);
+    judgement3 = !judgement3;
+    console.log(judgement3);
+    if (judgement3) {
+      $scope.OrderContentstyle[index]='nowrap';
+    }else{
+      $scope.OrderContentstyle[index]='pre-wrap';
+    };
+  };
   $scope.opendruginfomodal = function(index) {
     $scope.modaldrug.show();
       // var d={UserId:$scope.SyncInfo.patientid,Type:'DrugRecord',VisitId:$scope.clinicinfo[index].VisitId, Date:$scope.tt};

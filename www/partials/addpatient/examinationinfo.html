@@ -11,13 +11,19 @@
 <ion-item  ng-if=show>
 <h2>无检查数据</h2>
 </ion-item>
-<ion-item ng-repeat='item in Examinationinfo' >
-
-
-<h2 style="white-space:pre-wrap">检查时间：{{item.ExamDate}}</h2>
-<h2 style="white-space:pre-wrap">检查项目：{{item.ExamTypeName}}</h2>
-<h2 style="white-space:pre-wrap">检查描述：{{item.Description}}</h2>
-<h2 style="white-space:pre-wrap">检查结果：{{item.Impression}}</h2>
+<ion-item ng-repeat='item in Examinationinfo track by $index' >
+	<h2 style="white-space:pre-wrap">
+		检查时间：{{item.ExamDate}}
+	</h2>
+	<h2 style="white-space:pre-wrap">
+		检查项目：{{item.ExamTypeName}}
+	</h2>
+	<h2 style="white-space:{{descstyle[$index]}}"  ng-click="showalldesc($index)">
+		检查描述：{{item.Description}}
+	</h2>
+	<h2 style="white-space:{{resultstyle[$index]}}" ng-click="showallresult($index)">
+		检查结果：{{item.Impression}}
+	</h2>
 </ion-item>
 
 
