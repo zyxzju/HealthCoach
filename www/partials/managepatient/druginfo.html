@@ -1,40 +1,42 @@
-<ion-view >
-<ion-nav-bar align-title="middle" class="bar-positive">
-	<ion-nav-buttons side="primary">
-		<button class="button button-icon ion-arrow-left-c" ng-click="closedrugModal()">
-		</button>
-	</ion-nav-buttons>
-<!--   <div class="buttons">
-    <button class="button" ng-click="closedrugModal()">返回</button>
-  </div>  --> 
-</ion-nav-bar>
-   <ion-content scroll='true'>
+<ion-modal-view>
+<ion-header-bar align-title="middle" class="bar-positive">
+<div class="buttons">
+	<button class="button" ng-click="closedrugModal()">返回</button>
+</div>
+<h1 class="title">用药信息</h1>
+
+</ion-header-bar>
+<ion-content scroll='true'>
 <ion-list >
-	<ion-item  ng-if=show>
-		<h2>无用药数据</h2>
-	</ion-item>
-<ion-item ng-repeat='item in DrugRecordinfo'  >
-<div class="row">
-<h2 class="col col-50">医嘱类型：{{item.RepeatIndicator}}</h2>
-<h2 class="col col-50">药嘱名称：{{item.OrderContent}} </h2>
-</div>
-
-
-<div class="row">
-<h2 class="col col-50">一次使用剂量：{{item.Dosage}}{{item.DosageUnits}}</h2>
-<h2 class="col col-50">给药途径：{{item.Administration}} </h2>
-</div>
-<div class="row">
-<h2 class="col col-50">开始时间：{{item.StartDateTime}}</h2>
-<h2 class="col col-50">结束时间：{{item.StopDateTime}} </h2>
-</div>
-<div class="row">
-<h2 class="col col-50">给药频率：{{item.Frequency}} </h2>
-</div>
+<ion-item  ng-if=show>
+<h2>无用药数据</h2>
+</ion-item>
+<ion-item ng-repeat='item in DrugRecordinfo track by $index' >
+	<h2  style="white-space:pre-wrap">
+		开始时间：{{item.StartDateTime}}
+	</h2>
+	<h2  style="white-space:pre-wrap">
+		结束时间：{{item.StopDateTime}} 
+	</h2>
+	<h2  style="white-space:pre-wrap">
+		医嘱类型：{{item.RepeatIndicator}}
+	</h2>
+	<h2  style="white-space:{{OrderContentstyle[$index]}}" ng-click="showallOrderContent($index)">
+		医嘱名称：{{item.OrderContent}} 
+	</h2>
+	<h2  style="white-space:pre-wrap">
+		剂量：{{item.Dosage}}{{item.DosageUnits}}
+	</h2>
+	<h2  style="white-space:pre-wrap">
+		给药途径：{{item.Administration}} 
+	</h2>
+	<h2  style="white-space:pre-wrap">
+		给药频率：{{item.Frequency}} 
+	</h2>
 </ion-item>
 
 
 </ion-list>
 </ion-content>
-  </ion-view>
+</ion-modal-view>
 
