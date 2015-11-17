@@ -15,6 +15,16 @@
     /*margin-top: 8px;*/
     /*font-style: italic*/
 }
+.item h6 {
+  font-size: 0.8rem;
+    color: #666666;
+    margin-top: 8px;
+    font-style: italic
+}
+.item h5 {
+  font-size: 1.23rem;
+  color: #417D9A;
+}
 
 .item-thumbnail-left img {
   padding:0 !important;
@@ -130,7 +140,7 @@
 }
 
 .content-item-list{
-  background-color:#E5E5E5;
+  background-color:#E8E8E8;
   padding-top:0 !important;
 }
 .item-margin{
@@ -138,7 +148,7 @@
   margin:6px;
   /*-moz-box-shadow:1px 2px 2px #999;*/
   /*-webkit-box-shadow:1px 2px 2px #999;*/
-  box-shadow:1px 1.5px 2px #999;
+  box-shadow:1px 1px 2px #999;
   /*box-shadow: 1px 1px 0px 1px #CCCCCC;*/
 }
 .bar-shadow{
