@@ -298,6 +298,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.plan', {
   url: '/:tt',
+  cache: false,
     templateUrl: function ($stateParams){
       if($stateParams.tt=='create')  //计划第一层 创建计划
       {
@@ -481,6 +482,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   url: '/:tt',
   views:{
     "changeplan":{
+      cache: false,
       templateUrl: function ($stateParams){
       if($stateParams.tt=='create')  //计划第一层 创建计划
       {

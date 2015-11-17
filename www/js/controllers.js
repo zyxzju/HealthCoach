@@ -4725,7 +4725,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         showDelay: 0
     });
 
-    $scope.$watch('$viewContentLoaded', function() { 
+    $scope.$watch('$ionicView.enter', function() { 
         GetPlanList();
     }); 
     $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
