@@ -4,7 +4,7 @@
 <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
 </ion-nav-buttons>
 </ion-nav-bar>
-<ion-content has-bouncing="false"  class="content-item-list" scroll="false">
+<ion-content has-bouncing="false"  class="content-item-list" scroll="true">
 <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
   <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}</h3>
 </div>
@@ -17,8 +17,8 @@
   <div class="row" style="padding-bottom:0;min-height:30px">
     <div class="col-67" style="padding-right:2%">
       <select style="width:100%" ng-model="planList" ng-change="changeplan(planList)" >
-        <option value="{{latestplan}}">当前计划：{{latestplan}}</option>
-        <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo}}</option>
+        <option value="{{latestplan}}">当前计划：{{latestplan.slice(3)}}</option>
+        <option ng-repeat="item in formerPlanInfo" value="{{item.PlanNo}}">往期计划：{{item.PlanNo.slice(3)}}</option>
       </select>
     </div>
     <div class="col-33">
@@ -32,8 +32,10 @@
     </div>
   </div>
 </div>
-<div ng-if=diaplaysm style="text-align:center"><b>暂无数据</b></div>
-<div  id='chartdiv3' ng-style="suitstyle()"></div>
+<div ng-if='diaplaysm' style="text-align:center"><b>暂无数据</b></div>
+<div  id='chartdiv3'  ng-style="suitstyle()">
+</div>
+<!-- <div style="height:10px" ></div> -->
 <div class="text-center" style="margin:0;font-size:0.8em">单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</div>
 <div style="text-align:center;background-color:#DDDDDD">    
   <p style="color:#2894FF;font-size:16px" ng-if=before>计划已结束</p>

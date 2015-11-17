@@ -6574,7 +6574,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   var phoneheight = (window.innerHeight > 0) ? window.innerHeight : screen.height; 
   console.log(phoneheight);
-  var chartheight=phoneheight-260;
+  var chartheight=phoneheight-290;
   Storage.set("phoneheight",phoneheight);
   console.log(chartheight);
   
@@ -6584,7 +6584,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
   chartheight=chartheight+'px';
   $scope.suitstyle=function(){
-  return {'height':chartheight};
+  return {'height':'300px'};
   }
 
   $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
@@ -6634,13 +6634,41 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       {
          day='0'+''+myDate.getDate();
       };
-      var today=myDate.getFullYear()+''+month+''+day;
+      var today=myDate.getFullYear()+'-'+month+'-'+day;
       console.log(today);   
-      var passday= parseInt(today)-parseInt(data1[0].StartDate);
-      var processingday= parseInt(data1[0].EndDate)-parseInt(today);
-      var planlength=parseInt(data1[0].EndDate)-parseInt(data1[0].StartDate);
+      //获取时间间隔天数的函数
+      function GetDateDiff(startDate,endDate)  
+      {  
+          var startTime = new Date(Date.parse(startDate.replace(/-/g,   "/"))).getTime();     
+          var endTime = new Date(Date.parse(endDate.replace(/-/g,   "/"))).getTime();     
+          var dates = Math.abs((startTime - endTime))/(1000*60*60*24);     
+          return  dates;    
+      };
+      
+      //转换时间类型      
+      function changedatestyle(date)
+      {
+      var yyyy=date.slice(0,4);
+      var mm=date.slice(4,6);
+      var dd=date.slice(6,8);
+      var changeddate=yyyy+'-'+mm+'-'+dd;
+      return changeddate;
+        
+      };
+      var startdate=changedatestyle(data1[0].StartDate);
+      //计划已经进行的时间
+      var passday=GetDateDiff(startdate,today);
+      console.log(passday);
+      //计划还要进行的时间
+      var enddate=changedatestyle(data1[0].EndDate);
+      var processingday=GetDateDiff(today,enddate);
+      console.log(processingday);
+      //获取计划总时间
+      var planlength=GetDateDiff(startdate,enddate);
+      //计划进展百分比
       $scope.process=Math.floor((passday/planlength)*100);
-      $scope.undodays=parseInt(data1[0].EndDate)-parseInt(today)
+      //离结束还有的天数
+      $scope.undodays=processingday;
       if ($scope.process==0)
        {
         $scope.process=1
@@ -6698,41 +6726,37 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           if (dataisnone) 
           {
             $scope.diaplaysm=false;
-            createStockChart($scope.HPchartdate,"收缩压","mmHg");
           };
+            createStockChart($scope.HPchartdate,"收缩压","mmHg");
               
               $ionicLoading.hide();
       }, function(data) {
         /////
       });
 
+
+    //点击切换各个体征的图
+    $scope.changeVitalInfo = function(option) {
+      Storage.set("selectedvitaltype",option.SignName);
+     $ionicLoading.show({
+        content: '加载中',
+        animation: 'fade-in',
+        showBackdrop: true,
+        maxWidth: 200,
+        showDelay: 0
+      });
+      //传参调函画图
+      drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
+    };
+  };
+
     //再调用同一函数，status=4，调取往期计划planno
       GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'4'}).then(
       function(s){
         $scope.formerPlanInfo=s;
         Storage.set("formerplan",angular.toJson($scope.formerPlanInfo));
-        //console.log($scope.formerPlanInfo);
       }, function(e) {  
       });
-
-    //点击切换各个体征的图
-    $scope.changeVitalInfo = function(option) {
-      // console.log(option);
-      Storage.set("selectedvitaltype",option.SignName);
-      // console.log(Storage.get("selectedvitaltype"));
-    $ionicLoading.show({
-      content: '加载中',
-      animation: 'fade-in',
-      showBackdrop: true,
-      maxWidth: 200,
-      showDelay: 0
-    });
-   //传参调函画图
-    drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
-
-
-    };
-  };
 
   }, function(e) {
       ///// 
@@ -6806,8 +6830,30 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.LPchartdate=data;
-          createStockChart($scope.LPchartdate,"舒张压","mmHg");
-          $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          console.log($scope.LPchartdate);
+          // $scope.LPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.LPchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true;
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.LPchartdate,"舒张压","mmHg");
+
+          // createStockChart($scope.LPchartdate,"舒张压","mmHg");
         }, function(data) {
       });
     };
@@ -6816,8 +6862,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.HPchartdate=data;
-          createStockChart($scope.HPchartdate,"收缩压","mmHg");
-          $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.HPchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.HPchartdate,"收缩压","mmHg");
+          // createStockChart($scope.HPchartdate,"收缩压","mmHg");
+          // $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
         /////
       });
@@ -6827,8 +6893,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.HBchartdate=data;
-          createStockChart($scope.HBchartdate,"脉率","次/分钟");
-          $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.HBchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.HBchartdate,"脉率","次/分钟");
+          // createStockChart($scope.HBchartdate,"脉率","次/分钟");
+          // $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6837,8 +6922,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6847,18 +6951,56 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
-      });
+        });
     }
     if(param=="早餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6867,8 +7009,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6877,8 +7038,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6887,8 +7067,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6897,8 +7096,27 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -6907,8 +7125,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         function(data){
           $ionicLoading.hide();
           $scope.BSchartdate=data;
-          createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
-          $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
+          var dataisnone=false;
+          for (var i = 0; i <= data.length-1; i++) 
+          {
+            if (data[i].Value!='#') 
+            {
+              dataisnone=true;
+              break;
+            };
+          };
+          console.log(dataisnone);
+          if ($scope.BSchartdate.length==0||dataisnone==false) 
+          {
+            $scope.diaplaysm=true;
+            // chart="";
+          };
+          if (dataisnone) 
+          {
+            $scope.diaplaysm=false;
+          };
+            createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
+          // createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
+          // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
         }, function(data) {
       });
     };
@@ -7000,10 +7238,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
     //返回主页面
     $scope.backtocoach=function(){
-      $state.go('coach.patients');
+      $state.go('coach.home');
     };
 
 })
+
 
 //ZXF 20151102 体征列表
  .controller('vitaltableCtrl', function($scope,$state,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
