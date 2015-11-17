@@ -1,18 +1,20 @@
 /* Empty. Add your own CSS if you like */
 .item h3 {
-  font-size: 1.23rem;
+  font-size: 0.8rem;
   font-weight: bold;
-  color: #417D9A;
+  
 }
 .item h2 {
-  font-size: 1.2rem;
-  font-weight: bold;   
+  font-size: 0.9rem;
+  font-weight: bold; 
+  color: #417D9A;  
 }
 .item h1 {
-  font-size: 0.8rem;
+  font-size: 1.2rem;
     color: #666666;
-    margin-top: 8px;
-    font-style: italic
+    /*margin-top: 8px;*/
+    font-weight: bold;
+    /*font-style: italic*/
 }
 
 .item-thumbnail-left img {
@@ -161,6 +163,32 @@
   -webkit-progress-value:#FF0000;
   -moz-progress-bar:#FF0000;
  }*/
+#riskchart {#riskchart {
+  width   : 100%;
+  height    : 250px;
+  font-size : 15px;
+  display: inline;
+  background-color: #EEE8D6;
+} 
+  width: 100%;
+  height: 300px;
+  background-color: #F7F4EA;
+ 
+}
+
+.m1 {
+  background-color: rgba(38,157,128,0.13);
+  border-top: 20px solid #BEEF9E;
+}
+.m2 {
+  background-color: rgba(38,157,128,0.07);
+  border-top: 20px solid #A6C36F;
+}
+.m3 {
+  background-color: rgba(38,157,128,0.04);
+  border-top: 20px solid #335145;
+}
+
 
  progress {margin: 0px !important}
 
