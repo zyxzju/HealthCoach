@@ -1361,13 +1361,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.scrollTop = function(){
     $ionicScrollDelegate.scrollTop(true);
   }
-  $scope.onScoll = function(){
-    if($ionicScrollDelegate.getScrollPosition().top>300){
-      $scope.needtoTop = {'display':'block'};
-    }else{
-      $scope.needtoTop ={'display':'none'};
-    }
-  }
+  // $scope.onScoll = function(){
+  //   if($ionicScrollDelegate.getScrollPosition().top>300){
+  //     $scope.needtoTop = {'display':'block'};
+  //   }else{
+  //     $scope.needtoTop ={'display':'none'};
+  //   }
+  // }
   $scope.$on('$ionicView.enter', function() {
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
       scope: $scope,
@@ -7000,7 +7000,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
     //返回主页面
     $scope.backtocoach=function(){
-      $state.go('coach.home');
+      $state.go('coach.patients');
     };
 
 })
