@@ -4745,48 +4745,289 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   })
 }])
 
+//LRZ 20151117 新的风险评估页面列表controller
+.controller('NewRiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage','RiskService',
+  function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage,RiskService){
+  
+    console.log("doing refreshing");
+    RiskService.initial();
 
-//调查问卷的controller state riskquestions;//LRZ 20151104 几个bug修复
+
+
+
+      // $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
+      // $scope.chart2 = AmCharts.makeChart("chartdiv2",$scope.data2);
+    
+    $scope.data = { showDelete: false, showReorder: false };
+    
+
+  $scope.doRefresh = function(){
+    RiskService.initial();
+  }
+
+  
+  $scope.onClickEvaluation = function(){
+      //open a new page to collect patient info  
+      $state.go('addpatient.riskquestion');
+  }
+  $scope.onClickEvaluation1 = function(){
+    $state.go('Independent.riskquestion');
+  }
+
+  $scope.slideHasChanged = function (_index){
+    // console.log(_index);
+    // $ionicSlideBoxDelegate.currentIndex();
+    if(_index == 1) $scope.dbtshow = true;
+    else $scope.dbtshow = false;
+    // console.log($scope.description);
+  }
+
+  $scope.onClickBackward = function(){
+      // $state.go("risk");
+      $state.go('addpatient.risk');
+  }
+
+  $scope.onClickBackward1 = function(){
+      // $state.go("risk");
+      $state.go('Independent.risk');
+  }
+  $scope.onClickBackward12 = function(){
+      // $state.go("risk");
+      $state.go('manage.plan');
+  }
+  $scope.NextPage = function(){
+    window.location.href="#/addpatient/create"
+  };
+  $scope.BacktoManage = function(){
+    window.location.href="#/manage/plan";
+  };
+  $scope.toggleStar = function(item) {
+    item.star = !item.star;
+  }
+
+  $scope.onChangeChartData = function(sbp,dbp){
+      $scope.marker = sbp;
+      if(sbp === undefined || dbp === undefined || $scope.chart === undefined) return;
+      console.log(sbp);
+      var temp1 = {
+          "type": "收缩压",
+          "state1": 40+80,
+          "state2": 20,
+          "state3": 20,
+          "state4": 20,
+          "state5": 20,
+          "now": parseInt(sbp), //params
+          "target": 120               //params
+
+      };
+      var temp2 = {
+          "type": "舒张压",
+          "state1": 20+80,
+          "state2": 20,
+          "state3": 20,
+          "state4": 20,
+          "state5": 20,
+          "now": parseInt(dbp), //params
+          "target": 100               //params
+
+      };
+      console.log("push");
+      $scope.chart.dataProvider.pop();
+      $scope.chart.dataProvider.pop();
+      $scope.chart.dataProvider.push(temp1);
+      $scope.chart.dataProvider.push(temp2);
+      // $scope.chart.dataProvider["now"] = sbp;
+      $scope.chart.validateData();
+      $scope.chart.validateNow();
+      // $scope.chart2.validateData();
+      console.log($scope.chart);
+  }
+
+   // console.log("controller初始化的函数跑了一遍结束"); 
+  $scope.$on('NewEvaluationSubmit', function () {
+    console.log("检测到有新的提交，刷新");
+    RiskService.initial();
+
+  })
+
+  $scope.$on('RisksGet',function(){
+    console.log("Controller knows RisksGet");
+    $scope.$broadcast('scroll.refreshComplete');
+    $scope.newRisks = RiskService.getRiskList();
+    console.log($scope.newRisks);
+  })
+
+  $scope.$on('RisksGetFail',function(){
+   alert("获取失败惹");
+  })
+}])
+
+//LRZ 20151117 新的风险评估页面细节controller
+.controller('RiskDtlCtrl',['$state','$scope','RiskService','$ionicSlideBoxDelegate','Storage','$timeout',function($state,$scope,RiskService,$ionicSlideBoxDelegate,Storage,$timeout){
+  // $scope.chartDone = false;
+  $scope.whichone = $state.params.num;
+  console.log($scope.whichone);
+  $scope.chart = null;
+  
+  //根据state传入的SortNo 从Service 预载入的列表中取出数据
+  $scope.index = RiskService.getIndexBySortNo($scope.whichone);
+  $scope.item = RiskService.getSingleRisk($scope.index);
+  
+  // console.log($scope.myslide);
+  // console.log($scope.riskSingle);
+  // 得到画图数据
+  if($scope.item.M1show != false)
+    $scope.chartData = RiskService.getGraphData('M1',$scope.index);
+  else if ($scope.item.M2show != false){
+    // $scope.myslide.slide(1,500);
+    $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
+  }
+  else{
+    // $scope.myslide.slide(2,500);
+    $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
+  }
+  
+  console.log($scope.item);
+
+  AmCharts.makeChart('riskchart', $scope.chartData);
+  // $scope.chartDone = true;
+  console.log($scope.chart);
+  
+  $scope.myslide = $ionicSlideBoxDelegate.$getByHandle('riskhandle');
+  // $scope.$apply();
+
+  // chart.validateData();
+  // chart.validateNow();
+  // chart.write('chartdiv222');
+  // $scope.chartDone = true;
+  // chart.handleResize();
+  // 画图
+  // 判断 有几个图显示几个图
+  // var p_chart = AmCharts.makeChart("riskchart",chart,500);
+  // $scope.chartDone = true;
+  
+  //slidebox控制
+  $scope.$on('$ionicView.afterEnter',function(){
+    
+    console.log($scope.myslide);
+    $timeout(5000);
+    if($scope.item.M1show == true){
+      null;      
+    }
+    // $scope.chartData = RiskService.getGraphData('M1',$scope.index);
+    else if ($scope.item.M2show == true){
+      // console.log('no hyper'); 
+      $scope.myslide.slide(1,50);
+    // $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
+    }
+    else{
+      $scope.myslide.slide(2,50);
+      // $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
+    }
+  })
+
+
+  $scope.slideHasChanged = function($index){
+    var ii = $index;
+    console.log(ii);
+    // console.log($scope.item.M1show);
+    // var status = 0;
+    // if(M1show && M2Show && M3show) 
+    // switch(ii){
+    //   case 0: if($scope.item.M1show == false){
+    //             if($scope.item.M2show == false){
+    //               $scope.myslide.slide(2,500);
+    //             }
+    //             else $scope.myslide.slide(1,500);                 
+    //           }
+    //           else break;
+    //   case 1: if($scope.item.M2show == false){                
+    //           }
+    //           else break;
+    //   case 2:if($scope.item.M3show == false){
+    //             if($scope.item.M2show == false){
+    //               $scope.myslide.slide(1,500);break;
+    //             }
+    //             else $scope.myslide.slide(0,500); break;                
+    //           }
+    //           else break;
+    //   }
+
+    switch(ii){
+      case 0: if($scope.item.M1show == true){
+                $scope.chartData    = RiskService.getGraphData('M1',$scope.index);
+                AmCharts.makeChart('riskchart', $scope.chartData); break;        
+              }
+              else break;
+              // $scope.chart.validateData();
+              // $scope.chart.validateNow(true,false);
+      case 1: if($scope.item.M2show == true){
+                $scope.chartData    = RiskService.getGraphData('M2',$scope.index);
+                AmCharts.makeChart('riskchart', $scope.chartData);break;        
+              }
+              else break;
+              // $scope.chart.dataProvider  = $scope.chartData.dataProvider;
+              // $scope.chart.validateData();
+              // $scope.chart.validateNow(true,false);
+      case 2: if($scope.item.M3show == true){
+                $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
+                AmCharts.makeChart('riskchart', $scope.chartData); 
+              }
+              else break;
+              // $scope.chart.validateData();
+              // $scope.chart.validateNow(true,false);
+    }
+  }
+
+}])
+//LRZ 20151117 
 .controller('RiskQuestionCtrl',['$scope','$state','$rootScope','Patients','Storage',function($scope,$state,$rootScope,Patients,Storage){
  
   $scope.userid = Storage.get('PatientID');
   // $scope.userid = "PID201506170002";
   // console.log($scope.userid);
   // console.log($scope.SBP);
-  $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined};
-
+  $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined,NYHA:undefined};
+  $scope.setedValue = {NYHA: [{level:'I',description:'体力活动没有限制，进行一般强度的体力活动不会一起过度疲劳、心悸、呼吸困难（气短）。'},
+                              {level:'II',description:'体力活动受到轻微的限制，休息时没有不适感，进行一般强度的体力活动导致疲劳、心悸、呼吸困难(气短)。'},
+                              {level:'III',description:'体力活动受到明显的限制，休息时没有不适感，进行轻微的体力活动就会导致疲劳、心悸、呼吸困难(气短)。'},
+                              {level:'IV',description:'进行任何体力活动均会产生不适的感觉。休息时会有心衰症状，并且这些症状会因为进行任何体力活动而加重。'}]}
+  $scope.list = {M1show : false, M2show:false, M3show:false};
   $scope.clickCancel = function(){
     $state.go('addpatient.risk');
   };
   $scope.clickCancel1 = function(){
     $state.go('Independent.risk');
   };
+
+  $scope.toggleGroup = function(whichone) {
+    switch(whichone){
+      case 1 : $scope.list.M1show = !$scope.list.M1show; break;
+      case 2 : $scope.list.M2show = !$scope.list.M2show; break;
+      case 3 : $scope.list.M3show = !$scope.list.M3show; break;
+    }
+    
+  };
   // console.log($scope.SBP);
   $scope.clickSubmit = function(){
     //upload 
     // $rootScope.$broadcast("NewEvaluationSubmit");
     Patients.getMaxSortNo($scope.userid).then(function(data){
-      var maxsortno = data.result; 
-      // console.log("赫赫");
+      var maxsortno = data.result;   
       console.log(data);
-   
-    // console.log($scope.userid);
-    //get sbp description 
-      // var date = new Date();
-      // console.log(date);
-      // var SBP = parseInt(100 + 20 * Math.random());
-      // var DBP = parseInt(70 + 10 * Math.random());
-      // var glucose = parseInt((5 + 2*(Math.random()-0.5))*10)/10;
-    // console.log($scope.SBP);
+      var time2 = new Date();
+      time2.setHours(time2.getHours()+8);
+      if($scope.value.SBP == undefined) $scope.value.SBP = 100;
+
+      //上传血压数据
       Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
           // console.log(data);
-
-          var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||0||0||0||0||0";
+          // 从服务器取一部分 +　在本地　算　or 加数据不全提示
+        var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||100%||100%||100%||100%||100%";
           // console.log(t);
-          var time2 = new Date();
-          time2.setHours(time2.getHours()+8);
+
           // console.log(time2);
-          var temp = {
+        var temp = {
             "UserId": $scope.userid,
             "SortNo": parseInt(maxsortno)+1,
             "AssessmentType": "M1",
@@ -4797,18 +5038,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             "TerminalName": "sample string 8",
             "TerminalIP": "sample string 9",
             "DeviceType": 10
-          }
+          };
+
         if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
           // console.log("上传血压数据");
+
           Patients.postTreatmentIndicators(temp).then(function(res){
             if(res.result == "数据插入成功"){
-              console.log("broadcasting h");
+              console.log("broadcasting hypt");
               $rootScope.$broadcast("NewEvaluationSubmit");
             }
           });
-          // console.log(tt);
         }
-
+      });
+        //上传糖尿病信息
         var t1;
         if($scope.value.glucose<6.1) t1 = "正常血糖.";
         else if($scope.value.glucose<7.0) t1 = "糖尿病前期.";
@@ -4830,22 +5073,44 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           // console.log("上传血糖数据");
           Patients.postTreatmentIndicators(temp).then(function(res){
             if(res.result == "数据插入成功"){
-              console.log("broadcasting d");
+              console.log("broadcasting diab");
               $rootScope.$broadcast("NewEvaluationSubmit");
             }
           });
         }
-        //POST RESULT
-        // console.log($scope.description);
-        //
-        //全局广播更新
-        // console.log("broadcasting");
-        // $rootScope.$broadcast("NewEvaluationSubmit");
-      })
-    // console.log($scope.description);
-    })
-    // console.log($scope.description);
-    // Patients.
+
+        //上传心衰信息
+        var t3 =  parseInt($scope.value.NYHA/25);
+        switch(t3){
+          case  0 : t3 = $scope.setedValue.NYHA[0].description;break;
+          case  1 : t3 = $scope.setedValue.NYHA[1].description;break;
+          case  2 : t3 = $scope.setedValue.NYHA[2].description;break;
+          case  3 : t3 = $scope.setedValue.NYHA[3].description;break;
+          default : t3 = "数据异常";
+        }
+        var temp =  {
+          "UserId": $scope.userid,
+          "SortNo": parseInt(maxsortno)+1,
+          "AssessmentType": "M3",
+          "AssessmentName": "心衰",
+          "AssessmentTime": time2,
+          "Result": t3 + "||"+ "||" + "||" + "||" + "||",
+          "revUserId": "sample string 7",
+          "TerminalName": "sample string 8",
+          "TerminalIP": "sample string 9",
+          "DeviceType": 13
+        };
+
+        if(typeof($scope.value.NYHA) != 'undefined' && typeof($scope.value.NYHA) != 'undefined'){
+        
+          Patients.postTreatmentIndicators(temp).then(function(res){
+            if(res.result == "数据插入成功"){
+              console.log("broadcasting heart failure");
+              $rootScope.$broadcast("NewEvaluationSubmit");
+            }
+          });
+        }
+
     if (Storage.get('isManage') == "Yes")
     {
       $state.go('Independent.risk');
@@ -4854,10 +5119,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
       $state.go('addpatient.risk');
     }
+    })
+
   }
 
+  $scope.slideHasChanged = function($index){
+    $scope.list.M1show = false;
+    $scope.list.M2show = false;
+    $scope.list.M3show = false;
+  }
 }])
-
 //GL 20151101 创建计划
 .controller('CreateCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', 'Dict', '$ionicPopup', 'Storage', '$ionicHistory', '$ionicLoading', function($scope, $http, $state, $stateParams, PlanInfo, Dict, $ionicPopup, Storage, $ionicHistory, $ionicLoading){ 
     $scope.create = {};

@@ -279,14 +279,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient.risk',{
     url:'/risk',
     templateUrl:'partials/addpatient/risk.html',
-    controller:'RiskCtrl'
+    controller:'NewRiskCtrl'
   })
 
   .state('addpatient.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/addpatient/riskdetail.html',
-    controller:'RiskCtrl'
+    controller:'RiskDtlCtrl'
   })
 
   .state('addpatient.riskquestion',{
@@ -572,14 +572,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/risk',
     cache: false,
     templateUrl:'partials/managepatient/risk.html',
-    controller:'RiskCtrl'
+    controller:'NewRiskCtrl'
   })
 
   .state('Independent.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/managepatient/riskdetail.html',
-    controller:'RiskCtrl'
+    controller:'RiskDtlCtrl'
   })
 
   .state('Independent.riskquestion',{

@@ -17,13 +17,13 @@
 
 
 
-  <ion-slide>
+  <ion-slide prevent-drag>
   <div class = "padding">
       <div class = "padding">
         <div class="card">
         <div class="item item-divider">
-    <h2>高血压风险描述<h2>
-  </div>
+        <h2>高血压风险问卷<h2>
+        </div>
         <label class="item item-input">
           <span class="input-label">当前收缩压</span>
           <input type="number" placeholder="mmHg" ng-model="value.SBP">
@@ -35,23 +35,127 @@
           <input type="number" placeholder="mmHg" ng-model="value.DBP">
         </label>
 
+        <div class="item item-divider item-icon-left"  ng-click="toggleGroup(1)">
+          <i class="icon" ng-class="list.M1show ? 'ion-minus' : 'ion-plus'"></i>
+          <h2>临床数据<h2>
+        </div>
+<!-- {"Age":1,"Gender":1,"Height":0,"Weight":0,"AbdominalGirth":0,"BMI":"NaN","Heartrate":0,"Parent":0,"Smoke":0,"Stroke":0,"Lvh":0,"Diabetes":0,"Treat":0,"Heartattack":0,"Af":0,"Chd":0,"Valve":0,"Tcho":0.0,"Creatinine":0.0,"Hdlc":0.0,"Hyperother":"NaN","HarvardRiskInfactor":6,"FraminghamRiskInfactor":"NaN","StrokeRiskInfactor":0,"HeartFailureRiskInfactor":0,"SBP":0,"DBP":0,"piParent":0,"piSmoke":0,"piStroke":0,"piLvh":0,"piDiabetes":0,"piTreat":0,"piHeartattack":0,"piAf":0,"piChd":0,"piValve":0}    -->     
+        <div class = "item-list" ng-show = "list.M1show"> 
+          <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 有心脏病
+                </div>
+               
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 目前吸烟
+                </div>
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 患糖尿病
+                </div> 
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 目前中风
+                </div>
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 正在接受治疗
+                </div> 
+
+                <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 家族史
+                </div> 
+             
+
+                  
+                <div class="item range range-assertive">
+                    心律 
+                    <!-- <i class="icon ion-volume-low"></i> -->  
+                    <input type="range" name="level" ng-model = "value.NYHA">
+                   %
+                    <!-- <i class="icon ion-volume-high"></i> -->
+                  </div>
+                         
+                <div class="item range range-energized">
+                  年龄
+                      <input type="range" name="level" ng-model = "value.NYHA">               
+                </div>
+
+                <div class="item range range-energized">
+                  腹围
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                    mmHg
+                </div>
+
+                <div class="item range range-energized">
+                  总胆固醇浓度                   
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                   umol/L
+                </div>
+                <div class="item range range-energized">
+                  低密度脂蛋白浓度                   
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                   umol/L
+                </div>
+                <div class="item range range-energized">
+                  高密度脂蛋白浓度                   
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                   umol/L
+                </div>
+                <div class="item range range-energized">
+                  甘油三酯浓度                   
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                   umol/L
+                </div>
+                <div class="item range range-energized">
+                  BMI                    
+                <input type="range" name="level" ng-model = "value.NYHA">
+                    kg/m2
+                </div>
+
+                <div class="item range range-energized">
+                  身高                    
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                      cm
+                    体重                    
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                      kg
+                </div>
+        </div>
     </div>
     </div>
     </div>
   </ion-slide>
 
 
-  <ion-slide>
+  <ion-slide prevent-drag>
     <div class = "padding">
       <div class = "padding">
-<div class="card">
-        <div class="item item-divider">
-    <h2>糖尿病风险描述<h2>
-  </div>
-    <label class="item item-input">
-          <span class="input-label">当前血糖值</span>
-          <input type="number" placeholder="mmol/L" ng-model="value.glucose">
-        </label>
+        <div class="card">
+          <div class="item item-divider">
+            <h2>糖尿病风险描述<h2>
+          </div>
+              <label class="item item-input">
+                      <span class="input-label">当前血糖值</span>
+                      <input type="number" placeholder="mmol/L" ng-model="value.glucose">
+              </label>
 
         <label class="item item-input item-select">
             <div class="input-label">
@@ -75,6 +179,131 @@
   </ion-slide>
 
   
+
+  <ion-slide prevent-drag  on-slide-changed="slideHasChanged($index)"  delegate-handle="riskhandle">
+    <div class = "padding">
+      <div class = "padding">
+        <div class="card">
+          
+          <div class="item item-divider">
+            <h2>心衰风险描述<h2>
+          </div>
+          
+                <div class="item range range-energized">
+                    <i class="icon ion-volume-low"></i>
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                    <i class="icon ion-volume-high"></i>
+                </div>
+                <div>
+                    {{ (value.NYHA/ 25) | number :0 }}
+                </div>
+               <!--  <div ng-repeat = "item in setedValue.NYHA">
+                  {{item}}
+                </div> -->                                
+                <div class="item item-divider item-icon-left"  ng-click="toggleGroup(3)">
+                  <i class="icon" ng-class="list.M3show ? 'ion-minus' : 'ion-plus'"></i>
+                  <h2>临床数据<h2>
+                </div>
+              
+              
+
+
+            
+               <div class = "item-list" ng-show = "list.M3show">  
+                
+                <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 男性
+                </div>
+               
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 目前吸烟
+                </div>
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 患糖尿病
+                </div> 
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 慢性阻塞性肺病
+                </div>
+
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 没有服用β受体阻滞剂
+                </div> 
+
+                <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox">
+                 </label>
+                 没有服用ACEI/ARB类药物
+                </div> 
+             
+
+                  
+                <div class="item range range-assertive">
+                    射血分数 
+                    <!-- <i class="icon ion-volume-low"></i> -->  
+                    <input type="range" name="level" ng-model = "value.NYHA">
+                   %
+                    <!-- <i class="icon ion-volume-high"></i> -->
+                  </div>
+                         
+                <div class="item range range-energized">
+                  年龄
+                      <input type="range" name="level" ng-model = "value.NYHA">               
+                </div>
+
+                <div class="item range range-energized">
+                  收缩压
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                    mmHg
+                </div>
+
+                <div class="item range range-energized">
+                  血清肌酸酐                   
+                      <input type="range" name="level" ng-model = "value.NYHA">
+                   umol/L
+                </div>
+
+                <div class="item range range-energized">
+                  BMI                    
+                <input type="range" name="level" ng-model = "value.NYHA">
+                    kg/m2
+                </div>
+
+                <div class="item range range-energized">
+                  身高                    
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                      cm
+                    体重                    
+                  <input type="range" name="level" ng-model = "value.NYHA">
+                      kg
+                </div>
+
+              </div>
+                  
+           
+             
+            </div>
+        </div>
+      </div>
+  </ion-slide>
+
 </ion-slide-box>
 
 
