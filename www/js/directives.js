@@ -246,19 +246,3 @@ angular.module('ionicApp.directives', [])
       };
     }
   ])
-//range 在slide 上防止 滑动 lrz20151117
-.directive('preventDrag', ['$ionicGesture','$ionicSlideBoxDelegate',function ($ionicGesture, $ionicSlideBoxDelegate) {
-    return {
-      restrict: 'A',
-      link    : function (scope, elem) {
-        var reportEvent = function (e) {
-          if (e.target.tagName.toLowerCase() === 'input') {
-            $ionicSlideBoxDelegate.enableSlide(false);
-          } else {
-            $ionicSlideBoxDelegate.enableSlide(true);
-          }
-        };
-        $ionicGesture.on('touch', reportEvent, elem);
-      }
-    };
-}])

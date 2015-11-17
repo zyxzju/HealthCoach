@@ -1,0 +1,31 @@
+<ion-modal-view>
+	<ion-header-bar align-title="middle" class="bar-positive">
+  		<div class="buttons">
+    		<button class="button button-icon icon ion-android-close" ng-click="closeFilter()"></button>
+		</div>
+		<h1 class="title">筛 选</h1>
+		<div class="buttons">
+    		<button class="button button-icon icon ion-android-done" ng-click="letusFilter()"></button>
+		</div>
+  	</ion-header-bar>
+    <div class="bar-shadow"></div>
+   	<ion-content scroll='true'>
+   	    <div class="row" style="padding:0;min-height:200px;box-shadow:1px 1.5px 2px #AAA">
+   			<div class="col-25">
+   				<div class="list">
+            <a class="item" style="background-color:#F6F6F6;z-index:100;padding-top:12px;padding-bottom:0px" ng-repeat="prop in props track by $index" ng-click="switchTo($index)">
+              <div style="padding-bottom:12px">{{prop.Name}}<i ng-show="prop.checked" style="font-size:0.02em !important;color:#689f38" class="icon ion-android-checkbox-outline"></i> </div>
+            </a>            
+   				</div>			
+   			</div>
+   			<div class="col-75 text-center">
+   				<div class="list">
+            <a style="border-left:0px !important;border-top:0px;border-bottom:0px;padding-bottom:0px;padding-top:0px" class="item item-icon-right" ng-click="checkit($index)" ng-repeat="category in categories track by $index">
+              <center style="padding-bottom:12px;padding-top:12px;border-bottom:#DDDDDD 1px solid;border-top:#DDDDDD 1px solid">{{category.Name}}</center>
+              <i  ng-show="category.checked"  style="font-size:1.7em;color:#387EF5" class="icon ion-android-done"></i>
+            </a>
+	   			</div>
+   			</div>
+   		</div>
+</ion-content>
+</ion-modal-view>

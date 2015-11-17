@@ -26,7 +26,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       url: '/phonevalid',
       cache: false,
       templateUrl: 'partials/login/phonevalid.html',
-	    controller: 'phonevalidCtrl'
+      controller: 'phonevalidCtrl'
     })
     .state('setpassword', {
       //cache:false,
@@ -213,17 +213,19 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient',{
     url:'/addpatient',
     abstract:true,
-    template:'<ion-nav-view/>'
+    template:'<ion-nav-view></ion-nav-view>'
   })
 
   .state('addpatient.newpatient',{
     url:'/newpatient',
+    cache: false,
     templateUrl:'partials/addpatient/newpatient.html',
     controller:'newpatientCtrl'
   })
 
   .state('addpatient.basicinfo',{
     url:'/newbasicinfo',
+    cache: false,
     templateUrl:'partials/addpatient/basicinfo.html',
     controller:'newbasicinfoCtrl'    
   })  
@@ -255,18 +257,21 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.ModuleInfo',{
     url:'/ModuleInfo',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfo.html',
     controller:'ModuleInfoCtrl'
   })
 
   .state('addpatient.ModuleList',{
     url:'/ModuleInfo/:Module',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoList.html',
     controller:'ModuleInfoListDetailCtrl'
   })
 
   .state('addpatient.ModuleListDetail',{
     url:'/ModuleInfo/:Module/:ListName',
+    cache: false,
     templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
     controller:'ModuleInfoListDetailCtrl'   
   })
@@ -274,14 +279,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient.risk',{
     url:'/risk',
     templateUrl:'partials/addpatient/risk.html',
-    controller:'NewRiskCtrl'
+    controller:'RiskCtrl'
   })
 
   .state('addpatient.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/addpatient/riskdetail.html',
-    controller:'RiskDtlCtrl'
+    controller:'RiskCtrl'
   })
 
   .state('addpatient.riskquestion',{
@@ -444,6 +449,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/ModuleInfo",
     views:{
       'ModuleInfo':{
+        cache: false,
         templateUrl:"partials/managepatient/ModuleInfo.html",
         controller:"ModuleInfoCtrl"
       }
@@ -453,6 +459,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module',
     views:{
       "ModuleInfo":{
+        cache: false,
         templateUrl:'partials/managepatient/ModuleInfoList.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -463,6 +470,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module/:ListName',
     views:{
       "ModuleInfo":{
+        cache: false,
         templateUrl:'partials/managepatient/ModuleInfoListDetail.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -562,15 +570,16 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('Independent.risk',{
     url:'/risk',
+    cache: false,
     templateUrl:'partials/managepatient/risk.html',
-    controller:'NewRiskCtrl'
+    controller:'RiskCtrl'
   })
 
   .state('Independent.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/managepatient/riskdetail.html',
-    controller:'RiskDtlCtrl'
+    controller:'RiskCtrl'
   })
 
   .state('Independent.riskquestion',{
@@ -583,6 +592,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/table",
     views: {
       '': {
+        cache: false,
         templateUrl: "partials/managepatient/table.html",
         controller: 'vitaltableCtrl'
       }
@@ -592,6 +602,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/tablelist",
     views: {
       'tablelist': {
+        cache: false,
         templateUrl: "partials/managepatient/tablelist.html",
         
       }
@@ -624,6 +635,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       StatusBar.styleDefault();
     }
     //启动极光推送服务
+    document.addEventListener('jpush.openNotification', onOpenNotification, false); //监听打开推送消息事件
     window.plugins.jPushPlugin.init();
     window.plugins.jPushPlugin.setDebugMode(true);
     //window.plugins.jPushPlugin.setAlias("SimonTDY");
@@ -636,7 +648,24 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
    }  
    alert("ERROR in " + url + " (line #" + line + "): " + msg);  
    return false;  
-  };*/
+  };
+  
+  function onOpenNotification(){
+    var alertContent;
+    if(device.platform == "Android"){
+        alertContent=window.plugins.jPushPlugin.openNotification;
+    }else{
+        alertContent   = event.aps.alert;
+    }
+    if (alertContent.extras.cn.jpush.android.EXTRA.type == "新申请")
+    {
+      Storage.set('PatientID', alertContent.extras.cn.jpush.android.EXTRA.SenderID);
+      $state.go('');
+    }
+    //alert("open Notificaiton:"+alertContent);
+    //$state.go('coach.i');
+  }  
+  */
 })
 
 // --------不同平台的相关设置----------------

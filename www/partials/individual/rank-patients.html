@@ -1,0 +1,20 @@
+<ion-popover-view style="width:150px" class="contentheight">
+  <ion-content scroll='true' >
+    <ion-list class="text-center">
+      <ion-item style="padding-top:8px;padding-bottom:0" ng-repeat="rank in ranks track by $index" ng-click="rankBy($index)">
+        <div ng-show="rank.cilcked" style="color:#387EF5;border-bottom:#DDDDDD 1px solid;padding-bottom:8px">{{rank.Name}}</div><div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px" ng-show="!rank.cilcked">{{rank.Name}}</div>
+      </ion-item>
+      <!-- <a class="item" style="padding-top:8px;padding-bottom:0" ng-repeat="rank in ranks track by $index" ng-click="rankBy($index)"> -->
+        <!-- <div ng-show="rank.cilcked" style="color:#387EF5;border-bottom:#DDDDDD 1px solid;padding-bottom:8px">{{rank.Name}}</div><div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px" ng-show="!rank.cilcked">{{rank.Name}}</div> -->
+        <!-- <center style="padding-bottom:12px">{{prop}}</center> -->
+        <!-- <i  style="font-size:1.7em;color:#387EF5" class="icon ion-android-done"></i> -->
+      <!-- </a>  -->
+      <ion-item style="padding-top:8px;padding-bottom:0" class="item" ng-click="modelopen()">
+        <div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px"><b>更多选项</b></div>
+      </ion-item>
+      <ion-item style="padding-top:8px;padding-bottom:0" class="item" ng-click="resetfilter()">
+        <div style="padding-bottom:8px"><b>重置</b></div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-popover-view>

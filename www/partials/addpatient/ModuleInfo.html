@@ -1,9 +1,9 @@
-<ion-view title="慢病信息">
+<ion-view cache-view="false" title="慢病信息">
 <div class="bar-shadow"></div> 
   <ion-content>
     
       <ion-list>
-          <ion-item  ng-repeat='Module in ModuleInfo' href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
+          <ion-item  ng-repeat='Module in ModuleInfo' href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}" ng-if="Module.Flag">
             <a class="item item-icon-right" href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
             	{{Module.ModuleName}}
 	           	<i class="icon ion-chevron-right icon-gray"></i>

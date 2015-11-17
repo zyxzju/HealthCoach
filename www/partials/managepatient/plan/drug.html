@@ -14,7 +14,7 @@
 <div class="bar-shadow"></div>
 	<ion-content>
 		<div class = "list">
-			<a class = "item item-icon-right" ng-repeat = "item in task.list " href = "#">
+			<!-- <a class = "item item-icon-right" ng-repeat = "item in task.list " href = "#">
 			{{item.Description}}
 				<div ng-click="EditTask(item)">
 				    <i class="icon ion-edit" style="margin-right:40px;"></i>	
@@ -22,10 +22,26 @@
 				<div ng-click="RemoveItem(item)">
 				    <i class="icon ion-ios-minus"></i>
 				</div>
-			</a>
+				<div>{{item.Instruction}}</div>
+			</a> -->
+
+ 			<div class="list card" ng-repeat = "item in task.list">
+      			<div class="item item-divider item-icon-right" style="background:rgba(183, 203, 237, 0.34)">      		
+					<b>{{item.Description}}</b>
+					<div ng-click="EditTask(item)">
+				    	<i class="icon ion-edit" style="margin-right:40px;"></i>	
+					</div>
+					<div ng-click="RemoveItem(item)">
+				    	<i class="icon ion-ios-minus"></i>
+					</div>							
+      			</div>
+      			<div class="item item-body " >       			
+         		{{item.OptionCategory}}                 	
+      			</div>
+    		</div>
 		</div>
 		<div style="text-align:center;padding:20px;">
-        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()"> 
+        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()" ng-if="isloaded"> 
         <span style="font-size:15px;color:blue;font-weight:bold">确定</span>
         </button>
 	</ion-content>

@@ -5,6 +5,10 @@
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
     </div>  
     <h1 class="title">现有病人</h1>
+        <div class="buttons">
+      <!-- <a class="button  button-outline button-light" ng-click="popover.show($event)">筛选</a> -->
+      <a class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></a>
+    </div>
 <!--     <div class="buttons">
       <button class="button button-icon icon ion-search" ng-click="openSearch()"></button>
     </div> -->
@@ -13,6 +17,10 @@
   <!-- <ion-nav-bar  style="z-index:100" class="bar-positive nav-title-slide-ios7"> -->
     <ion-nav-buttons side="left">
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <!-- <a class="button button-outline button-light" ng-click="popover.show($event)">筛选</a> -->
+      <a class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></a>
     </ion-nav-buttons>
 <!--     <ion-nav-buttons side="right">
       <button class="button button-icon icon ion-search " ng-click="openSearch()"></button>
@@ -43,17 +51,20 @@
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
       <i class="icon ion-android-search placeholder-icon"></i>
-      <input type="search" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="Search">
+      <input type="search" ng-focus="saveNow()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
       <i class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
   </div>  
+  <div ng-click="scrollTop()" ng-touch="fade" ng-hide="needtoTop" class="text-center" style="position: absolute;bottom:60px;right:15px;z-index:100;display:block;width:46px;height:46px;background-color:#11C1F3;border-radius:23px;box-shadow:0px 2px 3px #888;">
+    <i style="font-size:3.2em;color:#FFF" class="icon ion-android-arrow-up"></i>
+  </div>
   <div class="sub-bar-shadow"></div>
   <ion-content class="has-subheader content-item-list" >   
   
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <div  collection-repeat="patient in patients" collection-item-height="107px"  ng-click="PIDdetail(patient)" >
+      <div  collection-repeat="patient in patients |filter:byRange() " collection-item-height="107px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-thumbnail-left item-margin ">
         <img src="{{patient.photoAddress}}">
         <div style=" padding-left:84px">
@@ -64,10 +75,10 @@
               <div class="col-75">
                 <div class="row " style="padding-right:0">
                   <div class="col-67"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}</h3></div>
-                  <div class="col-33"><h1 >{{patient.Age}}      {{patient.GenderText[0]}}</h1></div>
+                  <div class="col-33"><h1 >{{patient.Age}}岁      {{patient.GenderText[0]}}</h1></div>
                 </div>
                 <div class="row">
-                  <div class="col-100"><b><i class="icon ion-pie-graph"></i> {{patient.Module}}</b></div>
+                  <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
                 </div> 
               </div>
               <div class="col-25">
@@ -82,9 +93,10 @@
               </div>  
             </div>
             <div class="row">
-        
-          <b style="padding:0 8px 0 5px"><i class="icon ion-arrow-graph-up-right"></i> 进度 </b>
-          <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
+          <!-- <div class="col-25"> -->
+          <p style="margin:0 2px 0 5px;width:60px" ><i class="icon ion-arrow-graph-up-right"></i> 进度 </p>
+          <!-- </div> -->
+          <div  style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
           <div ng-style="setwidth(patient.Process)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
           </div>
         
