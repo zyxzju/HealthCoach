@@ -2788,7 +2788,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var UserId = Storage.get('UID');
   var PatientID = Storage.get('PatientID');
   var Module = $stateParams.Module;
-  var HModule = "H" + Module;
   $scope.getStatus = "";
   $scope.test = {"test":{"Type":"1","Name":"是"}};
   $scope.isloaded = false;
@@ -3155,7 +3154,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           
       }
     };
-    if (Storage.get(HModule)=="No")
+    if (Storage.get(Module)=="No")
     {
       Users.addnewpatient(UserId,PatientID,Module).then(function(data,status){
         $scope.getStatus = data;
@@ -3165,7 +3164,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $scope.getStatus = data.result;
             if (data.result == "数据插入成功")
             {
-              Storage.set(HModule,"Yes");
+              Storage.set(Module,"Yes");
             }
             else
             {
