@@ -1025,7 +1025,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   self.addnewpatient = function(DoctorId, PatientId,Module){
     var temp = [{
       "Doctor": DoctorId,
-      "CategoryCode": Module,
+      "CategoryCode": "H"+Module,
       "ItemCode": "Patient",
       "ItemSeq": 1,
       "Value": PatientId,
@@ -1049,7 +1049,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   self.addnewhealthcoach = function(DoctorId, PatientId,Module){
     var temp = [{
       "Patient": PatientId,
-      "CategoryCode": Module,
+      "CategoryCode": "H"+Module,
       "ItemCode": "Doctor",
       "ItemSeq": 1,
       "Value": DoctorId,
