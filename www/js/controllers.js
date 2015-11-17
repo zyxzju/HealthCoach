@@ -2661,7 +2661,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                     {
                         data.Time = "";
                     }
-                    $scope.Dialog.DisplayOnes.push({"IDFlag": "Send","SendDateTime": data.Time,"Content":$scope.Dialog.SMScontent});
+                    $scope.Dialog.DisplayOnes.push({"IDFlag": "Send","Time": data.Time,"Content":$scope.Dialog.SMScontent});
                     $ionicScrollDelegate.scrollBottom(true);
                     $scope.SocketSubmit(Receiver +  "||" + SendBy + "||" + data.Time + "||" + $scope.Dialog.SMScontent);
                     $scope.Dialog.SMScontent = "";
@@ -2753,6 +2753,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       if (data[i].moduleCode != "")
       {
         Storage.set(data[i].moduleCode,'Yes');
+        for (var j=0;j<$scope.ModuleInfo.length;j++)
+        {
+          if (data[i].moduleCode == "H" + $scope.ModuleInfo[j].ModuleCode)
+          {
+            $scope.ModuleInfo[j].Flag = false;
+          }
+        }
       }
     }
   },function(data,status){
