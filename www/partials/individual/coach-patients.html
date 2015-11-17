@@ -55,16 +55,16 @@
       <i class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
   </div>  
-  <div ng-click="scrollTop()" ng-touch="fade" ng-hide="needtoTop" class="text-center" style="position: absolute;bottom:60px;right:15px;z-index:100;display:block;width:46px;height:46px;background-color:#11C1F3;border-radius:23px;box-shadow:0px 2px 3px #888;">
+  <div ng-click="scrollTop()" ng-touch="fade" ng-style="needtoTop" class="text-center" style="position: absolute;bottom:60px;right:15px;z-index:100;display:block;width:46px;height:46px;background-color:#11C1F3;border-radius:23px;box-shadow:0px 2px 3px #888;">
     <i style="font-size:3.2em;color:#FFF" class="icon ion-android-arrow-up"></i>
   </div>
   <div class="sub-bar-shadow"></div>
-  <ion-content class="has-subheader content-item-list" >   
+  <ion-content delegate-handle="myPatientScroll" class="has-subheader content-item-list" on-scroll="onScoll()">   
   
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <div  collection-repeat="patient in patients |filter:byRange() " collection-item-height="107px"  ng-click="PIDdetail(patient)" >
+      <div  collection-repeat="patient in patients |filter:byRange() " collection-item-height="105px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-thumbnail-left item-margin ">
         <img src="{{patient.photoAddress}}">
         <div style=" padding-left:84px">
@@ -74,8 +74,8 @@
             <!-- <div class="row"> -->
               <div class="col-75">
                 <div class="row " style="padding-right:0">
-                  <div class="col-67"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}</h3></div>
-                  <div class="col-33"><h1 >{{patient.Age}}岁      {{patient.GenderText[0]}}</h1></div>
+                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}</h5></div>
+                  <div class="col-33"><h6 >{{patient.Age}}岁      {{patient.GenderText[0]}}</h6></div>
                 </div>
                 <div class="row">
                   <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
@@ -85,7 +85,7 @@
                 <div class="item-row">
                   <div class="col-40">
                     <div class="row"><p>依从率</p></div>
-                    <div class="row" ><h3 ng-style="tcolor(patient.ComplianceRate)">{{patient.ComplianceRate}}%</h3></div>
+                    <div class="row" ><h5 ng-style="tcolor(patient.ComplianceRate)">{{patient.ComplianceRate}}%</h5></div>
                   </div>
            <!--        <i ng-hide="!ishide(patient)" style="font-size:2em;color:#fb6a1b" class="icon ion-sad"></i>
                   <i ng-hide="ishide(patient)" style="font-size:2em;color:#33cd5f" class="icon ion-happy"></i> -->
