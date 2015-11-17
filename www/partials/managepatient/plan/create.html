@@ -9,12 +9,12 @@
 </ion-nav-bar>
 	<ion-content has-bouncing="false">
 		<div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF">	
-			<h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}  岁</h3>
+			<h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}  </h3>
 		</div>	
 		<div class="list">
 
 			<a class="item" href="#/manage/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
-			{{item.PlanName}}：{{item.StartDate}}-{{item.EndDate}}
+			{{item.PlanName}}{{item.StartDate}}{{item.EndDate}}
 	        </a>
     	</div>
     	<!-- <div style="text-align:center;padding:20px;">

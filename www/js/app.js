@@ -213,7 +213,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient',{
     url:'/addpatient',
     abstract:true,
-    template:'<ion-nav-view/><ion-nav-view/>'
+    template:'<ion-nav-view></ion-nav-view>'
   })
 
   .state('addpatient.newpatient',{
@@ -279,14 +279,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   .state('addpatient.risk',{
     url:'/risk',
     templateUrl:'partials/addpatient/risk.html',
-    controller:'RiskCtrl'
+    controller:'NewRiskCtrl'
   })
 
   .state('addpatient.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/addpatient/riskdetail.html',
-    controller:'RiskCtrl'
+    controller:'RiskDtlCtrl'
   })
 
   .state('addpatient.riskquestion',{
@@ -572,14 +572,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/risk',
     cache: false,
     templateUrl:'partials/managepatient/risk.html',
-    controller:'RiskCtrl'
+    controller:'NewRiskCtrl'
   })
 
   .state('Independent.riskdetail',{
     url:'/risk/:num',
     cache: false,
     templateUrl:'partials/managepatient/riskdetail.html',
-    controller:'RiskCtrl'
+    controller:'RiskDtlCtrl'
   })
 
   .state('Independent.riskquestion',{
@@ -635,6 +635,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       StatusBar.styleDefault();
     }
     //启动极光推送服务
+    document.addEventListener('jpush.openNotification', onOpenNotification, false); //监听打开推送消息事件
     window.plugins.jPushPlugin.init();
     window.plugins.jPushPlugin.setDebugMode(true);
     //window.plugins.jPushPlugin.setAlias("SimonTDY");
@@ -647,7 +648,24 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
    }  
    alert("ERROR in " + url + " (line #" + line + "): " + msg);  
    return false;  
-  };*/
+  };
+  
+  function onOpenNotification(){
+    var alertContent;
+    if(device.platform == "Android"){
+        alertContent=window.plugins.jPushPlugin.openNotification;
+    }else{
+        alertContent   = event.aps.alert;
+    }
+    if (alertContent.extras.cn.jpush.android.EXTRA.type == "新申请")
+    {
+      Storage.set('PatientID', alertContent.extras.cn.jpush.android.EXTRA.SenderID);
+      $state.go('');
+    }
+    //alert("open Notificaiton:"+alertContent);
+    //$state.go('coach.i');
+  }  
+  */
 })
 
 // --------不同平台的相关设置----------------

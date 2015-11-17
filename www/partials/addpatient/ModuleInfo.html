@@ -3,7 +3,7 @@
   <ion-content>
     
       <ion-list>
-          <ion-item  ng-repeat='Module in ModuleInfo' href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
+          <ion-item  ng-repeat='Module in ModuleInfo' href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}" ng-if="Module.Flag">
             <a class="item item-icon-right" href="#/addpatient/ModuleInfo/{{Module.ModuleCode}}">
             	{{Module.ModuleName}}
 	           	<i class="icon ion-chevron-right icon-gray"></i>
