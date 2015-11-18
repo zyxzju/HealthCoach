@@ -1,27 +1,23 @@
 <ion-view cache-view="false" view-title="计划列表">
-<ion-nav-bar class="bar-positive">
-<!-- 	<ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" ng-click="$onClickBackward()">
-		</button>
-	</ion-nav-buttons> -->
-	<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
-	<ion-nav-buttons side="secondary">
-		<div class="markDisplay{{create.AddFlag}}">
-			<button class="button button-icon icon ion-plus " ng-click="CreatePlan()"></button>
-		</div>
-	</ion-nav-buttons>
-</ion-nav-bar>
-<div class="bar-shadow"></div>
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+		<ion-nav-buttons side="secondary">			
+			<ion-nav-buttons side="secondary">
+				<button class="button" ng-click="backtomain()" ng-if="isloaded">确定</button>
+			</ion-nav-buttons>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
 	<ion-content>
 		<div class="list">
-			<a class="item" href="#/addpatient/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
-			{{item.PlanName}}{{item.StartDate}}{{item.EndDate}}
+			<a class="item" href="#/addpatient/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">      {{item.PlanName}}{{item.StartDate}}{{item.EndDate}}
 	        </a>
     	</div>
+
     	<div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="backtomain()" ng-if="isloaded">
-			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
-			</button>
-		</div>
+	        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="CreatePlan()" ng-if="create.AddFlag" >
+	        	<span style="font-size:15px;color:blue;font-weight:bold">添加计划</span>
+	        </button>
+        </div>   	
     </ion-content>	
 </ionic view>

@@ -1,26 +1,25 @@
 <ion-view  cache-view="false" title="计划列表">
-<ion-nav-bar class="bar-positive">
-	<ion-nav-buttons side="primary">
-		<button class="button icon button-icon ion-android-home" ng-click="onClickBackward()"></button>
-	</ion-nav-buttons>
-	<ion-nav-buttons side="secondary">
-			<button class="button icon button-icon ion-plus markDisplay{{create.AddFlag}}" ng-click="CreatePlan()"></button>
-	</ion-nav-buttons>
-</ion-nav-bar>
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<button class="button icon button-icon ion-android-home" ng-click="onClickBackward()"></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button" ng-click="backtomain()" ng-if="isloaded">确定</button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
 	<ion-content has-bouncing="false">
 		<div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF">	
 			<h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}  </h3>
 		</div>	
 		<div class="list">
-
 			<a class="item" href="#/manage/taskList" ng-repeat = "item in create.PlanList" ng-click="SavePlanNo(item.PlanNo)">        
 			{{item.PlanName}}{{item.StartDate}}{{item.EndDate}}
 	        </a>
     	</div>
-    	<!-- <div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="$onClickBackward()">
-			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
-			</button>
-		</div> -->
+    	<div style="text-align:center;padding:20px;">
+	        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="CreatePlan()" ng-if="create.AddFlag" >
+	        	<span style="font-size:15px;color:blue;font-weight:bold">添加计划</span>
+	        </button>
+        </div>     	
     </ion-content>	
 </ionic view>
