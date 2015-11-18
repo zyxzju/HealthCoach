@@ -4,26 +4,13 @@
     <button class ="button button-icon ion-minus-circled" ng-click ="data.showDelete = !data.showDelete; showReorder = false;"></button>
     <button class ="button button-icon ion-navicon" ng-click ="data.showReorder = !data.showReorder; showDelete = false;"></button>
   </ion-header-bar>
-  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important;border-bottom:#EEEEEE 1px solid">
-    <div style="width:50%" class="item item-input item-select">
-      <div class="input-label">
-        筛选
-      </div>
-      <select>
-        <option>全部申请</option>
-        <option selected="">高血压</option>
-        <option>糖尿病</option>
-      </select>
-    </div>
-    <div style="width:51%" class="item item-input item-select">
-      <div class="input-label">
-        排序
-      </div>
-      <select>
-        <option>申请时间</option>
-        <option selected="">预约时间</option>
-      </select>
-    </div>
+  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important">
+
+      <a class="item col-33 text-center" ng-click="openpopover($event,0)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a>
+      <a class="item col-33 text-center" ng-click="openpopover($event,1)">{{f.Status}} <i class="icon ion-android-arrow-dropdown"></i></a>
+      <!-- <a class="item col-33 text-center" ng-click="popover1.show($event)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a> -->
+      <!-- <a class="item col-33 text-center" ng-click="popover.show($event)">{{f.status}} <i class="icon ion-android-arrow-dropdown"></i></a> -->
+      <a class="item col-33 text-center">WHATEVER <i class="icon ion-android-arrow-dropdown"></i></a>
   </div>
   <div class="sub-bar-shadow"></div>
   <ion-content class="has-subheader content-item-list">       

@@ -1345,6 +1345,717 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
+// .controller('myPatientCtrl', ['$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
+//   var PIDlist=new Array();//PID列表
+//   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
+//   var loaditems=0;//已加载条目
+//   var PatientsList=new Array();//输出到页面的json  
+//   var refreshing=1;//控制连续刷新时序            
+//   // $scope.patients=PatientsBasic;
+//   $scope.moredata = false;  //控制上拉加载
+//   $scope.clearIt=true;
+//     //-----------------------------------------------------------------------------//
+//   var DOCID=Storage.get('UID');
+   
+//   // loading图标显示
+//   $scope.scrollTop = function(){
+//     $ionicScrollDelegate.scrollTop(true);
+//   }
+//   // $scope.onScoll = function(){
+//   //   if($ionicScrollDelegate.getScrollPosition().top>300){
+//   //     $scope.needtoTop = {'display':'block'};
+//   //   }else{
+//   //     $scope.needtoTop ={'display':'none'};
+//   //   }
+//   // }
+//   $scope.$on('$ionicView.enter', function() {
+//     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+//       scope: $scope,
+//     }).then(function(popover) {
+//       // $compile($('.popover.in').contents())($scope);
+//       // $compile(('popover').contents())(scope)
+//       $scope.popover = popover;
+//       $scope.ranks=ranks;
+//     });   
+//   });
+//   $ionicLoading.show({
+//     content: '加载中',
+//     animation: 'fade-in',
+//     showBackdrop: true,
+//     maxWidth: 200,
+//     showDelay: 0
+//   });
+//   var Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
+//   var categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false},{'Name':'心衰','checked':false}],
+//     [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
+//     [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
+//     [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
+//     [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
+//   var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate','clicked':false},
+//     {'Name':'依从率最高','ordername':'ComplianceRate desc','clicked':false},
+//     {'Name':'计划剩余天数','ordername':'RemainingDays','clicked':false},
+//     {'Name':'只显示高血压','ordername':'高血压','clicked':false},
+//     {'Name':'只显示糖尿病','ordername':'糖尿病','clicked':false},
+//     {'Name':'只显示心衰','ordername':'心衰','clicked':false}]
+//     var rankindex=0;
+//     $scope.rankBy = function(index){      
+//       ranks[rankindex].clicked=false;
+//       if(index<3){
+//         orderConfig=ranks[index].ordername;
+//         ranks[index].clicked=true;
+//         $scope.ranks=ranks;
+//         console.log($scope.ranks);
+//         refreshing=1;
+//         PatientsList=[];PIDlist=[];
+//         loaditems=0;PIDlistLength=0;
+//         getPIDlist();
+//       }else if(index==3 ||index==4 || index==5){
+//         filterModule=[ranks[index].ordername];
+//         ranks[index].clicked=true;
+//         categories[0][index-3].checked=true;
+//         if(index==3){
+//           categories[0][1].checked=false;
+//           categories[0][2].checked=false;
+//         }else if(index==4){
+//           categories[0][0].checked=false;
+//           categories[0][2].checked=false;
+//         }else if(index==5){
+//           categories[0][1].checked=false;
+//           categories[0][2].checked=false;
+//         }
+//         Props[0].checked=true; 
+//       }
+//       $scope.popover.hide();  
+//       rankindex=index;    
+//     }
+//     $scope.resetfilter= function(){
+//       $scope.popover.hide();
+//       ranks[rankindex].clicked=false;
+//       // index1=0;
+//       Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
+//       categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false}],
+//       [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
+//       [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
+//       [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
+//       [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
+//       orderConfig="Status";
+//       refreshing=1;
+//       PatientsList=[];PIDlist=[];
+//       orderConfig ="RemainingDays,StartDate desc";
+//       filterConfig = "PatientName ge  ''";
+//       loaditems=0;PIDlistLength=0;
+//       getPIDlist();      
+//       $scope.categories=categories[0];
+//       $scope.letusFilter();
+//     }
+//   // $scope.filterProps={PatientName:'te'};
+//   //搜索
+//   $scope.startSearch = function(query){
+//     if(query.PatientName.length>0){
+//       $scope.clearIt=false;
+//     }
+//     if(query.PatientName.length==0){
+//       $scope.clearIt=true;
+//     }
+//     var dosearch =function(){
+//       var filterdata= $filter('filter')(PatientsList,query);
+//       $scope.patients=filterdata;          
+//     }
+//     if(refreshing==0){
+//       dosearch();
+//     }else{
+//       $timeout(dosearch(),2000);
+//     }
+//   }
+//   $scope.clearSearch = function(){
+//     $scope.query="";
+//     $scope.clearIt=true;
+//     $scope.patients=PatientsList;
+//   }
+
+//   var onePatientBasic= function(PID,listIndex){
+//     userINFO.BasicInfo(PID).then(function(data){
+//       PatientsList[listIndex].Age=data.Age;
+//       PatientsList[listIndex].GenderText=data.GenderText;
+//       // $scope.patients=[];
+//       // $scope.patients=PatientsList.slice(0,loaditems);
+//     },function(data){
+//     }); 
+//   }
+//   var getPatientsBasic=function(list){
+//     // for(var p in list){        //3行无延时请求数据
+//     //   onePatientBasic(list[p]);
+//     // }
+//     var repeat=PIDlistLength;  
+//     var timer;
+//     timer = $interval(function(){
+//       if(repeat==0){
+//         $ionicLoading.hide();
+//         refreshing=0;$scope.$broadcast('scroll.refreshComplete');
+//         $interval.cancel(timer);
+//         timer=undefined;        
+//       }else{
+//       onePatientBasic(list[PIDlistLength-repeat],PIDlistLength-repeat);
+//       repeat--;
+//       }
+//     },20);
+//   }
+//   var netError = function(){
+//     $ionicLoading.hide();
+//     refreshing=0;
+//     PageFunc.confirm('网络好像不太稳定', '网络错误'); 
+//     $scope.$broadcast('scroll.refreshComplete');  
+//   }
+//   // var addlength='&$top=15&$skip='+loaditems;
+//   var orderConfig ="Status desc,ComplianceRate,RemainingDays,StartDate desc";
+//   var filterConfig = "PatientName ge  ''";
+//   var getPIDlist = function(){
+//     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
+//     .then(function(data){
+//       var temp={}
+//       for(var i=0;i<data.length;i++){  
+//         temp=data[i];
+//         if(temp.photoAddress=='' || temp.photoAddress==null){    
+//           temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//         }else{
+//           temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//         }
+//         if(temp.Process!=''){
+//           temp.Process=100*temp.Process.toFixed(2)
+//         }
+//         temp.Age='';
+//         temp.GenderText='';
+//         temp.Module="高血压";
+//         PatientsList.push(temp);
+//         PIDlist.push(temp.PatientId);          
+//       } 
+//       userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM2','0','0')
+//       .then(function(data){
+//         for(var i=0;i<data.length;i++){
+//           temp=data[i];
+//           if(temp.photoAddress=='' || temp.photoAddress==null){    
+//             temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//           }else{
+//             temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//           }
+//           temp.Age='';
+//           temp.GenderText='';
+//           temp.Module="糖尿病";
+//           PatientsList.push(temp);
+//           PIDlist.push(temp.PatientId);          
+//         }
+//         userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM3','0','0')
+//         .then(function(data){
+//           for(var i=0;i<data.length;i++){
+//             temp=data[i];
+//             if(temp.photoAddress=='' || temp.photoAddress==null){    
+//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//             }else{
+//               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+//             }
+//             temp.Age='';
+//             temp.GenderText='';
+//             temp.Module="心衰";
+//             PatientsList.push(temp);
+//             PIDlist.push(temp.PatientId);          
+//           }
+//           if((PIDlist.length-PIDlistLength)==15){
+//             $scope.moredata = false;
+//           }
+//           $scope.patients=PatientsList;
+//           PIDlistLength=PIDlist.length;
+//           console.log($scope.patients);
+//           $ionicLoading.hide();
+//           $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+//           getPatientsBasic(PIDlist);  
+//         },function(data){
+//           netError();
+//         })      
+//       },function(data){
+//         netError();
+//       })        
+//     },function(data){
+//       netError();
+//     });
+//   }
+//   $scope.PIDdetail = function(Patient){
+//     Storage.set("PatientID",Patient.PatientId);
+//     Storage.set("isManage","Yes");
+//     Storage.set("PatientName",Patient.PatientName);
+//     Storage.set('PatientAge',Patient.Age);
+//     Storage.set('PatientGender',Patient.GenderText);     
+//     Storage.set("PatientPhotoAddress",Patient.photoAddress);
+//     $state.go('manage.plan');
+//   }
+
+//   $scope.doRefresh =function() {
+//     if(refreshing==0){
+//       refreshing=1;
+//       PatientsList=[];PIDlist=[];
+//       loaditems=0;PIDlistLength=0;
+//       getPIDlist();
+//     }
+//   }
+//   $scope.loadMore = function(){
+//     if($scope.moredata==false){
+//       // console.log($scope.moredata);
+//       $scope.moredata=true;
+//       getPIDlist();
+//     }  
+//    $scope.$broadcast('scroll.infiniteScrollComplete');
+//   }  
+//   $scope.tcolor=function(ComplianceRate){
+//     if(ComplianceRate>=50){
+//       return {'color':'#33cd5f','font-size':'1.4em'};
+//     }else{
+//       return {'color':'#fb6a1b','font-size':'1.4em'};
+//     }
+//   };
+//   $scope.setwidth=function(Process){
+//     var divwidth=Process + '%';
+//     return {width:divwidth}; 
+//   };
+//     // 扫一扫
+//   $scope.QRscan = function(){
+//     var isMyPID=0;
+//     var setData =function(thisPatient){
+//       Storage.set("PatientID",thisPatient.PatientId);     
+//       Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+//       Storage.set("PatientName",thisPatient.PatientName);
+//       if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+//         thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//       }else{
+//         thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+//       }
+//       userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+//         Storage.set('PatientAge',data.Age);
+//         Storage.set('PatientGender',data.GenderText);
+//         $state.go('manage.plan');
+//       },function(data){
+//         // fail请求数据
+//       });
+//       }
+//     $cordovaBarcodeScanner
+//     .scan()
+//     .then(function(data) {
+//       // Success! Barcode data is here
+//       // var s = "Result: " + data.text + "<br/>" +
+//       // "Format: " + data.format + "<br/>" +
+//       // "Cancelled: " + data.cancelled;
+//       if(data.cancelled!=true){
+//         var tempf="PatientId eq '"+data.text+"'";
+//         userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
+//         .then(function(data){
+//           if(data.length==1){
+//             setData(data[0]);
+//           }else{
+//             userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM2','0','0')
+//             .then(function(data){
+//               if(data.length==1){
+//                 setData(data[0]);
+//               }else{
+//                 var myPopup = $ionicPopup.show({
+//                   template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+//                   //title: '',
+//                   //subTitle: '2',
+//                   scope: $scope,
+//                   buttons: [
+//                     { text: '取消',
+//                       type: 'button-small',
+//                       onTap: function(e) {                
+//                       }
+//                     },
+//                     {
+//                       text: '<b>确定</b>',
+//                       type: 'button-small button-positive ',
+//                       onTap: function(e) {
+//                         Storage.set("newPatientID",data.text);
+//                         $state.go('addpatient.basicinfo');
+//                       }
+//                     }
+//                   ]
+//                 });
+//               }
+//             },function(data){
+//               // fail请求数据
+//             })            
+//           }
+//         },function(data){
+//           // fail请求数据
+//         })
+//     }
+//     }, function(error) {
+//       alert('FAILED');
+//       // $ionicLoading.show({
+//       // content: '请重新扫码',
+//       // animation: 'fade-in',
+//       // noBackdrop: true,
+//       // // maxWidth: 200,
+//       // showDelay: 2000
+//   });
+//     // });
+//   }  
+//   //筛选
+//   var filterAge=[];
+//   var filterModule=[];
+//   var filterStartDate='';
+//   var filterStatus=[];
+//   var filterComplianceRate=[];
+//   $scope.byRange = function () {   
+//     return function predicateFunc(item) {
+//       var tempflag=false;
+//       if(filterAge!=''){
+//         for(var i in filterAge){
+//           if(filterAge[i][0] <= item['Age'] && item['Age'] <=filterAge[i][1]){
+//             tempflag=true;
+//             break;
+//           }
+//         } 
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         }       
+//       }
+
+//       if(filterModule!=''){
+//         for(var i in filterModule){
+//           if(filterModule[i]==item['Module']){
+//             tempflag=true;
+//             break;
+//           }
+//         }
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         }        
+//       }
+//       // if(filterStartDate!=''){
+//       //   if(filterStartDate<=String(item['StartDate'])){
+//       //     tempflag=true;
+//       //   }else{
+//       //     tempflag=false;
+//       //   }
+//       //   if(tempflag==false){
+//       //     return false;
+//       //   }else{
+//       //     tempflag=false;
+//       //   } 
+//       // }
+//       if(filterStatus!=''){
+//         for(var i in filterStatus){
+//           if(filterStatus[i]==String(item['Status'])){
+//             tempflag=true;
+//             break;
+//           }
+//         }
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         } 
+//       }  
+//       if(filterComplianceRate!=''){
+//         for(var i in filterComplianceRate){
+//           if(filterComplianceRate[i][0] <= item['ComplianceRate'] && item['ComplianceRate'] <=filterComplianceRate[i][1]){
+//             tempflag=true;
+//             break;
+//           }
+//         } 
+//         if(tempflag==false){
+//           return false;
+//         }else{
+//           tempflag=false;
+//         }       
+//       }    
+
+//       return true;
+//     };
+//   };
+//   $ionicModal.fromTemplateUrl('partials/individual/coach-patients-filter.html', {
+//     scope: $scope,
+//     animation: 'slide-in-up'
+//   }).then(function(modal) {
+//     $scope.modal = modal;
+//     $scope.categories=categories[0];
+//   });
+//   $scope.switchTo = function(index){
+//     $scope.categories=categories[index];
+//     index1=index;
+//     if(index==0 ||index==1)
+//     if(index==2){
+//       $scope.ownset=false;
+//     }
+//   }
+//   $scope.modelopen = function() {
+//     $scope.popover.hide();
+//     $scope.modal.show();
+//     $scope.props=Props;
+//     // $scope.categories=categories[0];
+//     // $scope.rankprops=rankprops;
+//     $scope.ownset=true;
+//   };
+//   var index1=0;
+//   $scope.checkit = function(index){
+//     if(index1!=2){
+//       categories[index1][index].checked=!categories[index1][index].checked;
+//       // $scope.categories=categories[index1];      
+//     }else{
+//       // categories[index1][index].checked=!categories[index1][index].checked;
+//       var t=!categories[index1][index].checked;
+//       for(var i in categories[index1]){
+//         categories[index1][i].checked=false;
+//       }
+//       categories[index1][index].checked=t;
+//       // $scope.categories=categories[index1];
+//     }
+//     for(var i in categories[index1]){
+//       if(categories[index1][i].checked == true){
+//         Props[index1].checked=true;
+//         break;
+//       }
+//       Props[index1].checked=false;
+//     }
+
+//   }
+//   $scope.letusFilter =function(){
+//     $scope.modal.hide();
+//     //年龄
+//     var temp=[];filterAge=[];
+//     if(categories[4][0].checked){
+//       temp.push([0,30]);
+//     }
+//     if(categories[4][1].checked){
+//       temp.push([30,50]);
+//     }
+//     if(categories[4][2].checked){
+//       temp.push([50,60]);
+//     }
+//     if(categories[4][3].checked){
+//       temp.push([60,150]);
+//     }
+//     if(temp!=''){
+//       for(var i=temp.length-1; i>0;i--){
+//         if(temp[i][0]==temp[i-1][1]){
+//           temp[i-1][1]=temp[i][1];
+//         }else{
+//           filterAge.push([temp[i][0],temp[i][1]]);
+//         }
+//       } 
+//       filterAge.push([temp[0][0],temp[0][1]]);      
+//     }
+//     console.log(filterAge);
+//     //依从率
+//     temp=[];
+//     if(categories[3][0].checked){
+//       temp.push([0,30]);
+//     }
+//     if(categories[3][1].checked){
+//       temp.push([30,60]);
+//     }
+//     if(categories[3][2].checked){
+//       temp.push([60,80]);
+//     }
+//     if(categories[3][3].checked){
+//       temp.push([80,150]);
+//     }
+//     if(temp==''){
+//       filterComplianceRate=[];     
+//     }else{
+//       for(var i=temp.length-1; i>0;i--){
+//         if(temp[i][0]==temp[i-1][1]){
+//           temp[i-1][1]=temp[i][1];
+//         }else{
+//           filterComplianceRate.push([temp[i][0],temp[i][1]]);
+//         }
+//       } 
+//       filterComplianceRate.push([temp[0][0],temp[0][1]]);      
+//     }    
+//     //模块
+//     temp=[];
+//     for(var i in categories[0]){
+//       if(categories[0][i].checked==true){
+//         temp.push(categories[0][i].Name)
+//       }      
+//     }
+//     filterModule=temp;
+//     //起始日期
+//     if(categories[2][0].checked==true){
+//       var uom = new Date(new Date()-14*86400000); 
+//       var dd=uom.getDate();
+//       var mm=uom.getMonth()+1;
+//       uom = String(uom.getFullYear())  + (mm<10?('0'+String(mm)):String(mm)) + (dd<10?('0'+String(dd)):String(dd)); 
+//       filterStartDate=parseInt(uom);
+//     }else if(categories[2][1].checked==true){
+//       var uom = new Date(new Date()-31*86400000); 
+//       var dd=uom.getDate();
+//       var mm=uom.getMonth()+1
+//       uom = String(uom.getFullYear())  + (mm<10?('0'+String(mm)):String(mm)) + (dd<10?('0'+String(dd)):String(dd)); 
+//       filterStartDate=parseInt(uom);     
+//     }else if(categories[2][2].checked==true){
+//       var uom = new Date(new Date()-92*86400000); 
+//       var dd=uom.getDate();
+//       var mm=uom.getMonth()+1
+//       uom = String(uom.getFullYear())  + (mm<10?('0'+String(mm)):String(mm)) + (dd<10?('0'+String(dd)):String(dd)); 
+//       filterStartDate=parseInt(uom);
+//     }else{
+//       filterStartDate='';
+//     }
+//     console.log(filterStartDate);
+//     //计划
+//     temp=[];
+//     if(categories[1][0].checked==true){
+//       temp.push('3');
+//     }
+//     // if(categories[1][2].checked==true){
+//     //   temp.push('0');   
+//     // }
+//     if(categories[1][2].checked==true){
+//       temp.push('0');   
+//     }
+//     filterStatus=temp;
+//     temp='';
+//     if(filterStartDate!=''){
+//       temp=1;
+//       filterConfig=filterConfig+" and StartDate ge  '"+filterStartDate+"'";
+//       refreshing=1;
+//       PatientsList=[];PIDlist=[];
+//       PIDlistLength=0;
+//       getPIDlist();
+//     }
+//     // if(filterStatus!=''){
+//     //   temp=1;
+//     //   for(var i in filterStatus){
+//     //     filterConfig =filterConfig + " and Status eq  '"+filterStatus[i]+"'";
+//     //   }  
+//     // }
+//     if(temp!=1){
+//       filterConfig = "PatientName ge  ''";
+//     }
+    
+
+
+//   }
+//   $scope.closeFilter = function() {
+//     $scope.modal.hide();
+//   };
+//   //Cleanup the modal when we're done with it!
+//   $scope.$on('$destroy', function() {
+//     $scope.modal.remove();
+//   });
+//   // Execute action on hide modal
+//   $scope.$on('modal.hidden', function() {
+//     // Execute action
+//   });
+//   // Execute action on remove modal
+//   $scope.$on('modal.removed', function() {
+//     // Execute action
+//   });       
+// }])
+// .controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
+//   var PIDlist=new Array();
+//   var PIDlistLength;
+//   var PatientsList=[];
+//   var refreshing=0;//控制连续刷新时序   
+//   var DOCID=Storage.get('UID');          
+//   $scope.moredata = false;
+//   $ionicLoading.show({
+//     content: '加载中',
+//     animation: 'fade-in',
+//     showBackdrop: true,
+//     maxWidth: 200,
+//     showDelay: 0
+//   });
+//   var netError = function(){
+//       $ionicLoading.hide();
+//       refreshing=0;
+//       $scope.$broadcast('scroll.refreshComplete');
+//       PageFunc.confirm('网络好像不太稳定', '网络错误');   
+//   }
+//   var orderConfig ="name";
+//   var filterConfig = "name ge  ''";
+//   var decoration =function(data){
+//     if(data.length!=0){
+//       var temp={};      
+//       for(var i=0;i<data.length;i++){  
+//         temp=data[i];
+//         console.log(temp);
+//         if(temp.imageURL=='' || temp.imageURL==null){    
+//           temp.imageURL =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+//         }else{
+//           temp.imageURL =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.imageURL;
+//         }
+//         if(temp.Age==undefined  ||temp.Age==''){
+//           temp.Age='';
+//         }else{
+//           temp.Age=temp.Age+'岁';
+//         }
+//         if(temp.sex=="1"){
+//           temp.GenderText='男';
+//         }else if(temp.sex=="2"){
+//           temp.GenderText='女';
+//         }
+//         if(temp.module=='HM1'){
+//           temp.module="高血压";
+//         }else if(temp.module=='HM2'){
+//           temp.Module="糖尿病";
+//         }else if(temp.module=='HM3'){
+//           temp.Module="心衰";
+//         }
+//         if(temp.AppointmentStatus=="1"){
+//           temp.AppointmentText="申请中";
+//         }else if(temp.AppointmentStatus=="4"){
+//           temp.AppointmentText="已预约";
+//         }else if(temp.AppointmentStatus=="0"){
+//           temp.AppointmentText="未预约";
+//         } 
+//         temp.ApplyTime= temp.ApplicationTime.substr(5,11);
+//         temp.ApplyTime[2]='-';
+//         PatientsList.push(temp);
+//         PIDlist.push(temp.PatientID);          
+//       }      
+//     }
+//   }
+//   var getPIDlist = function(){
+//     userINFO.GetAppoitmentPatientList(14,PIDlistLength,orderConfig,filterConfig,DOCID,1)
+//     .then(function(data){
+//       decoration(data);
+//       if((PIDlist.length-PIDlistLength)==15){
+//         $scope.moredata = false;
+//       }
+//       PIDlistLength=PIDlist.length;
+//       $ionicLoading.hide();
+//       $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
+//       refreshing=0;
+//       $scope.patients=PatientsList;
+//     },function(data){
+//       netError();
+//     });
+//   }
+//   $scope.viewDetail = function(patient){
+
+//   }
+//   $scope.doRefresh =function() {
+//     if(refreshing==0){
+//       refreshing=1;
+//       PatientsList=[];PIDlist=[];
+//       PIDlistLength=0;
+//       getPIDlist();
+//     }
+
+//   }
+//   $scope.loadMore = function(){
+//     if($scope.moredata==false){
+//       $scope.moredata=true;
+//       getPIDlist();
+//     }  
+//     $scope.$broadcast('scroll.infiniteScrollComplete');
+//   } 
+//   $scope.onItemDelete = function(index) {
+//     $scope.patients.splice(index, 1);
+//   } 
+// }])
 .controller('myPatientCtrl', ['$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
@@ -1363,28 +2074,48 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   // $scope.onScoll = function(){
   //   if($ionicScrollDelegate.getScrollPosition().top>300){
-  //     $scope.needtoTop = {'display':'block'};
+  //     console.log($ionicScrollDelegate.getScrollPosition().top);
+  //     $scope.needtoTop=true;
+  //     // $scope.needtoTop = {'z-index':'999'};
   //   }else{
-  //     $scope.needtoTop ={'display':'none'};
+  //     // $scope.needtoTop ={'z-index':'-999'};
+  //     $scope.needtoTop=false;
   //   }
   // }
-  $scope.$on('$ionicView.enter', function() {
+  $scope.openpopover=function($event){  
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
       scope: $scope,
     }).then(function(popover) {
-      // $compile($('.popover.in').contents())($scope);
-      // $compile(('popover').contents())(scope)
       $scope.popover = popover;
       $scope.ranks=ranks;
-    });   
-  });
-  $ionicLoading.show({
-    content: '加载中',
-    animation: 'fade-in',
-    showBackdrop: true,
-    maxWidth: 200,
-    showDelay: 0
-  });
+      console.log($scope.ranks);
+      var stopListening = $scope.$on('popover.hidden', function() {
+        stopListening();
+        $scope.popover.remove();
+      });
+    });
+    $timeout(function(){$scope.popover.show($event);},20);
+  }
+  // $scope.$on('$ionicView.enter', function() {
+    // $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+      // scope: $scope,
+    // }).then(function(popover) {
+      // $compile($('.popover.in').contents())($scope);
+      // $compile(('popover').contents())(scope)
+      // $scope.popover = popover;
+      // $scope.ranks=ranks;
+    // });   
+  // });
+  var dataloading=function(){
+    $ionicLoading.show({
+      content: '加载中',
+      animation: 'fade-in',
+      showBackdrop: true,
+      maxWidth: 200,
+      showDelay: 0
+    });
+  }
+  dataloading();
   var Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
   var categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false},{'Name':'心衰','checked':false}],
     [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
@@ -1404,11 +2135,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         orderConfig=ranks[index].ordername;
         ranks[index].clicked=true;
         $scope.ranks=ranks;
-        console.log($scope.ranks);
         refreshing=1;
         PatientsList=[];PIDlist=[];
         loaditems=0;PIDlistLength=0;
-        getPIDlist();
+        getPIDlist();dataloading();
       }else if(index==3 ||index==4 || index==5){
         filterModule=[ranks[index].ordername];
         ranks[index].clicked=true;
@@ -1444,7 +2174,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       orderConfig ="RemainingDays,StartDate desc";
       filterConfig = "PatientName ge  ''";
       loaditems=0;PIDlistLength=0;
-      getPIDlist();      
+      getPIDlist();dataloading();      
       $scope.categories=categories[0];
       $scope.letusFilter();
     }
@@ -1475,7 +2205,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
   var onePatientBasic= function(PID,listIndex){
     userINFO.BasicInfo(PID).then(function(data){
-      PatientsList[listIndex].Age=data.Age;
+      PatientsList[listIndex].Age=data.Age+'岁';
       PatientsList[listIndex].GenderText=data.GenderText;
       // $scope.patients=[];
       // $scope.patients=PatientsList.slice(0,loaditems);
@@ -1507,9 +2237,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.$broadcast('scroll.refreshComplete');  
   }
   // var addlength='&$top=15&$skip='+loaditems;
-  var orderConfig ="Status desc,ComplianceRate,RemainingDays,StartDate desc";
+  var orderConfig ="Status desc,ComplianceRate,RemainingDays,StartDate desc,Process desc";
   var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
+    $ionicScrollDelegate.scrollTop(true);
     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'HM1','0','0')
     .then(function(data){
       var temp={}
@@ -1521,7 +2252,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
         }
         if(temp.Process!=''){
-          temp.Process=100*temp.Process.toFixed(2)
+          temp.Process=parseInt(temp.Process*100);
+        }
+        if(temp.ComplianceRate!=''){
+          temp.ComplianceRate=parseInt(temp.ComplianceRate*100);
         }
         temp.Age='';
         temp.GenderText='';
@@ -1529,7 +2263,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         PatientsList.push(temp);
         PIDlist.push(temp.PatientId);          
       } 
-      userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM2','0','0')
+      userINFO.GetPatientsList(19 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM2','0','0')
       .then(function(data){
         for(var i=0;i<data.length;i++){
           temp=data[i];
@@ -1538,13 +2272,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }else{
             temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
           }
+          if(temp.Process!=''){
+            temp.Process=parseInt(temp.Process*100);
+          }
+          if(temp.ComplianceRate!=''){
+            temp.ComplianceRate=parseInt(temp.ComplianceRate*100);
+          }
           temp.Age='';
           temp.GenderText='';
           temp.Module="糖尿病";
           PatientsList.push(temp);
           PIDlist.push(temp.PatientId);          
         }
-        userINFO.GetPatientsList(14 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM3','0','0')
+        userINFO.GetPatientsList(19 ,PIDlistLength,orderConfig,filterConfig,DOCID,'HM3','0','0')
         .then(function(data){
           for(var i=0;i<data.length;i++){
             temp=data[i];
@@ -1552,6 +2292,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
             }else{
               temp.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.photoAddress;
+            }
+            if(temp.Process!=''){
+              temp.Process=parseInt(temp.Process*100);
+            }
+            if(temp.ComplianceRate!=''){
+              temp.ComplianceRate=parseInt(temp.ComplianceRate*100);
             }
             temp.Age='';
             temp.GenderText='';
@@ -1564,7 +2310,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
           $scope.patients=PatientsList;
           PIDlistLength=PIDlist.length;
-          console.log($scope.patients);
           $ionicLoading.hide();
           $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
           getPatientsBasic(PIDlist);  
@@ -1598,7 +2343,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
   $scope.loadMore = function(){
     if($scope.moredata==false){
-      // console.log($scope.moredata);
       $scope.moredata=true;
       getPIDlist();
     }  
@@ -1628,7 +2372,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
       }
       userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
-        Storage.set('PatientAge',data.Age);
+        Storage.set('PatientAge',data.Age+'岁');
         Storage.set('PatientGender',data.GenderText);
         $state.go('manage.plan');
       },function(data){
@@ -1706,7 +2450,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       var tempflag=false;
       if(filterAge!=''){
         for(var i in filterAge){
-          if(filterAge[i][0] <= item['Age'] && item['Age'] <=filterAge[i][1]){
+          var tt=item['Age'].substring(0,item['Age'].length-1)
+          if(filterAge[i][0] <= tt && tt <=filterAge[i][1]){
             tempflag=true;
             break;
           }
@@ -1845,7 +2590,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       } 
       filterAge.push([temp[0][0],temp[0][1]]);      
     }
-    console.log(filterAge);
     //依从率
     temp=[];
     if(categories[3][0].checked){
@@ -1902,7 +2646,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }else{
       filterStartDate='';
     }
-    console.log(filterStartDate);
     //计划
     temp=[];
     if(categories[1][0].checked==true){
@@ -1953,7 +2696,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     // Execute action
   });       
 }])
-.controller('newpatientsCtrl', ['$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
+.controller('newpatientsCtrl', ['$ionicPopover', '$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($ionicPopover,$scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
   var PIDlist=new Array();
   var PIDlistLength;
   var PatientsList=[];
@@ -1967,6 +2710,59 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     maxWidth: 200,
     showDelay: 0
   });
+  $scope.f={module:'病种',Status:'预约状态'}
+  var subConfig=[[{Name:'高血压',filterprop:'高血压'},{Name:'糖尿病',filterprop:'糖尿病'},{Name:'心衰',filterprop:'心衰'},{Name:'全部',filterprop:''}],
+      [{Name:'未预约',filterprop:'未预约'},{Name:'预约申请中',filterprop:'预约申请中'},{Name:'已预约',filterprop:'已预约'},{Name:'全部',filterprop:''}],
+      [{Name:'更多'}]];
+  $scope.openpopover=function($event,xx){ 
+    $scope.xx=xx;  
+    $ionicPopover.fromTemplateUrl('partials/individual/filterNewpatients.html', {
+      scope: $scope,
+    }).then(function(popover) {
+      $scope.popover = popover;
+      $scope.props=subConfig[xx];
+      var stopListening = $scope.$on('popover.hidden', function() {
+        stopListening();
+        $scope.popover.remove();
+      });
+    });
+    $timeout(function(){$scope.popover.show($event);},20);
+  }
+  $scope.rankBy = function(prop){
+    $scope.popover.hide();
+    if($scope.xx==0){
+      if(prop.filterprop!=''){
+        $scope.f.module=prop.filterprop;
+      }else{
+        $scope.f.module='病种';
+      }
+    }
+    if($scope.xx==1){
+      if(prop.filterprop!=''){
+        $scope.f.Status=prop.filterprop;
+      }else{
+        $scope.f.Status='预约状态';
+      }
+    }
+  }    
+  // $scope.$on('$ionicView.enter', function() {
+  //   $ionicPopover.fromTemplateUrl('partials/individual/filterNewpatients.html', {
+  //     scope: $scope,
+  //   }).then(function(popover1) {
+  //     $scope.popover1 = popover1;
+  //     $scope.props=subConfig[0];
+  //   }); 
+  //   $ionicPopover.fromTemplateUrl('partials/individual/filterNewpatients.html', {
+  //     scope: $scope,
+  //   }).then(function(popover2) {
+  //     $scope.popover2 = popover2;
+  //     $scope.props=subConfig[1];
+  //     var stopListening = $scope.$on('popover.hidden', function() {
+  //       stopListening();
+  //       popover2.remove();
+  //     });
+  //   });    
+  // });
   var netError = function(){
       $ionicLoading.hide();
       refreshing=0;
