@@ -2,8 +2,8 @@
   <ion-content scroll='true' >
     <ion-list class="text-center">
       <ion-item style="padding-top:8px;padding-bottom:0" ng-repeat="rank in ranks track by $index" ng-click="rankBy($index)">
-        <div ng-show="{{rank.cilcked}}" style="color:#387EF5;border-bottom:#DDDDDD 1px solid;padding-bottom:8px">{{rank.Name}}</div>
-        <div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px" ng-hide="{{rank.cilcked}}">{{rank.Name}}</div>
+        <div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px"><p ng-show="{{rank.cilcked}}" style="color:#387EF5">{{rank.Name}}</p><p ng-hide="{{rank.cilcked}}">{{rank.Name}}</p></div>
+        <!-- <div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px" ng-hide="{{rank.cilcked}}">{{rank.Name}}</div> -->
       </ion-item>
       <!-- <a class="item" style="padding-top:8px;padding-bottom:0" ng-repeat="rank in ranks track by $index" ng-click="rankBy($index)"> -->
         <!-- <div ng-show="rank.cilcked" style="color:#387EF5;border-bottom:#DDDDDD 1px solid;padding-bottom:8px">{{rank.Name}}</div><div style="border-bottom:#DDDDDD 1px solid;padding-bottom:8px" ng-show="!rank.cilcked">{{rank.Name}}</div> -->
