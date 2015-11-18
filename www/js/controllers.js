@@ -6319,22 +6319,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //   showBackdrop: true,
   //   maxWidth: 200,
   //   showDelay: 0
-  // });
+    // });
+  $scope.basicclinicinfo={
+    HJZYYID:""
+  };
 
- $scope.synclinicinfo=function(){//同步动作
-   $ionicLoading.show({
-    template:'同步需要时间较长，请耐心等候…',
-     });
+   $scope.synclinicinfo=function(){//同步动作
+    // console.log(Storage.get("PatientID"));
+    // console.log($scope.tt);
+    // console.log($scope.basicclinicinfo.HJZYYID);
+    $ionicLoading.show({
+      template:'同步需要时间较长，请耐心等候…',
+    });
     $http({
       method:'GET',
       url:'http://10.12.43.56:57772/csp/hz_mb/Bs.WebService.cls?soap_method=GetPatient',
-      // http://localhost:57772/csp/hz_mb/%25SOAP.WebServiceInvoke.cls?CLS=Bs.WebService&OP=GetBasicInfo
-      params:{
-        'UserId':Storage.get("PatientID"),
-        'PatientId':$scope.HJZYYID,
-        'StartDateTime': $scope.tt,
-        'HospitalCode':'HJZYY'
-      },
+        // http://localhost:57772/csp/hz_mb/%25SOAP.WebServiceInvoke.cls?CLS=Bs.WebService&OP=GetBasicInfo
+        params:{
+          'UserId':Storage.get("PatientID"),
+          'PatientId':$scope.basicclinicinfo.HJZYYID,
+          'StartDateTime': $scope.tt,
+          'HospitalCode':'HJZYY'
+        },
       timeout: 60000,
         // }).success(function(data,header,config,status){
         }).success(function(data,header){
