@@ -653,18 +653,38 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   };
   
   function onOpenNotification(){
+    var Content;
     var alertContent;
+    var title;
+    var SenderID;
     if(device.platform == "Android"){
-        alertContent=window.plugins.jPushPlugin.openNotification;
+        alertContent = window.plugins.jPushPlugin.openNotification.alert;
+        Content=window.plugins.jPushPlugin.openNotification.extras;
+        angular.forEach(Content,function(value,key){
+          if (key=="cn.jpush.android.EXTRA")
+          {
+            title = value.type;
+            SenderID = value.SenderID;
+          }
+        }) 
+        
     }else{
         alertContent   = event.aps.alert;
+        Content = event.aps.extras;
+        angular.forEach(Content,function(value,key){
+          if (key=="cn.jpush.android.EXTRA")
+          {
+            title = value.type;
+            SenderID = value.SenderID;
+          }
+        }) 
     }
-    if (alertContent.extras.cn.jpush.android.EXTRA.type == "新申请")
+    if (title == "新申请")
     {
       Storage.set('PatientID', alertContent.extras.cn.jpush.android.EXTRA.SenderID);
       $state.go('');
     }
-    //alert("open Notificaiton:"+alertContent);
+    alert("open Notificaiton:"+alertContent);
     //$state.go('coach.i');
   }  
   */
