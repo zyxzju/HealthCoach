@@ -1,17 +1,17 @@
 <ion-view cache-view="false" view-title="个性化定制">
-<ion-nav-bar class="bar-positive">
-	<ion-nav-buttons side="primary">
-		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
-		</button>
-	</ion-nav-buttons>
-</ion-nav-bar>
-<div class="bar-shadow"></div>
-	<ion-content>
-		
-		<div style="text-align:center;padding:20px;">
-        <button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="onClickBackward()" ng-if="isloaded"> 
-        <span style="font-size:15px;color:blue;font-weight:bold">确定</span>
-        </button>
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+			</button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button" ng-click="Confirm()" ng-if="isloaded">保存</button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
+	<ion-content>	
+		<ion-checkbox ng-model = "item.ControlType" ng-repeat = "item in task.list">
+        {{item.Name}}
+        </ion-checkbox>				
 	</ion-content>
-
 </ion-view>

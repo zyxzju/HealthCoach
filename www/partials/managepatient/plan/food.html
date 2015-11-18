@@ -1,11 +1,14 @@
 <ion-view cache-view="false" view-title="建议饮食结构">
-<ion-nav-bar class="bar-positive">
-	<ion-nav-buttons side="primary">
-		<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
-		</button>
-	</ion-nav-buttons>
-</ion-nav-bar>
-<div class="bar-shadow"></div>
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+			</button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button" ng-click="Confirm()" ng-if="isloaded">保存</button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
 	<ion-content  class="content-item-list">
 		<div class="list">
 			<div class="item item-margin" ng-repeat="item in task.list">
@@ -18,10 +21,5 @@
 	  			</label>	 		
 	    	</div>
 	    </div>
-         <div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:60px;height:30px;" ng-click="Confirm()" ng-if="isloaded">
-			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
-			</button>
-		</div>
 	</ion-content>
 </ion-view>

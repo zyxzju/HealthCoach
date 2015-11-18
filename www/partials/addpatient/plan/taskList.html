@@ -1,11 +1,14 @@
 <ion-view view-title="计划设定">
-<ion-nav-bar class="bar-positive">
-	<ion-nav-buttons side="primary">
-		<a class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
-		</a>
-	</ion-nav-buttons>
-</ion-nav-bar>
-<div class="bar-shadow"></div>
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<a class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+			</a>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button" ng-click="onClickBackward()" ng-if="isloaded">确定</button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
 	<ion-content>	
 
 		<div style="font-size:15px;color:blue; padding:10px;text-align:center; font-weight:bold">
@@ -51,12 +54,6 @@
 	        <i class="icon ion-ios-checkmark-empty" ng-if = "item.ControlType"></i>
 	        <i ng-if = "!item.ControlType"></i>	        
 	        </a>       
-        </div>			
-						
-		<div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="onClickBackward()" ng-if="isloaded">
-			<span style="font-size:15px;color:blue;font-weight:bold">确定</span>
-			</button>
-		</div>					
+        </div>																
 	</ion-content>
 </ion-view>
