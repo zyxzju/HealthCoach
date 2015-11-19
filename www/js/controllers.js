@@ -55,7 +55,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
           saveUID();
-          $timeout(function(){$state.go('coach.home');} , 1000);
+          $timeout(function(){$state.go('coach.patients');} , 1000);
         }
       },function(data){
         loading.loadingBarFinish($scope);
@@ -2059,7 +2059,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('myPatientCtrl', ['$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
-  var loaditems=0;//已加载条目
   var PatientsList=new Array();//输出到页面的json  
   var refreshing=1;//控制连续刷新时序            
   // $scope.patients=PatientsBasic;
@@ -2072,6 +2071,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.scrollTop = function(){
     $ionicScrollDelegate.scrollTop(true);
   }
+  // $scope.touchme =function(){
+  //   $scope.need
+  // }
   // $scope.onScoll = function(){
   //   if($ionicScrollDelegate.getScrollPosition().top>300){
   //     console.log($ionicScrollDelegate.getScrollPosition().top);
@@ -2088,7 +2090,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }).then(function(popover) {
       $scope.popover = popover;
       $scope.ranks=ranks;
-      console.log($scope.ranks);
+      // console.log($scope.ranks);
       var stopListening = $scope.$on('popover.hidden', function() {
         stopListening();
         $scope.popover.remove();
@@ -2122,9 +2124,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
     [{'Name':'30%以下','checked':false},{'Name':'30%~60%','checked':false},{'Name':'60%~80%','checked':false},{'Name':'80%以上','checked':false}],
     [{'Name':'30岁以下','checked':false},{'Name':'30岁~50岁','checked':false},{'Name':'50岁~60岁','checked':false},{'Name':'60岁以上','checked':false}]];
-  var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate','clicked':false},
-    {'Name':'依从率最高','ordername':'ComplianceRate desc','clicked':false},
-    {'Name':'计划剩余天数','ordername':'RemainingDays','clicked':false},
+  var ranks=[{'Name':'依从率最低','ordername':'ComplianceRate,Status desc,RemainingDays,StartDate desc,Process desc','clicked':false},
+    {'Name':'依从率最高','ordername':'ComplianceRate desc,Status desc,RemainingDays,StartDate desc,Process desc','clicked':false},
+    {'Name':'计划剩余天数','ordername':'RemainingDays,Status desc,ComplianceRate,StartDate desc,Process desc','clicked':false},
     {'Name':'只显示高血压','ordername':'高血压','clicked':false},
     {'Name':'只显示糖尿病','ordername':'糖尿病','clicked':false},
     {'Name':'只显示心衰','ordername':'心衰','clicked':false}]
@@ -2135,10 +2137,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         orderConfig=ranks[index].ordername;
         ranks[index].clicked=true;
         $scope.ranks=ranks;
-        refreshing=1;
-        PatientsList=[];PIDlist=[];
-        loaditems=0;PIDlistLength=0;
-        getPIDlist();dataloading();
+        filterModule='';
+        categories[0][0].checked=false;categories[0][1].checked=false;categories[0][2].checked=false;
+        Props[0].checked=false;
+        refreshing=1;dataloading();
+        PatientsList=[];PIDlist=[];PIDlistLength=0;
+        getPIDlist();
       }else if(index==3 ||index==4 || index==5){
         filterModule=[ranks[index].ordername];
         ranks[index].clicked=true;
@@ -2171,10 +2175,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       orderConfig="Status";
       refreshing=1;
       PatientsList=[];PIDlist=[];
-      orderConfig ="RemainingDays,StartDate desc";
+      orderConfig ="Status desc,ComplianceRate,RemainingDays,StartDate desc,Process desc";
       filterConfig = "PatientName ge  ''";
-      loaditems=0;PIDlistLength=0;
-      getPIDlist();dataloading();      
+      PIDlistLength=0;dataloading(); 
+      getPIDlist();     
       $scope.categories=categories[0];
       $scope.letusFilter();
     }
@@ -2207,8 +2211,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     userINFO.BasicInfo(PID).then(function(data){
       PatientsList[listIndex].Age=data.Age+'岁';
       PatientsList[listIndex].GenderText=data.GenderText;
-      // $scope.patients=[];
-      // $scope.patients=PatientsList.slice(0,loaditems);
     },function(data){
     }); 
   }
@@ -2236,7 +2238,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     PageFunc.confirm('网络好像不太稳定', '网络错误'); 
     $scope.$broadcast('scroll.refreshComplete');  
   }
-  // var addlength='&$top=15&$skip='+loaditems;
   var orderConfig ="Status desc,ComplianceRate,RemainingDays,StartDate desc,Process desc";
   var filterConfig = "PatientName ge  ''";
   var getPIDlist = function(){
@@ -2309,6 +2310,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             $scope.moredata = false;
           }
           $scope.patients=PatientsList;
+          console.log(PatientsList);
           PIDlistLength=PIDlist.length;
           $ionicLoading.hide();
           $scope.$broadcast('scroll.refreshComplete'); //刷新完成，重新激活刷新
@@ -2336,8 +2338,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.doRefresh =function() {
     if(refreshing==0){
       refreshing=1;
-      PatientsList=[];PIDlist=[];
-      loaditems=0;PIDlistLength=0;
+      PatientsList=[];PIDlist=[];PIDlistLength=0;
       getPIDlist();
     }
   }
@@ -2488,32 +2489,32 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       //     tempflag=false;
       //   } 
       // }
-      if(filterStatus!=''){
-        for(var i in filterStatus){
-          if(filterStatus[i]==String(item['Status'])){
-            tempflag=true;
-            break;
-          }
-        }
-        if(tempflag==false){
-          return false;
-        }else{
-          tempflag=false;
-        } 
-      }  
-      if(filterComplianceRate!=''){
-        for(var i in filterComplianceRate){
-          if(filterComplianceRate[i][0] <= item['ComplianceRate'] && item['ComplianceRate'] <=filterComplianceRate[i][1]){
-            tempflag=true;
-            break;
-          }
-        } 
-        if(tempflag==false){
-          return false;
-        }else{
-          tempflag=false;
-        }       
-      }    
+      // if(filterStatus!=''){
+      //   for(var i in filterStatus){
+      //     if(filterStatus[i]==String(item['Status'])){
+      //       tempflag=true;
+      //       break;
+      //     }
+      //   }
+      //   if(tempflag==false){
+      //     return false;
+      //   }else{
+      //     tempflag=false;
+      //   } 
+      // }  
+      // if(filterComplianceRate!=''){
+      //   for(var i in filterComplianceRate){
+      //     if(filterComplianceRate[i][0] <= item['ComplianceRate'] && item['ComplianceRate'] <=filterComplianceRate[i][1]){
+      //       tempflag=true;
+      //       break;
+      //     }
+      //   } 
+      //   if(tempflag==false){
+      //     return false;
+      //   }else{
+      //     tempflag=false;
+      //   }       
+      // }    
 
       return true;
     };
@@ -2591,7 +2592,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       filterAge.push([temp[0][0],temp[0][1]]);      
     }
     //依从率
-    temp=[];
+    temp=[];filterComplianceRate=[];
     if(categories[3][0].checked){
       temp.push([0,30]);
     }
@@ -2604,9 +2605,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     if(categories[3][3].checked){
       temp.push([80,150]);
     }
-    if(temp==''){
-      filterComplianceRate=[];     
-    }else{
+    if(temp!=''){
       for(var i=temp.length-1; i>0;i--){
         if(temp[i][0]==temp[i-1][1]){
           temp[i-1][1]=temp[i][1];
@@ -2658,27 +2657,60 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       temp.push('0');   
     }
     filterStatus=temp;
-    temp='';
+    //FILTER VIA WEB
+    temp='';var filterConfig1='';
     if(filterStartDate!=''){
+      filterConfig1="StartDate ge  '"+filterStartDate+"'";    
       temp=1;
-      filterConfig=filterConfig+" and StartDate ge  '"+filterStartDate+"'";
-      refreshing=1;
-      PatientsList=[];PIDlist=[];
-      PIDlistLength=0;
-      getPIDlist();
     }
-    // if(filterStatus!=''){
-    //   temp=1;
-    //   for(var i in filterStatus){
-    //     filterConfig =filterConfig + " and Status eq  '"+filterStatus[i]+"'";
-    //   }  
-    // }
+    if(filterComplianceRate!=''){
+      var tc='',smallC,bigC;
+      for(var i in filterComplianceRate){
+        bigC=filterComplianceRate[i][1]*0.01;smallC=filterComplianceRate[i][0]*0.01;
+        if(i==0){
+          tc="(ComplianceRate ge  "+smallC+" and ComplianceRate lt  "+bigC+")";
+        }else{
+          tc=tc+" or (ComplianceRate ge  "+smallC+" and ComplianceRate lt  "+bigC+")";
+        }
+      }
+      if(filterComplianceRate.length>1){
+        tc="("+tc+")";
+      }      
+      if(temp==0){
+        filterConfig1=tc;
+      }else{
+        filterConfig1=filterConfig1+" and "+tc;
+      }
+      temp=1;
+    }
+    if(filterStatus!=''){
+      var ts='';
+      for(var i in filterStatus){
+        if(i==0){
+          ts="Status eq '"+filterStatus[i]+"'";
+        }else{
+          ts=ts + " or Status eq '"+filterStatus[i]+"'";
+        }
+      }
+      if(filterStatus.length>1){
+        ts="("+ts+")";
+      }
+      if(temp==0){
+        filterConfig1=ts;
+      }else{
+        filterConfig1=filterConfig1+" and "+ts;
+      }
+      temp=1;      
+    }
     if(temp!=1){
-      filterConfig = "PatientName ge  ''";
+      filterConfig1 = "PatientName ge  ''";
     }
-    
-
-
+    if(filterConfig1!=filterConfig){
+      filterConfig=filterConfig1;
+      refreshing=1;dataloading();
+      PatientsList=[];PIDlist=[];PIDlistLength=0;
+      getPIDlist(); 
+    }
   }
   $scope.closeFilter = function() {
     $scope.modal.hide();
@@ -2928,7 +2960,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     //     // 目前好像不存在userid不对的情况，都会返回一个结果
     //   });  
     $scope.backtocoach=function(){
-      $state.go('coach.home');
+      $state.go('coach.patients');
     }
     $scope.Dialog.DisplayOnes = new Array(); //显示的消息
     $scope.Dialog.UnitCount = 9;//每次点击加载的条数
@@ -3102,7 +3134,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   //进入页面获取患者的基本信息
   
   $scope.backtocoach=function(){
-    $state.go('coach.home');
+    $state.go('coach.patients');
   }
 
   var UserId = Storage.get('UID');
@@ -5531,7 +5563,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }, function(data) {
     });
     $scope.onClickBackward = function(){
-        $state.go('coach.home');
+        $state.go('coach.patients');
     }
        
     //获取计划列表
@@ -7404,7 +7436,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 
   $scope.backtocoach=function(){
-    $state.go('coach.home');
+    $state.go('coach.patients');
   }
   $scope.NextPage = function(){
     $state.go('addpatient.ModuleInfo');
@@ -8101,7 +8133,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
     //返回主页面
     $scope.backtocoach=function(){
-      $state.go('coach.home');
+      $state.go('coach.patients');
     };
 
 })
