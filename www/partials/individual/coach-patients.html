@@ -29,7 +29,7 @@
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
       <i class="icon ion-android-search placeholder-icon"></i>
-      <input type="search" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
+      <input type="search" ngBlur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
       <i style="color:#EF473A;font-size:1.4em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
     <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
@@ -40,9 +40,13 @@
   <div class="sub-bar-shadow"></div>
   <ion-content delegate-handle="myPatientScroll" class="has-subheader content-item-list" on-scroll="onScoll()">   
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
+    <div ng-if="searchflag">
+      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark">搜索 {{query.PatientName}}</a>
+      <p style="text-align:center;width:100%;margin:0;font-style: italic;border-top:#BBBBBB 1px solid;text-size:0.3em">列表缓存</p>
+    </div>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
-      <div  collection-repeat="patient in patients |filter:byRange() " collection-item-height="105px"  ng-click="PIDdetail(patient)" >
+      <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="105px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-thumbnail-left item-margin ">
         <img ng-src="{{patient.photoAddress}}">
         <div style=" padding-left:84px">
@@ -52,7 +56,7 @@
             <!-- <div class="row"> -->
               <div class="col-75">
                 <div class="row " style="padding-right:0">
-                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span class="badge1">12</span></h5></div>
+                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span ng-show="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
                   <div class="col-33"><h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6></div>
                 </div>
                 <div class="row">
