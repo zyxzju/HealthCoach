@@ -569,25 +569,25 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     }
   })
 
-  .state('addappoinetment',{
-    url:"/addappoinetment",
+  .state('addappointment',{
+    url:"/addappointment",
     cache:false,
-    templateUrl:"partials/appoinetment/addappoinetment.html",
-    controller:'addappoinetmentCtrl'
+    templateUrl:"partials/appointment/addappointment.html",
+    controller:'addappointmentCtrl'
   })
 
-  .state('checkappoinetment',{
-    url:"/checkappoinetment",
+  .state('checkappointment',{
+    url:"/checkappointment",
     cache:false,
-    templateUrl:"partials/appoinetment/checkappoinetment.html",
-    controller:'checkappoinetmentCtrl'
+    templateUrl:"partials/appointment/checkappointment.html",
+    controller:'checkappointmentCtrl'
   })
 
-  .state('confirmappoinetment',{
-    url:"/confirmappoinetment",
+  .state('confirmappointment',{
+    url:"/confirmappointment",
     cache:false,
-    templateUrl:"partials/appoinetment/confirmappoinetment.html",
-    controller:'confirmappoinetmentCtrl'
+    templateUrl:"partials/appointment/confirmappointment.html",
+    controller:'confirmappointmentCtrl'
   })
 
    $urlRouterProvider.otherwise('/signin');
