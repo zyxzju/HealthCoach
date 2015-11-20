@@ -95,7 +95,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
       setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
-      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true}
+      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true},
+      ReserveHealthCoach:{method:'POST',params:{route:'ReserveHealthCoach'},timeout:10000},//预约
+      getHealthCoachInfo:{method:'GET',params:{route:'GetHealthCoachInfo',HealthCoachID:'@HealthCoachID'},timeout:10000},//预约
 		})
 	}
 	var Service = function(){
