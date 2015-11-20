@@ -16,12 +16,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       url: '/signin',
       templateUrl: 'partials/login/signin.html',
       controller: 'SignInCtrl'
-    })
-    // .state('register',{
-    //   url:'/register',
-    //   templateUrl:'partials/login/register.html',
-    //   controller: 'registerCtrl'
-    // })    
+    })   
     .state('phonevalid', {
       url: '/phonevalid',
       cache: false,
@@ -44,43 +39,6 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
       templateUrl:'partials/login/userDetail.html',
       controller:'userdetailCtrl'
     })
-    // .state('qrcode', {
-    //   url: '/qrcode',
-    //   templateUrl: 'partials/home/QRgenerate.html'
-    // })
-    // .state('tabs', {
-    //   url: '/tab',
-    //   abstract: true,
-    //   templateUrl: 'partials/home/tabs.html'
-    // })
-    // .state('tabs.home', {
-    //   url: '/home',
-    //   views: {
-    //     'home-tab': {
-    //       templateUrl: 'partials/home/home.html',
-    //       controller: 'HomeTabCtrl'
-    //     }
-    //   }
-    // })
-    // .state('tabs.phones', {
-    //   url:'/phones',
-    //   views: {
-    //     'list-tab': {
-    //       // templateUrl: 'partials/login/changePassword.html',
-    //       // controller:'changePasswordCtrl'
-    //       templateUrl: 'partials/phonelist/phones.html',
-    //       controller:'phonesCtrl'
-    //     }
-    //   }
-    // })
-    // .state('tabs.details', {
-    //   url: '/phones/:phoneId',
-    //   views: {
-    //     'list-tab': {
-    //     templateUrl: 'partials/phonelist/phone-detail.html',
-    //     controller: 'PhoneDetailCtrl'}
-    //   }
-    // });
     //个人信息管理
    $stateProvider
 
@@ -105,15 +63,15 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
           controller:'CoachIdUploadCtrl'  
     })
 
-  .state('coach.home', {
-    url: '/home',
-    views: {
-      'coach-home': {
-        templateUrl: 'partials/individual/coach-home.html',
-        controller: 'CoachHomeCtrl'
-      }
-    }
-  })
+  // .state('coach.home', {
+  //   url: '/home',
+  //   views: {
+  //     'coach-home': {
+  //       templateUrl: 'partials/individual/coach-home.html',
+  //       controller: 'CoachHomeCtrl'
+  //     }
+  //   }
+  // })
 
   .state('personalinfo', {
       url: '/personalinfo',
@@ -195,8 +153,8 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   })
 
-  .state('coach.i',{
-    url:'/i',
+  .state('coach.home',{
+    url:'/home',
     cache:false,
     views:{
       'coach-me':{
@@ -641,7 +599,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   $ionicPlatform.ready(function(){
     var isSignIN=Storage.get("isSignIN");
     if(isSignIN=='YES'){
-      $state.go('coach.home');
+      $state.go('coach.patients');
     }
   })
   /*setTimeout(function() {
