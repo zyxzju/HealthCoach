@@ -17,9 +17,9 @@
 }
 .item h6 {
   font-size: 0.8rem;
-    color: #666666;
-    margin-top: 8px;
-    font-style: italic
+  color: #666666;
+  margin-top: 8px;
+  font-style: italic
 }
 .item h5 {
   font-size: 1.23rem;
@@ -40,7 +40,29 @@
   padding: 0px;
   width: 100%;
 }
-
+hr.list { 
+  /*content: '列表缓存';*/
+  border: 0; 
+  height: 0.1px; 
+  text-align: center;
+  /*color:#689f38;*/
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #689f38, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #689f38, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #689f38, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #689f38, #f0f0f0); 
+}
+hr.list:after {
+  content: '列表缓存';
+  font-style: italic;
+  display: inline-block;
+  position: relative;
+  top: -10px;
+  padding: 0px;
+  margin:0;
+  background: #F3F3F3;
+  color: #689f38;
+  font-size: 8px;
+}
 .processbar{
 	background-color:#3aa7dd;
 	height:100%;
@@ -139,12 +161,12 @@
 }
 
 .content-item-list{
-  background-color:#E8E8E8;
+  background-color:#F3F3F3;
   padding-top:0 !important;
 }
 .item-margin{
   padding:2px;
-  margin:6px;
+  margin:4px;
   /*-moz-box-shadow:1px 2px 2px #999;*/
   /*-webkit-box-shadow:1px 2px 2px #999;*/
   box-shadow:1px 1px 2px #999;
@@ -194,7 +216,7 @@
   padding: 4px 4px;
   /*min-width: 10px;*/
   border-radius: 8px;
-  vertical-align: text-top;
+  vertical-align: top;
   text-align: center;
   white-space: nowrap;
   /*font-weight: bold;*/
