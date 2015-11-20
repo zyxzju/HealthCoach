@@ -336,7 +336,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   
    //患者管理
  $stateProvider
-
+  
   $stateProvider
    .state('manage', {
     url: "/manage",
@@ -567,6 +567,27 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
         
       }
     }
+  })
+
+  .state('addappoinetment',{
+    url:"/addappoinetment",
+    cache:false,
+    templateUrl:"partials/appoinetment/addappoinetment.html",
+    controller:'addappoinetmentCtrl'
+  })
+
+  .state('checkappoinetment',{
+    url:"/checkappoinetment",
+    cache:false,
+    templateUrl:"partials/appoinetment/checkappoinetment.html",
+    controller:'checkappoinetmentCtrl'
+  })
+
+  .state('confirmappoinetment',{
+    url:"/confirmappoinetment",
+    cache:false,
+    templateUrl:"partials/appoinetment/confirmappoinetment.html",
+    controller:'confirmappoinetmentCtrl'
   })
 
    $urlRouterProvider.otherwise('/signin');
