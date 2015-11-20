@@ -2243,7 +2243,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     });
   }
   $scope.viewDetail = function(patient){
-
+    Storage.set("PatientID",patient.PatientID);
+    if (patient.AppointmentStatus == "1")
+    {
+      $state.go('addappoinetment');
+    }
+    if (patient.AppointmentStatus == "4")
+    {
+      $state.go('checkappoinetment');
+    }
   }
   $scope.doRefresh =function() {
     if(refreshing==0){
