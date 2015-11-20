@@ -3832,7 +3832,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 // LZN 20151117 预约
 .controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
    // $scope.$on('$ionicView.beforeEnter', function() {
-    Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+
+    Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
       function(data){
         console.log(data);
 
@@ -3851,7 +3852,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 .controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
   // $scope.$on('$ionicView.beforeEnter', function() {
-    Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+    Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
       function(data){
         console.log(data);
 
@@ -3862,14 +3863,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(e){
         console.log(e);
       });
-    Users.getHealthCoachInfo('DOC201506180002').then(
+    Users.getHealthCoachInfo(Storage.get('UID')).then(
       function(data){
         console.log(data);
         $scope.Hname=data.name;
       },function(e){
         console.log(e);
       });
-    Users.getDocDtlInfo('DOC201506180002').then(
+    Users.getDocDtlInfo(Storage.get('UID')).then(
       function(data){
         console.log(data);
         $scope.Unit=data.UnitName;
@@ -3878,19 +3879,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       },function(e){
         console.log(e);
       });
-     Users.PhoneNo().then(
-        function(data){
-          console.log(data);
-          var s="";
-          for(var i=0;i<11;i++){
+
+     // Users.PhoneNo().then(
+     //    function(data){
+     //      console.log(data);
+     //      var s="";
+     //      for(var i=0;i<11;i++){
         
-            s=s+data[i];
-          };
+     //        s=s+data[i];
+     //      };
 
           
-        },function(e){
-            console.log(e);
-        });
+     //    },function(e){
+     //        console.log(e);
+     //    });
     var loading = function() {
       $ionicLoading.show({
         template:'正在预约......',
@@ -3922,8 +3924,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         var m = m+1;
         var time = y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' +s;
         $scope.reservation={
-          "DoctorId": "DOC201506180002",
-          "PatientId": "U201511170002",
+          "DoctorId": Storage.get('UID'),
+          "PatientId": Storage.get('PatientID'),
           "Module": $scope.module,
           "Description": $scope.Description,
           "Status": 4,
@@ -3938,16 +3940,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }
         $scope.Push={
           "platform":"android",
-          "Alias":"DOC201506180002",
+          "Alias":Storage.get('PatientID'),
           "notification":"您有一条新的预约，请注意查收短信",
           "title":"预约",
-          "id":"uid"
+          "id":Storage.get('UID')
         }
-        var content = $scope.Pname+','+y+'年'+'m'+'月'+'d'+'日'+','+$scope.Unit;
+        var content = $scope.Pname+','+y+'年'+m+'月'+d+'日'+','+$scope.Unit;
         $scope.sendSMS={
           "mobile":"18626860001",
           "smsType":"confirmtoPatient",
-          "content":"content"
+          "content":content
         }
         
         userservice.PushNotification($scope.Push).then(
@@ -3975,7 +3977,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
      // });
 }])
 .controller('checkappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
-  Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+  Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
     function(data){
       console.log(data);
 
@@ -3988,14 +3990,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     },function(e){
       console.log(e);
     });
-  Users.getHealthCoachInfo('DOC201506180002').then(
+  Users.getHealthCoachInfo(Storage.get('UID')).then(
     function(data){
       console.log(data);
       $scope.Hname=data.name;
     },function(e){
       console.log(e);
     });
-  Users.getDocDtlInfo('DOC201506180002').then(
+  Users.getDocDtlInfo(Storage.get('UID')).then(
     function(data){
       console.log(data);
       $scope.Unit=data.UnitName;
