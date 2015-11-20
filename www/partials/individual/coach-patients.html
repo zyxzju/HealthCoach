@@ -29,7 +29,7 @@
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
       <i class="icon ion-android-search placeholder-icon"></i>
-      <input type="search" ngBlur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
+      <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
       <i style="color:#EF473A;font-size:1.4em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
     <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
@@ -41,8 +41,10 @@
   <ion-content delegate-handle="myPatientScroll" class="has-subheader content-item-list" on-scroll="onScoll()">   
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <div ng-if="searchflag">
-      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark">搜索 {{query.PatientName}}</a>
-      <p style="text-align:center;width:100%;margin:0;font-style: italic;border-top:#BBBBBB 1px solid;text-size:0.3em">列表缓存</p>
+      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.PatientName}}<span></a>
+      <!-- <div style="text-align:center;width:100%;margin:0;color:#ff7438;text-size:0.5rem !important">—————————<span style="font-style: italic">列表缓存</span>—————————</div> -->
+      <!-- <hr style="text-align:center;width:100%;margin:0;color:#ff7438;text-size:0.5rem !important" /> -->
+      <hr class="list" />
     </div>
     <ion-list> 
     <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
@@ -56,7 +58,7 @@
             <!-- <div class="row"> -->
               <div class="col-75">
                 <div class="row " style="padding-right:0">
-                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span ng-show="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
+                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
                   <div class="col-33"><h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6></div>
                 </div>
                 <div class="row">
@@ -67,22 +69,24 @@
                 <div class="item-row">
                   <div class="col-40">
                     <div class="row"><p>依从率</p></div>
-                    <div class="row" ><h5 ng-style="tcolor(patient.ComplianceRate)">{{patient.ComplianceRate}}%</h5></div>
+                    <div class="row" ><h5 ng-style="{'color':(patient.ComplianceRate>50?'#33cd5f':'#fb6a1b')}">{{patient.ComplianceRate}}%</h5></div>
                   </div>
-           <!--        <i ng-hide="!ishide(patient)" style="font-size:2em;color:#fb6a1b" class="icon ion-sad"></i>
-                  <i ng-hide="ishide(patient)" style="font-size:2em;color:#33cd5f" class="icon ion-happy"></i> -->
                 </div>
               </div>  
             </div>
-            <div ng-hide="{{patient.Status}}" class="row">
+            <div class="row">
               <!-- <div class="col-25"> -->
-              <p style="margin:0 2px 0 5px;width:60px" ><i class="icon ion-arrow-graph-up-right"></i> 进度 </p>
+              <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
+              <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>
               <!-- </div> -->
-              <div  style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
-              <div ng-style="setwidth(patient.Process)" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
+              <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
+              <div ng-style="{'width':patient.Process+'%'}" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
               </div>
         
             </div>
+       <!--      <div ng-if="(patient.Status-0)" class="row">
+              <p style="margin:0 2px 0 5px;width:100px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>
+            </div> -->            
           </div>
           <!-- </div>   -->
         <!-- </div>         -->
