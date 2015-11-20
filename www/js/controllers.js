@@ -2246,11 +2246,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Storage.set("PatientID",patient.PatientID);
     if (patient.AppointmentStatus == "1")
     {
-      $state.go('addappoinetment');
+      $state.go('addappointment');
     }
-    if (patient.AppointmentStatus == "4")
+    else
     {
-      $state.go('checkappoinetment');
+      $state.go('checkappointment');
     }
   }
   $scope.doRefresh =function() {
