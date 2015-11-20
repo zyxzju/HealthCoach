@@ -1,18 +1,14 @@
 <ion-view title="现有病人" ng-controller="myPatientCtrl">
 
-  <ion-header-bar align-title="middle" class="bar-positive">
+<!--   <ion-header-bar align-title="middle" class="bar-positive">
     <div class="buttons">
       <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
     </div>  
     <h1 class="title">现有病人</h1>
         <div class="buttons">
-      <!-- <a class="button  button-outline button-light" ng-click="popover.show($event)">筛选</a> -->
       <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a>
     </div>
-<!--     <div class="buttons">
-      <button class="button button-icon icon ion-search" ng-click="openSearch()"></button>
-    </div> -->
-  </ion-header-bar>
+  </ion-header-bar> -->
   
   <!-- <ion-nav-bar  style="z-index:100" class="bar-positive nav-title-slide-ios7"> -->
     <ion-nav-buttons side="left">
@@ -28,9 +24,9 @@
 <!--   </ion-nav-bar> -->
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
-      <i class="icon ion-android-search placeholder-icon"></i>
+      <i style="color:#387EF5;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
       <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
-      <i style="color:#EF473A;font-size:1.4em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
+      <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
     <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
   </div>  
@@ -76,10 +72,10 @@
             </div>
             <div class="row">
               <!-- <div class="col-25"> -->
-              <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
-              <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>
+              <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
+              <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>
               <!-- </div> -->
-              <div style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
+              <div ng-style="{'display':(patient.Status=='0'?'none':'block')}" style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
               <div ng-style="{'width':patient.Process+'%'}" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
               </div>
         

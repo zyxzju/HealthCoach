@@ -188,7 +188,7 @@ hr.list:after {
   position: absolute;
   top: 85px;
   z-index:99;
-  opacity:0.5;
+  opacity:0.3;
   display: block;
   -moz-box-shadow:0px 3px 4px #999;
   -webkit-box-shadow:0px 3px 4px #999;
