@@ -1,0 +1,35 @@
+<ion-view cache-view="false" title="接收患者预约">
+	
+	<ion-nav-bar class="bar-positive nav-title-slide-ios7">
+		<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+		   
+	<!-- 	<a class="button button-clear icon-right ion-arrow-up-a" ng-click="scrollTop()">        
+        </a>
+        <a class="button button-clear icon-right ion-arrow-down-a" ng-click="scrollBottom()"></a> -->
+	</ion-nav-bar>
+	<ion-content scroll='true'>
+		<div class = "list item-list">
+			<div class="item item-divider ">
+			患者信息
+			</div>
+			<label class="item item-input  trial">
+				姓名:<input type="text" ng-model="name" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				年龄:<input type="text" ng-model="age" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				模块:<input type="text" ng-model="module" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				预约简介:<input type="text" ng-model="Description" disabled="disabled">
+			</label>
+		</div>
+		<div class="padding">
+			<button class="button  button-block button-primary button-stable"
+						 ng-click="agree()">同意</button>
+			<button class="button  button-block  button-primary button-stable"
+						ng-click="">暂不处理</button>
+		</div>	
+	</ion-content>
+</ion-view>

@@ -102,8 +102,11 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 		return $resource(CONFIG.baseUrl + ':path/:route',{
 			path:'Service',
 		},{
+            sendSMS_lzn:{method:'POST',params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType',content:'@content'}, timeout: 10000},
             sendSMS:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
+            PushNotification:{method:'GET',params:{route:'PushNotification',platform:'@platform',Alias:'@Alias',notification:'@notification',title:'@title',id:'@id'},timeout:10000},
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
+
 		})
 	}	
   var Dict = function(){
@@ -341,7 +344,29 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
         return deferred.promise;
     }
-
+// LZN 20151120
+    serve.sendSMS_lzn = function(_mobile,_smsType,_content){
+       var deferred = $q.defer();
+        Data.Service.sendSMS_lzn({mobile: _mobile, smsType:_smsType,content:_content},
+        function(data,headers){
+          deferred.resolve(data);
+        },
+        function(err){
+          deferred.reject(err);   
+        });
+        return deferred.promise;
+    }
+     // LZN 20151120
+    serve.PushNotification = function(arr){
+      var deferred = $q.defer();
+      Data.Service.PushNotification(arr,function (data,headers){
+        deferred.resolve(data);
+        },
+        function(err){
+          deferred.reject(err);
+      })
+      return deferred.promise;
+    }
     serve.sendSMS = function( _phoneNo,_smsType){
         if(!phoneReg.test(_phoneNo)){
         	return 7; 
@@ -1569,7 +1594,36 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
         return deferred.promise;
   };
-  
+   // LZN 20151116 预约
+  self.getAppointmentByPatientID = function(_healthCoachID,_Status,PatientID) {
+    var Filter3 = "PatientID eq " + "'" + PatientID + "'";
+    var filter3 = $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'Users',
+    },{
+        getAppointmentByPatientID:{method:'GET',params:{route: 'GetAppoitmentPatientList',healthCoachID:'@healthCoachID',Status:'@Status',$filter:Filter3},isArray:true,timeout:10000},
+    });
+    var deferred = $q.defer();
+    filter3.getAppointmentByPatientID({healthCoachID:_healthCoachID,Status:_Status,PatientID:PatientID},
+      function (data,status){
+        deferred.resolve(data);
+      },
+      function (err){
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  };
+  // LZN 20151117
+  self.getHealthCoachInfo = function(_HealthCoachID) {
+     var deferred = $q.defer();
+      Data.Users.getHealthCoachInfo({HealthCoachID:_HealthCoachID},
+        function (data,headers) {
+          deferred.resolve(data);
+      },function (err) {
+          deferred.reject(err);
+      });
+      return deferred.promise;
+  };
+
   //TDY 20151030
   self.getYesNoType = function(){
      var deferred = $q.defer();
@@ -1733,6 +1787,18 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       deferred.resolve(data);
     },function (err){
         deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+    return self;
+    // LZN 20151118 预约
+  self.ReserveHealthCoach = function(arr){
+    var deferred = $q.defer();
+    Data.Users.ReserveHealthCoach(arr,function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+      deferred.reject(err);
     });
     return deferred.promise;
   };

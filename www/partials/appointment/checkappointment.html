@@ -1,0 +1,41 @@
+<ion-view cache-view="false" title="查看患者预约">
+	
+	<ion-nav-bar class="bar-positive nav-title-slide-ios7">
+		<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+	</ion-nav-bar>
+	<ion-content scroll='true'>
+		<div class = "list item-list">
+			<div class="item item-divider ">
+				患者信息
+			</div>
+			<label class="item item-input  trial">
+				姓名:<input type="text" ng-model="Pname" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				年龄:<input type="text" ng-model="age" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				模块:<input type="text" ng-model="module" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				预约简介:<input type="text" ng-model="Description" disabled="disabled">
+			</label>
+			<div class="item item-divider ">
+				专员信息
+			</div>
+			<label class="item item-input trial">
+				姓名:<input type="text" ng-model="Hname" disabled="disabled">
+			</label>
+			<div class="item item-divider ">
+				预约事项
+			</div>
+			<label class="item item-input">
+				预约时间:<input type="text" ng-model="Time" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				预约地点:<input type="text" ng-model="Add" disabled="disabled">
+			</label>
+
+		</div>
+	</ion-content>
+</ion-view>

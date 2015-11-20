@@ -3829,6 +3829,182 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     };
   };
 }])
+// LZN 20151117 预约
+.controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
+   // $scope.$on('$ionicView.beforeEnter', function() {
+    Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+      function(data){
+        console.log(data);
+
+        $scope.name=data[0].name;
+        $scope.age=data[0].age;
+        $scope.module=data[0].module;
+        $scope.Description=data[0].Description;
+      },function(e){
+        console.log(e);
+      });
+    // });
+    $scope.agree = function()
+    {
+      $state.go('confirmappointment')
+    }
+}])
+.controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
+  // $scope.$on('$ionicView.beforeEnter', function() {
+    Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+      function(data){
+        console.log(data);
+
+        $scope.Pname=data[0].name;
+        $scope.age=data[0].age;
+        $scope.module=data[0].module;
+        $scope.Description=data[0].Description;
+      },function(e){
+        console.log(e);
+      });
+    Users.getHealthCoachInfo('DOC201506180002').then(
+      function(data){
+        console.log(data);
+        $scope.Hname=data.name;
+      },function(e){
+        console.log(e);
+      });
+    Users.getDocDtlInfo('DOC201506180002').then(
+      function(data){
+        console.log(data);
+        $scope.Unit=data.UnitName;
+        $scope.Dept=data.Dept;
+        $scope.Add=$scope.Unit+'  '+$scope.Dept;
+      },function(e){
+        console.log(e);
+      });
+     Users.PhoneNo().then(
+        function(data){
+          console.log(data);
+          var s="";
+          for(var i=0;i<11;i++){
+        
+            s=s+data[i];
+          };
+
+          
+        },function(e){
+            console.log(e);
+        });
+    var loading = function() {
+      $ionicLoading.show({
+        template:'正在预约......',
+      });
+    };
+
+    var hide = function() {
+      $ionicLoading.hide();
+    };
+
+    var netError = function(){
+        $ionicLoading.hide();
+   
+        PageFunc.confirm('网络好像不太稳定', '网络错误');   
+    };
+    $scope.confirm = function(){
+      loading();
+      if($scope.Pname==null && $scope.age==null && $scope.module==null && $scope.Description==null && $scope.Hname==null){
+        netError();
+      }
+      else{
+        var myDate = new Date();
+        var y = myDate.getFullYear();
+        var m = myDate.getMonth();
+        var d = myDate.getDate(); 
+        var h = myDate.getHours();
+        var min = myDate.getMinutes();
+        var s = myDate.getSeconds();
+        var m = m+1;
+        var time = y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' +s;
+        $scope.reservation={
+          "DoctorId": "DOC201506180002",
+          "PatientId": "U201511170002",
+          "Module": $scope.module,
+          "Description": $scope.Description,
+          "Status": 4,
+          "ApplicationTime": time,
+          "AppointmentTime": "2015-10-26  15:30:35",
+          "AppointmentAdd": $scope.Add,
+          "Redundancy": "haha",
+          "revUserId": "1",
+          "TerminalName": "1",
+          "TerminalIP": "1",
+          "DeviceType": 1
+        }
+        $scope.Push={
+          "platform":"android",
+          "Alias":"DOC201506180002",
+          "notification":"您有一条新的预约，请注意查收短信",
+          "title":"预约",
+          "id":"uid"
+        }
+        var content = $scope.Pname+','+y+'年'+'m'+'月'+'d'+'日'+','+$scope.Unit;
+        $scope.sendSMS={
+          "mobile":"18626860001",
+          "smsType":"confirmtoPatient",
+          "content":"content"
+        }
+        
+        userservice.PushNotification($scope.Push).then(
+          function(data){
+            console.log(data);
+            },function(e){
+            console.log(e);
+          });
+        userservice.sendSMS_lzn($scope.sendSMS).then(
+          function(data){
+            console.log(data);
+            },function(e){
+            console.log(e);
+          });
+          Users.ReserveHealthCoach($scope.reservation).then(
+          function(data){
+            console.log(data);
+            hide();
+            $state.go('checkappointment') 
+            },function(e){
+            netError();
+          });
+      }                                                                                          
+    }
+     // });
+}])
+.controller('checkappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
+  Users.getAppointmentByPatientID('DOC201506180002','4','U201511170002').then(
+    function(data){
+      console.log(data);
+
+      $scope.Pname=data[0].name;
+      $scope.age=data[0].age;
+      $scope.module=data[0].module;
+      $scope.Description=data[0].Description;
+      $scope.Time=data[0].AppointmentTime;
+      $scope.Add=data[0].AppointmentAdd;
+    },function(e){
+      console.log(e);
+    });
+  Users.getHealthCoachInfo('DOC201506180002').then(
+    function(data){
+      console.log(data);
+      $scope.Hname=data.name;
+    },function(e){
+      console.log(e);
+    });
+  Users.getDocDtlInfo('DOC201506180002').then(
+    function(data){
+      console.log(data);
+      $scope.Unit=data.UnitName;
+      $scope.Dept=data.Dept;
+      $scope.Add=$scope.Unit+'  '+$scope.Dept;
+    },function(e){
+      console.log(e);
+    });
+}])
 
 .controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
 
