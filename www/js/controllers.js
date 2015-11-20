@@ -3130,7 +3130,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
    // $scope.$on('$ionicView.beforeEnter', function() {
 
-    Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
+    Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
         console.log(data);
 
@@ -3149,7 +3149,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 .controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
   // $scope.$on('$ionicView.beforeEnter', function() {
-    Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
+    Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
         console.log(data);
 
