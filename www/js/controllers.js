@@ -4956,7 +4956,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   // $scope.userid = "PID201506170002";
   // console.log($scope.userid);
   // console.log($scope.SBP);
-
+  $scope.hasLoaded = {M1:false,M2:true,M3:false};
   $scope.value = {M1: undefined, M2:undefined , M3: undefined};
   $scope.value.M1 = {
     AbdominalGirth: undefined,
@@ -5028,7 +5028,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       case 3 : $scope.list.M3show = !$scope.list.M3show; break;
     }
 
-    if(whichone == 1 && $scope.list.M1show == true ){
+    if(whichone == 1 && $scope.list.M1show == true && !$scope.hasLoaded.M1){
+      $scope.hasLoaded.M1 = true;
       $ionicLoading.show({template:'从临床拉数据过来，等一下'});
       $timeout(function(){
         $scope.$broadcast('loadingDone');
@@ -5057,14 +5058,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       //点下拉框从临床同步数据
 
 
-    if(whichone == 3 && $scope.list.M3show == true){
-
+    if(whichone == 3 && $scope.list.M3show == true && !$scope.hasLoaded.M3){
+      $scope.hasLoaded.M3 = true;
       $ionicLoading.show({template:'从临床拉数据过来，等一下'});
       $timeout(function(){
         $scope.$broadcast('loadingDone');
       },5000);
       // Patients.getQuestionM3('PID201511170001').then(function(promise){
-      Patients.getQuestionM1(Storage.get('PatientID')).then(function(promise){
+      Patients.getQuestionM3(Storage.get('PatientID')).then(function(promise){
       // if(promise.data = null)
         $scope.value.M3 = promise;
         console.log($scope.value.M3);
@@ -5089,7 +5090,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.clickSubmit = function(){
     //upload
     //加判断，如果有模块什么东西不全 那就不上传
+    console.log($scope.value);
     var hasBlank = {M1:false,M2:false,M3:false};
+    
     for(var item in $scope.value.M1){
       if($scope.value.M1[item] == undefined || $scope.value.M1[item] == "NaN" ||$scope.value.M1[item] ==null || $scope.value.M1[item] == 'undefined' || $scope.value.M1[item] == 'null' || typeof($scope.value.M1[item]) === "undefined"){
         hasBlank.M1 = true;
@@ -5138,7 +5141,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           //post 问卷信息 返回 评估结果
           console.log("高血压问卷结果为"); 
           console.log($scope.value.M1);
-          Patients.postQuestionM1($scope.value.M1).then(function(data3){
+          Patients.postQuestionM1($scope.value.M1,Storage.get('PatientID')).then(function(data3){
             console.log("高血压评估结果为"); 
             console.log(data3);
             // data2.Message: "出现错误。"
@@ -5183,6 +5186,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                   console.log("broadcasting hypt");
                   $rootScope.$broadcast("NewEvaluationSubmit");
                 }
+                else{
+                  $ionicLoading.show({template:"<p>上传存在问题</p><p>请仔细检查再提交</p>"});
+                  $timeout(function(){
+                    $ionicLoading.hide();
+                  },2000);   
+                }
               });
             }
           });
@@ -5223,6 +5232,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               console.log("broadcasting diab");
               $rootScope.$broadcast("NewEvaluationSubmit");
             }
+            else{
+                  $ionicLoading.show({template:"<p>上传存在问题</p><p>请仔细检查再提交</p>"});
+                  $timeout(function(){
+                    $ionicLoading.hide();
+                  },2000);                 
+            }
           });
         }
 
@@ -5231,7 +5246,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
       //上传心衰信息
       if(!(hasBlank.M3)){
-
 
         var t3 =  parseInt($scope.value.M3.NYHA);
         switch(t3){
@@ -5255,7 +5269,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         var t3 = t + t3;
 
         console.log(t3);
-        Patients.postQuestionM3($scope.value.M3).then(function(promise_d){
+        Patients.postQuestionM3($scope.value.M3,Storage.get('PatientID')).then(function(promise_d){
             console.log("心衰评估结果为");
             console.log(promise_d);
         
@@ -5278,6 +5292,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
                 if(res.result == "数据插入成功"){
                   console.log("broadcasting heart failure");
                   $rootScope.$broadcast("NewEvaluationSubmit");
+                }
+                else{
+                  $ionicLoading.show({template:"<p>上传存在问题</p><p>请仔细检查再提交</p>"});
+                  $timeout(function(){
+                    $ionicLoading.hide();
+                  },2000);                  
                 }
               });
             }
@@ -5371,7 +5391,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.value.M1.BMI = calcuBMI($scope.value.M1.Height,$scope.value.M1.Weight);
     else if(whichone == 3){
       $scope.value.M3.BMI = calcuBMI($scope.value.M3.Height,$scope.value.M3.Weight);
-      $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;      
+      if($scope.value.M3.NYHA ==1 || $scope.value.M3.NYHA ==2 || $scope.value.M3.NYHA ==3 || $scope.value.M3.NYHA ==4)
+      $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description; 
+      else{
+        $scope.value.M3.NYHA =1;
+        $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;
+      }      
     }
 
   }
