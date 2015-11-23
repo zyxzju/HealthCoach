@@ -265,8 +265,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               {
                 submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
                 GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000},
-                messageNum:{method:'GET', params:{route: 'messageNum',Reciever:'@Reciever',SendBy:'@SendBy'},timeout: 10000}
-        
+                messageNum:{method:'GET', params:{route: 'messageNum',Reciever:'@Reciever',SendBy:'@SendBy'},timeout: 10000},
+                message:{method:'PUT', params:{route:'message'},timeout: 1000}       
         });
     };
 	serve.abort = function($scope){
@@ -2299,6 +2299,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       });
       return deferred.promise;      
     }
+    self.messageRead = function (SendBy,Reciever){
+      var deferred = $q.defer();
+      var params={
+        "SendBy": SendBy,
+        "Receiver": Reciever,
+      }
+      Data.MessageInfo.message(params, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }    
     return self;
 }])
 //大师兄的弹窗业务service 可以随便调用
