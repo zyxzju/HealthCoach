@@ -1414,7 +1414,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   var filterAge,filterModule,filterStartDate,filterStatus,filterComplianceRate; 
   var index1,rankindex;
   var DOinitial = function(){
-    Props=[{'Name':'模块','checked':false},{'Name':'计划状态','checked':false},{'Name':'计划起始','checked':false}, {'Name':'依从率','checked':false},{'Name':'年龄','checked':false}];
+    Props=[{'Name':'模块',checked:false,clicked:true},{'Name':'计划状态',checked:false,clicked:false},{'Name':'计划起始',checked:false,clicked:false}, {'Name':'依从率',checked:false,clicked:false},{'Name':'年龄',checked:false,clicked:false}];
     categories=[[{'Name':'高血压','checked':false},{'Name':'糖尿病','checked':false},{'Name':'心衰','checked':false}],
     [{'Name':'进行中','checked':false},{'Name':'已完成','checked':false},{'Name':'无计划','checked':false}],
     [{'Name':'两周内','checked':false},{'Name':'一个月内','checked':false},{'Name':'三个月内','checked':false}],
@@ -1459,8 +1459,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         categories[0][0].checked=false;
         categories[0][2].checked=false;
       }else if(index==5){
+        categories[0][0].checked=false;
         categories[0][1].checked=false;
-        categories[0][2].checked=false;
       }
       Props[0].checked=true; 
     }
@@ -1884,8 +1884,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.categories=categories[0];
   });
   $scope.switchTo = function(index){
-    $scope.categories=categories[index];
+    $scope.categories=categories[index];  
+    Props[index1].clicked=false;
     index1=index;
+    Props[index1].clicked=true;
   }
   $scope.modelopen = function() {
     $scope.popover.hide();
@@ -1899,7 +1901,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       categories[index1][index].checked=!categories[index1][index].checked;
       // $scope.categories=categories[index1];      
     }else{
-      // categories[index1][index].checked=!categories[index1][index].checked;
       var t=!categories[index1][index].checked;
       for(var i in categories[index1]){
         categories[index1][i].checked=false;
@@ -2105,7 +2106,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   });
   $scope.f={module:'病种',Status:'预约状态'}
   var subConfig=[[{Name:'高血压',filterprop:" and module eq  'HM1'"},{Name:'糖尿病',filterprop:" and module eq  'HM2'"},{Name:'心衰',filterprop:" and module eq  'HM3'"},{Name:'全部',filterprop:''}],
-      [{Name:'未预约',filterprop:"AppointmentStatus eq  '0'"},{Name:'预约申请中',filterprop:"AppointmentStatus eq  '1'"},{Name:'已预约',filterprop:"AppointmentStatus eq  '4'"},{Name:'全部',filterprop:"(AppointmentStatus eq  '1' or AppointmentStatus eq  '0' or AppointmentStatus eq  '4')"}],
+      [{Name:'预约申请中',filterprop:"AppointmentStatus eq  '1'"},{Name:'已预约',filterprop:"AppointmentStatus eq  '4'"},{Name:'全部',filterprop:"(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')"}],
       [{Name:'更多'}]];
   $scope.openpopover=function($event,xx){
     $scope.xx=xx;  
@@ -2122,7 +2123,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $timeout(function(){$scope.popover.show($event);},20);
   }
   var filtermodule='';
-  var filterAppointmentStatus="(AppointmentStatus eq  '1' or AppointmentStatus eq  '0' or AppointmentStatus eq  '4')";
+  var filterAppointmentStatus="(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
   $scope.select1='';
   $scope.select1='';
   $scope.rankBy = function(prop){
@@ -2176,8 +2177,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       $scope.$broadcast('scroll.refreshComplete');
       PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
-  var orderConfig ="AppointmentTime,ApplicationTime desc,name";
-  var filterConfig = "(AppointmentStatus eq  '1' or AppointmentStatus eq  '0' or AppointmentStatus eq  '4')";
+  var orderConfig ="ApplicationTime desc,AppointmentTime,name";
+  var filterConfig = "(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
   var decoration =function(data){
     if(data.length!=0){
       var temp={};      
@@ -2210,9 +2211,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           temp.AppointmentText="预约中";
         }else if(temp.AppointmentStatus=="4"){
           temp.AppointmentText="已预约";
-        }else if(temp.AppointmentStatus=="0"){
-          temp.AppointmentText="未预约";
-        } 
+        }
         temp.ApplyTime= temp.ApplicationTime.substr(5,2)+'-'+ temp.ApplicationTime.substr(8,8);
         temp.AppointmentTime = temp.AppointmentTime.substr(5,2)+'-'+ temp.AppointmentTime.substr(8,8);
 
@@ -7342,20 +7341,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 })
 
 //抽象页面上用户信息的控制器 ZXF 20151102
-.controller('mainCtrl',function($scope, $state,$http, Storage,GetBasicInfo){
-  // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-  // promise.then(function(data){
-  //   $scope.clinicinfo=data;
-  //   //console.log($scope.clinicinfo)
-  //   $scope.Name=data.UserName;
-  //   $scope.age=data.Age;
-  //   $scope.gender=data.GenderText;
-  // }, function(data) {
+.controller('mainCtrl',['$scope','$rootScope','$state','Storage','MessageInfo', function($scope,$rootScope, $state,Storage,MessageInfo){
+  var getSMSCount = function(doc,pid){
+    MessageInfo.messageNum(doc,pid).then(function(data){    
+      $scope.SMSCount=parseInt(data.result);
+      $rootScope.SMSCount=$scope.SMSCount;
+    },function(){
+      getSMSCount();
+    });
+  }
+  var PID;
+  $scope.$on('$ionicView.beforeEnter', function(){
+    var pid=Storage.get('PatientID');
+    if(pid!=PID){
+      $scope.SMSCount=0;
+      PID=pid;
+    }
+    var doc=Storage.get('UID');
+    getSMSCount(doc,pid);
+  })
+  // $scope.$on('$ionicView.enter', function(){
+  //   $scope.SMSCount=0;
   // })
-  // $scope.backtocoach=function(){
-  //   $state.go('coach.home');
-  // }
-})
+}])
 
 // 依从率图的控制器amcharts部分 ZXF 20151102
 .controller('planCtrl',function($scope, $state,$http,$ionicPopover,$ionicLoading,Storage,GetBasicInfo,GetPlanInfo,GetPlanchartInfo) {
@@ -8036,10 +8044,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 //ZXF 20151102 体征列表
- .controller('vitaltableCtrl', function($scope,$state,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
+ .controller('vitaltableCtrl', function($rootScope,$scope,$state,$cordovaDatePicker,Storage,GetVitalSigns,GetBasicInfo) {
 
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-
+        $scope.SMSCount=$rootScope.SMSCount;
         $scope.tablestyle={'color':'blue','font-weight':'bold'};
             // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
             //   promise.then(function(data){
