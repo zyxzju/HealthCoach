@@ -905,7 +905,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "stackType": "regular",
               "axisAlpha": 0.3,
               "gridAlpha": 0,
-               "minimum" :80
+              "minimum" :80
           }],
           "startDuration": 0.1,
           "graphs": [{
@@ -1016,11 +1016,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "good": 6.1-4.6,
               "average": 7.2-6.1,
               "poor": 8.8-7.2,
-              "bad": 1,
+              "bad": 13.1-8.8,
+              "verybad": 20 - 13.1,
               "bullet": 0
           }],
           "valueAxes": [{
-              "maximum": 10,
+              "maximum": 20,
               "stackType": "regular",
               "gridAlpha": 0,
               "offset":10,
@@ -1029,40 +1030,47 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           }],
           "startDuration": 0.13,
           "graphs": [ {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 mmol/L</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#19d228",
+              "lineColor": "#4ede39",
               "showBalloon": true,
               "type": "column",
               "valueField": "excelent"
           }, {
             "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#b4dd1e",
+              "lineColor": "#60b95d",
               "showBalloon": true,
               "type": "column",
               "valueField": "good"
           }, {
             "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#f4fb16",
+              "lineColor": "#f9c80e",
               "showBalloon": true,
               "type": "column",
               "valueField": "average"
           }, {
             "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#f6d32b",
+              "lineColor": "#f88624",
               "showBalloon": true,
               "type": "column",
               "valueField": "poor"
           }, {
             "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#fb7116",
+              "lineColor": "#e76b74",
               "showBalloon": true,
               "type": "column",
               "valueField": "bad"
+          },{
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#ea526f",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "verybad"
           }, {
               "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
               "clustered": false,
@@ -1093,21 +1101,21 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         "theme": "light",
           "dataProvider": [{
               "type": "一年死亡风险",
-              "state1": 3,
-              "state2": 3,
-              "state3": 3,
-              "state4": 3,
-              "state5": 3,
+              "state1": 4.8,
+              "state2": 17.5-4.8,
+              "state3": 42.7-17.5,
+              "state4": 62.5-42.7,
+              "state5": 84.2-62.5,
               "now": 0, //params
               "target": 0               //params
 
           }, {
               "type": "三年死亡风险",
-              "state1": 5,
-              "state2": 5,
-              "state3": 5,
-              "state4": 5,
-              "state5": 5,
+              "state1": 12.2,
+              "state2": 39.7-12.2,
+              "state3": 75.6-39.7,
+              "state4": 90.8-75.6,
+              "state5": 98.5-90.8,
               "now":  0,         //params
               "target": 0             //params
           }],
@@ -1115,7 +1123,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "stackType": "regular",
               "axisAlpha": 0.3,
               "gridAlpha": 0,
-               "minimum" :0
+              "minimum" :0
           }],
           "startDuration": 0.1,
           "graphs": [{
@@ -1220,13 +1228,17 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                  // console.log(temp); 
                  temp.dataProvider[0].now = riskList[index].M1.SBP;
                  temp.dataProvider[1].now = riskList[index].M1.DBP;
+                 temp.valueAxes[0].minimum = (riskList[index].M1.DBP < 80) ? parseInt(riskList[index].M1.DBP) - 10 : 80;
+                 // temp.valueAxes[0].maximum = parseInt(riskList[index].M1.SBP) + 20;
                  break;
       case 'M2': temp = graphData_diab; 
                  temp.dataProvider[0].bullet = riskList[index].M2.Glucose;
+                 temp.valueAxes[0].maximum = parseInt(riskList[index].M2.Glucose) + 1.3;
                  break;
       case 'M3': temp = graphData_hf;
                  temp.dataProvider[0].now = riskList[index].M3.f1;
                  temp.dataProvider[1].now = riskList[index].M3.f2;
+                 temp.valueAxes[0].maximum = (riskList[index].M3.f2 > riskList[index].M3.f1)  ? riskList[index].M3.f2 *4:riskList[index].M3.f1 *4 ;
     };
     return temp;
   }

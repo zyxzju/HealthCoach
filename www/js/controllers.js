@@ -5003,6 +5003,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Smoke: undefined,
     Weight: undefined,
   };
+  // Patients.getQuestionM1(Storage.get("PatientID")).then(function(promise){
+  //   $scope.value.M1 = promise;
+  // });
+  // Patients.getQuestionM3(Storage.get("PatientID")).then(function(promise){
+  //   $scope.value.M3 = promise;
+  // });
 
   // $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined,NYHA:undefined};
   $scope.setedValue = {NYHA: [{level:'I',description:'体力活动没有限制，进行一般强度的体力活动不会一起过度疲劳、心悸、呼吸困难（气短）。'},
@@ -5037,21 +5043,26 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // Patients.getQuestionM1('PID201511170001').then(function(promise){
       Patients.getQuestionM1(Storage.get("PatientID")).then(function(promise){
       // if(promise.data = null)
-      $scope.value.M1 = promise;
-    // else $scope.value.M1 = {name : "xiaobiaoza"};
-      $scope.$broadcast('loadingDone');
-      $scope.value.M1.Af= $scope.value.M1.Af=='1' ? true:false;
-      $scope.value.M1.Chd= $scope.value.M1.Chd=='1' ? true:false;
-      $scope.value.M1.Diabetes= $scope.value.M1.Diabetes=='1' ? true:false;
-      $scope.value.M1.Gender= $scope.value.M1.Gender=='1' ? true:false;
-      $scope.value.M1.Heartattack= $scope.value.M1.Heartattack=='1' ? true:false;
-      $scope.value.M1.Lvh= $scope.value.M1.Lvh=='1' ? true:false;
-      $scope.value.M1.Parent= $scope.value.M1.Parent=='1' ? true:false;
-      $scope.value.M1.Smoke= $scope.value.M1.Smoke=='1' ? true:false;
-      $scope.value.M1.Stroke = $scope.value.M1.Stroke =='1' ? true:false;
-      $scope.value.M1.Treat= $scope.value.M1.Treat=='1' ? true:false;
-      $scope.value.M1.Valve= $scope.value.M1.Valve=='1' ? true:false;
-      console.log($scope.value.M1);
+        var t1 = $scope.value.M1.SBP == undefined? 0:$scope.value.M1.SBP;
+        var t2 = $scope.value.M1.DBP == undefined? 0:$scope.value.M1.DBP;
+        $scope.value.M1 = promise;
+      // else $scope.value.M1 = {name : "xiaobiaoza"};
+        $scope.$broadcast('loadingDone');
+        $scope.value.M1.Af= $scope.value.M1.Af=='1' ? true:false;
+        $scope.value.M1.Chd= $scope.value.M1.Chd=='1' ? true:false;
+        $scope.value.M1.Diabetes= $scope.value.M1.Diabetes=='1' ? true:false;
+        $scope.value.M1.Gender= $scope.value.M1.Gender=='1' ? true:false;
+        $scope.value.M1.Heartattack= $scope.value.M1.Heartattack=='1' ? true:false;
+        $scope.value.M1.Lvh= $scope.value.M1.Lvh=='1' ? true:false;
+        $scope.value.M1.Parent= $scope.value.M1.Parent=='1' ? true:false;
+        $scope.value.M1.Smoke= $scope.value.M1.Smoke=='1' ? true:false;
+        $scope.value.M1.Stroke = $scope.value.M1.Stroke =='1' ? true:false;
+        $scope.value.M1.Treat= $scope.value.M1.Treat=='1' ? true:false;
+        $scope.value.M1.Valve= $scope.value.M1.Valve=='1' ? true:false;
+
+        $scope.value.M1.SBP = t1 ==0 ? $scope.value.M1.SBP : t1;
+        $scope.value.M1.DBP = t2 ==0 ? $scope.value.M1.DBP : t2;
+        console.log($scope.value.M1);
         
       });
     }
@@ -5067,6 +5078,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // Patients.getQuestionM3('PID201511170001').then(function(promise){
       Patients.getQuestionM3(Storage.get('PatientID')).then(function(promise){
       // if(promise.data = null)
+        var t = ($scope.value.M3.NYHA == 1 || $scope.value.M3.NYHA == 2 || $scope.value.M3.NYHA == 3||$scope.value.M3.NYHA == 4) ? $scope.value.M3.NYHA: 1;
         $scope.value.M3 = promise;
         console.log($scope.value.M3);
         $scope.$broadcast('loadingDone');
@@ -5077,7 +5089,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.value.M3.HF18= $scope.value.M3.HF18=='1' ? true:false;
         $scope.value.M3.Lung= $scope.value.M3.Lung=='1' ? true:false;
         $scope.value.M3.Smoke= $scope.value.M3.Smoke=='1' ? true:false;
-        if($scope.value.M3.NYHA >=1 && $scope.value.M3.NYHA <=4 ) 
+       
+        $scope.value.M3.NYHA = t;
         $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;
         console.log($scope.value.M3);
         
