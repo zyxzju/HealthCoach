@@ -264,7 +264,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
               {
                 submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
-                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000}
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000},
+                messageNum:{method:'GET', params:{route: 'messageNum',Reciever:'@Reciever',SendBy:'@SendBy'},timeout: 10000}
         
         });
     };
@@ -354,7 +355,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
         return deferred.promise;
     }
-// LZN 20151120
+    // LZN 20151120
     serve.sendSMS_lzn = function(_mobile,_smsType,_content){
        var deferred = $q.defer();
         Data.Service.sendSMS_lzn({mobile: _mobile, smsType:_smsType,content:_content},
@@ -1392,7 +1393,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;
 
-  //LRZ 20151102
+   //LRZ 20151102
   self.postDoctorInfo = function (data) {
     // console.log(data);
 
@@ -1504,7 +1505,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151110
+  //LRZ 20151110
   self.postDoctorDtlInfo_Check = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -1580,7 +1581,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   }; 
-//LRZ 20151105   
+  //LRZ 20151105   
   self.postDoctorDtlInfo_Single = function (userid,code,value) {
     var temp = [{
                 "Doctor": userid,
@@ -2353,6 +2354,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return deferred.promise;
     };
 
+    self.messageNum = function (Reciever,SendBy){
+      var deferred = $q.defer();
+      Data.MessageInfo.messageNum({Reciever:Reciever,SendBy:SendBy}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }
     return self;
 }])
 //大师兄的弹窗业务service 可以随便调用

@@ -13,7 +13,7 @@
    	    <div class="row" style="padding:0;min-height:200px;box-shadow:1px 1.5px 2px #AAA">
    			<div class="col-25">
    				<div class="list">
-            <a class="item" style="background-color:#F6F6F6;z-index:100;padding-top:12px;padding-bottom:0px" ng-repeat="prop in props track by $index" ng-click="switchTo($index)">
+            <a class="item" style="background-color:#F6F6F6;z-index:100;padding-top:12px;padding-bottom:0px" ng-style="{'background-color':(prop.clicked==true?'#FFF':'#F6F6F6'),'border-right':(prop.clicked==true?'0px':'')}" ng-repeat="prop in props track by $index" ng-click="switchTo($index)">
               <div style="padding-bottom:12px">{{prop.Name}}<i ng-show="prop.checked" style="font-size:0.02em !important;color:#EF473A" class="icon ion-android-checkbox-outline"></i> </div>
             </a>            
    				</div>			
