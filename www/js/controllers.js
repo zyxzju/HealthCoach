@@ -4953,22 +4953,75 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
 }])
-//LRZ 20151117 
-.controller('RiskQuestionCtrl',['$scope','$state','$rootScope','Patients','Storage',function($scope,$state,$rootScope,Patients,Storage){
+//调查问卷的controller state riskquestions;
+//LRZ 20151121 完整的评估功能
+.controller('RiskQuestionCtrl',['$scope','$state','$rootScope','Patients','Storage','$ionicLoading','$timeout',function($scope,$state,$rootScope,Patients,Storage,$ionicLoading,$timeout){
  
   $scope.userid = Storage.get('PatientID');
   // $scope.userid = "PID201506170002";
   // console.log($scope.userid);
   // console.log($scope.SBP);
-  $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined,NYHA:undefined};
+
+  $scope.value = {M1: undefined, M2:undefined , M3: undefined};
+  $scope.value.M1 = {
+    AbdominalGirth: undefined,
+    Af: undefined,
+    Age: undefined,
+    BMI: undefined,
+    Chd: undefined,
+    Creatinine: undefined,
+    DBP: undefined,
+    Diabetes: undefined,
+    Gender: undefined,
+    Hdlc: undefined,
+    Heartattack: undefined,
+    Heartrate: undefined,
+    Height: undefined,
+    Lvh: undefined,
+    Parent: undefined,
+    SBP: undefined,
+    Smoke: undefined,
+    Stroke: undefined,
+    Tcho: undefined,
+    Treat: undefined,
+    Valve: undefined,
+    Weight: undefined
+  };
+  $scope.value.M2 = {
+    glucose : undefined,
+    period: undefined
+  };
+  $scope.value.M3 = {
+    AA: undefined,
+    Age: undefined,
+    BMI: undefined,
+    Beta: undefined,
+    Creatinine: undefined,
+    Diabetes: undefined,
+    EF: undefined,
+    Gender: undefined,
+    HF18: undefined,
+    Height: undefined,
+    Lung: undefined,
+    NYHA: undefined,
+    SBP: undefined,
+    Smoke: undefined,
+    Weight: undefined,
+  };
+
+  // $scope.value = {SBP:undefined,DBP:undefined,glucose:undefined,period:undefined,NYHA:undefined};
   $scope.setedValue = {NYHA: [{level:'I',description:'体力活动没有限制，进行一般强度的体力活动不会一起过度疲劳、心悸、呼吸困难（气短）。'},
                               {level:'II',description:'体力活动受到轻微的限制，休息时没有不适感，进行一般强度的体力活动导致疲劳、心悸、呼吸困难(气短)。'},
                               {level:'III',description:'体力活动受到明显的限制，休息时没有不适感，进行轻微的体力活动就会导致疲劳、心悸、呼吸困难(气短)。'},
-                              {level:'IV',description:'进行任何体力活动均会产生不适的感觉。休息时会有心衰症状，并且这些症状会因为进行任何体力活动而加重。'}]}
+                              {level:'IV',description:'进行任何体力活动均会产生不适的感觉。休息时会有心衰症状，并且这些症状会因为进行任何体力活动而加重。'}],
+                              selected : null}
+  $scope.setedValue.selected = $scope.setedValue.NYHA[0].description; 
   $scope.list = {M1show : false, M2show:false, M3show:false};
+
   $scope.clickCancel = function(){
     $state.go('addpatient.risk');
   };
+
   $scope.clickCancel1 = function(){
     $state.go('Independent.risk');
   };
@@ -4979,71 +5032,197 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       case 2 : $scope.list.M2show = !$scope.list.M2show; break;
       case 3 : $scope.list.M3show = !$scope.list.M3show; break;
     }
-    
+
+    if(whichone == 1 && $scope.list.M1show == true ){
+      $ionicLoading.show({template:'从临床拉数据过来，等一下'});
+      $timeout(function(){
+        $scope.$broadcast('loadingDone');
+      },5000)
+      // Patients.getQuestionM1('PID201511170001').then(function(promise){
+      Patients.getQuestionM1(Storage.get("PatientID")).then(function(promise){
+      // if(promise.data = null)
+      $scope.value.M1 = promise;
+    // else $scope.value.M1 = {name : "xiaobiaoza"};
+      $scope.$broadcast('loadingDone');
+      $scope.value.M1.Af= $scope.value.M1.Af=='1' ? true:false;
+      $scope.value.M1.Chd= $scope.value.M1.Chd=='1' ? true:false;
+      $scope.value.M1.Diabetes= $scope.value.M1.Diabetes=='1' ? true:false;
+      $scope.value.M1.Gender= $scope.value.M1.Gender=='1' ? true:false;
+      $scope.value.M1.Heartattack= $scope.value.M1.Heartattack=='1' ? true:false;
+      $scope.value.M1.Lvh= $scope.value.M1.Lvh=='1' ? true:false;
+      $scope.value.M1.Parent= $scope.value.M1.Parent=='1' ? true:false;
+      $scope.value.M1.Smoke= $scope.value.M1.Smoke=='1' ? true:false;
+      $scope.value.M1.Stroke = $scope.value.M1.Stroke =='1' ? true:false;
+      $scope.value.M1.Treat= $scope.value.M1.Treat=='1' ? true:false;
+      $scope.value.M1.Valve= $scope.value.M1.Valve=='1' ? true:false;
+      console.log($scope.value.M1);
+        
+      });
+    }
+      //点下拉框从临床同步数据
+
+
+    if(whichone == 3 && $scope.list.M3show == true){
+
+      $ionicLoading.show({template:'从临床拉数据过来，等一下'});
+      $timeout(function(){
+        $scope.$broadcast('loadingDone');
+      },5000);
+      // Patients.getQuestionM3('PID201511170001').then(function(promise){
+      Patients.getQuestionM1(Storage.get('PatientID')).then(function(promise){
+      // if(promise.data = null)
+        $scope.value.M3 = promise;
+        console.log($scope.value.M3);
+        $scope.$broadcast('loadingDone');
+        $scope.value.M3.AA= $scope.value.M3.AA=='1' ? true:false;
+        $scope.value.M3.Beta= $scope.value.M3.Beta=='1' ? true:false;
+        $scope.value.M3.Diabetes= $scope.value.M3.Diabetes=='1' ? true:false;
+        $scope.value.M3.Gender= $scope.value.M3.Gender=='1' ? true:false;
+        $scope.value.M3.HF18= $scope.value.M3.HF18=='1' ? true:false;
+        $scope.value.M3.Lung= $scope.value.M3.Lung=='1' ? true:false;
+        $scope.value.M3.Smoke= $scope.value.M3.Smoke=='1' ? true:false;
+        if($scope.value.M3.NYHA >=1 && $scope.value.M3.NYHA <=4 ) 
+        $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;
+        console.log($scope.value.M3);
+        
+      });   
+    }
+      //点下拉框从临床同步数据
+ 
   };
   // console.log($scope.SBP);
   $scope.clickSubmit = function(){
-    //upload 
+    //upload
+    //加判断，如果有模块什么东西不全 那就不上传
+    var hasBlank = {M1:false,M2:false,M3:false};
+    for(var item in $scope.value.M1){
+      if($scope.value.M1[item] == undefined || $scope.value.M1[item] == "NaN" ||$scope.value.M1[item] ==null || $scope.value.M1[item] == 'undefined' || $scope.value.M1[item] == 'null' || typeof($scope.value.M1[item]) === "undefined"){
+        hasBlank.M1 = true;
+        break;
+      }
+    }    
+    for(var item in $scope.value.M2){
+      if($scope.value.M2[item] == undefined || $scope.value.M2[item] == "NaN" ||$scope.value.M2[item] ==null || $scope.value.M2[item] == 'undefined' || $scope.value.M2[item] == 'null' || typeof($scope.value.M2[item]) === "undefined"){
+        hasBlank.M2 = true;
+        break;
+      }
+    }   
+    for(var item in $scope.value.M3){
+      if($scope.value.M3[item] == undefined || $scope.value.M3[item] == "NaN" ||$scope.value.M3[item] ==null || $scope.value.M3[item] == 'undefined' || $scope.value.M3[item] == 'null' || typeof($scope.value.M3[item]) === "undefined"){
+        hasBlank.M3 = true;
+        break;
+      }
+    }   
+    console.log(hasBlank);
     // $rootScope.$broadcast("NewEvaluationSubmit");
+    $timeout(function(){
+        $scope.$broadcast('loadingDone');
+      },5000);
     Patients.getMaxSortNo($scope.userid).then(function(data){
+      //得到最大的sortno便于当前插入到哪一个
       var maxsortno = data.result;   
-      console.log(data);
+      console.log("得到最大的sortno ＝ " );
+      console.log(maxsortno);
       var time2 = new Date();
       time2.setHours(time2.getHours()+8);
-      if($scope.value.SBP == undefined) $scope.value.SBP = 100;
+      console.log("当前时间为 ＝ ");
+      console.log(time2);
 
-      //上传血压数据
-      Patients.getSBPDescription(parseInt($scope.value.SBP)).then(function(data){
-          // console.log(data);
+
+
+       //上传血压数据 得到血压等级 得到5个风险因子
+      if(!(hasBlank.M1)){
+
+        Patients.getSBPDescription(parseInt($scope.value.M1.SBP)).then(function(data2){
+          console.log("血压的等级描述为  ： ");
+          console.log(data2)
           // 从服务器取一部分 +　在本地　算　or 加数据不全提示
-        var t = data.result + "||"+String($scope.value.SBP)+"||"+String($scope.value.DBP) +"||100%||100%||100%||100%||100%";
-          // console.log(t);
-
-          // console.log(time2);
-        var temp = {
-            "UserId": $scope.userid,
-            "SortNo": parseInt(maxsortno)+1,
-            "AssessmentType": "M1",
-            "AssessmentName": "高血压",
-            "AssessmentTime": time2,
-            "Result": t ,
-            "revUserId": "sample string 7",
-            "TerminalName": "sample string 8",
-            "TerminalIP": "sample string 9",
-            "DeviceType": 10
-          };
-
-        if(typeof($scope.value.SBP) != 'undefined' && typeof($scope.value.DBP) != 'undefined' ) {
-          // console.log("上传血压数据");
-
-          Patients.postTreatmentIndicators(temp).then(function(res){
-            if(res.result == "数据插入成功"){
-              console.log("broadcasting hypt");
-              $rootScope.$broadcast("NewEvaluationSubmit");
+          //得到血压等级以后 再 将整个 数据po上去
+          var des = data2.result;
+          transferM1CheckboxesFromBooltoNum();
+          //post 问卷信息 返回 评估结果
+          console.log("高血压问卷结果为"); 
+          console.log($scope.value.M1);
+          Patients.postQuestionM1($scope.value.M1).then(function(data3){
+            console.log("高血压评估结果为"); 
+            console.log(data3);
+            // data2.Message: "出现错误。"
+            // DBP: 0
+            // Framingham: "NaN"
+            // Harvard: 6.07
+            // HeartFailureRisk: 22
+            // Hyper: 0
+            // SBP: 0
+            // StrokeRisk: 29
+            // 拼接 血压等级描述 两压  5个因子 
+            var t = des + "||" +
+                    String($scope.value.M1.SBP) + "||" +
+                    String($scope.value.M1.DBP) + "||" +
+                    data3.Hyper + "||" +
+                    data3.Harvard  + "||" +
+                    data3.Framingham + "||" +
+                    data3.StrokeRisk + "||" +
+                    data3.HeartFailureRisk;
+            // var t = data.result + "||"+String($scope.value.M1.SBP)+"||"+String($scope.value.M1.DBP) +"||100%||100%||100%||100%||100%";
+            // console.log(t);
+            console.log("预备上传的incicator ＝ ")
+            console.log(t);
+            // console.log(time2);
+            var temp = {
+                "UserId": $scope.userid,
+                "SortNo": parseInt(maxsortno)+1,
+                "AssessmentType": "M1",
+                "AssessmentName": "高血压",
+                "AssessmentTime": time2,
+                "Result": t,
+                "revUserId": $scope.userid,
+                "TerminalName": "2",
+                "TerminalIP": "10",
+                "DeviceType": 10
+              };
+            //其实这个判断已经没啥用了 不过留着避免用户 神经病一样的使用 
+            if(typeof($scope.value.M1.SBP) != 'undefined' && typeof($scope.value.M1.DBP) != 'undefined') {
+              console.log("上传血压数据");
+              Patients.postTreatmentIndicators(temp).then(function(res){
+                if(res.result == "数据插入成功"){
+                  console.log("broadcasting hypt");
+                  $rootScope.$broadcast("NewEvaluationSubmit");
+                }
+              });
             }
           });
-        }
-      });
-        //上传糖尿病信息
+
+        });        
+      }
+
+       
+
+      
+
+      //上传糖尿病信息 糖尿病暂时不需要 post 问卷结果再得到评估结果 直接 本地算 
+      if(!(hasBlank.M2)){
+
         var t1;
-        if($scope.value.glucose<6.1) t1 = "正常血糖.";
-        else if($scope.value.glucose<7.0) t1 = "糖尿病前期.";
+        if($scope.value.M2.glucose<6.1) t1 = "正常血糖.";
+        else if($scope.value.M2.glucose<7.0) t1 = "糖尿病前期.";
         else  t1 = "糖尿病.";
+        console.log("糖尿病等级  = ");
+        console.log(t1);
         var temp =  {
           "UserId": $scope.userid,
           "SortNo": parseInt(maxsortno)+1,
           "AssessmentType": "M2",
           "AssessmentName": "糖尿病",
           "AssessmentTime": time2,
-          "Result": t1 + "||"+ $scope.value.period + "||" + String($scope.value.glucose)+ "||",
+          "Result": t1 + "||"+ $scope.value.M2.period + "||" + String($scope.value.M2.glucose)+ "||",
           "revUserId": "sample string 7",
           "TerminalName": "sample string 8",
           "TerminalIP": "sample string 9",
           "DeviceType": 10
         };
         // console.log(temp.Result);
-        if(typeof($scope.value.period) != 'undefined' && typeof($scope.value.glucose) != 'undefined'){
-          // console.log("上传血糖数据");
+        if(typeof($scope.value.M2.period) != 'undefined' && typeof($scope.value.M2.glucose) != 'undefined'){
+          console.log("上传血糖数据");
           Patients.postTreatmentIndicators(temp).then(function(res){
             if(res.result == "数据插入成功"){
               console.log("broadcasting diab");
@@ -5052,38 +5231,71 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           });
         }
 
-        //上传心衰信息
-        var t3 =  parseInt($scope.value.NYHA/25);
+      }
+ 
+
+      //上传心衰信息
+      if(!(hasBlank.M3)){
+
+
+        var t3 =  parseInt($scope.value.M3.NYHA);
         switch(t3){
-          case  0 : t3 = $scope.setedValue.NYHA[0].description;break;
-          case  1 : t3 = $scope.setedValue.NYHA[1].description;break;
-          case  2 : t3 = $scope.setedValue.NYHA[2].description;break;
-          case  3 : t3 = $scope.setedValue.NYHA[3].description;break;
-          default : t3 = "数据异常";
+          case  1 : t3 = $scope.setedValue.NYHA[0].description;break;
+          case  2 : t3 = $scope.setedValue.NYHA[1].description;break;
+          case  3 : t3 = $scope.setedValue.NYHA[2].description;break;
+          case  4 : t3 = $scope.setedValue.NYHA[3].description;break;
+          default : t3 = $scope.setedValue.NYHA[0].description;;
         }
-        var temp =  {
-          "UserId": $scope.userid,
-          "SortNo": parseInt(maxsortno)+1,
-          "AssessmentType": "M3",
-          "AssessmentName": "心衰",
-          "AssessmentTime": time2,
-          "Result": t3 + "||"+ "||" + "||" + "||" + "||",
-          "revUserId": "sample string 7",
-          "TerminalName": "sample string 8",
-          "TerminalIP": "sample string 9",
-          "DeviceType": 13
-        };
+        var t4 =  parseInt($scope.value.M3.NYHA);
+        switch(t4){
+          case  1 : t4 = $scope.setedValue.NYHA[0].level;break;
+          case  2 : t4 = $scope.setedValue.NYHA[1].level;break;
+          case  3 : t4 = $scope.setedValue.NYHA[2].level;break;
+          case  4 : t4 = $scope.setedValue.NYHA[3].level;break;
+          default : t4 = $scope.setedValue.NYHA[0].level;;
+        }
 
-        if(typeof($scope.value.NYHA) != 'undefined' && typeof($scope.value.NYHA) != 'undefined'){
+        var t = "NYHA 第" + t4 +"级 ";
+
+        var t3 = t + t3;
+
+        console.log(t3);
+        Patients.postQuestionM3($scope.value.M3).then(function(promise_d){
+            console.log("心衰评估结果为");
+            console.log(promise_d);
         
-          Patients.postTreatmentIndicators(temp).then(function(res){
-            if(res.result == "数据插入成功"){
-              console.log("broadcasting heart failure");
-              $rootScope.$broadcast("NewEvaluationSubmit");
+            var temp =  {
+              "UserId": $scope.userid,
+              "SortNo": parseInt(maxsortno)+1,
+              "AssessmentType": "M3",
+              "AssessmentName": "心衰",
+              "AssessmentTime": time2,
+              "Result": t3 + "||"+ String(promise_d.One) + "||" + String(promise_d.Three) ,
+              "revUserId": "sample string 7",
+              "TerminalName": "sample string 8",
+              "TerminalIP": "sample string 9",
+              "DeviceType": 13
+            };
+            console.log(temp.Result);
+            if(typeof($scope.value.M3.NYHA) != 'undefined' && typeof($scope.value.M3.NYHA) != 'undefined'){
+            
+              Patients.postTreatmentIndicators(temp).then(function(res){
+                if(res.result == "数据插入成功"){
+                  console.log("broadcasting heart failure");
+                  $rootScope.$broadcast("NewEvaluationSubmit");
+                }
+              });
             }
-          });
-        }
+        });
 
+      }
+
+    if(hasBlank.M1 && hasBlank.M2 && hasBlank.M3) {
+      $ionicLoading.show({template:"没有填写完整的问卷就不提交了"});
+      $timeout(function(){
+        $ionicLoading.hide();
+      },2000);
+    }
     if (Storage.get('isManage') == "Yes")
     {
       $state.go('Independent.risk');
@@ -5097,9 +5309,131 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   }
 
   $scope.slideHasChanged = function($index){
+
     $scope.list.M1show = false;
     $scope.list.M2show = false;
     $scope.list.M3show = false;
+
+  }
+
+  var calcuBMI = function(h,w){
+    return w*10000/(h*h);
+  }
+
+  var transferM1CheckboxesFromBooltoNum = function(){
+    $scope.value.M1.Af = $scope.value.M1.Af==true ? '1':'2';
+    $scope.value.M1.Diabetes = $scope.value.M1.Diabetes==true ? '1':'2';
+    $scope.value.M1.Gender = $scope.value.M1.Gender==true ? '1':'2';
+    $scope.value.M1.Heartattack = $scope.value.M1.Heartattack==true ? '1':'2';
+    $scope.value.M1.Lvh = $scope.value.M1.Lvh==true ? '1':'2';
+    $scope.value.M1.Parent = $scope.value.M1.Parent==true ? '1':'2';
+    $scope.value.M1.Smoke = $scope.value.M1.Smoke==true ? '1':'2';
+    $scope.value.M1.Stroke = $scope.value.M1.Stroke==true ? '1':'2';
+    $scope.value.M1.Treat = $scope.value.M1.Treat==true ? '1':'2';
+    $scope.value.M1.Valve = $scope.value.M1.Valve==true ? '1':'2';
+    $scope.value.M1.Chd = $scope.value.M1.Chd==true ? '1':'2';
+  }
+
+  var transferM1CheckboxesFromNumtoBool =function(){
+    $scope.value.M1.Af= $scope.value.M1.Af=='1' ? true:false;
+    $scope.value.M1.Chd= $scope.value.M1.Chd=='1' ? true:false;
+    $scope.value.M1.Diabetes= $scope.value.M1.Diabetes=='1' ? true:false;
+    $scope.value.M1.Gender= $scope.value.M1.Gender=='1' ? true:false;
+    $scope.value.M1.Heartattack= $scope.value.M1.Heartattack=='1' ? true:false;
+    $scope.value.M1.Lvh= $scope.value.M1.Lvh=='1' ? true:false;
+    $scope.value.M1.Parent= $scope.value.M1.Parent=='1' ? true:false;
+    $scope.value.M1.Smoke= $scope.value.M1.Smoke=='1' ? true:false;
+    $scope.value.M1.Stroke = $scope.value.M1.Stroke =='1' ? true:false;
+    $scope.value.M1.Treat= $scope.value.M1.Treat=='1' ? true:false;
+    $scope.value.M1.Valve= $scope.value.M1.Valve=='1' ? true:false;    
+  }
+
+  var transferM3CheckboxesFromBooltoNum = function(){
+    $scope.value.M3.AA= $scope.value.M3.AA==true?'1' :'2';
+    $scope.value.M3.Beta= $scope.value.M3.Beta==true?'1' :'2';
+    $scope.value.M3.Diabetes= $scope.value.M3.Diabetes==true?'1' :'2';
+    $scope.value.M3.Gender= $scope.value.M3.Gender==true?'1' :'2';
+    $scope.value.M3.HF18= $scope.value.M3.HF18==true?'1' :'2';
+    $scope.value.M3.Lung= $scope.value.M3.Lung==true?'1' :'2';
+    $scope.value.M3.Smoke= $scope.value.M3.Smoke==true?'1' :'2';    
+  } 
+
+  var transferM3CheckboxesFromNumtoBool = function(){
+    $scope.value.M3.AA= $scope.value.M3.AA=='1' ? true:false;
+    $scope.value.M3.Beta= $scope.value.M3.Beta=='1' ? true:false;
+    $scope.value.M3.Diabetes= $scope.value.M3.Diabetes=='1' ? true:false;
+    $scope.value.M3.Gender= $scope.value.M3.Gender=='1' ? true:false;
+    $scope.value.M3.HF18= $scope.value.M3.HF18=='1' ? true:false;
+    $scope.value.M3.Lung= $scope.value.M3.Lung=='1' ? true:false;
+    $scope.value.M3.Smoke= $scope.value.M3.Smoke=='1' ? true:false;
+    if($scope.value.M3.NYHA >=1 && $scope.value.M3.NYHA <=4 ) 
+    $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;    
+  }
+
+  $scope.rangeHasChanged = function(whichone){
+    // console.log("111111");
+    if(whichone == 1)
+    $scope.value.M1.BMI = calcuBMI($scope.value.M1.Height,$scope.value.M1.Weight);
+    else if(whichone == 3){
+      $scope.value.M3.BMI = calcuBMI($scope.value.M3.Height,$scope.value.M3.Weight);
+      $scope.setedValue.selected = $scope.setedValue.NYHA[$scope.value.M3.NYHA -1].description;      
+    }
+
+  }
+
+
+  $scope.$on('loadingDone',function(){
+
+    $ionicLoading.hide();
+
+  })
+
+  $scope.onclicktest = function (){
+    // $scope.value.M1.Af = $scope.value.M1.Af==true ? '1':'2';
+    // $scope.value.M1.Diabetes = $scope.value.M1.Diabetes==true ? '1':'2';
+    // $scope.value.M1.Gender = $scope.value.M1.Gender==true ? '1':'2';
+    // $scope.value.M1.Heartattack = $scope.value.M1.Heartattack==true ? '1':'2';
+    // $scope.value.M1.Lvh = $scope.value.M1.Lvh==true ? '1':'2';
+    // $scope.value.M1.Parent = $scope.value.M1.Parent==true ? '1':'2';
+    // $scope.value.M1.Smoke = $scope.value.M1.Smoke==true ? '1':'2';
+    // $scope.value.M1.Stroke = $scope.value.M1.Stroke==true ? '1':'2';
+    // $scope.value.M1.Treat = $scope.value.M1.Treat==true ? '1':'2';
+    // $scope.value.M1.Valve = $scope.value.M1.Valve==true ? '1':'2';
+    // $scope.value.M1.Chd = $scope.value.M1.Chd==true ? '1':'2';
+
+    // console.log($scope.value.M3)    
+    // $scope.value.M3.AA= $scope.value.M3.AA==true?'1' :'2';
+    // $scope.value.M3.Beta= $scope.value.M3.Beta==true?'1' :'2';
+    // $scope.value.M3.Diabetes= $scope.value.M3.Diabetes==true?'1' :'2';
+    // $scope.value.M3.Gender= $scope.value.M3.Gender==true?'1' :'2';
+    // $scope.value.M3.HF18= $scope.value.M3.HF18==true?'1' :'2';
+    // $scope.value.M3.Lung= $scope.value.M3.Lung==true?'1' :'2';
+    // $scope.value.M3.Smoke= $scope.value.M3.Smoke==true?'1' :'2';
+    // console.log($scope.value.M3)
+
+    // Patients.postQuestionM1($scope.value.M1).then(function(promise){
+    //   console.log(promise);
+    // });
+    // var t = new Date();
+    // var t1 = t.getFullYear();
+    // var t2 = t.getDate();
+    // var t3 = t.getMonth();
+    // var t4 = t.getHours();
+    // var t5 = t.getMinutes();
+    // console.log(t4);
+    // console.log(t5);
+
+    // var t = new Date();
+    // var t1 = String(t.getFullYear());
+    // var t2 = String(t.getDate());
+    // var t3 = String( t.getMonth() + 1);
+    // var t4 = String(t.getHours());
+    // var t5 = String(t.getMinutes());
+
+    // var RecordDate = t1 + (t3.length == 2? t3: '0' + t3) +   (t2.length == 2? t2: '0' + t2) ;
+    // var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
+    // console.log(RecordTime);
+    // console.log(RecordDate);
   }
 }])
 //GL 20151101 创建计划
