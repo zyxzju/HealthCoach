@@ -1886,10 +1886,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.switchTo = function(index){
     $scope.categories=categories[index];
     index1=index;
-    // if(index==0 ||index==1)
-    // if(index==2){
-    //   $scope.ownset=false;
-    // }
   }
   $scope.modelopen = function() {
     $scope.popover.hide();
@@ -1897,7 +1893,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     $scope.props=Props;
     // $scope.categories=categories[0];
     // $scope.rankprops=rankprops;
-    // $scope.ownset=true;
   };
   $scope.checkit = function(index){
     if(index1!=2){

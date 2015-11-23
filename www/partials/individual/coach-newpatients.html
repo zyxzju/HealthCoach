@@ -20,21 +20,26 @@
         <img src="{{patient.imageURL}}">
         <!-- <div Style="padding-top:10px"> -->
             <div class="item-row " >
-              <div class="col-50"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.name}} </h5></div>
-              <div class="col-50"><h6>{{patient.Age}}      {{patient.GenderText}}</h6></div>
+              <div class="col-50"><h5>{{patient.name}}</h5></div>
+              <div class="col-50"><h6>{{patient.Age}}   {{patient.GenderText}}</h6></div>
             </div>
-            <div class="item-row">
+        <!--     <div class="item-row">
               <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
-            </div>               
-            <div class="item-row">
-              <div class="col-100"><p><i class="icon ion-calendar"></i> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.ApplyTime}}</span></p></div>
-              <!-- <div class="col-50"><p></p></div> -->
-            </div>
-            <div ng-if="(patient.AppointmentStatus-0)" class="item-row">
-              <div ng-if="!(patient.AppointmentStatus-1)" class="col-100"><p style="color:#fb6a1b"> <b >约定时间</b> <span style="font-style: italic">{{patient.AppointmentTime}}</span></p></div>
-              <div ng-if="(patient.AppointmentStatus-1)" class="col-100"><p style="color:#33cd5f"> <b >已约定</b> <span style="font-style: italic">{{patient.AppointmentTime}}</span></p></div>
-              <!-- <div class="col-50"><p></p></div> -->
-            </div>            
+            </div>  -->              
+            <!-- <div class="item-row"> -->
+              <!-- <div class="col-100" > -->
+                <p style="white-space:wrap" >“{{patient.Description}}” <span style="font-size:0.5rem;font-style: italic">{{patient.ApplyTime}}</span></p>
+              <!-- </div> -->
+            <!-- </div> -->
+            <!-- <div ng-if="(patient.AppointmentStatus-0)" class="item-row"> -->
+              <!-- <div  class="col-100"> -->
+                <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
+              <!-- </div> -->
+              <!-- <div  class="col-100"> -->
+                <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
+              <!-- </div> -->
+            <!-- </div>    -->
+
             <!-- <div class="item-row"> -->
               <!-- <div class="col-100"><p>“{{patient.Description}}”</p></div> -->
               <!-- <div class="col-50"><p></p></div> -->
