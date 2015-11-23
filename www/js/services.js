@@ -804,7 +804,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       });
       return deferred.promise;       
     },
-    postQuestionM1: function(data){
+    postQuestionM1: function(data,userid){
       var t = new Date();
       var t1 = String(t.getFullYear());
       var t2 = String(t.getDate());
@@ -816,7 +816,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
       var deferred = $q.defer();
 
-        Data.RiskInfo.AddM1Risk({route:'AddM1Risk',PatientId:Storage.get('PatientID'),RecordDate:RecordDate,RecordTime:'2241',piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'},data,function (data, headers) {
+        Data.RiskInfo.AddM1Risk({route:'AddM1Risk',PatientId:userid,RecordDate:RecordDate,RecordTime:'2241',piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'},data,function (data, headers) {
         // console.log(data);
         deferred.resolve(data);
       }, function (err) {
@@ -824,7 +824,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       });
       return deferred.promise; 
     },
-    postQuestionM3: function(data){
+    postQuestionM3: function(data,userid){
       var t = new Date();
       var t1 = String(t.getFullYear());
       var t2 = String(t.getDate());
@@ -836,10 +836,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
 
       var deferred = $q.defer();
-       var t = new Date();
-       var RecordDate = t.getFullYear();
-       var RecordTime = t.getTime();
-        Data.RiskInfo.AddM3Risk({route:'AddM3Risk',PatientId:Storage.get('PatientID'),RecordDate:RecordDate,RecordTime:RecordTime,piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'}, data,function (data, headers) {
+
+        Data.RiskInfo.AddM3Risk({route:'AddM3Risk',PatientId:userid,RecordDate:RecordDate,RecordTime:RecordTime,piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'}, data,function (data, headers) {
         // console.log(data);
         deferred.resolve(data);
       }, function (err) {
@@ -1004,25 +1002,112 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       };
   //糖尿病风险的画图数据
   var graphData_diab = {
+          "type": "serial",
+          "theme": "light",
+          
+          "autoMargins": true,
+          "marginTop": 30,
+          "marginLeft": 80,
+          "marginBottom": 30,
+          "marginRight": 50,
+          "dataProvider": [{
+              "category": "血糖浓度  (mmol/L)",
+              "excelent": 4.6,
+              "good": 6.1-4.6,
+              "average": 7.2-6.1,
+              "poor": 8.8-7.2,
+              "bad": 1,
+              "bullet": 0
+          }],
+          "valueAxes": [{
+              "maximum": 10,
+              "stackType": "regular",
+              "gridAlpha": 0,
+              "offset":10,
+              "minimum" :3
+
+          }],
+          "startDuration": 0.13,
+          "graphs": [ {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#19d228",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "excelent"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#b4dd1e",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "good"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f4fb16",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "average"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f6d32b",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "poor"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#fb7116",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "bad"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
+              "clustered": false,
+              "columnWidth": 0.5,
+              "noStepRisers": true,
+              "lineThickness": 5,
+              "fillAlphas": 0,
+              "labelText": "[[value]]"+" 当前",
+              "lineColor": "#000000", 
+              "stackable": false,
+              "showBalloon": true,
+              "type": "step",
+              "valueField": "bullet"
+          }],
+          "rotate": false,
+          "columnWidth": 1,
+          "categoryField": "category",
+          "categoryAxis": {
+              "gridAlpha": 0,
+              "position": "left",
+             
+          }
+      };
+      
+  //心衰风险的画图数据
+  var graphData_hf = {
         "type": "serial",
         "theme": "light",
           "dataProvider": [{
               "type": "一年死亡风险",
-              "state1": 2.5,
-              "state2": 2.5,
-              "state3": 2.5,
-              "state4": 2.5,
-              "state5": 2.5,
-              "now": 0, //params
-              "target": 0               //params
-
-          }, {
-              "type": "三年死亡风险",
               "state1": 3,
               "state2": 3,
               "state3": 3,
               "state4": 3,
               "state5": 3,
+              "now": 0, //params
+              "target": 0               //params
+
+          }, {
+              "type": "三年死亡风险",
+              "state1": 5,
+              "state2": 5,
+              "state3": 5,
+              "state4": 5,
+              "state5": 5,
               "now":  0,         //params
               "target": 0             //params
           }],
@@ -1074,7 +1159,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "columnWidth": 0.618,
               "valueField": "state4"
           }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
               "fillAlphas": 0.8,
               //"labelText": "[[value]]",
               "lineAlpha": 0.3,
@@ -1084,7 +1169,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "columnWidth": 0.618,
               "valueField": "state5"
           }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
               "fillAlphas": 0,
               "columnWidth": 0.5,
               "lineThickness": 5,
@@ -1125,39 +1210,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             "enabled": true
            }
     };
-      
-  //心衰风险的画图数据
-  var graphData_xs = {
-    "type": "gauge",
-    "theme": "light",
-    "axes": [ {
-      "axisThickness": 2,
-      "axisAlpha": 0.2,
-      "tickAlpha": 0.2,
-      "valueInterval": 10,
-      "bands": [ {
-        "color": "#84b761",
-        "endValue": 30,
-        "startValue": 0
-      }, {
-        "color": "#fdd400",
-        "endValue": 60,
-        "startValue": 30
-      }, {
-        "color": "#cc4748",
-        "endValue": 100,
-        "innerRadius": "95%",
-        "startValue": 60
-      } ],
-      "bottomText": "死亡率 百分比",
-      "bottomTextYOffset": -20,
-      "endValue": 100
-    } ],
-    "arrows": [ {} ],
-    "export": {
-      "enabled": true
-    }
-    };
 
   self.getGraphData = function(module,index){
     // console.log("1");
@@ -1172,7 +1224,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       case 'M2': temp = graphData_diab; 
                  temp.dataProvider[0].bullet = riskList[index].M2.Glucose;
                  break;
-      case 'M3': temp = graphData_xs;
+      case 'M3': temp = graphData_hf;
                  temp.dataProvider[0].now = riskList[index].M3.f1;
                  temp.dataProvider[1].now = riskList[index].M3.f2;
     };

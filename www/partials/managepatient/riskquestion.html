@@ -12,7 +12,7 @@
 
 
 
-  <div class= "button button-block" ng-click = "onclicktest()"> test </div>
+  <!-- <div class= "button button-block" ng-click = "onclicktest()"> test </div> -->
   <ion-slide-box on-slide-changed="slideHasChanged($index)">
 
 
@@ -37,7 +37,7 @@
 
         <div class="item item-divider item-icon-left"  ng-click="toggleGroup(1)">
           <i class="icon" ng-class="list.M1show ? 'ion-minus' : 'ion-plus'"></i>
-          <h2>临床数据</h2>
+          <h2>同步临床数据 会覆盖已填写</h2>
         </div>
 
 
@@ -320,8 +320,8 @@
                     <p>{{setedValue.selected}}</p>
                 </div>                               
                 <div class="item item-divider item-icon-left"  ng-click="toggleGroup(3)">
-                  <i class="icon" ng-class="list.show ? 'ion-minus' : 'ion-plus'"></i>
-                  <h2>临床数据<h2>
+                  <i class="icon" ng-class="list.M3show ? 'ion-minus' : 'ion-plus'"></i>
+                  <h2>同步临床数据 会覆盖已填写<h2>
                 </div>
               
               
