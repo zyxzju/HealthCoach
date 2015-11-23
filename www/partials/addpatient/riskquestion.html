@@ -12,132 +12,244 @@
 
 
 
-
-<ion-slide-box on-slide-changed="slideHasChanged($index)">
+  <div class= "button button-block" ng-click = "onclicktest()"> test </div>
+  <ion-slide-box on-slide-changed="slideHasChanged($index)">
 
 
 
   <ion-slide prevent-drag>
-  <div class = "padding">
+    <div class = "padding">
       <div class = "padding">
         <div class="card">
         <div class="item item-divider">
-        <h2>高血压风险问卷<h2>
+        <h2>高血压风险问卷</h2>
         </div>
         <label class="item item-input">
           <span class="input-label">当前收缩压</span>
-          <input type="number" placeholder="mmHg" ng-model="value.SBP">
+          <input type="number" placeholder="mmHg" ng-model="value.M1.SBP">
         </label>
 
 
         <label class="item item-input">
           <span class="input-label">当前舒张压</span>
-          <input type="number" placeholder="mmHg" ng-model="value.DBP">
+          <input type="number" placeholder="mmHg" ng-model="value.M1.DBP">
         </label>
 
         <div class="item item-divider item-icon-left"  ng-click="toggleGroup(1)">
           <i class="icon" ng-class="list.M1show ? 'ion-minus' : 'ion-plus'"></i>
-          <h2>临床数据<h2>
+          <h2>临床数据</h2>
         </div>
-<!-- {"Age":1,"Gender":1,"Height":0,"Weight":0,"AbdominalGirth":0,"BMI":"NaN","Heartrate":0,"Parent":0,"Smoke":0,"Stroke":0,"Lvh":0,"Diabetes":0,"Treat":0,"Heartattack":0,"Af":0,"Chd":0,"Valve":0,"Tcho":0.0,"Creatinine":0.0,"Hdlc":0.0,"Hyperother":"NaN","HarvardRiskInfactor":6,"FraminghamRiskInfactor":"NaN","StrokeRiskInfactor":0,"HeartFailureRiskInfactor":0,"SBP":0,"DBP":0,"piParent":0,"piSmoke":0,"piStroke":0,"piLvh":0,"piDiabetes":0,"piTreat":0,"piHeartattack":0,"piAf":0,"piChd":0,"piValve":0}    -->     
+
+
+  <!-- value.M1 = {
+      AbdominalGirth: undefined,*
+      Af: undefined,
+      Age: undefined,*
+      BMI: undefined,
+      Chd: undefined,
+      Creatinine: undefined,
+      DBP: undefined,*
+      Diabetes: undefined,*
+      Gender: undefined,
+      Hdlc: undefined,
+      Heartattack: undefined,*
+      Heartrate: undefined,*
+      Height: undefined,
+      Lvh: undefined,
+      Parent: undefined,*
+      SBP: undefined,*
+      Smoke: undefined,*
+      Stroke: undefined,*
+      Tcho: undefined,
+      Treat: undefined,*
+      Valve: undefined,
+      Weight: undefined
+    }; -->
+    <!--               int Age = Input.Age;//年龄默认1岁（避免出现0岁）
+
+
+
+                double BMI = Input.BMI;
+
+
+
+
+
+
+
+
+
+
+
+
+                double Tcho = Input.Tcho;//总胆固醇浓度5.2mmol/L
+                double Creatinine = Input.Creatinine;//肌酐浓度140μmoI/L
+                double Hdlc = Input.Hdlc;//高密度脂蛋白胆固醇1.21g/ml
+                int SBP = Input.SBP;//当前收缩压
+                int DBP = Input.DBP;//当前舒张压 -->
+         
         <div class = "item-list" ng-show = "list.M1show"> 
           <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Heartattack">
                  </label>
-                 有心脏病
+                 有心血管疾病
                 </div>
                
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Smoke">
                  </label>
-                 目前吸烟
+                 不吸烟
                 </div>
 
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Diabetes">
                  </label>
                  患糖尿病
                 </div> 
 
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Stroke">
                  </label>
-                 目前中风
+                 没有中风
                 </div>
-
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Af">
                  </label>
-                 正在接受治疗
+                 没有过房颤
+                </div>
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Chd">
+                 </label>
+                 没有冠心病
+                </div>
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Valve">
+                 </label>
+                 没有心脏瓣膜疾病
+                </div>                
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Lvh">
+                 </label>
+                 有左心室肥大
+                </div>
+               <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Treat">
+                 </label>
+                 高血压在治疗
                 </div> 
 
                 <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Parent">
                  </label>
-                 家族史
+                  父母中有至少一方患高血压 
                 </div> 
              
 
-                  
-                <div class="item range range-assertive">
+                <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model = "value.M1.Gender" >
+                 </label>
+                  性别 {{value.M1.Gender == "1" ? "男": "女"}}
+                </div> 
+
+
+                         
+                <div class="item range range-positive">
+                  年龄
+                      <input type="range" name="level" ng-model = "value.M1.Age" min = "1" max = "120"> 
+                      {{value.M1.Age}} 岁              
+                </div>
+
+                <div class="item range range-balanced">
+                  身高                    
+                  <input type="range" name="level" ng-model = "value.M1.Height"  min = "1" max = "200" ng-change="rangeHasChanged(1)">
+                   {{value.M1.Height}}   cm
+                </div>
+
+                <div class="item range range-positive">
+                    体重                        
+                  <input type="range" name="level" ng-model = "value.M1.Weight" min = "1" max = "200"  ng-change="rangeHasChanged(1)">
+                    {{value.M1.Weight}}  kg
+                </div>
+                <div class="item range range-balanced">
+                  BMI                    
+                <input type="range" name="level" ng-model = "value.M1.BMI" disabled min="10" max = "40" step = "0.01">
+                  {{value.M1.BMI | limitTo : 4 }}  kg/m2
+                </div>
+                <div class="item range range-positive">
+                  腹围
+                  <input type="range" name="level" ng-model = "value.M1.AbdominalGirth" min = "0" max = "2000">
+                    {{value.M1.AbdominalGirth}} mm
+                </div>
+
+                <div class="item range range-balanced ">
                     心律 
                     <!-- <i class="icon ion-volume-low"></i> -->  
-                    <input type="range" name="level" ng-model = "value.NYHA">
-                   %
+                    <input type="range" name="level" ng-model = "value.M1.Heartrate" min = "0" max = "200">
+                    {{value.M1.Heartrate}} bpm
                     <!-- <i class="icon ion-volume-high"></i> -->
                   </div>
-                         
-                <div class="item range range-energized">
-                  年龄
-                      <input type="range" name="level" ng-model = "value.NYHA">               
-                </div>
 
-                <div class="item range range-energized">
-                  腹围
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                    mmHg
-                </div>
-
-                <div class="item range range-energized">
+                <div class="item range range-positive">
                   总胆固醇浓度                   
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                   umol/L
+
                 </div>
-                <div class="item range range-energized">
-                  低密度脂蛋白浓度                   
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                   umol/L
-                </div>
-                <div class="item range range-energized">
-                  高密度脂蛋白浓度                   
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                   umol/L
-                </div>
-                <div class="item range range-energized">
-                  甘油三酯浓度                   
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                   umol/L
-                </div>
-                <div class="item range range-energized">
-                  BMI                    
-                <input type="range" name="level" ng-model = "value.NYHA">
-                    kg/m2
+                <div class="item range range-positive">
+                                     
+                      <input type="range" name="level" ng-model = "value.M1.Tcho" min = "1" max = "200">
+                  {{value.M1.Tcho}} mmol/L
                 </div>
 
-                <div class="item range range-energized">
-                  身高                    
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                      cm
-                    体重                    
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                      kg
+                <div class="item range range-balanced">
+                  高密度脂蛋白胆固醇                 
+              
+                 
                 </div>
+
+
+                <div class="item range range-balanced">
+                                   
+                      <input type="range" name="level" ng-model = "value.M1.Hdlc" min = "0.50" max = "2.99" step="0.01">
+                  {{value.M1.Hdlc}} mmol/L
+                </div><!--                 <div class="item range range-positive">
+                  低密度脂蛋白浓度                   
+                      <input type="range" name="level" ng-model = "value.M1.Heartrate">
+                   umol/L
+                </div>
+ -->
+  <!--                 <div class="item range range-positive">
+                    高密度脂蛋白浓度                   
+                        <input type="range" name="level" ng-model = "value.M1.Hdlc">
+                     umol/L
+                  </div>
+   -->
+                <div class="item range range-positive">
+                  血清肌酐浓度                 
+        
+                </div>
+                <div class="item range range-positive">
+                  
+                      <input type="range" name="level" ng-model = "value.M1.Creatinine" min = "20" max = "150">
+                   {{value.M1.Creatinine}} μmoI/L
+                </div>                
+  <!--                 <div class="item range range-positive">
+                    甘油三酯浓度                   
+                        <input type="range" name="level" ng-model = "value.M1.TCHO">
+                     umol/L
+                  </div> -->
+
+
+
         </div>
     </div>
     </div>
@@ -154,14 +266,15 @@
           </div>
               <label class="item item-input">
                       <span class="input-label">当前血糖值</span>
-                      <input type="number" placeholder="mmol/L" ng-model="value.glucose">
+                      <input type="number" placeholder="mmol/L" ng-model="value.M2.glucose">
               </label>
+
 
         <label class="item item-input item-select">
             <div class="input-label">
               测量时段
             </div>
-            <select ng-model = "value.period">
+            <select ng-model = "value.M2.period">
               <option>凌晨</option>
               <option>早餐前</option>
               <option>早餐后</option>
@@ -172,15 +285,18 @@
               <option>睡前</option>
             </select>
           </label>
- 
+     <div class="item item-divider item-icon-left" >
+      <i class="icon" ng-class="list.show ? 'ion-minus' : 'ion-plus'"></i>
+      <h2>暂未上线 敬请期待<h2>
+    </div> 
     </div>
-        </div>
-        </div>
+  </div>
+  </div>
   </ion-slide>
 
   
 
-  <ion-slide prevent-drag  on-slide-changed="slideHasChanged($index)"  delegate-handle="riskhandle">
+  <ion-slide prevent-drag  >
     <div class = "padding">
       <div class = "padding">
         <div class="card">
@@ -189,112 +305,138 @@
             <h2>心衰风险描述<h2>
           </div>
           
-                <div class="item range range-energized">
-                    <i class="icon ion-volume-low"></i>
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                    <i class="icon ion-volume-high"></i>
+                <div class="item range range-balanced">
+                  
+                      <input type="range" name="level" ng-model = "value.M3.NYHA" ng-change="rangeHasChanged(3)" min="1" max = "4" step = "1">
+                      
                 </div>
-                <div>
+  <!--                 <div>
                     {{ (value.NYHA/ 25) | number :0 }}
-                </div>
+                </div> -->
                <!--  <div ng-repeat = "item in setedValue.NYHA">
                   {{item}}
-                </div> -->                                
+                </div> --> 
+                <div class = "item item-text-wrap">
+                    <p>{{setedValue.selected}}</p>
+                </div>                               
                 <div class="item item-divider item-icon-left"  ng-click="toggleGroup(3)">
-                  <i class="icon" ng-class="list.M3show ? 'ion-minus' : 'ion-plus'"></i>
+                  <i class="icon" ng-class="list.show ? 'ion-minus' : 'ion-plus'"></i>
                   <h2>临床数据<h2>
                 </div>
               
               
 
+  <!--         
+
+
+
+
+
+
+
+
+
+
+
+
+ -->
 
             
                <div class = "item-list" ng-show = "list.M3show">  
                 
                 <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.Gender">
                  </label>
                  男性
                 </div>
                
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.Smoke"> 
                  </label>
                  目前吸烟
                 </div>
 
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.Diabetes">
                  </label>
                  患糖尿病
                 </div> 
 
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.Lung">
                  </label>
                  慢性阻塞性肺病
                 </div>
 
                <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.Beta">
                  </label>
                  没有服用β受体阻滞剂
                 </div> 
 
                 <div class="item item-checkbox">
                  <label class="checkbox">
-                   <input type="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.AA">
                  </label>
                  没有服用ACEI/ARB类药物
                 </div> 
              
-
+                <div class="item item-checkbox">
+                 <label class="checkbox">
+                   <input type="checkbox" ng-model= "value.M3.HF18">
+                 </label>
+                 过去十八个月第一次诊断为心衰
+                </div> 
                   
-                <div class="item range range-assertive">
+                <div class="item range range-balanced">
                     射血分数 
                     <!-- <i class="icon ion-volume-low"></i> -->  
-                    <input type="range" name="level" ng-model = "value.NYHA">
-                   %
+                    <input type="range" name="level" ng-model = "value.M3.EF" min="1" max = "100">
+                   {{value.M3.EF}}%
                     <!-- <i class="icon ion-volume-high"></i> -->
                   </div>
                          
-                <div class="item range range-energized">
+                <div class="item range range-positive">
                   年龄
-                      <input type="range" name="level" ng-model = "value.NYHA">               
+                      <input type="range" name="level" ng-model = "value.M3.Age" min="1" max = "120">
+                      {{value.M3.Age}}  岁              
                 </div>
 
-                <div class="item range range-energized">
+                <div class="item range range-positive">
                   收缩压
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                    mmHg
+                  <input type="range" name="level" ng-model = "value.M3.SBP" min="1" max = "200">
+                  {{value.M3.SBP}} mmHg
                 </div>
 
-                <div class="item range range-energized">
+                <div class="item range range-positive">
                   血清肌酸酐                   
-                      <input type="range" name="level" ng-model = "value.NYHA">
-                   umol/L
+                      <input type="range" name="level" ng-model = "value.M3.Creatinine" min="1" max = "20" step ="0.01">
+                 {{value.M3.Creatinine}} umol/L
                 </div>
 
-                <div class="item range range-energized">
-                  BMI                    
-                <input type="range" name="level" ng-model = "value.NYHA">
-                    kg/m2
-                </div>
+               
 
-                <div class="item range range-energized">
+                <div class="item range range-positive">
                   身高                    
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                      cm
-                    体重                    
-                  <input type="range" name="level" ng-model = "value.NYHA">
-                      kg
-                </div>
+                  <input type="range" name="level" ng-model = "value.M3.Height" min="1" max = "200" ng-change="rangeHasChanged(3)">
+                   {{value.M3.Height}}   cm
 
+                  </div>
+                 <div class="item range range-positive">
+                    体重                    
+                  <input type="range" name="level" ng-model = "value.M3.Weight" min="1" max = "200" ng-change="rangeHasChanged(3)">
+                   {{value.M3.Weight}}   kg
+                </div>
+                <div class="item range range-positive">
+                  BMI                    
+                <input type="range" name="level" ng-model = "value.M3.BMI" min="1" max = "50" step = "0.01"disabled>
+                  {{value.M3.BMI | limitTo : 4}}  kg/m2
+                </div>
               </div>
                   
            
@@ -304,7 +446,7 @@
       </div>
   </ion-slide>
 
-</ion-slide-box>
+  </ion-slide-box>
 
 
 

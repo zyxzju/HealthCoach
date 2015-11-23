@@ -208,7 +208,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // POST Api/v1/RiskInfo/PsParameters
         postPsParameters:{method:'POST',params:{route:'PsParameters'},timeout:10000}, 
         // GET Api/v1/RiskInfo/GetMaxSortNo?UserId={UserId}
-        getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
+        getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000},
+        // POST Api/v1/RiskInfo/AddM1Risk?PatientId={PatientId}&RecordDate={RecordDate}&RecordTime={RecordTime}&piUserId={piUserId}&piTerminalName={piTerminalName}&piTerminalIP={piTerminalIP}&piDeviceType={piDeviceType} 
+        AddM1Risk:{method:'POST',param:{route:'AddM1Risk',PatientId:'@PatientId',RecordDate:'@RecordDate',RecordTime:'@RecordTime',piUserId:'@piUserId',piTerminalName:'@piTerminalName',piTerminalIP:'@piTerminalIP',piDeviceType:'@piDeviceType'},timeout:20000},
+        // POST Api/v1/RiskInfo/AddM3Risk?PatientId={PatientId}&RecordDate={RecordDate}&RecordTime={RecordTime}&piUserId={piUserId}&piTerminalName={piTerminalName}&piTerminalIP={piTerminalIP}&piDeviceType={piDeviceType}         
+        AddM3Risk:{method:'POST',param:{route:'AddM3Risk',PatientId:'@PatientId',RecordDate:'@RecordDate',RecordTime:'@RecordTime',piUserId:'@piUserId',piTerminalName:'@piTerminalName',piTerminalIP:'@piTerminalIP',piDeviceType:'@piDeviceType'},timeout:20000},
+        // GET Api/v1/RiskInfo/M1RiskInput?UserId={UserId} 
+        getM1Input:{method:'GET',params:{route:'M1RiskInput',UserId:'@UserId'},timeout:10000},
+        // GET Api/v1/RiskInfo/M3RiskInput?UserId={UserId} 
+        getM3Input:{method:'GET',params:{route:'M3RiskInput',UserId:'@UserId'},timeout:10000}
     })
   }
 
@@ -795,7 +803,72 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         deferred.reject(err);
       });
       return deferred.promise;       
-    }
+    },
+    postQuestionM1: function(data){
+      var t = new Date();
+      var t1 = String(t.getFullYear());
+      var t2 = String(t.getDate());
+      var t3 = String(t.getMonth() + 1);
+      var t4 = String(t.getHours());
+      var t5 = String(t.getMinutes());
+
+      var RecordDate = t1 + (t3.length == 2? t3: '0' + t3) +   (t2.length == 2? t2: '0' + t2) ;
+      var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
+      var deferred = $q.defer();
+
+        Data.RiskInfo.AddM1Risk({route:'AddM1Risk',PatientId:Storage.get('PatientID'),RecordDate:RecordDate,RecordTime:'2241',piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'},data,function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    postQuestionM3: function(data){
+      var t = new Date();
+      var t1 = String(t.getFullYear());
+      var t2 = String(t.getDate());
+      var t3 = String(t.getMonth() +1 );
+      var t4 = String(t.getHours());
+      var t5 = String(t.getMinutes());
+
+      var RecordDate = t1 + (t3.length == 2? t3: '0' + t3) +   (t2.length == 2? t2: '0' + t2) ;
+      var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
+
+      var deferred = $q.defer();
+       var t = new Date();
+       var RecordDate = t.getFullYear();
+       var RecordTime = t.getTime();
+        Data.RiskInfo.AddM3Risk({route:'AddM3Risk',PatientId:Storage.get('PatientID'),RecordDate:RecordDate,RecordTime:RecordTime,piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'}, data,function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    getQuestionM1: function(userid){
+
+      var deferred = $q.defer();
+        Data.RiskInfo.getM1Input({UserId:userid},function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },  
+    getQuestionM3: function(userid){
+
+      var deferred = $q.defer();
+        Data.RiskInfo.getM3Input({UserId:userid},function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    }  
 
   }
 }])
@@ -931,90 +1004,128 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       };
   //糖尿病风险的画图数据
   var graphData_diab = {
-          "type": "serial",
-          "theme": "light",
-          
-          "autoMargins": true,
-          "marginTop": 30,
-          "marginLeft": 80,
-          "marginBottom": 30,
-          "marginRight": 50,
+        "type": "serial",
+        "theme": "light",
           "dataProvider": [{
-              "category": "血糖浓度  (mmol/L)",
-              "excelent": 4.6,
-              "good": 6.1-4.6,
-              "average": 7.2-6.1,
-              "poor": 8.8-7.2,
-              "bad": 1,
-              "bullet": 0
+              "type": "一年死亡风险",
+              "state1": 2.5,
+              "state2": 2.5,
+              "state3": 2.5,
+              "state4": 2.5,
+              "state5": 2.5,
+              "now": 0, //params
+              "target": 0               //params
+
+          }, {
+              "type": "三年死亡风险",
+              "state1": 3,
+              "state2": 3,
+              "state3": 3,
+              "state4": 3,
+              "state5": 3,
+              "now":  0,         //params
+              "target": 0             //params
           }],
           "valueAxes": [{
-              "maximum": 10,
               "stackType": "regular",
+              "axisAlpha": 0.3,
               "gridAlpha": 0,
-              "offset":10,
-              "minimum" :3
-
+               "minimum" :0
           }],
-          "startDuration": 0.13,
-          "graphs": [ {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><4.6 mmol/L</b></span>",
+          "startDuration": 0.1,
+          "graphs": [{
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>2.5%</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#19d228",
-              "showBalloon": true,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很安全",
               "type": "column",
-              "valueField": "excelent"
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state1"
           }, {
-            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#b4dd1e",
-              "showBalloon": true,
+             // "labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "正常",
               "type": "column",
-              "valueField": "good"
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state2"
           }, {
-            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#f4fb16",
-              "showBalloon": true,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "良好",
               "type": "column",
-              "valueField": "average"
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state3"
           }, {
-            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
+             // "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#f6d32b",
-              "showBalloon": true,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很危险",
               "type": "column",
-              "valueField": "poor"
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state4"
           }, {
-            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
               "fillAlphas": 0.8,
-              "lineColor": "#fb7116",
-              "showBalloon": true,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "极度危险",
               "type": "column",
-              "valueField": "bad"
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state5"
           }, {
-              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
-              "clustered": false,
-              "columnWidth": 0.5,
-              "noStepRisers": true,
-              "lineThickness": 5,
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
               "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 5,
               "labelText": "[[value]]"+" 当前",
-              "lineColor": "#000000", 
+              "clustered": false,
+              "lineAlpha": 1.5,
               "stackable": false,
-              "showBalloon": true,
+              "columnWidth": 0.618,
+              "noStepRisers": true,
+              "title": "当前",
               "type": "step",
-              "valueField": "bullet"
+              "color": "#000000",
+              "valueField": "now"      
+          }, {
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 0,
+              "columnWidth": 0.618,
+              // "labelText": "[[value]]"+"目标",
+              "clustered": false,
+              "lineAlpha": 0.3,
+              "stackable": false,
+              "noStepRisers": true,
+              "title": "目标",
+              "type": "step",
+              "color": "#00FFCC",
+              "valueField": "target"      
           }],
-          "rotate": false,
-          "columnWidth": 1,
-          "categoryField": "category",
+          "categoryField": "type",
           "categoryAxis": {
+              "gridPosition": "start",
+              "axisAlpha": 80,
               "gridAlpha": 0,
-              "position": "left",
-             
-          }
-      };
+              "position": "left"
+          },
+          "export": {
+            "enabled": true
+           }
+    };
+      
   //心衰风险的画图数据
   var graphData_xs = {
     "type": "gauge",
@@ -1062,6 +1173,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                  temp.dataProvider[0].bullet = riskList[index].M2.Glucose;
                  break;
       case 'M3': temp = graphData_xs;
+                 temp.dataProvider[0].now = riskList[index].M3.f1;
+                 temp.dataProvider[1].now = riskList[index].M3.f2;
     };
     return temp;
   }
