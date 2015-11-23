@@ -3244,12 +3244,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "content":content
         }
         
-        userservice.PushNotification($scope.Push).then(
-          function(data){
-            console.log(data);
-            },function(e){
-            console.log(e);
-          });
+        // userservice.PushNotification($scope.Push).then(
+        //   function(data){
+        //     console.log(data);
+        //     },function(e){
+        //     console.log(e);
+        //   });
         userservice.sendSMS_lzn($scope.sendSMS).then(
           function(data){
             console.log(data);
@@ -3298,6 +3298,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     },function(e){
       console.log(e);
     });
+  $scope.change1 = function (value){
+　if(value=='1'){
+　document.getElementById('txt1').disabled=false;　
+　}else{
+　document.getElementById('txt1').disabled=true;　
+　}
+}
+  $scope.change2 = function (value){
+　if(value=='1'){
+　document.getElementById('txt2').disabled=false;　
+　}else{
+　document.getElementById('txt2').disabled=true;　
+　}
+}
+  $scope.save = function (){
+    $scope.change1(0);
+    $scope.change2(0);
+  }
+  $scope.modify = function (){
+    $scope.change1(1);
+    $scope.change2(1);
+  }
 }])
 
 .controller('newpatientCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
