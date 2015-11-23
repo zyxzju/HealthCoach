@@ -37,7 +37,7 @@
 
         <div class="item item-divider item-icon-left"  ng-click="toggleGroup(1)">
           <i class="icon" ng-class="list.M1show ? 'ion-minus' : 'ion-plus'"></i>
-          <h2>同步临床数据 会覆盖已填写</h2>
+          <h2>同步临床数据</h2>
         </div>
 
 
@@ -166,13 +166,13 @@
                          
                 <div class="item range range-positive">
                   年龄
-                      <input type="range" name="level" ng-model = "value.M1.Age" min = "1" max = "120"> 
+                      <input type="range" name="level" ng-model = "value.M1.Age" min = "1" max = "120" disabled> 
                       {{value.M1.Age}} 岁              
                 </div>
 
                 <div class="item range range-balanced">
                   身高                    
-                  <input type="range" name="level" ng-model = "value.M1.Height"  min = "1" max = "200" ng-change="rangeHasChanged(1)">
+                  <input type="range" name="level" ng-model = "value.M1.Height"  min = "130" max = "230" ng-change="rangeHasChanged(1)">
                    {{value.M1.Height}}   cm
                 </div>
 
@@ -321,7 +321,7 @@
                 </div>                               
                 <div class="item item-divider item-icon-left"  ng-click="toggleGroup(3)">
                   <i class="icon" ng-class="list.M3show ? 'ion-minus' : 'ion-plus'"></i>
-                  <h2>同步临床数据 会覆盖已填写<h2>
+                  <h2>同步临床数据<h2>
                 </div>
               
               
@@ -403,7 +403,7 @@
                          
                 <div class="item range range-positive">
                   年龄
-                      <input type="range" name="level" ng-model = "value.M3.Age" min="1" max = "120">
+                      <input type="range" name="level" ng-model = "value.M3.Age" min="1" max = "120" disabled>
                       {{value.M3.Age}}  岁              
                 </div>
 
@@ -423,7 +423,7 @@
 
                 <div class="item range range-positive">
                   身高                    
-                  <input type="range" name="level" ng-model = "value.M3.Height" min="1" max = "200" ng-change="rangeHasChanged(3)">
+                  <input type="range" name="level" ng-model = "value.M3.Height" min="130" max = "230" ng-change="rangeHasChanged(3)">
                    {{value.M3.Height}}   cm
 
                   </div>
