@@ -595,16 +595,15 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
 }])
 
-.run(function($state ,$cordovaSplashscreen,$ionicPlatform,Storage) {
+.run(function($state,$timeout,$cordovaSplashscreen,$ionicPlatform,Storage) {
   $ionicPlatform.ready(function(){
     var isSignIN=Storage.get("isSignIN");
     if(isSignIN=='YES'){
       $state.go('coach.patients');
     }
+    $timeout(function(){$cordovaSplashscreen.hide()}, 1000);
   })
-  /*setTimeout(function() {
-    $cordovaSplashscreen.hide()
-  }, 1000)*/
+
 
   /*$ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard

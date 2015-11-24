@@ -1,16 +1,7 @@
 <ion-view title="新患者">
-<!--   <ion-header-bar class="bar-positive">
-    <h2 class="title">Patient List</h2>
-    <button class ="button button-icon ion-minus-circled" ng-click ="data.showDelete = !data.showDelete; showReorder = false;"></button>
-    <button class ="button button-icon ion-navicon" ng-click ="data.showReorder = !data.showReorder; showDelete = false;"></button>
-  </ion-header-bar> -->
   <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0px ">
-
       <a ng-style="select1" class="item col-50 " ng-click="openpopover($event,0)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a>
       <a ng-style="select2" class="item col-50 " style="border-right: 0px" ng-click="openpopover($event,1)">{{f.Status}} <i class="icon ion-android-arrow-dropdown"></i></a>
-      <!-- <a class="item col-33 text-center" ng-click="popover1.show($event)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a> -->
-      <!-- <a class="item col-33 text-center" ng-click="popover.show($event)">{{f.status}} <i class="icon ion-android-arrow-dropdown"></i></a> -->
-      <!-- <a class="item col-33 text-center">WHATEVER <i class="icon ion-android-arrow-dropdown"></i></a> -->
   </div>
   <div class="sub-bar-shadow"></div>
   <ion-content class="has-subheader content-item-list">       
@@ -18,36 +9,16 @@
     <ion-list>
       <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left item-margin" ng-click="viewDetail(patient)" >
         <img src="{{patient.imageURL}}">
-        <!-- <div Style="padding-top:10px"> -->
-            <div class="item-row " >
-              <div class="col-50"><h5>{{patient.name}}</h5></div>
-              <div class="col-50"><h6>{{patient.Age}}   {{patient.GenderText}}</h6></div>
-            </div>
-        <!--     <div class="item-row">
-              <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
-            </div>  -->              
-            <!-- <div class="item-row"> -->
-              <!-- <div class="col-100" > -->
-                <p style="white-space:wrap" >“{{patient.Description}}” <span style="font-size:0.5rem;font-style: italic">{{patient.ApplyTime}}</span></p>
-              <!-- </div> -->
-            <!-- </div> -->
-            <!-- <div ng-if="(patient.AppointmentStatus-0)" class="item-row"> -->
-              <!-- <div  class="col-100"> -->
-                <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
-              <!-- </div> -->
-              <!-- <div  class="col-100"> -->
-                <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
-              <!-- </div> -->
-            <!-- </div>    -->
-
-            <!-- <div class="item-row"> -->
-              <!-- <div class="col-100"><p>“{{patient.Description}}”</p></div> -->
-              <!-- <div class="col-50"><p></p></div> -->
-            <!-- </div> -->
-        <!-- </div> -->
-        <ion-option-button class="button-assertive"ng-click="onItemDelete($index)">
+        <div class="row " >
+          <div class="col-50"><h5>{{patient.name}}</h5></div>
+          <div class="col-50"><h6>{{patient.Age}}   {{patient.GenderText}}</h6></div>
+        </div>
+        <p style="white-space:wrap" >“{{patient.Description | limitTo:10}}{{patient.Description.length>10?'&hellip;':''}}” <span style="font-size:0.65rem;font-style: italic">{{patient.ApplyTime}}</span></p>
+        <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
+        <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
+<!--         <ion-option-button class="button-assertive"ng-click="onItemDelete($index)">
           <i class="icon ion-close-circled"></i>
-        </ion-option-button>
+        </ion-option-button> -->
       </ion-item>
     </ion-list>
     <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
