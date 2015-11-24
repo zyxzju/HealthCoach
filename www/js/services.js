@@ -1971,7 +1971,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
 
-    return self;
+   
     // LZN 20151118 预约
   self.ReserveHealthCoach = function(arr){
     var deferred = $q.defer();

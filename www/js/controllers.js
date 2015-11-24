@@ -3141,68 +3141,82 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 // LZN 20151117 预约
 .controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
-   // $scope.$on('$ionicView.beforeEnter', function() {
+   $scope.$on('$ionicView.beforeEnter', function() {
+
 
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
-        console.log(data);
-
-        $scope.name=data[0].name;
-        $scope.age=data[0].age;
-        $scope.module=data[0].module;
-        $scope.Description=data[0].Description;
+        $scope.patient.name=data[0].name;
+        $scope.patient.age=data[0].age;
+        $scope.patient.module=data[0].module;
+        $scope.patient.Description=data[0].Description;
       },function(e){
         console.log(e);
       });
-    // });
+    });
     $scope.agree = function()
     {
       $state.go('confirmappointment')
     }
+    $scope.cancel = function()
+    {
+      $state.go('coach.newpatients')
+    }
 }])
-.controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
+.controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','userservice','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,userservice,Dict,$ionicLoading,PageFunc){
   // $scope.$on('$ionicView.beforeEnter', function() {
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
-        console.log(data);
-
-        $scope.Pname=data[0].name;
-        $scope.age=data[0].age;
-        $scope.module=data[0].module;
-        $scope.Description=data[0].Description;
+        $scope.patient.name=data[0].name;
+        $scope.patient.age=data[0].age;
+        $scope.patient.module=data[0].module;
+        $scope.patient.Description=data[0].Description;
       },function(e){
         console.log(e);
       });
     Users.getHealthCoachInfo(Storage.get('UID')).then(
       function(data){
-        console.log(data);
-        $scope.Hname=data.name;
+        $scope.healthcoach.name=data.name;
       },function(e){
         console.log(e);
       });
     Users.getDocDtlInfo(Storage.get('UID')).then(
       function(data){
-        console.log(data);
-        $scope.Unit=data.UnitName;
-        $scope.Dept=data.Dept;
-        $scope.Add=$scope.Unit+'  '+$scope.Dept;
+        $scope.healthcoach.Unit=data.UnitName;
+        $scope.healthcoach.Dept=data.Dept;
+        $scope.healthcoach.Add=$scope.healthcoach.Unit+'  '+$scope.healthcoach.Dept;
       },function(e){
         console.log(e);
       });
 
-     // Users.PhoneNo().then(
-     //    function(data){
-     //      console.log(data);
-     //      var s="";
-     //      for(var i=0;i<11;i++){
+     // 获取双方手机号
+    // Users.PhoneNo(Storage.get('PatientID')).then(
+    //   function(data){
+    //     console.log(data);
+    //     var s="";
+    //     for(var i=0;i<11;i++){
+      
+    //       s=s+data[i];
+    //     };
+    //     $scope.phoneno_patient=s;
+    //     console.log($scope.phoneno_patient);
+    //     },function(e){
+    //       console.log(e);
+    //   });
+    //  Users.PhoneNo(Storage.get('UID')).then(
+    //   function(data){
+    //     console.log(data);
+    //     var s="";
+    //     for(var i=0;i<11;i++){
+      
+    //       s=s+data[i];
+    //     };
+    //     $scope.phoneno_coach=s;
+    //     console.log($scope.phoneno_coach);
+    //     },function(e){
+    //       console.log(e);
+    //   });
         
-     //        s=s+data[i];
-     //      };
-
-          
-     //    },function(e){
-     //        console.log(e);
-     //    });
     var loading = function() {
       $ionicLoading.show({
         template:'正在预约......',
@@ -3220,7 +3234,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     };
     $scope.confirm = function(){
       loading();
-      if($scope.Pname==null && $scope.age==null && $scope.module==null && $scope.Description==null && $scope.Hname==null){
+      if($scope.patient.name==null && $scope.patient.age==null && $scope.patient.module==null && $scope.patient.Description==null && $scope.healthcoach.name==null){
         netError();
       }
       else{
@@ -3236,12 +3250,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.reservation={
           "DoctorId": Storage.get('UID'),
           "PatientId": Storage.get('PatientID'),
-          "Module": $scope.module,
-          "Description": $scope.Description,
+          "Module": $scope.patient.module,
+          "Description": $scope.patient.Description,
           "Status": 4,
           "ApplicationTime": time,
           "AppointmentTime": "2015-10-26  15:30:35",
-          "AppointmentAdd": $scope.Add,
+          "AppointmentAdd": $scope.healthcoach.Add,
           "Redundancy": "haha",
           "revUserId": "1",
           "TerminalName": "1",
@@ -3255,11 +3269,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           "title":"预约",
           "id":Storage.get('UID')
         }
-        var content = $scope.Pname+','+y+'年'+m+'月'+d+'日'+','+$scope.Unit;
+        $scope.content = $scope.healthcoach.name+','+y+'年'+m+'月'+d+'日'+','+$scope.healthcoach.Unit;
         $scope.sendSMS={
           "mobile":"18626860001",
           "smsType":"confirmtoPatient",
-          "content":content
+          "content":$scope.content
         }
         
         // userservice.PushNotification($scope.Push).then(
@@ -3270,13 +3284,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         //   });
         userservice.sendSMS_lzn($scope.sendSMS).then(
           function(data){
-            console.log(data);
             },function(e){
             console.log(e);
+            console.log($scope.sendSMS);
           });
-          Users.ReserveHealthCoach($scope.reservation).then(
+        Users.ReserveHealthCoach($scope.reservation).then(
           function(data){
-            console.log(data);
             hide();
             $state.go('checkappointment') 
             },function(e){
@@ -3286,36 +3299,55 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     }
      // });
 }])
-.controller('checkappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
-  Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
-    function(data){
-      console.log(data);
+.controller('checkappointmentCtrl',['$scope','$state','Storage','Users','userservice','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,userservice,Dict,$ionicLoading,PageFunc){
+  $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.patient={};
+    $scope.healthcoach={};
+    Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
+      function(data){
+        $scope.patient.name=data[0].name;
+        $scope.patient.age=data[0].age;
+        $scope.patient.module=data[0].module;
+        $scope.patient.Description=data[0].Description;
+        $scope.healthcoach.Time=data[0].AppointmentTime;
+        $scope.healthcoach.Add=data[0].AppointmentAdd;
+        console.log($scope.patient.name);
+      },function(e){
+        console.log(e);
+      });
+    Users.getHealthCoachInfo(Storage.get('UID')).then(
+      function(data){
+        $scope.healthcoach.name=data.name;
+      },function(e){
+        console.log(e);
+      });
+    Users.getDocDtlInfo(Storage.get('UID')).then(
+      function(data){
+        $scope.healthcoach.Unit=data.UnitName;
+        // $scope.healthcoach.Dept=data.Dept;
+        // $scope.healthcoach.Add=$scope.healthcoach.Unit+'  '+$scope.healthcoach.Dept;
+      },function(e){
+        console.log(e);
+      });
+  });
+   var loading = function() {
+      $ionicLoading.show({
+        template:'正在预约......',
+      });
+    };
 
-      $scope.Pname=data[0].name;
-      $scope.age=data[0].age;
-      $scope.module=data[0].module;
-      $scope.Description=data[0].Description;
-      $scope.Time=data[0].AppointmentTime;
-      $scope.Add=data[0].AppointmentAdd;
-    },function(e){
-      console.log(e);
-    });
-  Users.getHealthCoachInfo(Storage.get('UID')).then(
-    function(data){
-      console.log(data);
-      $scope.Hname=data.name;
-    },function(e){
-      console.log(e);
-    });
-  Users.getDocDtlInfo(Storage.get('UID')).then(
-    function(data){
-      console.log(data);
-      $scope.Unit=data.UnitName;
-      $scope.Dept=data.Dept;
-      $scope.Add=$scope.Unit+'  '+$scope.Dept;
-    },function(e){
-      console.log(e);
-    });
+    var hide = function() {
+      $ionicLoading.hide();
+    };
+
+    var netError = function(){
+        $ionicLoading.hide();
+   
+        PageFunc.confirm('网络好像不太稳定', '网络错误');   
+    };
+  $scope.back = function(){
+    $state.go('coach.newpatients')
+  }
   $scope.change1 = function (value){
 　if(value=='1'){
 　document.getElementById('txt1').disabled=false;　
@@ -3330,13 +3362,75 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 　document.getElementById('txt2').disabled=true;　
 　}
 }
-  $scope.save = function (){
-    $scope.change1(0);
-    $scope.change2(0);
-  }
+
+
   $scope.modify = function (){
     $scope.change1(1);
     $scope.change2(1);
+  }
+   $scope.save = function (){
+    console.log($scope.healthcoach.Add);
+
+    $scope.change1(0);
+    $scope.change2(0);
+    var myDate = new Date();
+    var y = myDate.getFullYear();
+    var m = myDate.getMonth();
+    var d = myDate.getDate(); 
+    var h = myDate.getHours();
+    var min = myDate.getMinutes();
+    var s = myDate.getSeconds();
+    var m = m+1;
+    var time = y + '-' + m + '-' + d + ' ' + h + ':' + min + ':' +s;
+     $scope.reservation={
+          "DoctorId": Storage.get('UID'),
+          "PatientId": Storage.get('PatientID'),
+          "Module": $scope.patient.module,
+          "Description": $scope.patient.Description,
+          "Status": 4,
+          "ApplicationTime": time,
+          "AppointmentTime": "2015-10-26  15:30:35",
+          "AppointmentAdd": $scope.healthcoach.Add,
+          "Redundancy": "haha",
+          "revUserId": "1",
+          "TerminalName": "1",
+          "TerminalIP": "1",
+          "DeviceType": 1
+        }
+    $scope.Push={
+          "platform":"android",
+          "Alias":Storage.get('PatientID'),
+          "notification":"您有一条新的预约，请注意查收短信",
+          "title":"预约",
+          "id":Storage.get('UID')
+        }
+        $scope.content = $scope.healthcoach.name+','+y+'年'+m+'月'+d+'日'+','+$scope.healthcoach.Unit;
+        console.log($scope.content);
+    $scope.sendSMS={
+          "mobile":"18626860001",
+          "smsType":"confirmtoPatient",
+          "content":$scope.content
+        }
+    // userservice.PushNotification($scope.Push).then(
+        //   function(data){
+        //     console.log(data);
+        //     },function(e){
+        //     console.log(e);
+        //   });
+    userservice.sendSMS_lzn($scope.sendSMS).then(
+          function(data){
+            },function(e){
+            console.log(e);
+            console.log($scope.sendSMS);
+          });
+    Users.ReserveHealthCoach($scope.reservation).then(
+          function(data){
+            hide(); 
+            console.log($scope.healthcoach.Add);
+            },function(e){
+            netError();
+          });
+    // $state.go('coach.newpatients');
   }
 }])
 

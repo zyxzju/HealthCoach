@@ -13,22 +13,22 @@
 				患者信息
 			</div>
 			<label class="item item-input  trial">
-				姓名:<input type="text" ng-model="Pname" disabled="disabled">
+				姓名:<input type="text" ng-model="patient.name" disabled="disabled">
 			</label>
 			<label class="item item-input">
-				年龄:<input type="text" ng-model="age" disabled="disabled">
+				年龄:<input type="text" ng-model="patient.age" disabled="disabled">
 			</label>
 			<label class="item item-input">
-				模块:<input type="text" ng-model="module" disabled="disabled">
+				模块:<input type="text" ng-model="patient.module" disabled="disabled">
 			</label>
 			<label class="item item-input">
-				预约简介:<input type="text" ng-model="Description" disabled="disabled">
+				预约简介:<input type="text" ng-model="patient.Description" disabled="disabled">
 			</label>
 			<div class="item item-divider ">
 				专员信息
 			</div>
 			<label class="item item-input trial">
-				姓名:<input type="text" ng-model="Hname" disabled="disabled">
+				姓名:<input type="text" ng-model="healthcoach.name" disabled="disabled">
 			</label>
 			<div class="item item-divider ">
 				预约事项
@@ -44,7 +44,7 @@
 				</select>
 			</label>
 			<label class="item item-input">
-				预约地点:<input type="text" ng-model="Add">
+				预约地点:<input type="text" ng-model="healthcoach.Add">
 			</label>
 		</div>
 		<div class='row responsive-sm'>
