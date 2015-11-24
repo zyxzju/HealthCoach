@@ -72,9 +72,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           //Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
-          saveUID();
-          //PageFunc.confirm('未认证，激活,这个跳转在controller 77行');
-          
+          saveUID();         
           $timeout(function(){$state.go('upload')} , 500);  
           return;        
         }        
