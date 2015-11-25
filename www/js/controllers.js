@@ -379,8 +379,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       userservice.sendSMS(veriusername,'verification')
       .then(function(data){
         loading.loadingBarFinish($scope);
-        unablebutton();        
-        if(data.result[0]=='您'){
+        unablebutton();    
+        if(data[0]=='您'){
           $scope.logStatus="您的验证码已发送，重新获取请稍后";
         }else{
           $scope.logStatus='验证码发送成功！';
@@ -1343,7 +1343,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-.controller('myPatientCtrl', ['$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
+.controller('myPatientCtrl', ['$rootScope', '$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($rootScope,$compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
   var PatientsList=new Array();//输出到页面的json  
@@ -1663,6 +1663,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     });
   }
   $scope.PIDdetail = function(Patient){
+    $rootScope.SMSCount=parseInt(Patient.SMSCount);
     Storage.set("PatientID",Patient.PatientId);
     Storage.set("isManage","Yes");
     Storage.set("PatientName",Patient.PatientName);
@@ -1671,7 +1672,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Storage.set("PatientPhotoAddress",Patient.photoAddress);
     if(Patient.SMSCount==0){
       $state.go('manage.plan');
-    }else{
+    }else{    
+      Patient.SMSCount=0;
       $state.go('manage.chat');
     }
   }
@@ -2302,7 +2304,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 })
 
 //GL 20151103 交流
-.controller('ChatDetailCtrl' ,function($scope, $http,$state, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,GetBasicInfo,Data) 
+.controller('ChatDetailCtrl' ,function($rootScope,$scope, $http,$state, $stateParams, $resource, MessageInfo, $ionicScrollDelegate, CONFIG, Storage,GetBasicInfo,Data) 
 { 
 
   
@@ -2325,7 +2327,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     $scope.myImage = localStorage.getItem("doctorphoto"); //患者头像地址
     var temp='';
-    $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
+    $scope.$on('$ionicView.beforeEnter', function() {
+      $rootScope.SMSCount=0;  //$viewContentLoaded
       if(temp!=$scope.PatientId){
         var c=0;
         var setRead =function(){
@@ -7513,22 +7516,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 //抽象页面上用户信息的控制器 ZXF 20151102
 .controller('mainCtrl',['$scope','$rootScope','$state','Storage','MessageInfo', function($scope,$rootScope, $state,Storage,MessageInfo){
   var getSMSCount = function(doc,pid){
-    MessageInfo.messageNum(doc,pid).then(function(data){    
-      $scope.SMSCount=parseInt(data.result);
-      $rootScope.SMSCount=$scope.SMSCount;
+    MessageInfo.messageNum(doc,pid).then(function(data){ 
+
+      $rootScope.SMSCount=parseInt(data.result);
     },function(){
       getSMSCount();
     });
   }
   var PID;
-  $scope.$on('$ionicView.beforeEnter', function(){
+  var doc=Storage.get('UID');
+  $scope.$on('$ionicView.enter', function(){
+    $scope.SMSCount=$rootScope.SMSCount;
     var pid=Storage.get('PatientID');
     if(pid!=PID){
       $scope.SMSCount=0;
       PID=pid;
     }
-    var doc=Storage.get('UID');
-    getSMSCount(doc,pid);
+    getSMSCount(doc,PID);
   })
   // $scope.$on('$ionicView.enter', function(){
   //   $scope.SMSCount=0;

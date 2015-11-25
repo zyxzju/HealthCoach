@@ -105,7 +105,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 			path:'Service',
 		},{
             sendSMS_lzn:{method:'POST',params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType',content:'@content'}, timeout: 10000},
-            sendSMS:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
+            sendSMS:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType',content:'{content}'}, timeout: 10000},
             PushNotification:{method:'GET',params:{route:'PushNotification',platform:'@platform',Alias:'@Alias',notification:'@notification',title:'@title',id:'@id'},timeout:10000},
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
 
@@ -384,7 +384,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         }
         
         var deferred = $q.defer();
-        Data.Service.sendSMS({phoneNo: _phoneNo, smsType:_smsType},
+        Data.Service.sendSMS({mobile: _phoneNo, smsType:_smsType},
        	function(data,status){
        		deferred.resolve(data,status);
        	},
