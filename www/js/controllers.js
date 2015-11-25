@@ -3142,7 +3142,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 // LZN 20151117 预约
 .controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
    $scope.$on('$ionicView.beforeEnter', function() {
-
+    $scope.patient={};
 
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
@@ -3165,6 +3165,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 .controller('confirmappointmentCtrl',['$scope','$state','Storage','Users','userservice','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,userservice,Dict,$ionicLoading,PageFunc){
   // $scope.$on('$ionicView.beforeEnter', function() {
+    $scope.patient={};
+    $scope.healthcoach={};
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
         $scope.patient.name=data[0].name;
