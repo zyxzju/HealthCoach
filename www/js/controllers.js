@@ -2329,22 +2329,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       if(temp!=$scope.PatientId){
         var c=0;
         var setRead =function(){
-          console.log(temp,$scope.PatientId)
-          
-            MessageInfo.messageRead($scope.PatientId,$scope.DoctorId)
-            .then(function(){
-              temp=$scope.PatientId;
-            },function(){
-              if(c++<10){
-                setRead();
-              }
-            });
-        }        
-        setRead();        
-      }
-      if(temp!=$scope.PatientId){
-        var c=0;
-        var setRead =function(){
             MessageInfo.messageRead($scope.PatientId,$scope.DoctorId)
             .then(function(){
               temp=$scope.PatientId;
