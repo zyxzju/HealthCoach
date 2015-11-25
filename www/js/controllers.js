@@ -2325,18 +2325,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
     $scope.myImage = localStorage.getItem("doctorphoto"); //患者头像地址
     var temp='';
-    // var setRead =function(){
-    //   console.log(temp,$scope.PatientId)
-      
-    //     MessageInfo.messageRead($scope.PatientId,$scope.DoctorId)
-    //     .then(function(){
-    //       temp=$scope.PatientId;
-    //     },function(){
-    //       if(c++<10){
-    //         setRead();
-    //       }
-    //     });
-    // }
     $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
       if(temp!=$scope.PatientId){
         var c=0;
@@ -2354,7 +2342,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         }        
         setRead();        
       }
-
+      if(temp!=$scope.PatientId){
+        var c=0;
+        var setRead =function(){
+            MessageInfo.messageRead($scope.PatientId,$scope.DoctorId)
+            .then(function(){
+              temp=$scope.PatientId;
+            },function(){
+              if(c++<10){
+                setRead();
+              }
+            });
+        }        
+        setRead();        
+      }
     });    
     // var urltemp2 = Storage.get('UID') + '/BasicDtlInfo';
     // Data.Users.GetPatientDetailInfo({route:urltemp2}, 
