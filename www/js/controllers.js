@@ -2846,24 +2846,26 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   };
 }])
 
-/*.controller('ModuleInfoListCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams, Storage, Users) {
+// .controller('ModuleInfoListCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams, Storage, Users) {
   
- $scope.all={first:""};
+//  $scope.all={first:""};
 
-  var UserId = Storage.get('UID');
-  var Module = $stateParams.Module;
-  $scope.onClickBackward1 = function(){
-      $state.go('addpatient.ModuleInfo');
-  };
+//   var UserId = Storage.get('UID');
+//   var Module = $stateParams.Module;
+//   $scope.onClickBackward1 = function(){
+//       $state.go('addpatient.ModuleInfo');
+//   };
+//   $scope.onClickBackward3 = function(){
+//       $state.go('manage.ModuleInfo');
+//   };
 
-
-  var promise=Users.getquestionnaire(UserId,Module);
-   promise.then(function(data,status){
-     $scope.ModuleInfoList = data;
-  },function(data,status){
-    $scope.getStatus = status;
-  });
-}])*/
+//   var promise=Users.getquestionnaire(UserId,Module);
+//    promise.then(function(data,status){
+//      $scope.ModuleInfoList = data;
+//   },function(data,status){
+//     $scope.getStatus = status;
+//   });
+// }])
 
 .controller('ModuleInfoListDetailCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams',  '$timeout', '$ionicPopup', '$ionicLoading', 'Storage', 'Users', function($scope,$state,$http, $ionicHistory, $stateParams,  $timeout,$ionicPopup, $ionicLoading,Storage, Users) {
   
@@ -2904,6 +2906,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
   $scope.DTypeName = "";
   $scope.HDrugName = "";
   $scope.DDrugName = "";
+  $scope.YesNoType = "";
+  $scope.DrinkFrequency = "";
   $scope.onClickBackward1 = function(){
       $state.go('addpatient.ModuleInfo');
   };
