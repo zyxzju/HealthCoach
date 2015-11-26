@@ -1308,37 +1308,304 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 
 }])
+//lrz20151124
 // Coach Personal Schedule Controller 个人日程页面 主要负责 
 // ----------------------------------------------------------------------------------------
-.controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http',
-  function($scope,$state,$ionicHistory,$http) { //LRZ
+.controller('CoachScheduleCtrl', ['$scope','$state','$ionicHistory','$http','ScheduleService','$ionicLoading','$timeout','$ionicModal',
+  function($scope,$state,$ionicHistory,$http,ScheduleService,$ionicLoading,$timeout,$ionicModal) { //LRZ
+  $scope.loadingDone = false;
+  
 
-  $http.get('js/data.json').success(function(data) {
-    $scope.calendar = data.calendar; 
-    // $scope.whichartist= $state.params.aId;
-    // //console.log($scope.whichartist);
-    $scope.data = { showDelete: false, showReorder: false };
+  ScheduleService.initialize();
 
-  $scope.onItemDelete = function(dayIndex,item) {
-    // $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
-    $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+  $scope.data = {calendar : [],selectedDate: undefined, selectedTime:undefined};
+
+  // $scope.eventSources = [];
+  $scope.events = [];
+  $scope.tempDate = new Date();
+
+  $scope.datesOptions = [];
+  $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
+
+  $timeout(function(){
+    $ionicLoading.hide();
+  },6666);
+
+  var initializeCalendar = function(){
+
+
+    $scope.eventSources = [$scope.events];
+    $scope.uiConfig = ScheduleService.getConfig();
   }
 
-  $scope.toggleStar = function(item) {
-   item.star = !item.star;
-  }
+  //  $scope.uiConfig = {
+  //     calendar:{
+  //       header: {
+  //         left: 'prev,next today',
+  //         center: 'title',
+  //         right: 'month,agendaWeek,agendaDay'
+  //       },
+  //       height: 500,
+  //       lang: 'zh-cn',
+  //       scrollTime: '10:00:00',
+  //       buttonIcons: false, 
+  //       weekNumbers: false,
+  //       editable: false,
+  //       eventLimit: true
+  //     }
+  //   };
 
+  // $scope.eventSources = [$scope.events];
+
+  // $http.get('js/data.json').success(function(data) {
+  //   $scope.calendar = data.calendar; 
+  //   // $scope.whichartist= $state.params.aId;
+  //   // //console.log($scope.whichartist);
+  //   $scope.data = { showDelete: false, showReorder: false };
+
+  // $scope.onItemDelete = function(dayIndex,item) {
+  //   // $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+  //   $scope.calendar[dayIndex].schedule.splice($scope.calendar[dayIndex].schedule.indexOf(item), 1);
+  // }
+
+  // $scope.toggleStar = function(item) {
+  //  item.star = !item.star;
+  // }
+
+
+  $ionicModal.fromTemplateUrl('my-modal.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function() {
+
+
+    // console.log(dates);
+    $scope.datesOptions = ScheduleService.getDates();
+
+    $scope.modal.show();
+    $scope.loadingDone2 = true;
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+    // $scope.loadingDone2 = false;
+  };
+
+  //Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
+  
+  $scope.onClickTest = function(){
+
+
+      // $scope.events.push({
+      //   title: '吃个豕',
+      //   start: new Date(2015, 10, 29),
+      //   end: new Date(2015, 10, 30),
+      //   stick: true
+      // });
+
+      // console.log($scope.events);
+
+      // try{
+      //   $scope.calendar.fullCalendar('refetchEvents');
+      // }
+      // catch(err)
+      // {
+      //   console.log(err);
+      // }
+
+    // GET Api/v1/Users/Calendar?DoctorId={DoctorId}
+    // console.log($scope.data.calendar);
+    // ScheduleService.postCalendar();
+
+    $scope.openModal();
+
+
+    // for (var i = $scope.data.calendar.length - 1; i >= 0; i--) {
+    //   console.log($scope.data.calendar[i]);
+    // };
+
+    // $scope.tempDate.setDate($scope.tempDate.getDate()+1); 
+    // console.log($scope.tempDate )
+  }
+  $scope.onClickCancel = function(){
+    $scope.closeModal();
+  }
+  $scope.onClickAdd = function(){
+      console.log($scope.data);
+      $scope.closeModal();
+  }
   $scope.onClickBackward = function(){
      $ionicHistory.goBack();
   }
 
-  $scope.doRefresh =function() {
-      $http.get('js/data.json').success(function(data) {
-      $scope.patients = data.calendar;
-      $scope.$broadcast('scroll.refreshComplete');
-    });
+  $scope.$on('GotCanlendar',function(){
+  // $scope.loadingDone = false;
+    $scope.events.length = 0;
+    $scope.events = ScheduleService.getEvents();
+
+    if($scope.loadingDone == false){
+      initializeCalendar();
+      $scope.loadingDone = true;      
+    }
+    else{
+      while($scope.eventSources.length > 0){
+        $scope.eventSources.pop();
+      }
+
+      $scope.eventSources.push($scope.events);
+      try{
+          $scope.calendar.fullCalendar('refetchEvents');
+      }
+      catch(err){
+      console.log("日历刷新");
+       }
+    }
+
+
+    // try{
+    //       $scope.calendar.fullCalendar('refetchEvents');
+    // }
+    // catch(err){
+    //   console.log("日历刷新");
+    // }
+    // else $scope.eventSources = [$scope.events];
+
+    // for (var i = $scope.data.calendar.length - 1; i >= 0; i--) {
+
+    //   console.log($scope.data.calendar[i]);
+
+    // };
+
+    $ionicLoading.hide();
+  })
+
+  $scope.$on('newCanlendar',function(){
+    console.log("newCanlendar------------broadcast aquired");
+    ScheduleService.initialize();
+    // console.log($scope.data.calendar);
+  })
+
+}])
+//lrz20151125
+.controller('CoachScheduleDtlCtrl',['$scope','$state','$stateParams','ScheduleService','$ionicModal','$timeout','PageFunc',function($scope,$state,$stateParams,ScheduleService,$ionicModal,$timeout,PageFunc){
+  
+  // url: '/schedule/:date/:period/:num',
+
+  $scope.params = {SortNo:$stateParams.num,Date:$stateParams.date,Period:$stateParams.period};
+
+  $scope.event = ScheduleService.getEventByParams($scope.params);
+
+  var deepCopy = function(source) { 
+      var result={};
+      for (var key in source) {
+            result[key] = typeof source[key]==='object'? deepCoyp(source[key]): source[key];
+         } 
+         return result; 
   }
+  var eventB = deepCopy($scope.event);
+  $ionicModal.fromTemplateUrl('my-modal-2.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
   });
+
+  $scope.openModal = function() {
+
+
+    // console.log(dates);
+    $scope.datesOptions = ScheduleService.getDates();
+
+    $scope.modal.show();
+    $scope.loadingDone2 = true;
+  };
+  $scope.closeModal = function() {
+    $scope.modal.hide();
+    // $scope.loadingDone2 = false;
+  };
+
+  $scope.onClickBackward = function(){
+    $state.go('schedule');
+  }
+
+  $scope.onClickChangeApp = function(){
+
+    $scope.openModal();
+  }
+
+  $scope.onClickCancel = function(){
+    $scope.event = deepCopy(eventB);
+    $scope.closeModal();
+  }
+
+  $scope.onClickConfirm = function(){
+    // var tt = $scope.event.Status;
+    // $scope.event.Status = 0;
+    // ScheduleService.cancelOneCalendar($scope.event);
+
+
+    // var temp = new Object($scope.event);
+    // ScheduleService.cancelOneCalendar($scope.event).then(function(promise){
+      // var temp2 = new Object($scope.event);
+        // $scope.event.Status = tt;
+    PageFunc.confirm("确认修改日程信息","确认").then(function(res){
+      if(res){
+            var tempDate = $scope.event.DateTime.split("/",3);
+            var t =  tempDate[0] + 
+                   (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
+                   (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
+
+            $scope.event.DateTime = t;
+            // console.log(t);
+            
+
+            ScheduleService.postCalendar($scope.event);
+            
+            $timeout(function(){
+              ScheduleService.cancelOneCalendar(eventB);
+            },1000);
+
+            
+            $scope.closeModal();
+            $state.go('schedule');        
+      }
+    })
+
+
+
+  }
+
+  $scope.onClickCancelApp = function(){
+    // $scope.event.Status = 0;
+    PageFunc.confirm("确认取消日程","确认").then(function(res){
+      if(res){
+            ScheduleService.cancelOneCalendar($scope.event);
+            $state.go('schedule');
+      }
+    })
+
+  }
+
 }])
 .controller('CoachMessageCtrl',function(){ //LRZ
 

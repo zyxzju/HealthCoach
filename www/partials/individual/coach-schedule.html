@@ -13,14 +13,15 @@
 
  </ion-content>
 
-	</ion-view> -->
+  </ion-view> -->
 
 
 <ion-view view-title="Calendar" hide-nav-bar="true">
 
-<ion-header-bar >
+<ion-header-bar class="bar bar-positive">
   <button class="button button-icon icon ion-arrow-left-a" ng-click="onClickBackward()">返回</button>
   <div class="h1 title">个人日程</div>
+  <button class="button button-icon icon ion-plus" ng-click="onClickTest()"></button>
 </ion-header-bar>
 
 <div class="bar bar-subheader 
@@ -31,15 +32,30 @@
   </label>
 </div>
 
-<ion-content class="has-subheader">
-<div class="day" ng-repeat="(dayIndex, day) in calendar">
+<ion-content class="has-subheader padding" >
+
+
+<div class ="calendar" ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources" calendar="calendar" ng-if = "loadingDone" disableTap></div>
+
+<div  ng-repeat = " item in events">
+    <!-- <div class="item item-divider item-divider-calm">  </div> -->
+    
+   
+
+      <h2>{{item.title}}</h2>
+      <h2> {{item.start.getMonth() +1 }}-{{item.start.getDate()}} </h2>
+
+      {{ item.Description }}
+
+</div>
+<!-- <div class="day" ng-repeat="(dayIndex, day) in calendar">
   <div class="item item-divider item-divider-calm">
     {{day.weekday}}
-  </div><!-- item divider -->
+  </div>
   <div ng-show="day.title" class="item item-list item-text-wrap dayhighlight">
     <h2>{{day.title}}</h2>
     {{day.description}}
-  </div><!-- day title -->
+  </div>
 
   <ion-list>
     <ion-item ng-class="{'item-avatar':item.shortname, 'star': item.star}"
@@ -60,6 +76,46 @@
     </ion-item>
   </ion-list>
 
-</div><!-- repeat days -->
+</div> -->
+<!--   <div class="button button-block button-primary" ng-click= "onClickTest()">
+    Test U Stupid Bitch
+  </div> -->
 </ion-content>
 </ion-view> 
+
+
+<script id="my-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class = "bar-positive">
+      <div class="button button-clear" ng-click = "onClickAdd()">添加</div>
+      <h1 class="title">添加日程</h1>
+      <div class="button button-clear" ng-click = "onClickCancel()">取消 </div>
+    </ion-header-bar>
+    <ion-content class ="padding">
+      <div class ="calendar-modal"ui-calendar="uiConfig.calendar2" class="span8 calendar" ng-model="eventSources" ng-if = "loadingDone2" ></div>
+
+      <div class="item item-divider item-divider-calm"> 新增 </div> 
+
+
+
+  <label class="item item-input item-select">
+    <div class="input-label">
+      选择日期（未来30天）
+    </div>
+    <select ng-model = "data.selectedDate">
+      <option ng-repeat =  "item in datesOptions" >{{item.toLocaleDateString()}}</option>
+    </select>
+  </label>
+  <label class="item item-input item-select">
+    <div class="input-label">
+      选择时间
+    </div>
+    <select ng-model = "data.selectedTime">
+      <option selected>上午</option>
+      <option >下午</option>
+      <option >晚上</option>
+    </select>
+  </label>
+    </ion-content>
+  </ion-modal-view>
+</script>
