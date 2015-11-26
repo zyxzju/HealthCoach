@@ -1,4 +1,4 @@
-angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr','ionic-datepicker'])
+angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr','ionic-datepicker','ui.calendar'])
 
 // 初装或升级App的介绍页面控制器
 .controller('intro', ['$scope', 'Storage', function ($scope, Storage) {
