@@ -5232,13 +5232,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 }])
 
 //LRZ 20151117 新的风险评估页面列表controller
-.controller('NewRiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage','RiskService',
-  function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage,RiskService){
+.controller('NewRiskCtrl',['$state','$scope','Patients','$state','$ionicSlideBoxDelegate','$ionicHistory','Storage','RiskService','$ionicLoading','$timeout',
+  function($state,$scope,Patients,$state,$ionicSlideBoxDelegate,$ionicHistory,Storage,RiskService,$ionicLoading,$timeout){
   
     console.log("doing refreshing");
     RiskService.initial();
 
+    $ionicLoading.show({
+      template: "载入中"
+    });
 
+    $timeout(function(){
+      $ionicLoading.hide();
+    },6000);
 
 
       // $scope.chart = AmCharts.makeChart("chartdiv",$scope.data1);
@@ -5340,11 +5346,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     console.log("Controller knows RisksGet");
     $scope.$broadcast('scroll.refreshComplete');
     $scope.newRisks = RiskService.getRiskList();
-    console.log($scope.newRisks);
+    // console.log($scope.newRisks);
+    $ionicLoading.hide();
   })
 
   $scope.$on('RisksGetFail',function(){
-   alert("获取失败惹");
+   $ionicLoading.hide();
   })
 }])
 
