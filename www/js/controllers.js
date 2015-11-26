@@ -1610,7 +1610,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 .controller('CoachMessageCtrl',function(){ //LRZ
 
 })
-.controller('myPatientCtrl', ['$rootScope', '$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($rootScope,$compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,Storage,userINFO,PageFunc,CONFIG,Data){
+.controller('myPatientCtrl', ['$rootScope', '$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','$ionicHistory','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($rootScope,$compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,$ionicHistory,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
   var PatientsList=new Array();//输出到页面的json  
@@ -1937,6 +1937,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     Storage.set('PatientAge',Patient.Age);
     Storage.set('PatientGender',Patient.GenderText);     
     Storage.set("PatientPhotoAddress",Patient.photoAddress);
+    $ionicHistory.clearHistory();
     if(Patient.SMSCount==0){
       $state.go('manage.plan');
     }else{    
@@ -2786,21 +2787,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
 
 .controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $stateParams, Storage,GetBasicInfo) {
   
-  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-    $scope.Name=Storage.get('PatientName');
-    $scope.age=Storage.get('PatientAge');
-    $scope.gender=Storage.get('PatientGender');
-       // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
-       //  promise.then(function(data){
-       //    $scope.clinicinfo=data;
-       //    //console.log($scope.clinicinfo)
-       //    $scope.Name=data.UserName;
-       //    $scope.age=data.Age;
-       //    $scope.gender=data.GenderText;
-       //  }, function(data) {
-       //  })
-       });
-  //进入页面获取患者的基本信息
+  $scope.$on('$ionicView.enter', function() {
+    $http.get('partials/data1.json').success(function(data) {
+      $scope.ModuleInfo = data;
+    });
+
+  });
+
   
   $scope.backtocoach=function(){
     $state.go('coach.patients');

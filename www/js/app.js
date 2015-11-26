@@ -183,14 +183,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.newpatient',{
     url:'/newpatient',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/newpatient.html',
     controller:'newpatientCtrl'
   })
 
   .state('addpatient.basicinfo',{
     url:'/newbasicinfo',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/basicinfo.html',
     controller:'newbasicinfoCtrl'    
   })  
@@ -222,21 +222,21 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.ModuleInfo',{
     url:'/ModuleInfo',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/ModuleInfo.html',
     controller:'ModuleInfoCtrl'
   })
 
   .state('addpatient.ModuleList',{
     url:'/ModuleInfo/:Module',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/ModuleInfoList.html',
     controller:'ModuleInfoListDetailCtrl'
   })
 
   .state('addpatient.ModuleListDetail',{
     url:'/ModuleInfo/:Module/:ListName',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/ModuleInfoListDetail.html',
     controller:'ModuleInfoListDetailCtrl'   
   })
@@ -249,21 +249,21 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('addpatient.riskdetail',{
     url:'/risk/:num',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/riskdetail.html',
     controller:'RiskDtlCtrl'
   })
 
   .state('addpatient.riskquestion',{
     url:'/riskquestion',
-    cache: false,
+    cache:false,
     templateUrl:'partials/addpatient/riskquestion.html',
     controller:'RiskQuestionCtrl'
   })
 
   .state('addpatient.plan', {
   url: '/:tt',
-  cache: false,
+  cache:false,
     templateUrl: function ($stateParams){
       if($stateParams.tt=='create')  //计划第一层 创建计划
       {
@@ -415,7 +415,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/ModuleInfo",
     views:{
       'ModuleInfo':{
-        cache: false,
+        cache:false,
         templateUrl:"partials/managepatient/ModuleInfo.html",
         controller:"ModuleInfoCtrl"
       }
@@ -425,7 +425,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module',
     views:{
       "ModuleInfo":{
-        cache: false,
+        cache:false,
         templateUrl:'partials/managepatient/ModuleInfoList.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -436,7 +436,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:'/ModuleInfo/:Module/:ListName',
     views:{
       "ModuleInfo":{
-        cache: false,
+        cache:false,
         templateUrl:'partials/managepatient/ModuleInfoListDetail.html',
         controller:'ModuleInfoListDetailCtrl'
       }
@@ -447,7 +447,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   url: '/:tt',
   views:{
     "changeplan":{
-      cache: false,
+      cache:false,
       templateUrl: function ($stateParams){
       if($stateParams.tt=='create')  //计划第一层 创建计划
       {
@@ -544,14 +544,14 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('Independent.riskdetail',{
     url:'/risk/:num',
-    cache: false,
+    cache:false,
     templateUrl:'partials/managepatient/riskdetail.html',
     controller:'RiskDtlCtrl'
   })
 
   .state('Independent.riskquestion',{
     url:'/riskquestion',
-    cache: false,
+    cache:false,
     templateUrl:'partials/managepatient/riskquestion.html',
     controller:'RiskQuestionCtrl'
   })
@@ -559,7 +559,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/table",
     views: {
       '': {
-        cache: false,
+        cache:false,
         templateUrl: "partials/managepatient/table.html",
         controller: 'vitaltableCtrl'
       }
@@ -569,7 +569,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     url:"/tablelist",
     views: {
       'tablelist': {
-        cache: false,
+        cache:false,
         templateUrl: "partials/managepatient/tablelist.html",
         
       }
