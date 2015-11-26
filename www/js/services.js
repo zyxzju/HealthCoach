@@ -1521,7 +1521,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   self.cancelOneCalendar = function(data){
 
     var temp =  {
-      "DoctorId": "U201510290001",
+      "DoctorId": Storage.get("UID"),
       "DateTime": data.DateTime,
       "Period": data.Period,
       "SortNo": data.SortNo,
@@ -1566,10 +1566,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     // count = 23;
     // var t = new Date();
     var temp =  {
-      "DoctorId": "U201510290001",
+      "DoctorId": Storage.get("UID"),
       "DateTime": data.DateTime,
       "Period": data.Period,
-      "SortNo": data.SortNo,
+      "SortNo": 0,
       "Description": data.Description,
       "Status": data.Status,
       "Redundancy": "1",
@@ -1598,7 +1598,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   }
 
   self.initialize = function(){
-    getCalendar('U201510290001').then(function(promise){
+    getCalendar(Storage.get("UID")).then(function(promise){
       if(promise.result != []){
         // console.log(promise)
         calendar = promise;
@@ -1686,9 +1686,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       "Gender": (data.gender == '男' ? 1:2),
       "IDNo": String(data.idno),
       "InvalidFlag": 0,
-      "piUserId": "蛤蛤蛤",
-      "piTerminalName": "蛤蛤蛤",
-      "piTerminalIP": "蛤蛤蛤",
+      "piUserId": "1",
+      "piTerminalName": "1",
+      "piTerminalIP": "1",
       "piDeviceType": 2
     };
     var deferred = $q.defer();

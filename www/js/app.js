@@ -537,7 +537,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('Independent.risk',{
     url:'/risk',
-    // cache: false,
+    cache: false,
     templateUrl:'partials/managepatient/risk.html',
     controller:'NewRiskCtrl'
   })
