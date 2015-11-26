@@ -358,9 +358,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         return deferred.promise;
     }
     // LZN 20151120
-    serve.sendSMS_lzn = function(_mobile,_smsType,_content){
+    serve.sendSMS_lzn = function(arr){
        var deferred = $q.defer();
-        Data.Service.sendSMS_lzn({mobile: _mobile, smsType:_smsType,content:_content},
+        Data.Service.sendSMS_lzn(arr,
         function(data,headers){
           deferred.resolve(data);
         },
