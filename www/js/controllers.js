@@ -3778,23 +3778,23 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
         $scope.content = $scope.healthcoach.name+','+y+'年'+m+'月'+d+'日'+','+$scope.healthcoach.Unit;
         console.log($scope.content);
         // 写死
-    $scope.sendSMS={
-          "mobile":"18626860001",
-          "smsType":"confirmtoPatient",
-          "content":$scope.content
-        }
-    // $scope.patientsendSMS={
-    //       "mobile":$scope.phoneno_patient,
+    // $scope.sendSMS={
+    //       "mobile":"18626860001",
     //       "smsType":"confirmtoPatient",
-    //       "content":$scope.content,
+    //       "content":$scope.content
     //     }
-    // userservice.PushNotification($scope.Push).then(
-    //       function(data){
-    //         console.log(data);
-    //         console.log($scope.Push);
-    //         },function(e){
-    //         console.log(e);
-    //       });
+    $scope.patientsendSMS={
+          "mobile":$scope.phoneno_patient,
+          "smsType":"confirmtoPatient",
+          "content":$scope.content,
+        }
+    userservice.PushNotification($scope.Push).then(
+          function(data){
+            console.log(data);
+            console.log($scope.Push);
+            },function(e){
+            console.log(e);
+          });
      userservice.sendSMS_lzn($scope.sendSMS).then(
           function(data){
             },function(e){
