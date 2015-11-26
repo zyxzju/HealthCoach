@@ -1508,7 +1508,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             temp.id = calendar[i].SortNo; 
             temp.start = start;
             temp.end = end;
-            temp.url = '/#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
+            temp.url = '#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
             // temp.stick = true;
             if(flag)events.push(temp);
       }
