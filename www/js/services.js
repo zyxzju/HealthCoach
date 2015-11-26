@@ -98,6 +98,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true},
       ReserveHealthCoach:{method:'POST',params:{route:'ReserveHealthCoach'},timeout:10000},//预约
       getHealthCoachInfo:{method:'GET',params:{route:'GetHealthCoachInfo',HealthCoachID:'@HealthCoachID'},timeout:10000},//预约
+      GetCalendar:{method:'GET',isArray:true,params:{route:'Calendar',DoctorId:'@DoctorId'},timeout: 10000}
 		})
 	}
 	var Service = function(){
@@ -229,7 +230,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               DeleteTask: {method:'POST', params:{route: 'deleteTask'},timeout: 10000},
               GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
               GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
-              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
+              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000},
+              PostCalendar:{method:'POST',params:{route:'Calendar'},timeout: 10000},
           });
       };
 
@@ -1389,6 +1391,285 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   return self;
 
 }])
+
+//LRZ20151123
+.factory('ScheduleService',['Data','Storage','$rootScope','$q','$ionicLoading','$timeout',function(Data,Storage,$rootScope,$q,$ionicLoading,$timeout){
+
+  var self = this;
+  var calendar = [];
+  var events = [];
+  var count = 0;
+  var postCalendar = function(data){
+    var deferred = $q.defer();
+    Data.PlanInfo.PostCalendar(data, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+
+    // Data.PlanInfo.PostCalendar(data).then(function(promise){
+    //   if(promise.result == "数据插入成功"){
+    //     $rootScope.$broadcast("newCanlendar");
+    //   }
+    //   else{
+    //     $rootScope.$broadcast("newCanlendar");
+    //   }
+    // });
+  }
+  var phoneheight = (window.innerHeight > 0) ? window.innerHeight : screen.height;
+  var calendarConfig = {
+      calendar:{
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        height: phoneheight*0.818,
+        lang: 'zh-cn',
+        scrollTime: '8:00:00',
+        buttonIcons: false, 
+        weekNumbers: false,
+        editable: true,
+        eventLimit: true
+      },
+    calendar2:{
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        height: 300,
+        lang: 'zh-cn',
+        scrollTime: '8:00:00',
+        buttonIcons: false, 
+        weekNumbers: false,
+        editable: true,
+        eventLimit: true
+      },      
+  };
+  var getCalendar = function(did){
+    var deferred = $q.defer();
+    Data.Users.GetCalendar({DoctorId:did}, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+
+    // Data.PlanInfo.GetCalendar({DoctorId:did}).then(function(promise){
+    //   if(promise.result != []){
+    //     calendar = promise;
+    //     $rootScope.$broadcast("GotCanlendar");
+    //   }
+    //   else{
+    //     $rootScope.$broadcast("GotCanlendarFail");
+    //   }
+    // });
+  }
+
+  //将calendar的信息整理成日历能显示的样子
+  // (they are id, title, url, start, end, allDay, and className).
+  var sortCalendar = function(){
+    events = [];
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      var temp =  { };
+      var flag = true;
+      temp.title = calendar[i].Description;
+      var t = calendar[i].DateTime;
+      if(calendar[i].Status == '0' || calendar[i].Status == 0 ) flag = false;
+      //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
+      
+      if(t.length == 8){
+
+            if(calendar[i].Period == "上午"){
+                var start_hour = 8;
+                var end_hour = 11;
+            }
+            else if (calendar[i].Period == "下午"){
+                var start_hour = 14;
+                var end_hour = 17;
+            }
+            else if (calendar[i].Period == "晚上"){
+                var start_hour = 18;
+                var end_hour = 21;
+            }
+            else {
+                var flag = false;        
+            }
+
+            // var datetime = new Date(t[0]+t[1]+t[2]+t[3], t[4]+t[5],t[6]+t[7]); 
+            // var start = datetime;
+            // var end = datetime;  
+
+            var start = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],start_hour,0);
+
+            var end = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],end_hour,0);
+            temp.id = calendar[i].SortNo; 
+            temp.start = start;
+            temp.end = end;
+            temp.url = '/#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
+            // temp.stick = true;
+            if(flag)events.push(temp);
+      }
+      
+
+
+    };
+  }
+
+  self.cancelOneCalendar = function(data){
+
+    var temp =  {
+      "DoctorId": "U201510290001",
+      "DateTime": data.DateTime,
+      "Period": data.Period,
+      "SortNo": data.SortNo,
+      "Description": data.Description,
+      "Status": 0,
+      "Redundancy": "1",
+      "revUserId": "1",
+      "TerminalName": "1",
+      "TerminalIP": "1",
+      "DeviceType": 11
+    }
+
+
+    var deferred = $q.defer();   
+    postCalendar(temp).then(function(promise){
+          if(promise.result == "数据插入成功"){
+            console.log(promise)
+            var temp = $ionicLoading.show({
+            template:  '取消日程成功',
+          });
+
+            $timeout(function(){
+              $ionicLoading.hide();
+            },1500)
+
+            deferred.resolve({});
+
+            $rootScope.$broadcast("newCanlendar");
+          }
+          else{
+
+            $rootScope.$broadcast("GotCanlendarFail");
+            deferred.resolve({});
+
+          }
+    });    
+    return deferred.promise;
+  }
+
+  //FOR TEST
+  self.postCalendar = function(data){
+    // count = 23;
+    // var t = new Date();
+    var temp =  {
+      "DoctorId": "U201510290001",
+      "DateTime": data.DateTime,
+      "Period": data.Period,
+      "SortNo": data.SortNo,
+      "Description": data.Description,
+      "Status": data.Status,
+      "Redundancy": "1",
+      "revUserId": "1",
+      "TerminalName": "1",
+      "TerminalIP": "1",
+      "DeviceType": "1"
+    }
+    // console.log(temp);
+    postCalendar(temp).then(function(promise){
+      if(promise.result == "数据插入成功"){
+        console.log(promise)
+        var temp = $ionicLoading.show({
+        template:  '修改日程成功',
+      });
+        $timeout(function(){
+          $ionicLoading.hide();
+        },1500)
+        $rootScope.$broadcast("newCanlendar");
+      }
+      else{
+        $rootScope.$broadcast("GotCanlendarFail");
+      }
+    });
+
+  }
+
+  self.initialize = function(){
+    getCalendar('U201510290001').then(function(promise){
+      if(promise.result != []){
+        // console.log(promise)
+        calendar = promise;
+
+        sortCalendar();
+        // console.log(events);
+        $rootScope.$broadcast("GotCanlendar");
+      }
+      else{
+        $rootScope.$broadcast("GotCanlendarFail");
+      }
+    });
+  }
+
+  self.getEventByParams = function(params){
+    console.log(params);
+
+    // for (var i = events.length - 1; i >= 0; i--) {
+    //   if(events[i].id == params.SortNo){
+    //       // console.log(events[i]);
+    //       var tempDate = events[i].start.toLocaleDateString().split("/",3);
+    //       var t =  tempDate[0] + 
+    //       (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
+    //       (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
+    //       // console.log(t)
+    //       if(t == params.Date){
+    //         console.log(events[i].start.getHours());
+    //         if((events[i].start.getHours() == 8 && params.Period == "上午") || (events[i].start.getHours() ==14 && params.Period == "下午")  || (events[i].start.getHours() ==18 && params.Period == "晚上") ){
+    //            return events[i];
+    //         }
+    //       }
+    //   }
+
+    // };
+
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      if(calendar[i].SortNo == params.SortNo && calendar[i].Period == params.Period && calendar[i].DateTime == params.Date)
+        return calendar[i];
+    };
+    return undefined;
+  }
+  self.getCanlendar = function(){
+    return calendar;
+  }
+
+  self.getEvents = function(){
+    return events;
+  }
+  
+  self.getConfig = function(){
+    return calendarConfig;
+  }
+
+  self.getDates = function(){
+    var tempDate = new Date();
+
+    var dates = [];
+
+    for (var i = 0; i < 30; i++) {
+      tempDate.setDate(tempDate.getDate()+1); 
+      // console.log(tempDate);
+      var t = new Date(tempDate);
+      dates.push(t);
+      // console.log(dates);
+    };
+
+    return dates;
+  }
+  return self;
+}])
+
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改
 .factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;

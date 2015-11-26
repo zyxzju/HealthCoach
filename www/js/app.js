@@ -110,6 +110,13 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
         controller: 'CoachScheduleCtrl'    
   })
 
+  .state('scheduledetail', {
+    url: '/schedule/:date/:period/:num',
+    templateUrl: 'partials/individual/coach-schedule-detail.html',
+    cache:false,
+    controller: 'CoachScheduleDtlCtrl'    
+  })
+  
   .state('coach.patients',{
     url:'/patients',
     views:{
@@ -530,7 +537,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   .state('Independent.risk',{
     url:'/risk',
-    cache: false,
+    // cache: false,
     templateUrl:'partials/managepatient/risk.html',
     controller:'NewRiskCtrl'
   })

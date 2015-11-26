@@ -262,3 +262,20 @@ angular.module('ionicApp.directives', [])
       }
     };
 }])
+
+//防止ui-calendar的消息被ionic先截取  lrz20151125
+.directive('disableTap', function($timeout) {
+ return {
+  link: function() {
+
+   $timeout(function() {
+    var tab = document.getElementsByClassName('fc-widget-content');
+
+    for (i = 0; i < tab.length; ++i) {
+     tab[i].setAttribute('data-tap-disabled', 'true')
+     console.log(tab[i]);
+    }
+   }, 500);
+  }
+ };
+});

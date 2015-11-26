@@ -1,4 +1,4 @@
-<ion-view cache-view="false" title="风险评估">
+<ion-view  title="风险评估">
 
 
 <ion-nav-bar class="bar-positive nav-title-slide-ios7">  
@@ -46,7 +46,7 @@
     <ion-list >
 
       <ion-item collection-repeat ="item in newRisks | filter: query "  item-height="133" 
-       href="#/addpatient/risk/{{item.num}}" ng-hide = " (!item.M1show)&& (!item.M2show) && (!item.M3show)">
+       href="#/Independent/risk/{{item.num}}" ng-hide = " (!item.M1show)&& (!item.M2show) && (!item.M3show)">
        
       <div class="row row-100">
        <!-- <div class="badge badge-positive">第{{item.num}}次评估</div> -->
