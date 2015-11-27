@@ -7,8 +7,20 @@
 
 
 <ion-content class="padding">
-    {{event}}
-    
+    <div class = "list card">
+      <div class = "item-divider">
+            本次预约时间为：
+            {{event.DateTime}}  的  {{event.Period}}
+      </div>
+
+        <ion-list>
+          <div class="item item-icon-left" ng-repeat = "item in eventdetail">
+              <i class="icon ion-calendar"></i>
+                {{item}}
+          </div>
+        </ion-list>
+    </div>
+
     <span class="button button-block button-positive icon-left ion-wrench" ng-click = "onClickChangeApp()">修改时间</span>
 
     <span class="button button-block button-assertive icon-left ion-close" ng-click = "onClickCancelApp()">取消预约</span>

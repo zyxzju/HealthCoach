@@ -1481,6 +1481,17 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
   $scope.event = ScheduleService.getEventByParams($scope.params);
 
+  $scope.eventdetail = $scope.event.Description.split("||",7);
+  for (var i = $scope.eventdetail.length - 1; i >= 0; i--) {
+   
+    if(typeof($scope.eventdetail[i]) === 'undefined' || $scope.eventdetail[i] =="" )  {
+      console.log($scope.eventdetail);
+      $scope.eventdetail.splice($scope.eventdetail.indexOf($scope.eventdetail[i]),1);      
+    }
+
+  };
+  
+
   var deepCopy = function(source) { 
       var result={};
       for (var key in source) {
