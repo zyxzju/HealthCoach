@@ -1,4 +1,4 @@
-var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.directives', 'ngCordova','ja.qr','ionic-datepicker', 'appControllers'])
+var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.directives', 'ngCordova','ionic-datepicker', 'appControllers'])
 
 .config(['$stateProvider','$urlRouterProvider','$ionicConfigProvider', function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
   $ionicConfigProvider.platform.android.tabs.position('bottom');

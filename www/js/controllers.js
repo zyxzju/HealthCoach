@@ -1,4 +1,4 @@
-angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr','ionic-datepicker','ui.calendar'])
+angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic-datepicker','ui.calendar'])
 
 // 初装或升级App的介绍页面控制器
 .controller('intro', ['$scope', 'Storage', function ($scope, Storage) {
@@ -50,7 +50,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       promise.then(function(data){
         loading.loadingBarFinish($scope);
         $scope.logStatus=data.result.substr(0,4);
-        if($scope.logStatus=="登陆成功"){ 
+        if($scope.logStatus=="登录成功"){ 
           Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
@@ -68,7 +68,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           return;          
         }
         if(data.data.result=='暂未激活'){
-          $scope.logStatus="登陆成功";
+          $scope.logStatus="登录成功";
           //Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
@@ -170,7 +170,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               }
             },function(data){
               loading.loadingBarFinish($scope);
-              $scope.logStatus='网络错误1！';
+              $scope.logStatus='网络错误！';
             });            
           }else{
             loading.loadingBarFinish($scope);
@@ -178,7 +178,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
           }
         },function(data){
           loading.loadingBarFinish($scope);
-          $scope.logStatus='网络错误2！';
+          $scope.logStatus='网络错误！';
         });
       }
       loading.loadingBarStart($scope);
@@ -186,7 +186,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       .then(function(data){
         userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach')
         .then(function(data){
-          if(data.result.substr(0,4)=="登陆成功"){
+          if(data.result.substr(0,4)=="登录成功"){
             Storage.set('TOKEN', data.result.substr(12));
             saveUID();
           }
@@ -196,14 +196,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
             saveUID();
           }else{
             loading.loadingBarFinish($scope);
-            $scope.logStatus='网络错误3！';
+            $scope.logStatus='网络错误！';
           }
         });
       },function(data){        
         if(data.data.result=='同一用户名的同一角色已经存在'){
           userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach')
           .then(function(data){
-            if(data.result.substr(0,4)=="登陆成功"){
+            if(data.result.substr(0,4)=="登录成功"){
               Storage.set('TOKEN', data.result.substr(12));
               saveUID();
             }
@@ -213,12 +213,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
               saveUID();
             }else{
               loading.loadingBarFinish($scope);
-              $scope.logStatus='网络错误4！';
+              $scope.logStatus='网络错误！';
             }
           });
         }else if(data.data==null && data.status==0){
           loading.loadingBarFinish($scope);
-          $scope.logStatus='网络错误5！';
+          $scope.logStatus='网络错误！';
           return;          
         }else{
           loading.loadingBarFinish($scope);
@@ -463,40 +463,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     })
   }
 }])
-//二维码在这里，ngcordova的插件QRscan()
-.controller('HomeTabCtrl', ['$scope', '$state','$cordovaBarcodeScanner',function($scope, $state, $cordovaBarcodeScanner) {
-  $scope.changePass = function(){
-    $state.go('changePassword')
-  }
-  $scope.QRscan = function(){
-    $cordovaBarcodeScanner
-      .scan()
-      .then(function(data) {
-        // Success! Barcode data is here
-        var s = "Result: " + data.text + "<br/>" +
-      "Format: " + data.format + "<br/>" +
-      "Cancelled: " + data.cancelled;
-        $scope.scandata=s;
-      }, function(error) {
-        // An error occurred
-        $scope.scandata=error;
-      });
-  }
-  //QRgenerate 好像没用
-  $scope.QRgenerate = function(){
-    // $state.go('qrcode');
-    $cordovaBarcodeScanner
-      .encode(BarcodeScanner.Encode.TEXT_TYPE, "http://www.baidu.com")
-      .then(function(success) {
-        // Success!
-        //console.log(success);
-      }, function(error) {
-        // An error occurred
-        //console.log(error);
-      });
-  }
-}])
-
 //lrz20151112
 .controller('CoachIdUploadCtrl', ['$scope','$state','$ionicPopover','$stateParams','Storage','Patients','Camera','Users','$ionicActionSheet','$timeout','$rootScope','CONFIG','PageFunc','$cordovaDatePicker',
   function($scope,$state,$ionicPopover,$stateParams,Storage,Patients,Camera,Users,$ionicActionSheet,$timeout,$rootScope,CONFIG,PageFunc,$cordovaDatePicker) { //LRZ
@@ -2061,9 +2027,102 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
       // noBackdrop: true,
       // // maxWidth: 200,
       // showDelay: 2000
-  });
-    // });
+    });
   }  
+  $scope.QRscan = function(){
+    // backbeforesearch();
+    var isMyPID=0;
+    var setData =function(thisPatient){
+      Storage.set("PatientID",thisPatient.PatientId);     
+      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+      Storage.set("PatientName",thisPatient.PatientName);
+      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+      }
+      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+        Storage.set('PatientAge',data.Age+'岁');
+        Storage.set('PatientGender',data.GenderText);
+        $state.go('manage.plan');
+      },function(data){
+        // fail请求数据
+      });
+    }
+    $cordovaBarcodeScanner
+    .scan()
+    .then(function(data) {
+      // Success! Barcode data is here
+      // var s = "Result: " + data.text + "<br/>" +
+      // "Format: " + data.format + "<br/>" +
+      // "Cancelled: " + data.cancelled;
+      if(data.cancelled!=true){
+        dataloading();
+        var newpid=data.text
+        var tempf="PatientId eq '"+newpid+"'";
+        userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
+        .then(function(data){
+          if(data.length==1){
+            setData(data[0]);
+          }else{
+            userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM2','0','0')
+            .then(function(data){
+              if(data.length==1){
+                setData(data[0]);
+              }else{
+                userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM3','0','0')
+                .then(function(data){
+                  $ionicLoading.hide();
+                  if(data.length==1){
+                    setData(data[0]);
+                  }else{
+                    var myPopup = $ionicPopup.show({
+                    template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+                    //title: '',
+                    //subTitle: '2',
+                    scope: $scope,
+                    buttons: [
+                      { text: '取消',
+                      type: 'button-small',
+                      onTap: function(e) {                
+                      }
+                      },
+                      {
+                      text: '<b>确定</b>',
+                      type: 'button-small button-positive ',
+                      onTap: function(e) {
+                        Storage.set("newPatientID",newpid);
+                        $state.go('addpatient.basicinfo');
+                      }
+                      }
+                    ]
+                    });
+                  }                  
+                },function(){
+                  $ionicLoading.hide();
+                  alert('网络问题');
+                  // fail请求数据
+                });
+              }
+            },function(data){
+              $ionicLoading.hide();
+              alert('网络问题');
+              // fail请求数据
+            });            
+          }
+        },function(data){
+          $ionicLoading.hide();
+          alert('网络问题');
+          // fail请求数据
+        });
+      }else{
+        alert('数据解析出错，请再试一次');
+      }
+    }, function(error) {
+      alert('扫码FAILED');
+    });
+  }  
+
   //筛选
 
   $scope.byRange = function () {   
@@ -2648,7 +2707,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ja.qr
     {
         $scope.socket = io.connect(wsServerIP);
           
-        //告诉服务器由用户登陆
+        //告诉服务器由用户登录
         $scope.socket.emit('login', {userid:WsUserId, username:WsUserName});                
           
         //监听消息
