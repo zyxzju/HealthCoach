@@ -2,12 +2,15 @@
  <div class="bar-shadow"></div>
   <ion-content>
       <ion-list>
-        <ion-item ng-repeat='Module in ModuleInfoList' ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
+<!--         <ion-item ng-repeat='Module in ModuleInfoList' ng-href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
           <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">
               {{Module.ItemName}}
               <i class="icon ion-chevron-right icon-gray"></i>
           </a>
-        </ion-item>
+        </ion-item> -->
+        <a ng-repeat='Module in ModuleInfoList' class="item" href="#/manage/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}" ng-if="Module.ItemCode.indexOf('0000') > -1">
+            {{Module.ItemName}}
+        </a>     
     </ion-list>
   <div>
     <button class="button button-block button-positive" ng-click="onClickBackward3()" ng-if="isloaded">完成</button>

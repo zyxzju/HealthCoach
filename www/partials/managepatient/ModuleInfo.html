@@ -20,13 +20,15 @@
     <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}</h3>
   </div>
     <ion-list>    
-      <ion-item  ng-repeat='Module in ModuleInfo' href="#/manage/ModuleInfo/{{Module.ModuleCode}}" ng-if="Module.Flag">
-          <a class="item item-icon-right" href="#/manage/ModuleInfo/{{Module.ModuleCode}}">
-            {{Module.ModuleName}}
-            <i class="icon ion-chevron-right icon-gray"></i>
-          </a>
-          
-      </ion-item>
+      <!-- <ion-item  ng-repeat='Module in ModuleInfo' href="#/manage/ModuleInfo/{{Module.ModuleCode}}" ng-if="Module.Flag"> -->
+<!--         <a class="item item-icon-right">
+          {{Module.ModuleName}}<i class="icon ion-chevron-right icon-gray"></i>
+        </a> -->         
+      <!-- </ion-item> -->
+      <a ng-repeat='Module in ModuleInfo' class="item" href="#/manage/ModuleInfo/{{Module.ModuleCode}}" ng-if="Module.Flag">
+        {{Module.ModuleName}}
+        <!-- <i class="icon ion-chevron-right icon-gray"></i> -->
+      </a>
     </ion-list>
   </ion-content>
 </ion-view>

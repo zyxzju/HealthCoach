@@ -3,12 +3,17 @@
   <ion-content>
       <ion-list>
       <div ng-repeat='Module in ModuleInfoList'>
-        <ion-item href="#/addpatient/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
+<!--         <ion-item href="#/addpatient/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}"  ng-if="Module.ItemCode.indexOf('0000') > -1">
           <a class="item item-icon-right" href="#/addpatient/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}">
               {{Module.ItemName}}
               <i class="icon ion-chevron-right icon-gray"></i>
           </a>
-        </ion-item>
+        </ion-item> -->
+    
+          <a class="item" href="#/addpatient/ModuleInfo/{{Module.CategoryCode}}/{{Module.ItemCode}}" ng-if="Module.ItemCode.indexOf('0000') > -1">
+              {{Module.ItemName}}
+     
+          </a>       
       </div>
     </ion-list>
   <div>

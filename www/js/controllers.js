@@ -2538,21 +2538,21 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         }else{
           temp.imageURL =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ temp.imageURL;
         }
-        if(temp.Age==undefined  ||temp.Age==''){
-          temp.Age='';
+        if(temp.age==undefined  ||temp.age==''){
+          temp.age='';
         }else{
-          temp.Age=temp.Age+'岁';
+          temp.age=temp.age+'岁';
         }
         if(temp.sex=="1"){
           temp.GenderText='男';
         }else if(temp.sex=="2"){
           temp.GenderText='女';
         }
-        if(temp.module=='HM1'){
+        if(temp.module=='高血压模块'){
           temp.Module="高血压";
-        }else if(temp.module=='HM2'){
+        }else if(temp.module=='糖尿病模块'){
           temp.Module="糖尿病";
-        }else if(temp.module=='HM3'){
+        }else if(temp.module=='心衰模块'){
           temp.Module="心衰";
         }
         if(temp.AppointmentStatus=="1"){
