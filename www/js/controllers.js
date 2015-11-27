@@ -31,14 +31,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.signIn = function(logOn) {
     $scope.logStatus='';
     if((logOn.username!="") && (logOn.password!="")){ 
+      var cont=0;
       var saveUID = function(){
         var UIDpromise=userservice.UID('PhoneNo',logOn.username);
         UIDpromise.then(function(data){
+          loading.loadingBarFinish($scope);
           if(data.result!=null){
+            $scope.logStatus="登录成功";
             Storage.set('UID', data.result);
+            $timeout(function(){$state.go('coach.patients');} , 500);
             //window.plugins.jPushPlugin.setAlias(data.result);
           }
         },function(data){
+          if(cont++<5){
+            saveUID();
+          }else{
+            loading.loadingBarFinish($scope);
+            $scope.logStatus="网络错误"
+          }
         });
       }                
       var promise=userservice.userLogOn('PhoneNo' ,logOn.username,logOn.password,'HealthCoach');
@@ -48,16 +58,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       }
       loading.loadingBarStart($scope);
       promise.then(function(data){
-        loading.loadingBarFinish($scope);
-        $scope.logStatus=data.result.substr(0,4);
-        if($scope.logStatus=="登录成功"){ 
+        // loading.loadingBarFinish($scope);
+        // $scope.logStatus=data.result.substr(0,4);
+        if(data.result.substr(0,4)=="登陆成功"){ 
           Storage.set('TOKEN', data.result.substr(12));
           Storage.set('USERNAME', logOn.username);
           Storage.set('isSignIN','YES');
           saveUID();
-          $timeout(function(){$state.go('coach.patients');} , 1000);
+          // $timeout(function(){$state.go('coach.patients');} , 1000);
         }
       },function(data){
+        if(data.data.result=='暂未激活'){
+          // $scope.logStatus="登录成功";
+          //Storage.set('TOKEN', data.result.substr(12));
+          Storage.set('USERNAME', logOn.username);
+          Storage.set('isSignIN','YES');
+          saveUID();         
+          // $timeout(function(){$state.go('upload')} , 500);  
+          return;        
+        }  
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='网络错误！';
@@ -67,15 +86,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           $scope.logStatus='连接服务器失败！';
           return;          
         }
-        if(data.data.result=='暂未激活'){
-          $scope.logStatus="登录成功";
-          //Storage.set('TOKEN', data.result.substr(12));
-          Storage.set('USERNAME', logOn.username);
-          Storage.set('isSignIN','YES');
-          saveUID();         
-          $timeout(function(){$state.go('upload')} , 500);  
-          return;        
-        }        
         $scope.logStatus=data.data.result;
       });
     }else{
