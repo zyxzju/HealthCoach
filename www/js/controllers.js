@@ -2865,15 +2865,22 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   // $scope.
 })
 
-.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory', '$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $stateParams, Storage,GetBasicInfo) {
+.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory',  '$ionicLoading','$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $ionicLoading, $stateParams, Storage,GetBasicInfo) {
   
-  $scope.$on('$ionicView.enter', function() {
-    $http.get('partials/data1.json').success(function(data) {
-      $scope.ModuleInfo = data;
-    });
+  // $scope.$on('$ionicView.enter', function() {
+  //   $http.get('partials/data1.json').success(function(data) {
+  //     $scope.ModuleInfo = data;
+  //   });
 
+  // });
+  //loading图标显示
+  $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
   });
-
   
   $scope.backtocoach=function(){
     $state.go('coach.patients');
@@ -2895,24 +2902,51 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       $scope.ModuleInfo = data;
   });
 
-  GetBasicInfo.getiHealthCoachList(PatientId).then(function(data,status){
-    for (var i=0;i<data.length;i++)
-    {
-      if (data[i].moduleCode != "")
+  if (Storage.get("isManage") == "Yes")
+  {
+    GetBasicInfo.getiHealthCoachList(PatientId).then(function(data,status){
+      for (var i=0;i<data.length;i++)
       {
-        Storage.set(data[i].moduleCode,'Yes');
-        for (var j=0;j<$scope.ModuleInfo.length;j++)
+        if (data[i].CategoryCode != "")
         {
-          if (data[i].moduleCode == "H" + $scope.ModuleInfo[j].ModuleCode)
+          Storage.set(data[i].CategoryCode,'Yes');
+          for (var j=0;j<$scope.ModuleInfo.length;j++)
           {
-            $scope.ModuleInfo[j].Flag = false;
+            if (data[i].CategoryCode == "H" + $scope.ModuleInfo[j].ModuleCode && data[i].HealthCoachID != UserId)
+            {
+              $scope.ModuleInfo[j].Flag = false;
+            }
           }
         }
       }
-    }
-  },function(data,status){
-    $scope.getStatus = status;
-  });
+      $ionicLoading.hide();
+    },function(data,status){
+      $scope.getStatus = status;
+    });
+  }
+  else
+  {
+    GetBasicInfo.getiHealthCoachList(PatientId).then(function(data,status){
+      for (var i=0;i<data.length;i++)
+      {
+        if (data[i].CategoryCode != "")
+        {
+          Storage.set(data[i].CategoryCode,'Yes');
+          for (var j=0;j<$scope.ModuleInfo.length;j++)
+          {
+            if (data[i].CategoryCode == "H" + $scope.ModuleInfo[j].ModuleCode)
+            {
+              $scope.ModuleInfo[j].Flag = false;
+            }
+          }
+        }
+      }
+      $ionicLoading.hide();
+    },function(data,status){
+      $scope.getStatus = status;
+    });
+  }
+  
 
   $scope.NextPage =function(){
     $state.go('addpatient.risk');
