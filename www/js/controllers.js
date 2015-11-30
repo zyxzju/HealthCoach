@@ -2867,12 +2867,15 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
 .controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory',  '$ionicLoading','$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $ionicLoading, $stateParams, Storage,GetBasicInfo) {
   
-  // $scope.$on('$ionicView.enter', function() {
+  $scope.$on('$ionicView.enter', function() {
   //   $http.get('partials/data1.json').success(function(data) {
   //     $scope.ModuleInfo = data;
   //   });
+    $scope.Name=Storage.get('PatientName');
+    $scope.age=Storage.get('PatientAge');
+    $scope.gender=Storage.get('PatientGender');
 
-  // });
+  });
   //loading图标显示
   $ionicLoading.show({
     content: '加载中',
@@ -8414,7 +8417,7 @@ $scope.loadingDone = false;
       showDelay: 0
     });
     //默认进入依从图，button颜色改变
-    $scope.mybuttonStyle={'color':'blue','font-weight':'bold'};
+    $scope.mybuttonStyle={'color':'#e66767','font-weight':'bold'};
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
     console.log($scope.age);
@@ -9065,7 +9068,7 @@ $scope.loadingDone = false;
 
       $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
         $scope.SMSCount=$rootScope.SMSCount;
-        $scope.tablestyle={'color':'blue','font-weight':'bold'};
+        $scope.tablestyle={'color':'#3d6399','font-weight':'bold'};
             // var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
             //   promise.then(function(data){
             //     $scope.clinicinfo=data;

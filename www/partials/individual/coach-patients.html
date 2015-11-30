@@ -24,7 +24,7 @@
 <!--   </ion-nav-bar> -->
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
-      <i style="color:#387EF5;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
+      <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
       <input type="search" ng-blur="doResume()" ng-model="query.PatientName" ng-change="startSearch(query)" placeholder="搜索姓名">
       <i style="color:#EF473A;font-size:1.6em" class="icon ion-android-close placeholder-icon" ng-hide="clearIt" ng-click="clearSearch()"></i>
     </div>
@@ -43,7 +43,6 @@
       <hr class="list" />
     </div>
     <ion-list> 
-    <!-----！！ion-item里的注释勿动 IMPORTANT！！---------------------------->
       <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="105px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-thumbnail-left item-margin ">
         <img ng-src="{{patient.photoAddress}}">
