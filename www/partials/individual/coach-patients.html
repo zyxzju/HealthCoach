@@ -38,12 +38,10 @@
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <div ng-if="searchflag">
       <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.PatientName}}<span></a>
-      <!-- <div style="text-align:center;width:100%;margin:0;color:#ff7438;text-size:0.5rem !important">—————————<span style="font-style: italic">列表缓存</span>—————————</div> -->
-      <!-- <hr style="text-align:center;width:100%;margin:0;color:#ff7438;text-size:0.5rem !important" /> -->
       <hr class="list" />
     </div>
     <ion-list> 
-      <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="105px"  ng-click="PIDdetail(patient)" >
+      <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="106px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-thumbnail-left item-margin ">
         <img ng-src="{{patient.photoAddress}}">
         <div style=" padding-left:84px">
@@ -71,8 +69,10 @@
             </div>
             <div class="row">
               <!-- <div class="col-25"> -->
-              <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
-              <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>
+<!--               <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
+              <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p> -->
+              <p style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> <span ng-if="patient.Status*patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.Status*(patient.RemainingDays==0)">即将完成</span><span ng-if="!(patient.Status-0)">暂无计划</span></p>
+              <!-- <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>               -->
               <!-- </div> -->
               <div ng-style="{'display':(patient.Status=='0'?'none':'block')}" style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
               <div ng-style="{'width':patient.Process+'%'}" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>

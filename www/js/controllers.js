@@ -8417,7 +8417,7 @@ $scope.loadingDone = false;
       showDelay: 0
     });
     //默认进入依从图，button颜色改变
-    $scope.mybuttonStyle={'color':'#e66767','font-weight':'bold'};
+    $scope.mybuttonStyle={'color':'#3d6399','font-weight':'bold'};
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
     console.log($scope.age);
