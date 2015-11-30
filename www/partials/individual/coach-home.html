@@ -22,7 +22,7 @@
       <img ng-src="{{imgURI}}">
       <h3>{{ userInfo.BasicInfo.name }} </h3>
       <h2>{{userInfo.DtInfo.unitname}}</h2>
-      <div class="badge badge-balanced">{{userInfo.BasicInfo.id}}</div> 
+      <div class="badge badge-positive">{{userInfo.BasicInfo.id}}</div> 
     </div>
     <div class = "item item-divider">        
     </div>     
@@ -42,7 +42,7 @@
   </div>
   <ion-list>
     <div class ="padding ">
-            <button class="button button-block  button-energized" ng-click="onClickCheck()" ng-hide="state == '已激活'">
+            <button class="button button-block  button-assertive" ng-click="onClickCheck()" ng-hide="state == '已激活'">
       进入审核页面 {{state}}
     </button>
     

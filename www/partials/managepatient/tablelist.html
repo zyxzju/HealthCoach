@@ -5,10 +5,8 @@
     </ion-nav-buttons>
 </ion-nav-bar>
 <div class="footer-shadow"></div>
-<ion-content class="content-item-list"> 
-  <div style="padding:0 0 0 12px;background-color:#387ef5;margin:0;text-color:#FFFFFF"> 
-    <h3 style="color:#FFFFFF;font-size:1.4em;padding-top:5px;margin:0;">{{Name}}  {{gender}}  {{age}}</h3>
-  </div>
+<ion-content has-bouncing="false" class="content-item-list"> 
+  <div class="top-of-the-content">{{Name}}  {{gender}}  {{age}}</div>
 <style>
 #table{
 .col {
@@ -40,14 +38,14 @@
         <ionic-datepicker input-obj="datepickerObject">
         <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">起始日期</h4>
         
-          <div  ng-click="setStart()"><b  style="color:#689f38;padding-top: 3px">{{selectedstartdate}}</b></div>
+          <div  ng-click="setStart()"><b  style="color:#689f38;line-height:25px">{{selectedstartdate}}</b></div>
         </ionic-datepicker>
       </div>  
       <div class="col-50  text-center">
         <ionic-datepicker input-obj="datepickerObject" >
         <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">结束日期</h4>
         
-          <div ng-click="setEnd()"><b  style="color:#689f38;padding-top: 3px">{{selecrtedenddate}}</b></div>
+          <div ng-click="setEnd()"><b  style="color:#689f38;line-height:25px">{{selecrtedenddate}}</b></div>
         </ionic-datepicker>
       </div>
     </div> 
