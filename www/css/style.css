@@ -117,37 +117,45 @@ hr.list:after {
 }
 
 .item-divider {
-  background-color: rgba(38,157,128,0.2);
+  background-color: #EFEFD0;
 }
 
-.lable-item-item-input{
-  background-color: rgba(38,157,128,0.3);
-  color: #417D9A;
-}
 
+
+.m3 {
+  background-color: rgba(38,157,128,0.1);
+  border-top: 20px solid #a9e4ef;
+}
 .m1 {
-  background-color: rgba(38,157,128,0.13);
-  border-top: 20px solid #BEEF9E;
+  background-color: rgba(38,157,128,0.07);
+  border-top: 20px solid #47a8bd;
 }
 .m2 {
-  background-color: rgba(38,157,128,0.07);
-  border-top: 20px solid #A6C36F;
-}
-.m3 {
   background-color: rgba(38,157,128,0.04);
-  border-top: 20px solid #335145;
+  border-top: 20px solid #64b6ca;
 }
 
+
+.mono_font{
+ font-size:14px;
+ color: #2e5eaa; padding:5px;
+ text-align:center; 
+ font-weight:bold;
+}
+.time_font {
+  color:#64b6ac;
+  line-height:25px;
+}
 #riskchart {#riskchart {
   width   : 100%;
   height    : 250px;
   font-size : 15px;
   display: inline;
-  background-color: #EEE8D6;
+  background-color: #EFEFD0;
 } 
   width: 100%;
   height: 300px;
-  background-color: #F7F4EA;
+  background-color: #EFEFD0;
  
 }
 #chartdiv2 {#chartdiv2 {

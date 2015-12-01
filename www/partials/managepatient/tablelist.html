@@ -38,20 +38,20 @@
         <ionic-datepicker input-obj="datepickerObject">
         <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">起始日期</h4>
         
-          <div  ng-click="setStart()"><b  style="color:#689f38;line-height:25px">{{selectedstartdate}}</b></div>
+          <div  ng-click="setStart()" class ="mono_font">{{selectedstartdate}}</div>
         </ionic-datepicker>
       </div>  
       <div class="col-50  text-center">
         <ionic-datepicker input-obj="datepickerObject" >
         <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">结束日期</h4>
         
-          <div ng-click="setEnd()"><b  style="color:#689f38;line-height:25px">{{selecrtedenddate}}</b></div>
+          <div ng-click="setEnd()"  class ="mono_font">{{selecrtedenddate}}</div>
         </ionic-datepicker>
       </div>
     </div> 
   </div> 
   <div class="col-20">
-    <button style="padding:0;margin:0;width:100%"  class="button button-balanced" ng-click="bowerdata()">查询</button>
+    <button style="padding:0;margin:0;width:100%"  class="button button-assertive" ng-click="bowerdata()">查询</button>
   </div>
 </div>
 <!-- <div class="row" style="padding-bottom:0;margin-bottom:0"> -->

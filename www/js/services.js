@@ -2670,7 +2670,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         template: _msg,  // String (optional). The html template to place in the popup body.
         // templateUrl: '',  // String (optional). The URL of an html template to place in the popup   body.
         okText: '确认',  // String (default: 'OK'). The text of the OK button.
-        okType: 'button-energized'  // String (default: 'button-positive'). The type of the OK button.
+        okType: 'button-assertive'  // String (default: 'button-positive'). The type of the OK button.
       });
 
       if (_time) {
@@ -2696,7 +2696,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // confirmPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -2718,7 +2718,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -2740,7 +2740,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -2768,7 +2768,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           }
         }, {
           text: '确定',
-          type: 'button-positive',
+          type: 'button-assertive',
           onTap: function(e) {
             // Returning a value will cause the promise to resolve with the given value.
             // console.log($scope.ince.selected);  // 这里不能单纯用$scope.ince, 必须用对象

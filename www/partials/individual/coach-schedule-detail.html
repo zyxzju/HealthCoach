@@ -1,12 +1,12 @@
 <ion-view view-title="Calendar" hide-nav-bar="true">
 
 <ion-header-bar class="bar bar-positive">
-  <button class="button button-icon icon ion-arrow-left-a" ng-click="onClickBackward()"></button>
+  <button class="button button-icon icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
   <div class="h1 title">个人日程</div>
 </ion-header-bar>
 
 
-<ion-content class="padding">
+<ion-content>
     <div class = "list card">
       <div class = "item-divider">
             本次预约时间为：
@@ -15,16 +15,17 @@
 
         <ion-list>
           <div class="item item-icon-left" ng-repeat = "item in eventdetail">
-              <i class="icon ion-calendar"></i>
+              <i class="icon ion-clock"> </i>
                 {{item}}
           </div>
         </ion-list>
     </div>
+    <div class="padding">
+    
+      <span class="button button-block button-positive icon-left ion-wrench" ng-click = "onClickChangeApp()">修改时间</span>
 
-    <span class="button button-block button-positive icon-left ion-wrench" ng-click = "onClickChangeApp()">修改时间</span>
-
-    <span class="button button-block button-assertive icon-left ion-close" ng-click = "onClickCancelApp()">取消预约</span>
-
+      <span class="button button-block button-assertive icon-left ion-trash-a" ng-click = "onClickCancelApp()">取消预约</span>
+    </div>
 </ion-content>
 
 

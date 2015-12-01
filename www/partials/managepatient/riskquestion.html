@@ -170,7 +170,7 @@
                       {{value.M1.Age}} 岁              
                 </div>
 
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                   身高                    
                   <input type="range" name="level" ng-model = "value.M1.Height"  min = "130" max = "230" ng-change="rangeHasChanged(1)">
                    {{value.M1.Height}}   cm
@@ -181,7 +181,7 @@
                   <input type="range" name="level" ng-model = "value.M1.Weight" min = "1" max = "200"  ng-change="rangeHasChanged(1)">
                     {{value.M1.Weight}}  kg
                 </div>
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                   BMI                    
                 <input type="range" name="level" ng-model = "value.M1.BMI" disabled min="10" max = "40" step = "0.01">
                   {{value.M1.BMI | limitTo : 4 }}  kg/m2
@@ -192,7 +192,7 @@
                     {{value.M1.AbdominalGirth}} mm
                 </div>
 
-                <div class="item range range-balanced ">
+                <div class="item range range-positive ">
                     心律 
                     <!-- <i class="icon ion-volume-low"></i> -->  
                     <input type="range" name="level" ng-model = "value.M1.Heartrate" min = "0" max = "200">
@@ -210,14 +210,14 @@
                   {{value.M1.Tcho}} mmol/L
                 </div>
 
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                   高密度脂蛋白胆固醇                 
               
                  
                 </div>
 
 
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                                    
                       <input type="range" name="level" ng-model = "value.M1.Hdlc" min = "0.50" max = "2.99" step="0.01">
                   {{value.M1.Hdlc}} mmol/L
@@ -305,7 +305,7 @@
             <h2>心衰风险描述<h2>
           </div>
           
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                   
                       <input type="range" name="level" ng-model = "value.M3.NYHA" ng-change="rangeHasChanged(3)" min="1" max = "4" step = "1">
                       
@@ -393,7 +393,7 @@
                  过去十八个月第一次诊断为心衰
                 </div> 
                   
-                <div class="item range range-balanced">
+                <div class="item range range-positive">
                     射血分数 
                     <!-- <i class="icon ion-volume-low"></i> -->  
                     <input type="range" name="level" ng-model = "value.M3.EF" min="1" max = "100">
