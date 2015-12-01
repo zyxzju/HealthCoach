@@ -1640,6 +1640,16 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     };
     return undefined;
   }
+
+   self.getCalendarByParams = function(params){
+    console.log(params);
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      if(calendar[i].Description == params.Description && calendar[i].Period == params.Period && calendar[i].DateTime == params.DateTime)
+        return calendar[i];
+    };
+    return undefined;
+  }
+  
   self.getCanlendar = function(){
     return calendar;
   }
