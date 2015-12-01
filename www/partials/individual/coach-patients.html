@@ -71,10 +71,10 @@
               <!-- <div class="col-25"> -->
 <!--               <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
               <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p> -->
-              <p  class="planbox" style="color:#FFF" ng-if="(patient.Status-0)"><span ng-if="patient.Status*patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.Status*(patient.RemainingDays==0)">即将完成</span></p>
+              <p  class="planbox" style="color:#FFF" ng-if="patient.Status*patient.TotalDays*(patient.EndDate < 88880101)"><span ng-if="patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.RemainingDays=='0'">即将完成</span></p>
               <!-- <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 65px;width:100%;font-style:italic" >暂无计划</p>               -->
               <!-- </div> -->
-              <div class="processbar-back" ng-style="{'display':(patient.Status=='0'?'none':'block')}" >
+              <div class="processbar-back" ng-style="{'display':(patient.Status=='0'|| patient.TotalDays=='0'?'none':'block')}" >
               <div class="processbar" ng-style="{'width':patient.Process+'%'}" ></div>
               </div>
         
