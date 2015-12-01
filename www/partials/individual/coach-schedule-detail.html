@@ -38,18 +38,26 @@
     </ion-header-bar>
     <ion-content class ="padding">
 
-      <div class="item item-divider item-divider-calm"> 新增 </div> 
+      <div class="item item-divider item-divider-calm"> 本次预约修改为 </div> 
 
 
 
-  <label class="item item-input item-select">
-    <div class="input-label">
-      选择日期（未来30天）
-    </div>
-    <select ng-model = "event.DateTime">
-      <option ng-repeat =  "item in datesOptions" >{{item.toLocaleDateString()}}</option>
-    </select>
-  </label>
+
+
+ <ionic-datepicker input-obj="datepickerObject">
+   <label class="item">
+    <span>
+      选择新的时间(仅限未来30天)
+    </span>
+        <span class="item-note">
+          {{event.DateTime}}
+        </span>
+     
+  </label>       
+        
+   </ionic-datepicker>
+
+
   <label class="item item-input item-select">
     <div class="input-label">
       选择时间

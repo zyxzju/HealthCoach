@@ -1510,6 +1510,47 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
          return result; 
   }
   var eventB = deepCopy($scope.event);
+  //
+  var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+      $scope.datepickerObject.inputDate=val;
+        var dd=val.getDate();
+        var mm=val.getMonth()+1;
+        var yyyy=val.getFullYear();
+        var birthday=yyyy+'/'+mm+'/'+dd; 
+        $scope.event.DateTime=birthday;
+      }
+  };
+
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  var tt = new Date();
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(),   //Optional
+    to: new Date(tt.setDate(tt.getDate()+30)),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
+
   $ionicModal.fromTemplateUrl('my-modal-2.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1556,25 +1597,40 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       // var temp2 = new Object($scope.event);
         // $scope.event.Status = tt;
     PageFunc.confirm("确认修改日程信息","确认").then(function(res){
+
       if(res){
+
+
             var tempDate = $scope.event.DateTime.split("/",3);
-            var t =  tempDate[0] + 
-                   (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
-                   (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
 
-            $scope.event.DateTime = t;
-            // console.log(t);
+            if(tempDate.length != 3){
+
+              PageFunc.confirm("请选择日期或者取消退出","确认");
+              
+            }
+
+            else{
+
+                  var t =  tempDate[0] + 
+                         (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
+                         (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
+
+                  $scope.event.DateTime = t;
+                  // console.log(t);
+                  
+
+                  ScheduleService.postCalendar($scope.event);
+                  
+                  $timeout(function(){
+                    ScheduleService.cancelOneCalendar(eventB);            
+                    $scope.closeModal();
+                    $state.go('schedule');        
+                  },100);
+
+            }
+
             
 
-            ScheduleService.postCalendar($scope.event);
-            
-            $timeout(function(){
-              ScheduleService.cancelOneCalendar(eventB);
-            },1000);
-
-            
-            $scope.closeModal();
-            $state.go('schedule');        
       }
     })
 
