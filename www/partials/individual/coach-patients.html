@@ -41,18 +41,18 @@
       <hr class="list" />
     </div>
     <ion-list> 
-      <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="106px"  ng-click="PIDdetail(patient)" >
-      <ion-item class="item-thumbnail-left item-margin ">
+      <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="94px"  ng-click="PIDdetail(patient)" >
+      <ion-item class="item-avatar-left item-margin " style="height:88px">
         <img ng-src="{{patient.photoAddress}}">
-        <div style=" padding-left:84px">
-        <div class="row">
+        <div >
+        <div class="row" style=" padding-left:65px">
           <!-- <div class="col-10 "><div class="row"><h2>类别</h2><br></div><div class="row"><h2>消息</h2></div></div>  -->
           <!-- <div class="col-90"> -->
             <!-- <div class="row"> -->
               <div class="col-75">
                 <div class="row " style="padding-right:0">
-                  <div class="col-67"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
-                  <div class="col-33"><h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6></div>
+                  <div class="col-50"><h5><!--<i class="icon ion-chevron-right"></i>-->  {{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
+                  <div class="col-50"><h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6></div>
                 </div>
                 <div class="row">
                   <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
@@ -61,8 +61,8 @@
               <div class="col-25">
                 <div class="item-row">
                   <div class="col-40">
-                    <div class="row"><p>依从率</p></div>
-                    <div class="row" ><h5 ng-style="{'color':(patient.ComplianceRate>50?'#33cd5f':'#fb6a1b')}">{{patient.ComplianceRate}}%</h5></div>
+                    <h style="font-size:0.9rem">依从率</h>
+                    <h5 style="font-size:1.68rem" ng-style="{'color':(patient.ComplianceRate>50?'#33cd5f':'#fb6a1b')}">{{patient.ComplianceRate}}%</h5>
                   </div>
                 </div>
               </div>  
@@ -71,11 +71,11 @@
               <!-- <div class="col-25"> -->
 <!--               <p ng-if="(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 剩余{{patient.RemainingDays}}天</p>
               <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p> -->
-              <p style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> <span ng-if="patient.Status*patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.Status*(patient.RemainingDays==0)">即将完成</span><span ng-if="!(patient.Status-0)">暂无计划</span></p>
-              <!-- <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 5px;width:120px" ><i class="icon ion-arrow-graph-up-right"></i> 暂无计划</p>               -->
+              <p  class="planbox" style="color:#FFF" ng-if="(patient.Status-0)"><span ng-if="patient.Status*patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.Status*(patient.RemainingDays==0)">即将完成</span></p>
+              <!-- <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 65px;width:100%;font-style:italic" >暂无计划</p>               -->
               <!-- </div> -->
-              <div ng-style="{'display':(patient.Status=='0'?'none':'block')}" style="background-color:#E6E6E6; border:#DDDDDD 1px solid;width:100%">
-              <div ng-style="{'width':patient.Process+'%'}" class="processbar"><p style="color:#FFFFFF;text-align:right">{{patient.Process}}%</p></div>
+              <div class="processbar-back" ng-style="{'display':(patient.Status=='0'?'none':'block')}" >
+              <div class="processbar" ng-style="{'width':patient.Process+'%'}" ></div>
               </div>
         
             </div>

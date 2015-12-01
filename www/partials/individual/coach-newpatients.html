@@ -1,4 +1,7 @@
 <ion-view title="新患者">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+  </ion-nav-buttons>
   <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0px ">
       <a ng-style="select1" class="item col-50 " ng-click="openpopover($event,0)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a>
       <a ng-style="select2" class="item col-50 " style="border-right: 0px" ng-click="openpopover($event,1)">{{f.Status}} <i class="icon ion-android-arrow-dropdown"></i></a>
