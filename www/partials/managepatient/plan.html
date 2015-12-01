@@ -15,7 +15,7 @@
   <a class="button"  href="#/Independent/risk" >风险评估</a>
 </div>
 <div >
-  <div class="row" style="padding-bottom:0;min-height:30px">
+  <div class="row responsive-sm" style="padding-bottom:0;min-height:30px">
     <div class="col-67" style="padding-right:2%">
       <select style="width:100%" ng-model="planList" ng-change="changeplan(planList)" >
         <option value="{{latestplan}}">当前计划：{{latestplan.slice(3)}}</option>
@@ -34,10 +34,12 @@
   </div>
 </div>
 <div ng-if='diaplaysm' class="mono_font">暂无数据</div>
-<div  id='chartdiv3'  ng-style="suitstyle()">
+<div  id='chartdiv3' ng-hide='diaplaysm'  ng-style="suitstyle()">
 </div>
 <!-- <div style="height:10px" ></div> -->
-<div class="text-center" style="margin:0;font-size:0.8em">单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）</div>
+<div class="text-center" style="margin:0;font-size:0.8em" ng-hide='diaplaysm'>
+  单位（血压：mmHg，心率：次/分钟，血糖：nmol/L）
+</div>
 <div style="text-align:center">    
   <p style="color:#e66767;font-size:16px" ng-if=before>计划已结束</p>
   <p style="color:#e66767;font-size:16px" ng-if=none>无计划进度信息</p>

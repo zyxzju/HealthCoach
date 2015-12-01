@@ -8578,24 +8578,24 @@ $scope.loadingDone = false;
 
 
   //根据手机屏幕高度调整chart高度
-
+  // $scope.test='这是测试';
   var phoneheight = (window.innerHeight > 0) ? window.innerHeight : screen.height; 
-  console.log(phoneheight);
   var chartheight=phoneheight-290;
   Storage.set("phoneheight",phoneheight);
-  console.log(chartheight);
   
   if (chartheight>400) 
   {
     chartheight=400;
   };
   chartheight=chartheight+'px';
-  $scope.suitstyle=function(){
+
+  $scope.suitstyle=function()
+  {
   return {'height':'300px'};
   }
-
-  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-
+  //载入页面加载。。。
+  $scope.$on('$ionicView.enter', function() 
+  {   
     // loading图标显示
     $ionicLoading.show({
       content: '加载中',
@@ -8605,10 +8605,9 @@ $scope.loadingDone = false;
       showDelay: 0
     });
     //默认进入依从图，button颜色改变
-    $scope.mybuttonStyle={'color':'#3d6399','font-weight':'bold'};
+    $scope.mybuttonStyle={'color':'blue','font-weight':'bold'};
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
-    console.log($scope.age);
     $scope.gender=Storage.get('PatientGender');
     var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
     promise.then(function(data){
@@ -8618,15 +8617,13 @@ $scope.loadingDone = false;
 
   var PatintId = Storage.get('PatientID');
 
-  // var PatintId ="PID201506180013";
-  console.log(PatintId);
   //进入页面，调用函数获取任务列表（当前、往期计划）
   var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
   promiseS1.then(function(data1){
     // console.log(data1);
-
+    Storage.set("selectedvitaltype",'收缩压');   
     //计划进度情况
-    if (data1.length!=0) 
+    if (data1.length!=0&&data1[0].EndDate!="99991231") 
     {
       $scope.now=true;
       $scope.before=false;
@@ -8663,13 +8660,14 @@ $scope.loadingDone = false;
         
       };
       var startdate=changedatestyle(data1[0].StartDate);
+      console.log(startdate);
       //计划已经进行的时间
       var passday=GetDateDiff(startdate,today);
-      console.log(passday);
       //计划还要进行的时间
       var enddate=changedatestyle(data1[0].EndDate);
+      console.log(enddate);
+
       var processingday=GetDateDiff(today,enddate);
-      console.log(processingday);
       //获取计划总时间
       var planlength=GetDateDiff(startdate,enddate);
       //计划进展百分比
@@ -8690,19 +8688,26 @@ $scope.loadingDone = false;
 
     if (data1.length==0) 
     {
-    $scope.latestplan="无执行中的计划";
+    $scope.latestplan="余余余无执行中的计划";
+    $scope.planno="余余余无执行中的计划";
     $ionicLoading.hide();
     $scope.diaplaysm=true;
     }else
     {
     //页面载入时显示的当前计划，收缩压的图
     Storage.set("latestplanstartdate",data1[0].StartDate);
+    $scope.startdate=data1[0].StartDate;
+
     Storage.set("latestplanenddate",data1[0].EndDate);
+    $scope.enddate=data1[0].EndDate;
+
     Storage.set("latestplanno",data1[0].PlanNo);
+    $scope.planno=data1[0].PlanNo;
     $scope.latestPlanInfo=data1;
     $scope.latestplan=data1[0].PlanNo;
     //console.log($scope.latestplan);
 
+    //
     var d = {
       UserId:PatintId,
       PlanNo:data1[0].PlanNo,
@@ -8734,6 +8739,7 @@ $scope.loadingDone = false;
           {
             $scope.diaplaysm=false;
           };
+
             createStockChart($scope.HPchartdate,"收缩压","mmHg");
               
               $ionicLoading.hide();
@@ -8741,20 +8747,6 @@ $scope.loadingDone = false;
         /////
       });
 
-
-    //点击切换各个体征的图
-    $scope.changeVitalInfo = function(option) {
-      Storage.set("selectedvitaltype",option.SignName);
-     $ionicLoading.show({
-        content: '加载中',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0
-      });
-      //传参调函画图
-      drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
-    };
   };
 
     //再调用同一函数，status=4，调取往期计划planno
@@ -8767,54 +8759,87 @@ $scope.loadingDone = false;
 
   }, function(e) {
       ///// 
-    }
-    );
+    });
+  });
 
-  // $scope.planList={"pl":""};
-  $scope.changeplan= function(changedplan){
-   $scope.planno=changedplan;
-   $scope.localselectedname=Storage.get("selectedvitaltype");
-   $scope.plan=angular.fromJson(Storage.get("formerplan"));
-   if (changedplan==Storage.get("latestplanno")) {
-    $scope.now=1;
-    $scope.before=0;
-    $scope.none=0;
-    $scope.startdate=Storage.get("latestplanstartdate");
-    $scope.enddate=Storage.get("latestplanenddate");
-  }else{
-    if (changedplan=="无执行中的计划") {
-      $scope.now=0;
-      $scope.before=0;
-      $scope.none=1;
-    }else{
-     $scope.now=0;
-     $scope.before=1;
-     $scope.none=0;
-    };
-    for (var i = 0; i <= $scope.plan.length-1; i++) {
-      //console.log($scope.plan[i].PlanName);
-      if ($scope.plan[i].PlanNo==changedplan) {
-       $scope.startdate= $scope.plan[i].StartDate;
-       $scope.enddate=$scope.plan[i].EndDate;
+  //切换不同计划时
+  $scope.changeplan= function(changedplan)
+  {
+    // var wetherdraw=true;
+    $scope.planno=changedplan;
+    Storage.set('selectedplan',changedplan);
+    console.log(Storage.get('selectedplan'));
+    $scope.localselectedname=Storage.get("selectedvitaltype");
+    $scope.plan=angular.fromJson(Storage.get("formerplan"));
+    if (changedplan==Storage.get("latestplanno")) 
+    {
+      if (Storage.get("latestplanenddate")=="99991231")
+       {
+         $scope.now=0;
+         $scope.before=0;
+         $scope.none=1;
+       }else
+       {
+        $scope.now=1;
+        $scope.before=0;
+        $scope.none=0;
+       };
+      $scope.startdate=Storage.get("latestplanstartdate");
+      $scope.enddate=Storage.get("latestplanenddate");
+    }else
+    {
+      if (changedplan=="余余余无执行中的计划") 
+      {
+        // wetherdraw=false;
+        // $scope.planno='';
+        $scope.now=0;
+        $scope.before=0;
+        $scope.none=1;
+      }else
+      {
+       $scope.now=0;
+       $scope.before=1;
+       $scope.none=0;
+       for (var i = 0; i <= $scope.plan.length-1; i++) 
+       {
+          //console.log($scope.plan[i].PlanName);
+          if ($scope.plan[i].PlanNo==changedplan) 
+          {
+           $scope.startdate= $scope.plan[i].StartDate;
+           $scope.enddate=$scope.plan[i].EndDate;
+         };
        };
      };
    };
-
-  drawcharts($scope.localselectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
-
-  $scope.changeVitalInfo = function(option) {
-     Storage.set("selectedvitaltype",option.SignName);
-     $scope.selectedname=option.SignName;
-   //传参调函画图
-  drawcharts($scope.selectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
+  drawcharts($scope.localselectedname,Storage.get('PatientID'),$scope.planno,$scope.startdate,$scope.enddate);
   };
-  };
-  //提振参数选择下拉框选项 默认收缩压selected
+  //切换体征
+  $scope.changeVitalInfo = function(option) 
+    {
+      console.log($scope.planno);
+       $scope.selectedname=option.SignName;
+       if ($scope.planno=="余余余无执行中的计划") 
+        {
+             //传参调函画图
+         drawcharts($scope.selectedname,Storage.get('PatientID'),$scope.planno,99991231,99991231);
+        }else
+        {
+             //传参调函画图
+          drawcharts($scope.selectedname,Storage.get('PatientID'),$scope.planno,$scope.startdate,$scope.enddate);
+        }
+       $ionicLoading.show
+          ({
+            content: '加载中',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0
+          });
+       Storage.set("selectedvitaltype",option.SignName);
+    
 
-  });  
-
+    };
+ //提振参数选择下拉框选项 默认收缩压selected
   $scope.options = [{"SignName":"收缩压"},
     {"SignName":"舒张压"},
     {"SignName":"脉率"},
@@ -8828,8 +8853,8 @@ $scope.loadingDone = false;
     {"SignName":"晚餐后血糖"},
   ];  
   $scope.vitalInfo =$scope.options[0];
-  console.log($scope.options[0]);
-  console.log($scope.vitalInfo);
+  // console.log($scope.options[0]);
+  // console.log($scope.vitalInfo);
     //切换体征选项后，重新绘制
   var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
     if (param=="舒张压") {
@@ -8861,8 +8886,12 @@ $scope.loadingDone = false;
             createStockChart($scope.LPchartdate,"舒张压","mmHg");
 
           // createStockChart($scope.LPchartdate,"舒张压","mmHg");
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $scope.LPchartdate='';
+            console.log(1);
+            $ionicLoading.hide();
+          });
     };
     if (param=="收缩压") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
@@ -8891,9 +8920,11 @@ $scope.loadingDone = false;
             createStockChart($scope.HPchartdate,"收缩压","mmHg");
           // createStockChart($scope.HPchartdate,"收缩压","mmHg");
           // $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-        /////
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+            /////
+          });
     };
     if (param=="脉率") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
@@ -8921,8 +8952,10 @@ $scope.loadingDone = false;
             createStockChart($scope.HBchartdate,"脉率","次/分钟");
           // createStockChart($scope.HBchartdate,"脉率","次/分钟");
           // $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+          $ionicLoading.hide();
+          });
     };
     if(param=="凌晨血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
@@ -8950,8 +8983,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="睡前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
@@ -8979,8 +9014,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-        });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     }
     if(param=="早餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
@@ -9008,8 +9045,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="早餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
@@ -9037,8 +9076,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+            {
+                $ionicLoading.hide();
+            });
     };
     if(param=="午餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
@@ -9066,8 +9107,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="午餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
@@ -9095,8 +9138,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="晚餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
@@ -9124,8 +9169,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+        {
+          $ionicLoading.hide();
+        });
     };
     if(param=="晚餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
@@ -9154,8 +9201,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+        {
+          $ionicLoading.hide();
+        });
     };
   }
   //传参绘图
@@ -9245,7 +9294,7 @@ $scope.loadingDone = false;
     }
     //返回主页面
     $scope.backtocoach=function(){
-      $state.go('coach.patients');
+      $state.go('coach.home');
     };
 
 })
