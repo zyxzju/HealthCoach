@@ -1,9 +1,9 @@
 <ion-view view-title = "主页 " hide-nav-bar="true">
 
   <ion-header-bar class="bar-positive nav-title-slide-ios7">
-    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()">扫一扫</button>
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
     <div class="h1 title">主页</div>
-    <button class="button button-icon icon ion-plus-round" ng-click="addpatient()">新患者</button>
+    <button class="button button-icon icon ion-plus-round" ng-click="addpatient()"></button>
   </ion-header-bar>
 <!-- 
   <ion-nav-bar class="bar-positive nav-title-slide-ios7">
@@ -17,7 +17,8 @@
   </ion-nav-bar> -->
 <div class="bar-shadow"></div>
 <ion-content>
-  <div class="list card" style="border:#BBBBBB 1px solid">
+
+<!--   <div class="list card" style="border:#BBBBBB 1px solid">
     <div class="item item-avatar">
       <img ng-src="{{imgURI}}">
       <h3>{{ userInfo.BasicInfo.name }} </h3>
@@ -39,18 +40,73 @@
       <i class="icon ion-arrow-graph-up-left"></i>
       {{userInfo.DtInfo.level}}
     </div>
-  </div>
+  </div> -->
+
+
+     <div class="list card" style="border:#BBBBBB 1px solid">
+
+        <ion-item class="item-avatar">
+            <img src="{{imgURI}}">
+            <h2>{{ userInfo.BasicInfo.name }}</h2>
+           
+        </ion-item> 
+     
+        <div class="item item-body">
+          <!-- <p><i class="icon ion-thumbsup assertive"></i>负责模块：{{HealthCoachInfo.module}}</p> -->
+          <p> <i class="icon ion-person positive"></i>  身份信息：{{userInfo.DtInfo.unitname}}  | {{userInfo.DtInfo.jobTitle}} | {{userInfo.DtInfo.dept}}({{userInfo.DtInfo.level}})</p>
+          <p> <i class="icon ion-ios-pulse-strong positive"></i>  负责模块：高血压模块 | 糖尿病模块 | 心力衰竭模块</p>
+          <p> <i class="icon ion-thumbsup positive"></i>  总体评分：{{HealthCoachInfo.generalscore}}</p>
+          <p> <i class="icon ion-thumbsup positive"></i>  整体评价：{{HealthCoachInfo.generalComment}}</p>
+          <!-- <p>活跃度：{{HealthCoachInfo.activityDegree}}</p> -->
+          <!-- <p> <i class="icon ion-android-happy positive"></i>{{HealthCoachInfo.Description}}</p> -->
+       <!--  </div> -->
+         
+          <a class="item item-icon-left item-icon-right positive" >
+           <i class="icon ion-compose"></i>
+            评论列表({{HealthCoachInfo.commentNum}})
+            <i class="icon ion-ios-arrow-right"></i>
+          </a>
+       <!--  </div> -->
+
+        <ion-item class="item-avatar" ng-repeat="comment in CommentList " class="item-avatar">
+            <img src={{comment.imageURL}}>
+            <h2>{{comment.Name}} </h2>
+            <p>{{comment.Score}}分 {{comment.CommentTime}}</p>
+            <p>{{comment.Comment}}</p>
+        </ion-item>
+        <!-- </div> -->
+     
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item" ng-click="showreservePop()" style="font-size:14px;">
+            <i class="icon ion-thumbsup"></i>
+            预约计划
+          </a>
+          <a class="tab-item"  style="font-size:14px;">
+            <i class="icon ion-chatbox"></i>
+            评价
+          </a>
+          <!-- <a class="tab-item" ng-click="showRemovePop()" style="font-size:14px;">
+            <i class="icon ion-trash-a"></i>
+            解除关系
+          </a> -->
+        </div>
+
+      </div>
+
+
+
+    </div>
   <ion-list>
     <div class ="padding ">
             <button class="button button-block  button-assertive" ng-click="onClickCheck()" ng-hide="state == '已激活'">
       进入审核页面 {{state}}
     </button>
     
-        <span class="button button-block  icon ion-information-circled" ng-click="onClickPersonalInfo()" href='#/personalinfo'>
+        <span class="button button-block  icon ion-information-circled" ng-click="onClickPersonalInfo()" >
           个人信息
         </span>
 
-        <span class="button button-block  icon ion-calendar" ng-click="onClickPersonalSchedule()" href='#/schedule'>
+        <span class="button button-block  icon ion-calendar" ng-click="onClickPersonalSchedule()">
           专员日程
         </span>
         
@@ -58,10 +114,7 @@
           设置
         </span>
 
-
-
     </div>
-
   </ion-list>
 
 </ion-content>
