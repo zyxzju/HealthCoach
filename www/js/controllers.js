@@ -751,8 +751,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 // Coach HomePage/Me Controller 主页的controller 主要负责从home状态跳转到 其他三个状态/读取localstorage的数据
 // ----------------------------------------------------------------------------------------
 .controller('CoachHomeCtrl', 
-  ['$scope','$state','$stateParams','$cordovaBarcodeScanner','$ionicPopup','userINFO','Storage','Users','CONFIG','$timeout',
-  function($scope,$state,$stateParams,$cordovaBarcodeScanner,ionicPopup,userINFO,Storage,Users,CONFIG,$timeout) { //LRZ
+  ['$scope','$state','$stateParams','$cordovaBarcodeScanner','$ionicPopup','userINFO','Storage','Users','CONFIG','$timeout','$ionicLoading',
+  function($scope,$state,$stateParams,$cordovaBarcodeScanner,$ionicPopup,userINFO,Storage,Users,CONFIG,$timeout,$ionicLoading) { //LRZ
    
    // //console.log($stateParams.info);
    // //console.log($stateParams.info.intro);
@@ -834,99 +834,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
         Storage.set('doctorphoto',$scope.imgURI);
      });
-    $scope.QRscan = function(){
-      // backbeforesearch();
-      var isMyPID=0;
-      var setData =function(thisPatient){
-        Storage.set("PatientID",thisPatient.PatientId);     
-        Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
-        Storage.set("PatientName",thisPatient.PatientName);
-        if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
-          thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
-        }else{
-          thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
-        }
-        userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
-          Storage.set('PatientAge',data.Age+'岁');
-          Storage.set('PatientGender',data.GenderText);
-          $state.go('manage.plan');
-        },function(data){
-          // fail请求数据
-        });
-      }
-      $cordovaBarcodeScanner
-      .scan()
-      .then(function(data) {
-        // Success! Barcode data is here
-        // var s = "Result: " + data.text + "<br/>" +
-        // "Format: " + data.format + "<br/>" +
-        // "Cancelled: " + data.cancelled;
-        if(data.cancelled!=true){
-          dataloading();
-          var newpid=data.text
-          var tempf="PatientId eq '"+newpid+"'";
-          userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM1','0','0')
-          .then(function(data){
-            if(data.length==1){
-              setData(data[0]);
-            }else{
-              userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM2','0','0')
-              .then(function(data){
-                if(data.length==1){
-                  setData(data[0]);
-                }else{
-                  userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM3','0','0')
-                  .then(function(data){
-                    $ionicLoading.hide();
-                    if(data.length==1){
-                      setData(data[0]);
-                    }else{
-                      var myPopup = $ionicPopup.show({
-                      template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
-                      //title: '',
-                      //subTitle: '2',
-                      scope: $scope,
-                      buttons: [
-                        { text: '取消',
-                        type: 'button-small',
-                        onTap: function(e) {                
-                        }
-                        },
-                        {
-                        text: '<b>确定</b>',
-                        type: 'button-small button-positive ',
-                        onTap: function(e) {
-                          Storage.set("newPatientID",newpid);
-                          $state.go('addpatient.basicinfo');
-                        }
-                        }
-                      ]
-                      });
-                    }                  
-                  },function(){
-                    $ionicLoading.hide();
-                    alert('网络问题');
-                    // fail请求数据
-                  });
-                }
-              },function(data){
-                $ionicLoading.hide();
-                alert('网络问题');
-                // fail请求数据
-              });            
-            }
-          },function(data){
-            $ionicLoading.hide();
-            alert('网络问题');
-            // fail请求数据
-          });
-        }else{
-          alert('数据解析出错，请再试一次');
-        }
-      }, function(error) {
-        alert('扫码FAILED');
-      });
-    }      
+     
   }
 
   $scope.onClickTest = function(){
@@ -962,6 +870,97 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     console.log("接受到了提交广播");
     if($scope.state != "已通过" ) $scope.state = "待审核";
   })     
+ $scope.QRscan = function(){
+    var DOCID=Storage.get('UID');
+    var isMyPID=0;
+    var setData =function(thisPatient){
+      Storage.set("PatientID",thisPatient.PatientId);     
+      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+      Storage.set("PatientName",thisPatient.PatientName);
+      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+      }
+      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+        Storage.set('PatientAge',data.Age+'岁');
+        Storage.set('PatientGender',data.GenderText);
+        $state.go('manage.plan');
+      },function(data){
+        // fail请求数据
+      });
+    }
+    $cordovaBarcodeScanner
+    .scan()
+    .then(function(data) {
+      // Success! Barcode data is here
+      // var s = "Result: " + data.text + "<br/>" +
+      // "Format: " + data.format + "<br/>" +
+      // "Cancelled: " + data.cancelled;
+      if(data.cancelled!=true){
+        $ionicLoading.show({ template: '正在查询'});
+        var newpid=data.text
+        var tempf="PatientId eq '"+newpid+"'";
+        userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM1','0','0')
+        .then(function(data){
+          if(data.length==1){
+            setData(data[0]);
+          }else{
+            userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM2','0','0')
+            .then(function(data){
+              if(data.length==1){
+                setData(data[0]);
+              }else{
+                userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM3','0','0')
+                .then(function(data){
+                  $ionicLoading.hide();
+                  if(data.length==1){
+                    setData(data[0]);
+                  }else{
+                    var myPopup = $ionicPopup.show({
+                    template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+                    //title: '',
+                    //subTitle: '2',
+                    scope: $scope,
+                    buttons: [
+                      { text: '取消',
+                      type: 'button-small',
+                      onTap: function(e) {                
+                      }
+                      },
+                      {
+                      text: '<b>确定</b>',
+                      type: 'button-small button-positive ',
+                      onTap: function(e) {
+                        Storage.set("newPatientID",newpid);
+                        $state.go('addpatient.basicinfo');
+                      }
+                      }
+                    ]
+                    });
+                  }                  
+                },function(){
+                  $ionicLoading.hide();
+                  alert('网络问题');
+                  // fail请求数据
+                });
+              }
+            },function(data){
+              $ionicLoading.hide();
+              alert('网络问题');
+              // fail请求数据
+            });            
+          }
+        },function(data){
+          $ionicLoading.hide();
+          alert('网络问题');
+          // fail请求数据
+        });
+      }
+    }, function(error) {
+      alert('扫码FAILED');
+    });
+  }      
 }])
 // Coach Personal Config Controller 个人设置页面的controller  
 // ----------------------------------------------------------------------------------------
@@ -2136,7 +2135,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       // "Format: " + data.format + "<br/>" +
       // "Cancelled: " + data.cancelled;
       if(data.cancelled!=true){
-        dataloading();
+        $ionicLoading.show({ template: '正在查询'});
         var newpid=data.text
         var tempf="PatientId eq '"+newpid+"'";
         userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
@@ -2194,8 +2193,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           alert('网络问题');
           // fail请求数据
         });
-      }else{
-        alert('数据解析出错，请再试一次');
       }
     }, function(error) {
       alert('扫码FAILED');
@@ -2495,7 +2492,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
   dataloading();
   $scope.f={module:'病种',Status:'预约状态'}
-  var subConfig=[[{Name:'高血压',filterprop:" and module eq  '高血压模块'"},{Name:'糖尿病',filterprop:" and module eq  '糖尿病模块'"},{Name:'心衰',filterprop:" and module eq  '心衰模块'"},{Name:'全部',filterprop:''}],
+  var subConfig=[[{Name:'高血压',filterprop:" and module eq  '高血压模块'"},{Name:'糖尿病',filterprop:" and module eq  '糖尿病模块'"},{Name:'心衰',filterprop:" and module eq  '心力衰竭模块'"},{Name:'全部',filterprop:''}],
       [{Name:'预约申请中',filterprop:"AppointmentStatus eq  '1'"},{Name:'已预约',filterprop:"AppointmentStatus eq  '4'"},{Name:'全部',filterprop:"(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')"}],
       [{Name:'更多'}]];
   $scope.openpopover=function($event,xx){
@@ -2577,9 +2574,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     var mins=parseInt(date.substr(14,2));
     var sec=parseInt(date.substr(17,2));   
     var t0=new Date(yyyy,mm,dd,hh,mins,sec);
-    console.log(t,t0)
+    // console.log(t,t0)
     var diff=parseInt((t.getTime()-t0.getTime())/60000);
-    console.log(diff);
+    // console.log(diff);
     var h=parseInt(diff/60);
     var d=parseInt(h/24);
     var mo=parseInt(d/30.5);
@@ -2599,7 +2596,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       return '刚刚';
     } 
   }
-  var orderConfig ="ApplicationTime desc,AppointmentTime,name";
+  var orderConfig ="AppointmentStatus,ApplicationTime desc,AppointmentTime,name";
   var filterConfig = "(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
   var decoration =function(data){
     if(data.length!=0){
@@ -2626,7 +2623,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           temp.Module="高血压";
         }else if(temp.module=='糖尿病模块'){
           temp.Module="糖尿病";
-        }else if(temp.module=='心衰模块'){
+        }else if(temp.module=='心力衰竭模块'){
           temp.Module="心衰";
         }
         if(temp.AppointmentStatus=="1"){
@@ -2636,7 +2633,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         }
 
         temp.ApplyTime= dateHowFar(temp.ApplicationTime);
-        // temp.ApplicationTime.substr(5,2)+'-'+ temp.ApplicationTime.substr(8,8);
+        // console.log(temp.AppointmentTime)
         temp.AppointmentTime = temp.AppointmentTime.substr(5,2)+'-'+ temp.AppointmentTime.substr(8,8);
 
         PatientsList.push(temp);
@@ -2691,7 +2688,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   //   $scope.patients.splice(index, 1);
   // } 
   $scope.QRscan = function(){
-    // backbeforesearch();
     var isMyPID=0;
     var setData =function(thisPatient){
       Storage.set("PatientID",thisPatient.PatientId);     
@@ -2718,7 +2714,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       // "Format: " + data.format + "<br/>" +
       // "Cancelled: " + data.cancelled;
       if(data.cancelled!=true){
-        dataloading();
+        $ionicLoading.show({ template: '正在查询'});
         var newpid=data.text
         var tempf="PatientId eq '"+newpid+"'";
         userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM1','0','0')
@@ -2776,8 +2772,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           alert('网络问题');
           // fail请求数据
         });
-      }else{
-        alert('数据解析出错，请再试一次');
       }
     }, function(error) {
       alert('扫码FAILED');
