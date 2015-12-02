@@ -8,16 +8,45 @@
 
 <ion-content>
     <div class = "list card">
-      <div class = "item-divider">
+      <div class = "item item-divider">
+    
             本次预约时间为：
             {{event.DateTime}}  的  {{event.Period}}
       </div>
 
         <ion-list>
-          <div class="item item-icon-left" ng-repeat = "item in eventdetail">
-              <i class="icon ion-clock"> </i>
-                {{item}}
+          <div class="item item-icon-left " >
+              <i class="icon ion-person"> </i>
+              患者姓名
+              <span class="item-note-2">
+                 {{ eventdetail[0] }}
+              </span>
+               
           </div>
+          <div class="item item-icon-left" >
+              <i class="icon ion-calendar"> </i>
+                患者年龄               
+                <span class="item-note-2">
+                 {{ eventdetail[1] }}
+                  </span>
+               
+          </div>
+          <div class="item item-icon-left">
+              <i class="icon ion-ios-pulse-strong"> </i>
+              疾病模块               
+              <span class="item-note-2">
+               {{ eventdetail[2] }}
+                </span>
+               
+          </div>
+          <div class="item item-icon-left item-text-wrap" >
+              <i class="icon ion-ios-list"> </i>
+              患者自述               
+              
+               <p>{{ eventdetail[3] }}</p>
+         
+               
+          </div>          
         </ion-list>
     </div>
     <div class="padding">

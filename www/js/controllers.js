@@ -1511,7 +1511,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.onClickBackward = function(){
      $ionicHistory.goBack();
   }
+  $scope.onClickRefresh =function(){
+    ScheduleService.initialize(); 
+      $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
 
+      $timeout(function(){
+        $ionicLoading.hide();
+      },2500);
+  }
   $scope.$on('GotCanlendar',function(){
   // $scope.loadingDone = false;
     $scope.events.length = 0;
@@ -1569,12 +1582,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
   $scope.event = ScheduleService.getEventByParams($scope.params);
 
-  $scope.eventdetail = $scope.event.Description.split("||",7);
+  $scope.eventdetail = $scope.event.Description.split("||",4);
+  console.log($scope.event);
+  console.log($scope.eventdetail);
   for (var i = $scope.eventdetail.length - 1; i >= 0; i--) {
    
     if(typeof($scope.eventdetail[i]) === 'undefined' || $scope.eventdetail[i] =="" )  {
-      console.log($scope.eventdetail);
-      $scope.eventdetail.splice($scope.eventdetail.indexOf($scope.eventdetail[i]),1);      
+      // console.log($scope.eventdetail);
+      // $scope.eventdetail.splice($scope.eventdetail.indexOf($scope.eventdetail[i]),1);      
     }
 
   };

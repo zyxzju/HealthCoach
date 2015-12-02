@@ -1475,7 +1475,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     for (var i = calendar.length - 1; i >= 0; i--) {
       var temp =  { };
       var flag = true;
-      temp.title = calendar[i].Description;
+      
       var t = calendar[i].DateTime;
       if(calendar[i].Status == '0' || calendar[i].Status == 0 ) flag = false;
       //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
@@ -1510,6 +1510,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             temp.end = end;
             temp.url = '#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
             // temp.stick = true;
+            temp.title = calendar[i].Description.split("||",4)[0];
+
+
             if(flag)events.push(temp);
       }
       
