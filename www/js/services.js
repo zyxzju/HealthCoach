@@ -885,7 +885,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         "type": "serial",
         "theme": "light",
           "dataProvider": [{
-              "type": "收缩压",
+              "type": "收缩压 (mmHg)",
               "state1": 40+80,
               "state2": 20,
               "state3": 20,
@@ -895,7 +895,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "target": 120               //params
 
           }, {
-              "type": "舒张压",
+              "type": "舒张压 (mmHg)",
               "state1": 20+80,
               "state2": 20,
               "state3": 20,
@@ -1103,7 +1103,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         "type": "serial",
         "theme": "light",
           "dataProvider": [{
-              "type": "一年死亡风险",
+              "type": "一年死亡风险 (%)",
               "state1": 4.8,
               "state2": 17.5-4.8,
               "state3": 42.7-17.5,
@@ -1113,7 +1113,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "target": 0               //params
 
           }, {
-              "type": "三年死亡风险",
+              "type": "三年死亡风险 (%)",
               "state1": 12.2,
               "state2": 39.7-12.2,
               "state3": 75.6-39.7,
@@ -1130,9 +1130,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           }],
           "startDuration": 0.1,
           "graphs": [{
-              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>2.5%</b></span>",
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>很安全</b></span>",
               "fillAlphas": 0.8,
-              //"labelText": "[[value]]",
+              "labelText": "",
               "lineAlpha": 0.3,
               "title": "很安全",
               "type": "column",
@@ -1140,51 +1140,51 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               "columnWidth": 0.618,
               "valueField": "state1"
           }, {
-              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>正常</b></span>",
               "fillAlphas": 0.8,
-             // "labelText": "[[value]]",
+              "labelText": " ",
               "lineAlpha": 0.3,
-              "title": "正常",
+              "title": "",
               "type": "column",
               "color": "#000000",
               "columnWidth": 0.618,
               "valueField": "state2"
           }, {
-              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>良好</b></span>",
               "fillAlphas": 0.8,
-              //"labelText": "[[value]]",
+              "labelText": "",
               "lineAlpha": 0.3,
-              "title": "良好",
+              "title": "",
               "type": "column",
               "color": "#000000",
               "columnWidth": 0.618,
               "valueField": "state3"
           }, {
-             // "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
+             "balloonText": "<span style='font-size:14px'>[[category]]: <b>危险</b></span>",
               "fillAlphas": 0.8,
-              //"labelText": "[[value]]",
+              "labelText": "",
               "lineAlpha": 0.3,
-              "title": "很危险",
+              "title": "",
               "type": "column",
               "color": "#000000",
               "columnWidth": 0.618,
               "valueField": "state4"
           }, {
-              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
+              "balloonText": "<br><span style='font-size:14px'>[[category]]: <b>极度危险</b></span>",
               "fillAlphas": 0.8,
-              //"labelText": "[[value]]",
+              "labelText": "",
               "lineAlpha": 0.3,
-              "title": "极度危险",
+              "title": "",
               "type": "column",
               "color": "#000000",
               "columnWidth": 0.618,
               "valueField": "state5"
           }, {
-              //"balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
+              // "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
               "fillAlphas": 0,
               "columnWidth": 0.5,
               "lineThickness": 5,
-              "labelText": "[[value]]"+" 当前",
+              "labelText": "[[value]]"+"  %  当前",
               "clustered": false,
               "lineAlpha": 1.5,
               "stackable": false,
@@ -1334,8 +1334,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             newRisks[i].M1show = false;
             newRisks[i].M1 = {Result: "您本次没有进行高血压的风险评估"};
           }
-        else  newRisks[i].M1show = true;
-        
+        else  {
+          newRisks[i].M1show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M1.AssessmentTime;
+        }
         if(typeof(newRisks[i].M2) == 'undefined' || 
            typeof(newRisks[i].M2.AssessmentTime) == 'undefined' ||
            typeof(newRisks[i].M2.Period) == 'undefined' ||
@@ -1344,7 +1346,11 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             newRisks[i].M2show = false;
             newRisks[i].M2 = {Result :"您本次没有进行糖尿病的风险评估"};
           }
-        else newRisks[i].M2show = true;
+        else{
+          newRisks[i].M2show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M2.AssessmentTime;
+        } 
+          
 
         if(typeof(newRisks[i].M3) == 'undefined' || 
            typeof(newRisks[i].M3.AssessmentTime) == 'undefined' ||
@@ -1354,7 +1360,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             newRisks[i].M3show = false;
             newRisks[i].M3 = {Result :"您本次没有进行心衰的风险评估"};
           }
-        else newRisks[i].M3show = true;
+        else{
+          newRisks[i].M3show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M3.AssessmentTime;
+        } 
       };
       // console.log(newRisks);
       console.log("finished sorting lists");    
@@ -1475,7 +1484,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     for (var i = calendar.length - 1; i >= 0; i--) {
       var temp =  { };
       var flag = true;
-      temp.title = calendar[i].Description;
+      
       var t = calendar[i].DateTime;
       if(calendar[i].Status == '0' || calendar[i].Status == 0 ) flag = false;
       //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
@@ -1510,6 +1519,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             temp.end = end;
             temp.url = '#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
             // temp.stick = true;
+            temp.title = calendar[i].Description.split("||",4)[0];
+
+
             if(flag)events.push(temp);
       }
       

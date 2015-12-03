@@ -666,7 +666,7 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     }
     if (title == "新申请")
     {
-      Storage.set('PatientID', alertContent.extras.cn.jpush.android.EXTRA.SenderID);
+      Storage.set('PatientID', SenderID);
       $state.go('');
     }
     alert("open Notificaiton:"+alertContent);

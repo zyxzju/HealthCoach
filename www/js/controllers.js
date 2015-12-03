@@ -751,8 +751,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 // Coach HomePage/Me Controller 主页的controller 主要负责从home状态跳转到 其他三个状态/读取localstorage的数据
 // ----------------------------------------------------------------------------------------
 .controller('CoachHomeCtrl', 
-  ['$scope','$state','$stateParams','$cordovaBarcodeScanner','Storage','Users','CONFIG','$timeout',
-  function($scope,$state,$stateParams,$cordovaBarcodeScanner,Storage,Users,CONFIG,$timeout) { //LRZ
+  ['$scope','$state','$stateParams','$cordovaBarcodeScanner','$ionicPopup','userINFO','Storage','Users','CONFIG','$timeout','$ionicLoading',
+  function($scope,$state,$stateParams,$cordovaBarcodeScanner,$ionicPopup,userINFO,Storage,Users,CONFIG,$timeout,$ionicLoading) { //LRZ
    
    // //console.log($stateParams.info);
    // //console.log($stateParams.info.intro);
@@ -834,7 +834,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
         Storage.set('doctorphoto',$scope.imgURI);
      });
-
+     
   }
 
   $scope.onClickTest = function(){
@@ -851,20 +851,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
   $scope.onClickPersonalSchedule = function(){
       $state.go('schedule');
-  };
-  $scope.QRscan = function(){
-    $cordovaBarcodeScanner
-      .scan()
-      .then(function(data) {
-        // Success! Barcode data is here
-        var s = "Result: " + data.text + "<br/>" +
-      "Format: " + data.format + "<br/>" +
-      "Cancelled: " + data.cancelled;
-        alert(s);
-      }, function(error) {
-        // An error occurred
-        alert(error);
-      });
   };
 
   $scope.addpatient = function(){
@@ -884,6 +870,97 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     console.log("接受到了提交广播");
     if($scope.state != "已通过" ) $scope.state = "待审核";
   })     
+ $scope.QRscan = function(){
+    var DOCID=Storage.get('UID');
+    var isMyPID=0;
+    var setData =function(thisPatient){
+      Storage.set("PatientID",thisPatient.PatientId);     
+      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+      Storage.set("PatientName",thisPatient.PatientName);
+      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+      }
+      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+        Storage.set('PatientAge',data.Age+'岁');
+        Storage.set('PatientGender',data.GenderText);
+        $state.go('manage.plan');
+      },function(data){
+        // fail请求数据
+      });
+    }
+    $cordovaBarcodeScanner
+    .scan()
+    .then(function(data) {
+      // Success! Barcode data is here
+      // var s = "Result: " + data.text + "<br/>" +
+      // "Format: " + data.format + "<br/>" +
+      // "Cancelled: " + data.cancelled;
+      if(data.cancelled!=true){
+        $ionicLoading.show({ template: '正在查询'});
+        var newpid=data.text
+        var tempf="PatientId eq '"+newpid+"'";
+        userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM1','0','0')
+        .then(function(data){
+          if(data.length==1){
+            setData(data[0]);
+          }else{
+            userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM2','0','0')
+            .then(function(data){
+              if(data.length==1){
+                setData(data[0]);
+              }else{
+                userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM3','0','0')
+                .then(function(data){
+                  $ionicLoading.hide();
+                  if(data.length==1){
+                    setData(data[0]);
+                  }else{
+                    var myPopup = $ionicPopup.show({
+                    template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+                    //title: '',
+                    //subTitle: '2',
+                    scope: $scope,
+                    buttons: [
+                      { text: '取消',
+                      type: 'button-small',
+                      onTap: function(e) {                
+                      }
+                      },
+                      {
+                      text: '<b>确定</b>',
+                      type: 'button-small button-positive ',
+                      onTap: function(e) {
+                        Storage.set("newPatientID",newpid);
+                        $state.go('addpatient.basicinfo');
+                      }
+                      }
+                    ]
+                    });
+                  }                  
+                },function(){
+                  $ionicLoading.hide();
+                  alert('网络问题');
+                  // fail请求数据
+                });
+              }
+            },function(data){
+              $ionicLoading.hide();
+              alert('网络问题');
+              // fail请求数据
+            });            
+          }
+        },function(data){
+          $ionicLoading.hide();
+          alert('网络问题');
+          // fail请求数据
+        });
+      }
+    }, function(error) {
+      alert('扫码FAILED');
+    });
+  }      
 }])
 // Coach Personal Config Controller 个人设置页面的controller  
 // ----------------------------------------------------------------------------------------
@@ -1433,7 +1510,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.onClickBackward = function(){
      $ionicHistory.goBack();
   }
+  $scope.onClickRefresh =function(){
+    ScheduleService.initialize(); 
+      $ionicLoading.show({
+    content: '加载中',
+    animation: 'fade-in',
+    showBackdrop: true,
+    maxWidth: 200,
+    showDelay: 0
+  });
 
+      $timeout(function(){
+        $ionicLoading.hide();
+      },2500);
+  }
   $scope.$on('GotCanlendar',function(){
   // $scope.loadingDone = false;
     $scope.events.length = 0;
@@ -1491,12 +1581,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
   $scope.event = ScheduleService.getEventByParams($scope.params);
 
-  $scope.eventdetail = $scope.event.Description.split("||",7);
+  $scope.eventdetail = $scope.event.Description.split("||",4);
+  console.log($scope.event);
+  console.log($scope.eventdetail);
   for (var i = $scope.eventdetail.length - 1; i >= 0; i--) {
    
     if(typeof($scope.eventdetail[i]) === 'undefined' || $scope.eventdetail[i] =="" )  {
-      console.log($scope.eventdetail);
-      $scope.eventdetail.splice($scope.eventdetail.indexOf($scope.eventdetail[i]),1);      
+      // console.log($scope.eventdetail);
+      // $scope.eventdetail.splice($scope.eventdetail.indexOf($scope.eventdetail[i]),1);      
     }
 
   };
@@ -1510,6 +1602,47 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
          return result; 
   }
   var eventB = deepCopy($scope.event);
+  //
+  var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+      $scope.datepickerObject.inputDate=val;
+        var dd=val.getDate();
+        var mm=val.getMonth()+1;
+        var yyyy=val.getFullYear();
+        var birthday=yyyy+'/'+mm+'/'+dd; 
+        $scope.event.DateTime=birthday;
+      }
+  };
+
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  var tt = new Date();
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(),   //Optional
+    to: new Date(tt.setDate(tt.getDate()+30)),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
+
   $ionicModal.fromTemplateUrl('my-modal-2.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -1556,25 +1689,40 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       // var temp2 = new Object($scope.event);
         // $scope.event.Status = tt;
     PageFunc.confirm("确认修改日程信息","确认").then(function(res){
+
       if(res){
+
+
             var tempDate = $scope.event.DateTime.split("/",3);
-            var t =  tempDate[0] + 
-                   (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
-                   (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
 
-            $scope.event.DateTime = t;
-            // console.log(t);
+            if(tempDate.length != 3){
+
+              PageFunc.confirm("请选择日期或者取消退出","确认");
+              
+            }
+
+            else{
+
+                  var t =  tempDate[0] + 
+                         (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
+                         (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
+
+                  $scope.event.DateTime = t;
+                  // console.log(t);
+                  
+
+                  ScheduleService.postCalendar($scope.event);
+                  
+                  $timeout(function(){
+                    ScheduleService.cancelOneCalendar(eventB);            
+                    $scope.closeModal();
+                    $state.go('schedule');        
+                  },100);
+
+            }
+
             
 
-            ScheduleService.postCalendar($scope.event);
-            
-            $timeout(function(){
-              ScheduleService.cancelOneCalendar(eventB);
-            },1000);
-
-            
-            $scope.closeModal();
-            $state.go('schedule');        
       }
     })
 
@@ -1673,7 +1821,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     [{Name:'30岁以下',checked:false},{Name:'30岁~50岁',checked:false},{Name:'50岁~60岁',checked:false},{Name:'60岁以上',checked:false}]];
     ranks=[{Name:'依从率最低',ordername:'SMSCount desc,ComplianceRate,Status desc,RemainingDays,StartDate desc',clicked:false},
     {Name:'依从率最高',ordername:'SMSCount desc,ComplianceRate desc,Status desc,RemainingDays,StartDate desc',clicked:false},
-    {Name:'计划剩余天数',ordername:'SMSCount desc,RemainingDays,Status desc,ComplianceRate,StartDate desc',clicked:false},
+    {Name:'计划剩余天数',ordername:'SMSCount desc,Status desc,RemainingDays,ComplianceRate,StartDate desc',clicked:false},
     {Name:'只显示高血压',ordername:'高血压',clicked:false},
     {Name:'只显示糖尿病',ordername:'糖尿病',clicked:false},
     {Name:'只显示心衰',ordername:'心衰',clicked:false}]
@@ -1683,7 +1831,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     filterStartDate='';
     filterStatus=[];
     filterComplianceRate=[];
-    orderConfig ="SMSCount desc,Status desc,ComplianceRate,RemainingDays,StartDate desc";
+    orderConfig ="SMSCount desc,Status desc,RemainingDays,ComplianceRate,StartDate desc";
     filterConfig = "PatientName ge  ''";
   }
   DOinitial();
@@ -1958,98 +2106,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   //   var divwidth=Process + '%';
   //   return {width:divwidth}; 
   // };
-    // 扫一扫
-  $scope.QRscan = function(){
-    // backbeforesearch();
-    var isMyPID=0;
-    var setData =function(thisPatient){
-      Storage.set("PatientID",thisPatient.PatientId);     
-      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
-      Storage.set("PatientName",thisPatient.PatientName);
-      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
-        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
-      }else{
-        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
-      }
-      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
-        Storage.set('PatientAge',data.Age+'岁');
-        Storage.set('PatientGender',data.GenderText);
-        $state.go('manage.plan');
-      },function(data){
-        // fail请求数据
-      });
-      }
-    $cordovaBarcodeScanner
-    .scan()
-    .then(function(data) {
-      // Success! Barcode data is here
-      // var s = "Result: " + data.text + "<br/>" +
-      // "Format: " + data.format + "<br/>" +
-      // "Cancelled: " + data.cancelled;
-      if(data.cancelled!=true){
-        var tempf="PatientId eq '"+data.text+"'";
-        userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
-        .then(function(data){
-          if(data.length==1){
-            setData(data[0]);
-          }else{
-            userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM2','0','0')
-            .then(function(data){
-              if(data.length==1){
-                setData(data[0]);
-              }else{
-                userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM3','0','0')
-                .then(function(data){
-                        if(data.length==1){
-                          setData(data[0]);
-                        }else{
-                          var myPopup = $ionicPopup.show({
-                            template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
-                            //title: '',
-                            //subTitle: '2',
-                            scope: $scope,
-                            buttons: [
-                              { text: '取消',
-                                type: 'button-small',
-                                onTap: function(e) {                
-                                }
-                              },
-                              {
-                                text: '<b>确定</b>',
-                                type: 'button-small button-positive ',
-                                onTap: function(e) {
-                                  Storage.set("newPatientID",data.text);
-                                  $state.go('addpatient.basicinfo');
-                                }
-                              }
-                            ]
-                          });
-                        }                  
-                },function(){
-                  alert('网络问题');
-                  // fail请求数据
-                });
-              }
-            },function(data){
-              alert('网络问题');
-              // fail请求数据
-            });            
-          }
-        },function(data){
-          alert('网络问题');
-          // fail请求数据
-        });
-      }
-    }, function(error) {
-      alert('扫码FAILED');
-      // $ionicLoading.show({
-      // content: '请重新扫码',
-      // animation: 'fade-in',
-      // noBackdrop: true,
-      // // maxWidth: 200,
-      // showDelay: 2000
-    });
-  }  
+    // 扫一扫 
   $scope.QRscan = function(){
     // backbeforesearch();
     var isMyPID=0;
@@ -2078,7 +2135,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       // "Format: " + data.format + "<br/>" +
       // "Cancelled: " + data.cancelled;
       if(data.cancelled!=true){
-        dataloading();
+        $ionicLoading.show({ template: '正在查询'});
         var newpid=data.text
         var tempf="PatientId eq '"+newpid+"'";
         userINFO.GetPatientsList(1000,0,orderConfig,tempf,DOCID,'HM1','0','0')
@@ -2136,8 +2193,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           alert('网络问题');
           // fail请求数据
         });
-      }else{
-        alert('数据解析出错，请再试一次');
       }
     }, function(error) {
       alert('扫码FAILED');
@@ -2419,7 +2474,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     // Execute action
   });       
 }])
-.controller('newpatientsCtrl', ['$ionicPopover', '$scope', '$state','$ionicLoading', '$http', '$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($ionicPopover,$scope, $state,$ionicLoading, $http, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
+.controller('newpatientsCtrl', ['$ionicPopover', '$scope', '$state','$ionicLoading', '$http','$cordovaBarcodeScanner',  '$ionicPopup','$interval','$timeout' ,'userINFO','PageFunc','Storage','CONFIG' ,function($ionicPopover,$scope, $state,$ionicLoading, $http,$cordovaBarcodeScanner,  $ionicPopup, $interval,$timeout,userINFO,PageFunc,Storage,CONFIG){
   var PIDlist=new Array();
   var PIDlistLength;
   var PatientsList=[];
@@ -2437,7 +2492,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
   dataloading();
   $scope.f={module:'病种',Status:'预约状态'}
-  var subConfig=[[{Name:'高血压',filterprop:" and module eq  'HM1'"},{Name:'糖尿病',filterprop:" and module eq  'HM2'"},{Name:'心衰',filterprop:" and module eq  'HM3'"},{Name:'全部',filterprop:''}],
+  var subConfig=[[{Name:'高血压',filterprop:" and module eq  '高血压模块'"},{Name:'糖尿病',filterprop:" and module eq  '糖尿病模块'"},{Name:'心衰',filterprop:" and module eq  '心力衰竭模块'"},{Name:'全部',filterprop:''}],
       [{Name:'预约申请中',filterprop:"AppointmentStatus eq  '1'"},{Name:'已预约',filterprop:"AppointmentStatus eq  '4'"},{Name:'全部',filterprop:"(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')"}],
       [{Name:'更多'}]];
   $scope.openpopover=function($event,xx){
@@ -2457,7 +2512,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   var filtermodule='';
   var filterAppointmentStatus="(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
   $scope.select1='';
-  $scope.select1='';
+  $scope.select2='';
   $scope.rankBy = function(prop){
     $scope.popover.hide();
     if($scope.xx==0){
@@ -2509,8 +2564,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       $scope.$broadcast('scroll.refreshComplete');
       PageFunc.confirm('网络好像不太稳定', '网络错误');   
   }
-  var dateHowFar = function(date){  
+  var dateHowFar = function(date){ 
     var t=new Date();
+    // console.log(date,t) 
     var yyyy=parseInt(date.substr(0,4));
     var mm=date.substr(5,2)-1;
     var dd=parseInt(date.substr(8,2));
@@ -2518,7 +2574,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     var mins=parseInt(date.substr(14,2));
     var sec=parseInt(date.substr(17,2));   
     var t0=new Date(yyyy,mm,dd,hh,mins,sec);
+    // console.log(t,t0)
     var diff=parseInt((t.getTime()-t0.getTime())/60000);
+    // console.log(diff);
     var h=parseInt(diff/60);
     var d=parseInt(h/24);
     var mo=parseInt(d/30.5);
@@ -2526,8 +2584,10 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       return '1年前'
     }else if(d>29){
       return mo+'个月前';
-    }else if(1<=d){
-      return d+'天前';
+    }else if((24+t.getHours())<h){
+      return (d+1)+'天前';
+    }else if(t.getDate()!=dd){
+      return '昨天';
     }else if(1<=h){
       return h+'小时前';
     }else if(1<=diff){
@@ -2536,7 +2596,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       return '刚刚';
     } 
   }
-  var orderConfig ="ApplicationTime desc,AppointmentTime,name";
+  var orderConfig ="AppointmentStatus,ApplicationTime desc,AppointmentTime,name";
   var filterConfig = "(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
   var decoration =function(data){
     if(data.length!=0){
@@ -2563,7 +2623,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           temp.Module="高血压";
         }else if(temp.module=='糖尿病模块'){
           temp.Module="糖尿病";
-        }else if(temp.module=='心衰模块'){
+        }else if(temp.module=='心力衰竭模块'){
           temp.Module="心衰";
         }
         if(temp.AppointmentStatus=="1"){
@@ -2573,7 +2633,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         }
 
         temp.ApplyTime= dateHowFar(temp.ApplicationTime);
-        // temp.ApplicationTime.substr(5,2)+'-'+ temp.ApplicationTime.substr(8,8);
+        // console.log(temp.AppointmentTime)
         temp.AppointmentTime = temp.AppointmentTime.substr(5,2)+'-'+ temp.AppointmentTime.substr(8,8);
 
         PatientsList.push(temp);
@@ -2627,6 +2687,96 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   // $scope.onItemDelete = function(index) {
   //   $scope.patients.splice(index, 1);
   // } 
+  $scope.QRscan = function(){
+    var isMyPID=0;
+    var setData =function(thisPatient){
+      Storage.set("PatientID",thisPatient.PatientId);     
+      Storage.set("PatientPhotoAddress",thisPatient.photoAddress);
+      Storage.set("PatientName",thisPatient.PatientName);
+      if(thisPatient.photoAddress=='' || thisPatient.photoAddress==null){    
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/' +'non.jpg';
+      }else{
+        thisPatient.photoAddress =CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ thisPatient.photoAddress;
+      }
+      userINFO.BasicInfo(thisPatient.PatientId).then(function(data){
+        Storage.set('PatientAge',data.Age+'岁');
+        Storage.set('PatientGender',data.GenderText);
+        $state.go('manage.plan');
+      },function(data){
+        // fail请求数据
+      });
+    }
+    $cordovaBarcodeScanner
+    .scan()
+    .then(function(data) {
+      // Success! Barcode data is here
+      // var s = "Result: " + data.text + "<br/>" +
+      // "Format: " + data.format + "<br/>" +
+      // "Cancelled: " + data.cancelled;
+      if(data.cancelled!=true){
+        $ionicLoading.show({ template: '正在查询'});
+        var newpid=data.text
+        var tempf="PatientId eq '"+newpid+"'";
+        userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM1','0','0')
+        .then(function(data){
+          if(data.length==1){
+            setData(data[0]);
+          }else{
+            userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM2','0','0')
+            .then(function(data){
+              if(data.length==1){
+                setData(data[0]);
+              }else{
+                userINFO.GetPatientsList(1000,0,'PatientName',tempf,DOCID,'HM3','0','0')
+                .then(function(data){
+                  $ionicLoading.hide();
+                  if(data.length==1){
+                    setData(data[0]);
+                  }else{
+                    var myPopup = $ionicPopup.show({
+                    template: '<center>该用户不在患者列表中，是否创建新患者？</center>',
+                    //title: '',
+                    //subTitle: '2',
+                    scope: $scope,
+                    buttons: [
+                      { text: '取消',
+                      type: 'button-small',
+                      onTap: function(e) {                
+                      }
+                      },
+                      {
+                      text: '<b>确定</b>',
+                      type: 'button-small button-positive ',
+                      onTap: function(e) {
+                        Storage.set("newPatientID",newpid);
+                        $state.go('addpatient.basicinfo');
+                      }
+                      }
+                    ]
+                    });
+                  }                  
+                },function(){
+                  $ionicLoading.hide();
+                  alert('网络问题');
+                  // fail请求数据
+                });
+              }
+            },function(data){
+              $ionicLoading.hide();
+              alert('网络问题');
+              // fail请求数据
+            });            
+          }
+        },function(data){
+          $ionicLoading.hide();
+          alert('网络问题');
+          // fail请求数据
+        });
+      }
+    }, function(error) {
+      alert('扫码FAILED');
+    });
+  } 
 }])
 
 
@@ -4670,7 +4820,7 @@ $scope.loadingDone = false;
                 Dict.GetInsuranceType().then(
                   function(data){
                     $scope.InsuranceTypes=[];
-                    for(var i=0;i<24;i++){
+                    for(var i=0;i<23;i++){
                       $scope.InsuranceTypes[i]=data[i].Name;
                     };
                     // console.log($scope.InsuranceTypes);
@@ -5863,7 +6013,7 @@ $scope.loadingDone = false;
   $scope.whichone = $state.params.num;
   console.log($scope.whichone);
   $scope.chart = null;
-  
+  $scope.isHiding = false;
   //根据state传入的SortNo 从Service 预载入的列表中取出数据
   $scope.index = RiskService.getIndexBySortNo($scope.whichone);
   $scope.item = RiskService.getSingleRisk($scope.index);
@@ -5886,7 +6036,7 @@ $scope.loadingDone = false;
 
   AmCharts.makeChart('riskchart', $scope.chartData);
   // $scope.chartDone = true;
-  console.log($scope.chart);
+  // console.log($scope.chart);
   
   $scope.myslide = $ionicSlideBoxDelegate.$getByHandle('riskhandle');
   // $scope.$apply();
@@ -5950,25 +6100,34 @@ $scope.loadingDone = false;
 
     switch(ii){
       case 0: if($scope.item.M1show == true){
+                $scope.isHiding = false;
                 $scope.chartData    = RiskService.getGraphData('M1',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData); break;        
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
       case 1: if($scope.item.M2show == true){
+                $scope.isHiding = false;
                 $scope.chartData    = RiskService.getGraphData('M2',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData);break;        
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.dataProvider  = $scope.chartData.dataProvider;
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
       case 2: if($scope.item.M3show == true){
+                $scope.isHiding = false;
                 $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData); 
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
     }
@@ -8437,24 +8596,24 @@ $scope.loadingDone = false;
 
 
   //根据手机屏幕高度调整chart高度
-
+  // $scope.test='这是测试';
   var phoneheight = (window.innerHeight > 0) ? window.innerHeight : screen.height; 
-  console.log(phoneheight);
   var chartheight=phoneheight-290;
   Storage.set("phoneheight",phoneheight);
-  console.log(chartheight);
   
   if (chartheight>400) 
   {
     chartheight=400;
   };
   chartheight=chartheight+'px';
-  $scope.suitstyle=function(){
+
+  $scope.suitstyle=function()
+  {
   return {'height':'300px'};
   }
-
-  $scope.$on('$ionicView.enter', function() {   //$viewContentLoaded
-
+  //载入页面加载。。。
+  $scope.$on('$ionicView.enter', function() 
+  {   
     // loading图标显示
     $ionicLoading.show({
       content: '加载中',
@@ -8464,10 +8623,9 @@ $scope.loadingDone = false;
       showDelay: 0
     });
     //默认进入依从图，button颜色改变
-    $scope.mybuttonStyle={'color':'#3d6399','font-weight':'bold'};
+    $scope.mybuttonStyle={'color':'blue','font-weight':'bold'};
     $scope.Name=Storage.get('PatientName');
     $scope.age=Storage.get('PatientAge');
-    console.log($scope.age);
     $scope.gender=Storage.get('PatientGender');
     var promise=GetBasicInfo.GetBasicInfoByPid(Storage.get('PatientID'));
     promise.then(function(data){
@@ -8477,15 +8635,13 @@ $scope.loadingDone = false;
 
   var PatintId = Storage.get('PatientID');
 
-  // var PatintId ="PID201506180013";
-  console.log(PatintId);
   //进入页面，调用函数获取任务列表（当前、往期计划）
   var promiseS1=GetPlanInfo.GetplaninfobyPlanNo({PatientId:PatintId,PlanNo:'NULL',Module:'M1',Status:'3'});
   promiseS1.then(function(data1){
     // console.log(data1);
-
+    Storage.set("selectedvitaltype",'收缩压');   
     //计划进度情况
-    if (data1.length!=0) 
+    if (data1.length!=0&&data1[0].EndDate!="99991231") 
     {
       $scope.now=true;
       $scope.before=false;
@@ -8522,13 +8678,14 @@ $scope.loadingDone = false;
         
       };
       var startdate=changedatestyle(data1[0].StartDate);
+      console.log(startdate);
       //计划已经进行的时间
       var passday=GetDateDiff(startdate,today);
-      console.log(passday);
       //计划还要进行的时间
       var enddate=changedatestyle(data1[0].EndDate);
+      console.log(enddate);
+
       var processingday=GetDateDiff(today,enddate);
-      console.log(processingday);
       //获取计划总时间
       var planlength=GetDateDiff(startdate,enddate);
       //计划进展百分比
@@ -8549,19 +8706,26 @@ $scope.loadingDone = false;
 
     if (data1.length==0) 
     {
-    $scope.latestplan="无执行中的计划";
+    $scope.latestplan="余余余无执行中的计划";
+    $scope.planno="余余余无执行中的计划";
     $ionicLoading.hide();
     $scope.diaplaysm=true;
     }else
     {
     //页面载入时显示的当前计划，收缩压的图
     Storage.set("latestplanstartdate",data1[0].StartDate);
+    $scope.startdate=data1[0].StartDate;
+
     Storage.set("latestplanenddate",data1[0].EndDate);
+    $scope.enddate=data1[0].EndDate;
+
     Storage.set("latestplanno",data1[0].PlanNo);
+    $scope.planno=data1[0].PlanNo;
     $scope.latestPlanInfo=data1;
     $scope.latestplan=data1[0].PlanNo;
     //console.log($scope.latestplan);
 
+    //
     var d = {
       UserId:PatintId,
       PlanNo:data1[0].PlanNo,
@@ -8593,6 +8757,7 @@ $scope.loadingDone = false;
           {
             $scope.diaplaysm=false;
           };
+
             createStockChart($scope.HPchartdate,"收缩压","mmHg");
               
               $ionicLoading.hide();
@@ -8600,20 +8765,6 @@ $scope.loadingDone = false;
         /////
       });
 
-
-    //点击切换各个体征的图
-    $scope.changeVitalInfo = function(option) {
-      Storage.set("selectedvitaltype",option.SignName);
-     $ionicLoading.show({
-        content: '加载中',
-        animation: 'fade-in',
-        showBackdrop: true,
-        maxWidth: 200,
-        showDelay: 0
-      });
-      //传参调函画图
-      drawcharts(option.SignName,PatintId,data1[0].PlanNo,data1[0].StartDate,data1[0].EndDate)
-    };
   };
 
     //再调用同一函数，status=4，调取往期计划planno
@@ -8626,54 +8777,87 @@ $scope.loadingDone = false;
 
   }, function(e) {
       ///// 
-    }
-    );
+    });
+  });
 
-  // $scope.planList={"pl":""};
-  $scope.changeplan= function(changedplan){
-   $scope.planno=changedplan;
-   $scope.localselectedname=Storage.get("selectedvitaltype");
-   $scope.plan=angular.fromJson(Storage.get("formerplan"));
-   if (changedplan==Storage.get("latestplanno")) {
-    $scope.now=1;
-    $scope.before=0;
-    $scope.none=0;
-    $scope.startdate=Storage.get("latestplanstartdate");
-    $scope.enddate=Storage.get("latestplanenddate");
-  }else{
-    if (changedplan=="无执行中的计划") {
-      $scope.now=0;
-      $scope.before=0;
-      $scope.none=1;
-    }else{
-     $scope.now=0;
-     $scope.before=1;
-     $scope.none=0;
-    };
-    for (var i = 0; i <= $scope.plan.length-1; i++) {
-      //console.log($scope.plan[i].PlanName);
-      if ($scope.plan[i].PlanNo==changedplan) {
-       $scope.startdate= $scope.plan[i].StartDate;
-       $scope.enddate=$scope.plan[i].EndDate;
+  //切换不同计划时
+  $scope.changeplan= function(changedplan)
+  {
+    // var wetherdraw=true;
+    $scope.planno=changedplan;
+    Storage.set('selectedplan',changedplan);
+    console.log(Storage.get('selectedplan'));
+    $scope.localselectedname=Storage.get("selectedvitaltype");
+    $scope.plan=angular.fromJson(Storage.get("formerplan"));
+    if (changedplan==Storage.get("latestplanno")) 
+    {
+      if (Storage.get("latestplanenddate")=="99991231")
+       {
+         $scope.now=0;
+         $scope.before=0;
+         $scope.none=1;
+       }else
+       {
+        $scope.now=1;
+        $scope.before=0;
+        $scope.none=0;
+       };
+      $scope.startdate=Storage.get("latestplanstartdate");
+      $scope.enddate=Storage.get("latestplanenddate");
+    }else
+    {
+      if (changedplan=="余余余无执行中的计划") 
+      {
+        // wetherdraw=false;
+        // $scope.planno='';
+        $scope.now=0;
+        $scope.before=0;
+        $scope.none=1;
+      }else
+      {
+       $scope.now=0;
+       $scope.before=1;
+       $scope.none=0;
+       for (var i = 0; i <= $scope.plan.length-1; i++) 
+       {
+          //console.log($scope.plan[i].PlanName);
+          if ($scope.plan[i].PlanNo==changedplan) 
+          {
+           $scope.startdate= $scope.plan[i].StartDate;
+           $scope.enddate=$scope.plan[i].EndDate;
+         };
        };
      };
    };
-
-  drawcharts($scope.localselectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
-
-  $scope.changeVitalInfo = function(option) {
-     Storage.set("selectedvitaltype",option.SignName);
-     $scope.selectedname=option.SignName;
-   //传参调函画图
-  drawcharts($scope.selectedname,PatintId,$scope.planno,$scope.startdate,$scope.enddate)
-
+  drawcharts($scope.localselectedname,Storage.get('PatientID'),$scope.planno,$scope.startdate,$scope.enddate);
   };
-  };
-  //提振参数选择下拉框选项 默认收缩压selected
+  //切换体征
+  $scope.changeVitalInfo = function(option) 
+    {
+      console.log($scope.planno);
+       $scope.selectedname=option.SignName;
+       if ($scope.planno=="余余余无执行中的计划") 
+        {
+             //传参调函画图
+         drawcharts($scope.selectedname,Storage.get('PatientID'),$scope.planno,99991231,99991231);
+        }else
+        {
+             //传参调函画图
+          drawcharts($scope.selectedname,Storage.get('PatientID'),$scope.planno,$scope.startdate,$scope.enddate);
+        }
+       $ionicLoading.show
+          ({
+            content: '加载中',
+            animation: 'fade-in',
+            showBackdrop: true,
+            maxWidth: 200,
+            showDelay: 0
+          });
+       Storage.set("selectedvitaltype",option.SignName);
+    
 
-  });  
-
+    };
+ //提振参数选择下拉框选项 默认收缩压selected
   $scope.options = [{"SignName":"收缩压"},
     {"SignName":"舒张压"},
     {"SignName":"脉率"},
@@ -8687,8 +8871,8 @@ $scope.loadingDone = false;
     {"SignName":"晚餐后血糖"},
   ];  
   $scope.vitalInfo =$scope.options[0];
-  console.log($scope.options[0]);
-  console.log($scope.vitalInfo);
+  // console.log($scope.options[0]);
+  // console.log($scope.vitalInfo);
     //切换体征选项后，重新绘制
   var drawcharts=function(param,PatientId,plannumber,Sdate,Edate){
     if (param=="舒张压") {
@@ -8720,8 +8904,12 @@ $scope.loadingDone = false;
             createStockChart($scope.LPchartdate,"舒张压","mmHg");
 
           // createStockChart($scope.LPchartdate,"舒张压","mmHg");
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $scope.LPchartdate='';
+            console.log(1);
+            $ionicLoading.hide();
+          });
     };
     if (param=="收缩压") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Bloodpressure',ItemCode:'Bloodpressure_1'}).then(
@@ -8750,9 +8938,11 @@ $scope.loadingDone = false;
             createStockChart($scope.HPchartdate,"收缩压","mmHg");
           // createStockChart($scope.HPchartdate,"收缩压","mmHg");
           // $scope.HPchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-        /////
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+            /////
+          });
     };
     if (param=="脉率") {
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'Pulserate',ItemCode:'Pulserate_1'}).then(
@@ -8780,8 +8970,10 @@ $scope.loadingDone = false;
             createStockChart($scope.HBchartdate,"脉率","次/分钟");
           // createStockChart($scope.HBchartdate,"脉率","次/分钟");
           // $scope.HBchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+          $ionicLoading.hide();
+          });
     };
     if(param=="凌晨血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_2'}).then(
@@ -8809,8 +9001,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"凌晨血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="睡前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_3'}).then(
@@ -8838,8 +9032,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"睡前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-        });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     }
     if(param=="早餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_4'}).then(
@@ -8867,8 +9063,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"早餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="早餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_5'}).then(
@@ -8896,8 +9094,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"早餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+            {
+                $ionicLoading.hide();
+            });
     };
     if(param=="午餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_6'}).then(
@@ -8925,8 +9125,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"午餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="午餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_7'}).then(
@@ -8954,8 +9156,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"午餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+          {
+            $ionicLoading.hide();
+          });
     };
     if(param=="晚餐前血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_8'}).then(
@@ -8983,8 +9187,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"晚餐前血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+        {
+          $ionicLoading.hide();
+        });
     };
     if(param=="晚餐后血糖"){
       GetPlanchartInfo.GetchartInfobyPlanNo({UserId:PatientId,PlanNo:plannumber,StartDate:Sdate,EndDate:Edate,ItemType:'BloodSugar',ItemCode:'BloodSugar_9'}).then(
@@ -9013,8 +9219,10 @@ $scope.loadingDone = false;
             createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
           // createStockChart($scope.BSchartdate,"晚餐后血糖","nmol/L");
           // $scope.BSchartdate.length==0?$scope.diaplaysm=true:$scope.diaplaysm=false;
-        }, function(data) {
-      });
+        }, function(data) 
+        {
+          $ionicLoading.hide();
+        });
     };
   }
   //传参绘图
@@ -9104,7 +9312,7 @@ $scope.loadingDone = false;
     }
     //返回主页面
     $scope.backtocoach=function(){
-      $state.go('coach.patients');
+      $state.go('coach.home');
     };
 
 })

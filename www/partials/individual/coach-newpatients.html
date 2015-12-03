@@ -1,4 +1,7 @@
 <ion-view title="新患者">
+  <ion-nav-buttons side="left">
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+  </ion-nav-buttons>
   <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0px ">
       <a ng-style="select1" class="item col-50 " ng-click="openpopover($event,0)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a>
       <a ng-style="select2" class="item col-50 " style="border-right: 0px" ng-click="openpopover($event,1)">{{f.Status}} <i class="icon ion-android-arrow-dropdown"></i></a>
@@ -7,18 +10,12 @@
   <ion-content class="has-subheader content-item-list">       
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list>
-      <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left item-margin" ng-click="viewDetail(patient)" >
+      <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left2" ng-click="viewDetail(patient)" >
         <img src="{{patient.imageURL}}">
-        <div class="row " >
-          <div class="col-50"><h5>{{patient.name}}</h5></div>
-          <div class="col-50"><h6>{{patient.age}}   {{patient.GenderText}}</h6></div>
-        </div>
-        <p style="white-space:wrap" >“{{patient.Description | limitTo:10}}{{patient.Description.length>10?'&hellip;':''}}” <span style="font-size:0.65rem;font-style: italic">{{patient.ApplyTime}}</span></p>
+        <h5>{{patient.name}}<span class="gender-and-age">{{patient.age}} {{patient.GenderText[0]}}</span></h5>
+        <p style="white-space:wrap" >“{{patient.Description | limitTo:12}}{{patient.Description.length>12?'&hellip;':''}}” <span style="font-size:0.65rem;font-style: italic;margin-left:10px">{{patient.ApplyTime}}</span></p>
         <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
-        <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
-<!--         <ion-option-button class="button-assertive"ng-click="onItemDelete($index)">
-          <i class="icon ion-close-circled"></i>
-        </ion-option-button> -->
+        <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>        
       </ion-item>
     </ion-list>
     <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
