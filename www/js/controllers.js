@@ -3698,8 +3698,56 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.$on('$ionicView.beforeEnter', function() {
     $scope.patient={};
     $scope.healthcoach={};
+    $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles" class="spinner-calm"></ion-spinner>',
+          noBackdrop: false,
+          duration: 100000,
+          hideOnStateChange: true
+        });
+
+    var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+      $scope.datepickerObject.inputDate=val;
+        var dd=val.getDate();
+        var mm=val.getMonth()+1;
+        var yyyy=val.getFullYear();
+        var birthday=yyyy+'-'+mm+'-'+dd; 
+        $scope.data.selectedDate=birthday;
+      }
+  };
+
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  var tt = new Date();
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(),   //Optional
+    to: new Date(tt.setDate(tt.getDate()+30)),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
+   
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
+        console.log(data);
         $scope.patient.name=data[0].name;
         $scope.patient.age=data[0].age;
         $scope.patient.module=data[0].module;
@@ -3721,7 +3769,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       },function(e){
         console.log(e);
       });
-
+    if($scope.patient.name!=null && $scope.patient.age!=null && $scope.patient.module!=null && $scope.patient.Description!=null && $scope.healthcoach.name!=null && $scope.healthcoach.Add!=null){
+      $ionicLoading.hide();
+    }
      // 获取双方手机号
     Users.PhoneNo(Storage.get('PatientID')).then(
       function(data){
@@ -3969,11 +4019,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         // if($scope.healthcoach.time=='上午') $scope.healthcoach.time='8:00:00';
         // if($scope.healthcoach.time=='下午') $scope.healthcoach.time='14:00:00';
         // if($scope.healthcoach.time=='晚上') $scope.healthcoach.time='18:00:00';
-        
+        var module='';
+        if($scope.patient.module=='高血压模块') module='HM1';
+        if($scope.patient.module=='糖尿病模块') module='HM2';
+        if($scope.patient.module=='心力衰竭模块') module='HM3';
         $scope.reservation={
           "DoctorId": Storage.get('UID'),
           "PatientId": Storage.get('PatientID'),
-          "Module": $scope.patient.module,
+          "Module": module,
           "Description": $scope.patient.Description,
           "Status": 4,
           "ApplicationTime": time,
@@ -4016,19 +4069,19 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         //   "content":
         // }
 
-        userservice.PushNotification($scope.Push).then(
-          function(data){
-            console.log(data);
-            },function(e){
-            console.log(e);
-          });
+        // userservice.PushNotification($scope.Push).then(
+        //   function(data){
+        //     console.log(data);
+        //     },function(e){
+        //     console.log(e);
+        //   });
     
-        userservice.sendSMS_lzn($scope.patientsendSMS).then(
-          function(data){
-            },function(e){
-            console.log(e);
-            console.log($scope.patientsendSMS);
-          });
+        // userservice.sendSMS_lzn($scope.patientsendSMS).then(
+        //   function(data){
+        //     },function(e){
+        //     console.log(e);
+        //     console.log($scope.patientsendSMS);
+        //   });
         // userservice.sendSMS_lzn($scope.coachsendSMS).then(
         //   function(data){
         //     },function(e){
@@ -4038,7 +4091,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         Users.ReserveHealthCoach($scope.reservation).then(
           function(data){
             if(data.result=="数据插入成功"){
-             var tempDate = $scope.data.selectedDate.split("/",3);
+             var tempDate = $scope.data.selectedDate.split("-",3);
                 console.log(tempDate);
                 $scope.data.DateTime = tempDate[0] + 
                     (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
@@ -4066,22 +4119,69 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     $scope.healthcoach={};
     $scope.getdata={};
     $scope.Calendar={};
+    var datePickerCallback = function (val) {
+      if (typeof(val) === 'undefined') {
+        console.log('No date selected');
+      } else {
+      $scope.datepickerObject.inputDate=val;
+        var dd=val.getDate();
+        var mm=val.getMonth()+1;
+        var yyyy=val.getFullYear();
+        var birthday=yyyy+'-'+mm+'-'+dd; 
+        $scope.data.selectedDate=birthday;
+      }
+  };
+
+  var  monthList=["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"];
+  var weekDaysList=["日","一","二","三","四","五","六"];
+  var tt = new Date();
+  $scope.datepickerObject = {
+    titleLabel: '出生日期',  //Optional
+    todayLabel: '今天',  //Optional
+    closeLabel: '取消',  //Optional
+    setLabel: '设置',  //Optional
+    setButtonType : 'button-assertive',  //Optional
+    todayButtonType : 'button-assertive',  //Optional
+    closeButtonType : 'button-assertive',  //Optional
+    inputDate: new Date(),    //Optional
+    mondayFirst: false,    //Optional
+    //disabledDates: disabledDates, //Optional
+    weekDaysList: weekDaysList,   //Optional
+    monthList: monthList, //Optional
+    templateType: 'popup', //Optional
+    showTodayButton: 'false', //Optional
+    modalHeaderColor: 'bar-positive', //Optional
+    modalFooterColor: 'bar-positive', //Optional
+    from: new Date(),   //Optional
+    to: new Date(tt.setDate(tt.getDate()+30)),    //Optional
+    callback: function (val) {    //Mandatory
+      datePickerCallback(val);
+    }
+  };  
+
+
+ 
+
     Users.getAppointmentByPatientID(Storage.get('UID'),'4',Storage.get('PatientID')).then(
       function(data){
+        console.log(data);
         $scope.patient.name=data[0].name;
         $scope.patient.age=data[0].age;
         $scope.patient.module=data[0].module;
         $scope.patient.Description=data[0].Description;
         $scope.healthcoach.Time=data[0].AppointmentTime;
+        console.log($scope.healthcoach.Time);
         $scope.healthcoach.Add=data[0].AppointmentAdd;
         var temp = $scope.healthcoach.Time.split(' ',2);
+        console.log(temp);
         $scope.healthcoach.date=temp[0];
         $scope.healthcoach.time=temp[1];
         $scope.getdata.Description = $scope.patient.name+'||'+$scope.patient.age+'||'+$scope.patient.module+'||'+$scope.patient.Description;
         if($scope.healthcoach.time=='8:00:00') $scope.getdata.Period='上午';
         if($scope.healthcoach.time=='14:00:00') $scope.getdata.Period='下午';
         if($scope.healthcoach.time=='18:00:00') $scope.getdata.Period='晚上';
-        var date = $scope.healthcoach.date.split('/',3);
+        var date = $scope.healthcoach.date.split('-',3);
+        console.log(date);
         $scope.getdata.DateTime = date[0]+(date[1].length==2 ? date[1] : '0' +date[1])+(date[2].length==2 ? date[2] : '0' +date[2]) ;
         console.log($scope.getdata);
         console.log($scope.healthcoach.date);
@@ -4368,10 +4468,14 @@ $scope.loadingDone = false;
     // if($scope.healthcoach.time=='上午') $scope.healthcoach.time='8:00:00';
     // if($scope.healthcoach.time=='下午') $scope.healthcoach.time='14:00:00';
     // if($scope.healthcoach.time=='晚上') $scope.healthcoach.time='18:00:00';
+     var module='';
+        if($scope.patient.module=='高血压模块') module='HM1';
+        if($scope.patient.module=='糖尿病模块') module='HM2';
+        if($scope.patient.module=='心力衰竭模块') module='HM3';
     $scope.reservation={
       "DoctorId": Storage.get('UID'),
       "PatientId": Storage.get('PatientID'),
-      "Module": $scope.patient.module,
+      "Module": module,
       "Description": $scope.patient.Description,
       "Status": 4,
       "ApplicationTime": time,
@@ -4384,7 +4488,7 @@ $scope.loadingDone = false;
       "DeviceType": 1
       }
     
-
+console.log($scope.reservation.AppointmentTime);
     // $scope.coachsendSMS={
     //   "mobile":$scope.phoneno_coach,
     //   "smsType":"confirmtoHealthCoach",
@@ -4438,6 +4542,7 @@ $scope.loadingDone = false;
     Users.ReserveHealthCoach($scope.reservation).then(
           function(data){
             if(data.result=="数据插入成功"){
+              console.log($scope.reservation.AppointmentTime);
               if($scope.data.selectedDate!=null){
                 $scope.Calendar = ScheduleService.getCalendarByParams($scope.getdata);
                 console.log($scope.getdata);
@@ -4445,7 +4550,7 @@ $scope.loadingDone = false;
                 if(typeof($scope.Calendar)!='undefined'){
                   ScheduleService.cancelOneCalendar($scope.Calendar);
                 }
-                var tempDate = $scope.data.selectedDate.split("/",3);
+                var tempDate = $scope.data.selectedDate.split("-",3);
                 console.log(tempDate);
                 $scope.data.DateTime = tempDate[0] + 
                     (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
@@ -4820,7 +4925,7 @@ $scope.loadingDone = false;
                 Dict.GetInsuranceType().then(
                   function(data){
                     $scope.InsuranceTypes=[];
-                    for(var i=0;i<23;i++){
+                    for(var i=0;i<data.length;i++){
                       $scope.InsuranceTypes[i]=data[i].Name;
                     };
                     // console.log($scope.InsuranceTypes);
