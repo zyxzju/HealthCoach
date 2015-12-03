@@ -40,7 +40,8 @@
 			</label> -->
 			<label class="item item-input">
 				预约时间:
-				<input type="text" id="txt1" ng-model="healthcoach.Time"  disabled="disabled" ng-click="openModal()">
+				<!-- <input type="text" id="txt1" ng-model="healthcoach.Time"  disabled="disabled" ng-click="openModal()"> -->
+				<button class="button button-block button-clear" id="txt1" disabled="disabled" ng-click="openModal()">{{healthcoach.Time}}</button>
 			</label>
 			<label class="item item-input">
 				预约地点:<input type="text" ng-model="healthcoach.Add" id="txt2" disabled="disabled">
@@ -70,14 +71,18 @@
 
 
 
-  <label class="item item-input item-select">
-    <div class="input-label">
-      选择日期（未来30天）
-    </div>
-    <select ng-model = "data.selectedDate">
-      <option ng-repeat =  "item in datesOptions" >{{item.toLocaleDateString()}}</option>
-    </select>
-  </label>
+  <ionic-datepicker input-obj="datepickerObject">
+   <label class="item">
+    <span>
+      选择新的时间(仅限未来30天)
+    </span>
+        <span class="item-note">
+          {{data.selectedDate}}
+        </span>
+     
+  </label>       
+        
+   </ionic-datepicker>
   <label class="item item-input item-select">
     <div class="input-label">
       选择时间
