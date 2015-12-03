@@ -6013,7 +6013,7 @@ $scope.loadingDone = false;
   $scope.whichone = $state.params.num;
   console.log($scope.whichone);
   $scope.chart = null;
-  
+  $scope.isHiding = false;
   //根据state传入的SortNo 从Service 预载入的列表中取出数据
   $scope.index = RiskService.getIndexBySortNo($scope.whichone);
   $scope.item = RiskService.getSingleRisk($scope.index);
@@ -6036,7 +6036,7 @@ $scope.loadingDone = false;
 
   AmCharts.makeChart('riskchart', $scope.chartData);
   // $scope.chartDone = true;
-  console.log($scope.chart);
+  // console.log($scope.chart);
   
   $scope.myslide = $ionicSlideBoxDelegate.$getByHandle('riskhandle');
   // $scope.$apply();
@@ -6100,25 +6100,34 @@ $scope.loadingDone = false;
 
     switch(ii){
       case 0: if($scope.item.M1show == true){
+                $scope.isHiding = false;
                 $scope.chartData    = RiskService.getGraphData('M1',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData); break;        
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
       case 1: if($scope.item.M2show == true){
+                $scope.isHiding = false;
                 $scope.chartData    = RiskService.getGraphData('M2',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData);break;        
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.dataProvider  = $scope.chartData.dataProvider;
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
       case 2: if($scope.item.M3show == true){
+                $scope.isHiding = false;
                 $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
                 AmCharts.makeChart('riskchart', $scope.chartData); 
               }
-              else break;
+              else {
+                  $scope.isHiding = true; break;
+              }
               // $scope.chart.validateData();
               // $scope.chart.validateNow(true,false);
     }

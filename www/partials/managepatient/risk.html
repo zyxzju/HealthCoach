@@ -45,26 +45,26 @@
     </ion-refresher>
     <ion-list >
 
-      <ion-item collection-repeat ="item in newRisks | filter: query "  item-height="133" 
+      <ion-item collection-repeat ="item in newRisks | filter: query "  item-height="100" 
        href="#/Independent/risk/{{item.num}}" ng-hide = " (!item.M1show)&& (!item.M2show) && (!item.M3show)">
-       
+       <h3>{{item.AssessmentTime}}</h3>
       <div class="row row-100">
        <!-- <div class="badge badge-positive">第{{item.num}}次评估</div> -->
         <div class="col m1" ng-show =" item.M1show " >
-            <h2>{{item.M1.AssessmentName}}</h2>
-            <h3>{{item.M1.AssessmentTime}}</h3>
-            <h4>{{item.M1.SBP}} / {{item.M1.DBP}} mmHg </h4>
+            <h4>{{item.M1.AssessmentName}}</h4>
+            <!-- <h3>{{item.M1.AssessmentTime}}</h3> -->
+            <!-- <h4>{{item.M1.SBP}} / {{item.M1.DBP}} mmHg </h4> -->
             <!-- <p> {{item.M1.Result | limitTo: 10  }}  {{ patient.bio.length > 10 ? '&hellip;' : '' }} </p> -->
         </div>
         <div class="col m2" ng-show =" item.M2show">
-            <h2>{{item.M2.AssessmentName}}</h2>
-            <h3>{{item.M2.AssessmentTime}}</h3>
-            <h4>{{item.M2.Period}} : {{item.M2.Glucose}} mmol/L </h4>
+            <h4>{{item.M2.AssessmentName}}</h4>
+            <!-- <h3>{{item.M2.AssessmentTime}}</h3> -->
+            <!-- <h4>{{item.M2.Period}} : {{item.M2.Glucose}} mmol/L </h4> -->
             <!-- <p> {{item.M2.Result | limitTo: 10  }}  {{ patient.bio.length > 10 ? '&hellip;' : '' }} </p> -->
         </div>
         <div class="col m3" ng-show ="item.M3show">
-            <h2>{{item.M3.AssessmentName}}</h2>
-            <h3>{{item.M3.AssessmentTime}}</h3>
+            <h4>{{item.M3.AssessmentName}}</h4>
+            <!-- <h3>{{item.M3.AssessmentTime}}</h3> -->
             
             <!-- <h4>{{item.M3.Period}} : {{item.M3.Glucose}} mmol/L </h4> -->
             <!-- <p> {{item.M2.Result | limitTo: 10  }}  {{ patient.bio.length > 10 ? '&hellip;' : '' }} </p> -->
