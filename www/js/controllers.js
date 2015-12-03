@@ -4820,7 +4820,7 @@ $scope.loadingDone = false;
                 Dict.GetInsuranceType().then(
                   function(data){
                     $scope.InsuranceTypes=[];
-                    for(var i=0;i<24;i++){
+                    for(var i=0;i<23;i++){
                       $scope.InsuranceTypes[i]=data[i].Name;
                     };
                     // console.log($scope.InsuranceTypes);
