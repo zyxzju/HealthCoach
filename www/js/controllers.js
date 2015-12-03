@@ -6696,6 +6696,10 @@ $scope.loadingDone = false;
             {
                 if((data[i].Status =="3") || (data[i].Status =="4"))
                 {
+                    if(($scope.create.AddFlag) && (data[i].Status =="3"))
+                    {
+                        $scope.create.AddFlag = false;
+                    }  
                     if (data[i].StartDate != "")
                     {
                         data[i].StartDate = "： " + data[i].StartDate.substr(0, 4) + '/' + data[i].StartDate.substr(4, 2) + '/' + data[i].StartDate.substr(6, 2)
@@ -6711,15 +6715,19 @@ $scope.loadingDone = false;
                             data[i].EndDate = "-" + data[i].EndDate.substr(0, 4) + '/' + data[i].EndDate.substr(4, 2) + '/' + data[i].EndDate.substr(6, 2)
                         }
                     }
-
+                    if(data[i].Status == '3') //字体颜色
+                    {
+                        data[i].Status = "#009100"
+                    }
+                    else
+                    {
+                        data[i].Status = "#F75000"
+                    }
                     $scope.create.PlanList.push(data[i]);
-                }
-                if(($scope.create.AddFlag) && (data[i].Status =="3"))
-                {
-                    $scope.create.AddFlag = false;
-                }
+
+                }                            
             } 
-            ////console.log($scope.create.PlanList); 
+            //console.log($scope.create.PlanList); 
             $ionicLoading.hide();
             $scope.isloaded = true;                     
         }, function(data) {  
