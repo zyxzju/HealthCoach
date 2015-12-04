@@ -1758,21 +1758,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
    
   // loading图标显示
   $scope.scrollTop = function(){
-    $ionicScrollDelegate.scrollTop(true);
+    $ionicScrollDelegate.$getByHandle('myPatientScroll').scrollTop(true);
   }
   // $scope.touchme =function(){
   //   $scope.need
   // }
-  // $scope.onScoll = function(){
-  //   if($ionicScrollDelegate.getScrollPosition().top>300){
-  //     console.log($ionicScrollDelegate.getScrollPosition().top);
-  //     $scope.needtoTop=true;
-  //     // $scope.needtoTop = {'z-index':'999'};
-  //   }else{
-  //     // $scope.needtoTop ={'z-index':'-999'};
-  //     $scope.needtoTop=false;
-  //   }
-  // }
+  $scope.onScoll = function(){
+    if($ionicScrollDelegate.getScrollPosition().top>200){
+      console.log($ionicScrollDelegate.getScrollPosition().top);
+      // $rootScope.needtoTop=true;
+      // $scope.$apply;
+      $scope.$apply(function () {
+     　　$scope.needtoTop=true;
+      });
+      // $scope.needtoTop = {'z-index':'999'};
+    }else{
+      // $scope.needtoTop ={'z-index':'-999'};
+      // $rootScope.needtoTop=false;
+      $scope.$apply(function () {
+     　　$scope.needtoTop=false;
+      });
+    }
+  }
   $scope.openpopover=function($event){     
     // backbeforesearch();
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
@@ -1785,7 +1792,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         $scope.popover.remove();
       });
     });
-    $timeout(function(){$scope.popover.show($event);},30);
+    $timeout(function(){$scope.popover.show($event);},40);
   }
   // $scope.$on('$ionicView.enter', function() {
   //   $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
@@ -1836,7 +1843,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
   DOinitial();
   $scope.rankBy = function(index){ 
-    $ionicScrollDelegate.scrollTop(); 
+    $ionicScrollDelegate.$getByHandle('myPatientScroll').scrollTop(); 
     $scope.popover.hide();     
     ranks[rankindex].clicked=!ranks[rankindex].clicked;
     if(rankindex!=index){
@@ -2507,7 +2514,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         $scope.popover.remove();
       });
     });
-    $timeout(function(){$scope.popover.show($event);},20);
+    $timeout(function(){$scope.popover.show($event);},30);
   }
   var filtermodule='';
   var filterAppointmentStatus="(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
