@@ -67,16 +67,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           saveUID();
           // $timeout(function(){$state.go('coach.patients');} , 1000);
         }
-      },function(data){
-        if(data.data.result=='暂未激活'){
-          // $scope.logStatus="登录成功";
-          //Storage.set('TOKEN', data.result.substr(12));
-          Storage.set('USERNAME', logOn.username);
-          Storage.set('isSignIN','YES');
-          saveUID();         
-          // $timeout(function(){$state.go('upload')} , 500);  
-          return;        
-        }  
+      },function(data){ 
         loading.loadingBarFinish($scope);
         if(data.data==null && data.status==0){
           $scope.logStatus='网络错误！';
@@ -86,6 +77,13 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           $scope.logStatus='连接服务器失败！';
           return;          
         }
+        if(data.data.result=='暂未激活'){
+          //Storage.set('TOKEN', data.result.substr(12));
+          Storage.set('USERNAME', logOn.username);
+          Storage.set('isSignIN','YES');
+          saveUID();          
+          return;        
+        } 
         $scope.logStatus=data.data.result;
       });
     }else{
@@ -170,7 +168,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
             Storage.set('UID', data.result);
             Storage.set('USERNAME', $rootScope.userId);
             upload.id=Storage.get('UID');
-            console.log(upload);
             Users.postDoctorInfo(upload).then(function(data){
               loading.loadingBarFinish($scope);
               $scope.logStatus=data.result;
@@ -209,7 +206,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
             $scope.logStatus='网络错误！';
           }
         });
-      },function(data){        
+      },function(data){
+        if(data.data==null && data.status==0){
+          loading.loadingBarFinish($scope);
+          $scope.logStatus='网络错误！';
+          return;          
+        }        
         if(data.data.result=='同一用户名的同一角色已经存在'){
           userservice.userLogOn('PhoneNo' ,$rootScope.userId,$rootScope.password,'HealthCoach')
           .then(function(data){
@@ -357,7 +359,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.isable=false;
   $scope.gotoReset = function(veriusername,verifyCode){
     $scope.logStatus='';
-    if(veriusername!=0 && verifyCode!=0 && veriusername!='' && verifyCode!=''){
+    if(veriusername!='' && verifyCode!=''){
       loading.loadingBarStart($scope);
       $rootScope.userId=veriusername;
       userservice.checkverification(veriusername,'verification',verifyCode)
@@ -451,8 +453,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
             loading.loadingBarFinish($scope);
             $scope.logStatus='网络出错了，请再次发送';
           })
-          // loading.loadingBarFinish($scope);
-          // $scope.logStatus='该账户已进行过注册！';
         }
       }else{
         if(operation=='reset'){
@@ -1758,21 +1758,28 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
    
   // loading图标显示
   $scope.scrollTop = function(){
-    $ionicScrollDelegate.scrollTop(true);
+    $ionicScrollDelegate.$getByHandle('myPatientScroll').scrollTop(true);
   }
   // $scope.touchme =function(){
   //   $scope.need
   // }
-  // $scope.onScoll = function(){
-  //   if($ionicScrollDelegate.getScrollPosition().top>300){
-  //     console.log($ionicScrollDelegate.getScrollPosition().top);
-  //     $scope.needtoTop=true;
-  //     // $scope.needtoTop = {'z-index':'999'};
-  //   }else{
-  //     // $scope.needtoTop ={'z-index':'-999'};
-  //     $scope.needtoTop=false;
-  //   }
-  // }
+  $scope.onScoll = function(){
+    if($ionicScrollDelegate.getScrollPosition().top>200){
+      console.log($ionicScrollDelegate.getScrollPosition().top);
+      // $rootScope.needtoTop=true;
+      // $scope.$apply;
+      $scope.$apply(function () {
+     　　$scope.needtoTop=true;
+      });
+      // $scope.needtoTop = {'z-index':'999'};
+    }else{
+      // $scope.needtoTop ={'z-index':'-999'};
+      // $rootScope.needtoTop=false;
+      $scope.$apply(function () {
+     　　$scope.needtoTop=false;
+      });
+    }
+  }
   $scope.openpopover=function($event){     
     // backbeforesearch();
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
@@ -1785,7 +1792,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         $scope.popover.remove();
       });
     });
-    $timeout(function(){$scope.popover.show($event);},30);
+    $timeout(function(){$scope.popover.show($event);},40);
   }
   // $scope.$on('$ionicView.enter', function() {
   //   $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
@@ -1836,7 +1843,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
   DOinitial();
   $scope.rankBy = function(index){ 
-    $ionicScrollDelegate.scrollTop(); 
+    $ionicScrollDelegate.$getByHandle('myPatientScroll').scrollTop(); 
     $scope.popover.hide();     
     ranks[rankindex].clicked=!ranks[rankindex].clicked;
     if(rankindex!=index){
@@ -2507,7 +2514,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         $scope.popover.remove();
       });
     });
-    $timeout(function(){$scope.popover.show($event);},20);
+    $timeout(function(){$scope.popover.show($event);},30);
   }
   var filtermodule='';
   var filterAppointmentStatus="(AppointmentStatus eq  '1' or AppointmentStatus eq  '4')";
