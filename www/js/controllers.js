@@ -1765,45 +1765,43 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   // }
   $scope.onScoll = function(){
     if($ionicScrollDelegate.getScrollPosition().top>200){
-      console.log($ionicScrollDelegate.getScrollPosition().top);
-      // $rootScope.needtoTop=true;
-      // $scope.$apply;
       $scope.$apply(function () {
      　　$scope.needtoTop=true;
       });
-      // $scope.needtoTop = {'z-index':'999'};
     }else{
-      // $scope.needtoTop ={'z-index':'-999'};
-      // $rootScope.needtoTop=false;
       $scope.$apply(function () {
      　　$scope.needtoTop=false;
       });
     }
   }
-  $scope.openpopover=function($event){     
-    // backbeforesearch();
-    $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
-      scope: $scope,
-    }).then(function(popover) {
-      $scope.popover = popover;
-      $scope.ranks=ranks;
-      var stopListening = $scope.$on('popover.hidden', function() {
-        stopListening();
-        $scope.popover.remove();
-      });
-    });
-    $timeout(function(){$scope.popover.show($event);},40);
-  }
-  // $scope.$on('$ionicView.enter', function() {
+  // $scope.openpopover=function($event){     
+  //   // backbeforesearch();
   //   $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
   //     scope: $scope,
   //   }).then(function(popover) {
-  //     // $compile($('.popover.in').contents())($scope);
-  //     // $compile(('popover').contents())(scope)
   //     $scope.popover = popover;
-  //     $scope.ranks=ranks;
-  //   });   
-  // });
+  //     console.log(ranks);
+  //     $rootScope.ranks=ranks;
+  //     $compile($('#popcontent').contents())($scope);
+  //     var stopListening = $scope.$on('popover.hidden', function() {
+  //       stopListening();
+  //       $scope.popover.remove();
+  //     });
+  //   });
+  //   $timeout(function(){$scope.popover.show($event);},40);
+  // }
+  $scope.$on('$ionicView.enter', function() {
+    $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+      scope: $scope,
+    }).then(function(popover) {
+      $scope.ranks=ranks;
+      $scope.popover = popover;
+      
+    }); 
+    $scope.$on('popover.hidden', function() {
+      console.log('hide');
+    });     
+  });
   var dataloading=function(){
     $ionicLoading.show({
       // content: '加载中',
@@ -2102,17 +2100,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     }  
    $scope.$broadcast('scroll.infiniteScrollComplete');
   }  
-  // $scope.tcolor=function(ComplianceRate){
-  //   if(ComplianceRate>=50){
-  //     return {'color':'#33cd5f','font-size':'1.4em'};
-  //   }else{
-  //     return {'color':'#fb6a1b','font-size':'1.4em'};
-  //   }
-  // };
-  // $scope.setwidth=function(Process){
-  //   var divwidth=Process + '%';
-  //   return {width:divwidth}; 
-  // };
     // 扫一扫 
   $scope.QRscan = function(){
     // backbeforesearch();
@@ -2642,6 +2629,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         temp.ApplyTime= dateHowFar(temp.ApplicationTime);
         // console.log(temp.AppointmentTime)
         temp.AppointmentTime = temp.AppointmentTime.substr(5,2)+'-'+ temp.AppointmentTime.substr(8,8);
+        if(temp.AppointmentTime[10]==':'){
+          temp.AppointmentTime=temp.AppointmentTime.substr(0,10);
+        }
 
         PatientsList.push(temp);
         PIDlist.push(temp.PatientID);          
@@ -2785,6 +2775,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     });
   } 
 }])
+
 
 
 // .controller('CoachPatientsDetailController',function(){
