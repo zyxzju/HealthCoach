@@ -3674,13 +3674,21 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 .controller('addappointmentCtrl',['$scope','$state','Storage','Users','Dict','$ionicLoading','PageFunc',function($scope,$state,Storage,Users,Dict,$ionicLoading,PageFunc){
    $scope.$on('$ionicView.beforeEnter', function() {
     $scope.patient={};
-
+    $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles" class="spinner-calm"></ion-spinner>',
+          noBackdrop: false,
+          duration: 100000,
+          hideOnStateChange: true
+    });
     Users.getAppointmentByPatientID(Storage.get('UID'),'1',Storage.get('PatientID')).then(
       function(data){
         $scope.patient.name=data[0].name;
         $scope.patient.age=data[0].age;
         $scope.patient.module=data[0].module;
         $scope.patient.Description=data[0].Description;
+        if($scope.patient.name!=null && $scope.patient.age!=null && $scope.patient.module!=null && $scope.patient.Description!=null){
+          $ionicLoading.hide();
+        } 
       },function(e){
         console.log(e);
       });
@@ -4119,6 +4127,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     $scope.healthcoach={};
     $scope.getdata={};
     $scope.Calendar={};
+    $ionicLoading.show({
+          template: '<ion-spinner icon="bubbles" class="spinner-calm"></ion-spinner>',
+          noBackdrop: false,
+          duration: 100000,
+          hideOnStateChange: true
+    });
     var datePickerCallback = function (val) {
       if (typeof(val) === 'undefined') {
         console.log('No date selected');
@@ -4158,7 +4172,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       datePickerCallback(val);
     }
   };  
-
+  
 
  
 
@@ -4204,7 +4218,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       },function(e){
         console.log(e);
       });
-
+    if($scope.patient.name!=null && $scope.patient.age!=null && $scope.patient.module!=null && $scope.patient.Description!=null && $scope.healthcoach.name!=null && $scope.healthcoach.Add!=null && $scope.healthcoach.Time!=null){
+      $ionicLoading.hide();
+    }
  // 获取双方手机号
     Users.PhoneNo(Storage.get('PatientID')).then(
       function(data){
