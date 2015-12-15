@@ -3349,7 +3349,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
           else
           {
             $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
-            $scope.DiabetesDrugArray[a].Type = $scope.DiabetesDrugArray[b-1].Type;
+            $scope.DiabetesDrugArray[b].Type = $scope.DiabetesDrugArray[b-1].Type;
             $scope.DiabetesDrugData.push({"ID":b+1,"Type":getDType($scope.ModuleInfoListDetail[i].Value.split(',')[0]),"Name":""});
             getDName($scope.ModuleInfoListDetail[i].Value.split(',')[0],$scope.ModuleInfoListDetail[i].Value.split(',')[1],b);
             // $scope.DiabetesDrugArray.push({"ID":b+1,"Type":"","Name":""});
@@ -3453,7 +3453,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         } 
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstHypertensionDrug")
         {
-          for (var m = 0; m < a; m++)
+          for (var m = 0; m < a+1; m++)
           {
             if ($scope.HypertensionDrugData[m].Name.Type !="")
             {
@@ -3468,7 +3468,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         }
         else if ($scope.ModuleInfoListDetail[k].OptionCategory == "Cm.MstDiabetesDrug")
         {
-          for (var n = 0; n < b; n++)
+          for (var n = 0; n < b+1; n++)
           {
             if ($scope.DiabetesDrugData[n].Name.Type !="")
             {
