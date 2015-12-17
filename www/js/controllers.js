@@ -3501,11 +3501,11 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     };
     if (Storage.get(HModule)=="No")
     {
-      Users.addnewpatient(UserId,PatientID,Module).then(function(data,status){
+      Users.addnewpatient(UserId,PatientID,HModule).then(function(data,status){
         $scope.getStatus = data;
         if (data.result == "数据插入成功")
         {
-          Users.addnewhealthcoach(UserId,PatientID,Module).then(function(data,status){
+          Users.addnewhealthcoach(UserId,PatientID,HModule).then(function(data,status){
             $scope.getStatus = data.result;
             if (data.result == "数据插入成功")
             {
