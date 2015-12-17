@@ -2967,7 +2967,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
                     }
                     $scope.Dialog.DisplayOnes.push({"IDFlag": "Send","Time": data.Time,"Content":$scope.Dialog.SMScontent});
                     $ionicScrollDelegate.scrollBottom(true);
-                    $scope.SocketSubmit(Receiver +  "||" + SendBy + "||" + data.Time + "||" + $scope.Dialog.SMScontent);
+                    $scope.SocketSubmit(Receiver +  "||" + SendBy + "||" + data.Time + "||" + $scope.Dialog.SMScontent + "||" + data.SendDateTime);
                     $scope.Dialog.SMScontent = "";
                 }              
             }, function(data) {   
