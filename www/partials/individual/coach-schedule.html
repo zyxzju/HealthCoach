@@ -34,7 +34,7 @@
 
 <ion-content class=" padding" >
 
-
+<p>今日进度 {{today.todayHasFinished}} / {{today.todayToBeFinished}}</p>
 <div class ="calendar" ui-calendar="uiConfig.calendar" class="span8 calendar" ng-model="eventSources" calendar="calendar" ng-if = "loadingDone" disableTap></div>
 
 <!-- <div  ng-repeat = " item in events"> -->
