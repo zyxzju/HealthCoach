@@ -1528,7 +1528,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   // $scope.loadingDone = false;
     $scope.events.length = 0;
     $scope.events = ScheduleService.getEvents();
-
+    $scope.today = ScheduleService.getTodayProgress();
     if($scope.loadingDone == false){
       initializeCalendar();
       $scope.loadingDone = true;      
@@ -1735,6 +1735,18 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     PageFunc.confirm("确认取消日程","确认").then(function(res){
       if(res){
             ScheduleService.cancelOneCalendar($scope.event);
+            $state.go('schedule');
+      }
+    })
+
+  }
+
+  $scope.onClickFinishApp = function(){
+    // $scope.event.Status = 0;
+    PageFunc.confirm("确认完成日程","确认").then(function(res){
+      if(res){
+            $scope.event.Status = 5;
+            ScheduleService.postCalendar($scope.event);
             $state.go('schedule');
       }
     })

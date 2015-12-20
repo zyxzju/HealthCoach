@@ -1408,6 +1408,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   var calendar = [];
   var events = [];
   var count = 0;
+  var todayHasFinished = 0;
+  var todayToBeFinished = 0;
   var postCalendar = function(data){
     var deferred = $q.defer();
     Data.PlanInfo.PostCalendar(data, function (data, headers) {
@@ -1481,12 +1483,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   // (they are id, title, url, start, end, allDay, and className).
   var sortCalendar = function(){
     events = [];
+    var today = {};
+    today.start = new Date();
+    today.start.setHours(0,0,0,0);
+
+    today.end = new Date();
+    today.end.setHours(23, 59, 59, 59);    
+    console.log(today);
     for (var i = calendar.length - 1; i >= 0; i--) {
       var temp =  { };
       var flag = true;
       
       var t = calendar[i].DateTime;
-      if(calendar[i].Status == '0' || calendar[i].Status == 0 ) flag = false;
+      if(calendar[i].Status == 2 || calendar[i].Status == 0 ) flag = false;
       //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
       
       if(t.length == 8){
@@ -1514,6 +1523,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             var start = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],start_hour,0);
 
             var end = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],end_hour,0);
+
+            //判断是否是今天 以及是否是未完成的日历
+
+
+            if(today.start.getTime() < start.getTime() && today.end.getTime() > end.getTime()){
+              //today
+              console.log('is today')
+              console.log(todayToBeFinished);
+              if(calendar[i].Status == 1 || calendar[i].Status == 3 || calendar[i].Status == 4 || calendar[i].Status == 5) 
+                todayToBeFinished = todayToBeFinished + 1;
+              if(calendar[i].Status == 5 )
+                todayHasFinished = todayHasFinished + 1; 
+            }
             temp.id = calendar[i].SortNo; 
             temp.start = start;
             temp.end = end;
@@ -1530,6 +1552,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     };
   }
 
+
+  self.getTodayProgress = function(){
+      return {
+        'todayHasFinished' : todayHasFinished,
+        'todayToBeFinished' : todayToBeFinished
+      };
+  }
   self.cancelOneCalendar = function(data){
 
     var temp =  {
@@ -1577,6 +1606,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   self.postCalendar = function(data){
     // count = 23;
     // var t = new Date();
+
+    // 没有预约0，正在处理1，预约失败2，加好友成功3，预约成功4
     var temp =  {
       "DoctorId": Storage.get("UID"),
       "DateTime": data.DateTime,
@@ -1610,6 +1641,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   }
 
   self.initialize = function(){
+    todayHasFinished = 0 ; 
+    todayToBeFinished = 0 ;
     getCalendar(Storage.get("UID")).then(function(promise){
       if(promise.result != []){
         // console.log(promise)
