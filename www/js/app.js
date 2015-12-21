@@ -172,6 +172,17 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
 
   })
 
+  .state('commentList',{
+    url:'/commentList',
+    cache:false,
+    // views:{
+    //   'coach-commentList':{
+        templateUrl:'partials/individual/coach-commentList.html',
+        controller:'CoachCommentListCtrl'
+      // }
+    // }
+
+  })
     //新建患者
   $stateProvider
   

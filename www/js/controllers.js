@@ -758,7 +758,48 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
    // //console.log($stateParams.info.intro);
    // $scope.items = $stateParams.info;
    // $scope.state = $stateParams.state;
+  $scope.$watch('$viewContentLoaded', function() {   
+        GetHealthCoachInfo( Storage.get("UID") ); //获取专员个人信息
+        GetCommentList(Storage.get("UID") ,''); //获取专员的2条评论(所有模块)
+  }); 
 
+
+    //restful获取专员个人信息
+  var GetHealthCoachInfo= function(HealthCoachID)
+   {
+     var promise =  Users.GetHealthCoachInfo(HealthCoachID); 
+     promise.then(function(data)
+     { 
+       $scope.HealthCoachInfo = data;
+       console.log(data);
+       if(($scope.HealthCoachInfo.imageURL=="")||($scope.HealthCoachInfo.imageURL==null)){
+            $scope.HealthCoachInfo.imageURL="img/DefaultAvatar.jpg";
+          }
+        else{ $scope.HealthCoachInfo.imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+$scope.HealthCoachInfo.imageURL;
+          }
+        $scope.$broadcast('scroll.refreshComplete'); 
+      },function(err) {   
+    });      
+  }
+
+      //restful获取专员评论列表
+      var GetCommentList= function(DoctorId ,CategoryCode)
+       {
+         var promise =  Users.GetCommentList(DoctorId, CategoryCode, 2); 
+         promise.then(function(data)
+        { 
+          $scope.CommentList=data;
+          for(i=0;i<$scope.CommentList.length;i++){
+           if(($scope.CommentList[i].imageURL=="")||($scope.CommentList[i].imageURL==null)){
+                  $scope.CommentList[i].imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+"non.jpg";
+                }
+            else{ 
+                  $scope.CommentList[i].imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+$scope.CommentList[i].imageURL;
+                }
+           }
+         },function(err) {   
+        });      
+      }
    //应该从服务器获得，此处写死
    $scope.state = '未提交';
    // $scope.name = Storage.get(131);
@@ -770,6 +811,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
    //从服务器获得用户信息 
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
+
 
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
@@ -961,6 +1003,118 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       alert('扫码FAILED');
     });
   }      
+}])
+
+
+
+//专员的评价列表
+.controller('CoachCommentListCtrl',['$scope', '$ionicHistory', '$ionicSideMenuDelegate','Users','Storage', 'CONFIG', '$ionicScrollDelegate', '$ionicLoading', '$ionicPopover',
+   function($scope, $ionicHistory, $ionicSideMenuDelegate, Users, Storage, CONFIG, $ionicScrollDelegate, $ionicLoading, $ionicPopover) {
+    
+      $scope.setting={selectedModoule:" "}; //默认加载全部模块
+      $scope.scrollToTop=false; //“回到顶部按钮”初始隐藏
+      $scope.CommentList = new Array();
+      $scope.moreComment=false;  //上拉加载更多，没有更多数据标志
+      $scope.alertText='正在努力加载中...';
+
+      //回到顶部函数
+      $scope.scrollTop = function() {
+        $ionicScrollDelegate.scrollTop();
+      };
+
+    //滚动时获取滚动长度，超出某长度则显示“回到顶部按钮”
+     $scope.getScrollPosition = function() {
+        $scope.moveData = $ionicScrollDelegate.getScrollPosition().top;
+       
+        if($scope.moveData>=100){
+            $scope.scrollToTop=true;
+         }else if($scope.moveData<100){
+           $scope.scrollToTop=false;
+         }
+      };
+
+      //后退
+      $scope.nvGoback = function() {
+        $ionicHistory.goBack();
+       }
+
+      //下拉刷新评论
+      $scope.refreshComment = function() {
+         $scope.CommentList=new Array();
+         //$scope.alertText='正在努力加载中...';
+         $scope.moreComment=false;
+         GetCommentList(Storage.get("UID"),  $scope.setting.selectedModoule, 10, 0);
+       }
+
+      //上啦加载更多评论
+       $scope.loadMoreComment = function () {
+           //console.log(333);
+           GetCommentList(Storage.get("UID"),  $scope.setting.selectedModoule, 5, $scope.CommentList.length);    
+        }
+
+      //restful获取评论列表
+      var GetCommentList= function(DoctorId ,CategoryCode,num, skip)
+       {
+           $scope.alertText='正在努力加载中...';
+           var promise =  Users.GetCommentList(DoctorId ,CategoryCode, num, skip); 
+           promise.then(function(data)
+          { 
+            for(var i=0;i<data.length;i++){
+              if((data[i].imageURL=="")||(data[i].imageURL==null)){
+                    data[i].imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+"non.jpg";
+                  }
+              else
+              { 
+                  data[i].imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+data[i].imageURL;
+              }
+              $scope.CommentList.push(data[i]);
+            }
+
+            //本次获取的数量少于num，则说明没有更多数据了
+            if(data.length < num){
+                $scope.moreComment=false;
+                      $scope.alertText='没有更多数据...';
+                $ionicLoading.show({
+                  template: '没有更多数据',
+                  noBackdrop: false,
+                  duration: 1000,
+                  hideOnStateChange: true
+                });
+            }
+            else
+            {
+               $scope.moreComment=true;
+            }
+
+            },function(err) {   
+          }).finally(function () {
+              $scope.$broadcast('scroll.refreshComplete');
+              $scope.$broadcast('scroll.infiniteScrollComplete');
+          });     
+       }
+
+      //初始化
+      GetCommentList(Storage.get("UID"), '', 10, 0);
+      //筛选
+      $ionicPopover.fromTemplateUrl('templates/popover-sort.html', {
+          scope: $scope,
+        }).then(function(popover) {
+          $scope.popover = popover;
+      });
+       
+      $scope.modouleList = [
+        { text: "全部", value: " " },
+        { text: "高血压", value: "HM1" },
+        { text: "糖尿病", value: "HM2"},
+        { text: "心衰", value: "HM3" },
+      ];
+
+      $scope.filterModoule= function(){
+        $scope.CommentList=new Array();
+        //$scope.alertText='正在努力加载中...';
+        GetCommentList(Storage.get("UID"), $scope.setting.selectedModoule, 10, 0); 
+        $scope.popover.hide();
+      };
 }])
 // Coach Personal Config Controller 个人设置页面的controller  
 // ----------------------------------------------------------------------------------------
