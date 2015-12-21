@@ -1,0 +1,65 @@
+
+<ion-view view-title="评价列表" hide-nav-bar="true" cache-view="false">
+
+  <ion-header-bar class="bar bar-positive bar-header">
+       <button class="button button-icon ion-arrow-left-c button-clear  button-left"  ng-click = "nvGoback()"></button>
+        <h2 class="title">评价</h2>
+        <button class="button button-icon ion-funnel button-clear  button-right" ng-click="popover.show($event)">筛选</button>
+    </ion-header-bar>
+
+
+  <ion-content on-scroll="getScrollPosition()">
+
+  <ion-refresher pulling-text="下拉刷新" on-refresh="refreshComment()">
+  </ion-refresher>
+   
+    <ion-list>
+    
+       <ion-item class="item-avatar" ng-repeat="comment in CommentList " class="item-avatar">
+            <img src="{{comment.imageURL}}">
+            <h5>{{comment.Name}} </h5>
+            <p>{{comment.Score}}分 {{comment.CommentTime}}</p>
+            <p>{{comment.Comment}}</p>
+        </ion-item>
+    </ion-list>
+
+     <ion-infinite-scroll on-infinite="loadMoreComment()" distance="1%" ng-if="moreComment"></ion-infinite-scroll>
+
+     <div ng-if="!moreComment" style="text-align:center;margin-top:20px;margin-bottom:20px;">
+      <p style="color:#2894FF;font-size:16px;">{{alertText}}</p>
+     </div>
+
+  </ion-content>
+
+  <style>
+.scrollToTop{
+  height: 48px;
+  width: 48px;
+  position: fixed;
+  bottom: 3%;
+  right: 3%; 
+  z-index: 1000;
+  display:block;
+  background:url('img/back-to-top.png') no-repeat;
+}</style>
+   <div  class="scrollToTop" ng-click="scrollTop()" ng-show='scrollToTop'></div>
+
+</ion-view>
+
+<script id="templates/popover-sort.html" type="text/ng-template">
+  <ion-popover-view>
+    <ion-content>
+      <div class="list">
+        <div class="item item-divider"> 筛选
+        </div>
+        <ion-radio ng-repeat="item in modouleList"
+                   ng-value="item.value"
+                   ng-model="setting.selectedModoule"
+                  ng-change="filterModoule()" >
+          {{ item.text }}
+        </ion-radio>
+      </div>
+    </ion-content>
+  </ion-popover-view>
+</script>
+

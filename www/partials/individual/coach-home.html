@@ -54,41 +54,44 @@
         <div class="item item-body">
           <!-- <p><i class="icon ion-thumbsup assertive"></i>负责模块：{{HealthCoachInfo.module}}</p> -->
           <p> <i class="icon ion-person positive"></i>  身份信息：{{userInfo.DtInfo.unitname}}  | {{userInfo.DtInfo.jobTitle}} | {{userInfo.DtInfo.dept}}({{userInfo.DtInfo.level}})</p>
-          <p> <i class="icon ion-ios-pulse-strong positive"></i>  负责模块：高血压模块 | 糖尿病模块 | 心力衰竭模块</p>
+          <p> <i class="icon ion-ios-pulse-strong positive"></i>  负责模块：{{HealthCoachInfo.module}}</p>
           <p> <i class="icon ion-thumbsup positive"></i>  总体评分：{{HealthCoachInfo.generalscore}}</p>
           <p> <i class="icon ion-thumbsup positive"></i>  整体评价：{{HealthCoachInfo.generalComment}}</p>
           <!-- <p>活跃度：{{HealthCoachInfo.activityDegree}}</p> -->
-          <!-- <p> <i class="icon ion-android-happy positive"></i>{{HealthCoachInfo.Description}}</p> -->
+          <p> <i class="icon ion-android-happy positive"></i>{{HealthCoachInfo.Description}}</p>
        <!--  </div> -->
          
-          <a class="item item-icon-left item-icon-right positive" >
+          <a class="item item-icon-left item-icon-right positive" href="#/commentList">
            <i class="icon ion-compose"></i>
-            评论列表({{HealthCoachInfo.commentNum}})
+            查看更多评论({{HealthCoachInfo.commentNum}})
             <i class="icon ion-ios-arrow-right"></i>
           </a>
        <!--  </div> -->
 
         <ion-item class="item-avatar" ng-repeat="comment in CommentList " class="item-avatar">
             <img src={{comment.imageURL}}>
-            <h2>{{comment.Name}} </h2>
+            <h5>{{comment.Name}} </h5>
             <p>{{comment.Score}}分 {{comment.CommentTime}}</p>
             <p>{{comment.Comment}}</p>
         </ion-item>
         <!-- </div> -->
      
         <div class="item tabs tabs-secondary tabs-icon-left">
-          <a class="tab-item" ng-click="showreservePop()" style="font-size:14px;">
-            <i class="icon ion-thumbsup"></i>
+
+          <a class="tab-item" ng-click="onClickPersonalSchedule()" style="font-size:14px;">
+            <i class="icon ion-calendar"></i>
             预约计划
           </a>
-          <a class="tab-item"  style="font-size:14px;">
-            <i class="icon ion-chatbox"></i>
-            评价
+
+          <a class="tab-item" ng-click="onClickPersonalInfo()"  style="font-size:14px;">
+            <i class="icon ion-information-circled"></i>
+            修改信息 
           </a>
-          <!-- <a class="tab-item" ng-click="showRemovePop()" style="font-size:14px;">
-            <i class="icon ion-trash-a"></i>
-            解除关系
-          </a> -->
+
+          <a class="tab-item" ng-click="onClickPersonalConfig()" style="font-size:14px;">
+            <i class="icon ion-gear-a"></i>
+            设置
+          </a>
         </div>
 
       </div>
@@ -102,7 +105,7 @@
       进入审核页面 {{state}}
     </button>
     
-        <span class="button button-block  icon ion-information-circled" ng-click="onClickPersonalInfo()" >
+<!--         <span class="button button-block  icon ion-information-circled" ng-click="onClickPersonalInfo()" >
           个人信息
         </span>
 
@@ -112,7 +115,7 @@
         
         <span class="button button-block  icon ion-gear-a" ng-click="onClickPersonalConfig()">
           设置
-        </span>
+        </span> -->
 
     </div>
   </ion-list>

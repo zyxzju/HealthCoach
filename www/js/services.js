@@ -98,7 +98,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true},
       ReserveHealthCoach:{method:'POST',params:{route:'ReserveHealthCoach'},timeout:10000},//预约
       getHealthCoachInfo:{method:'GET',params:{route:'GetHealthCoachInfo',HealthCoachID:'@HealthCoachID'},timeout:10000},//预约
-      GetCalendar:{method:'GET',isArray:true,params:{route:'Calendar',DoctorId:'@DoctorId'},timeout: 10000}
+      GetCalendar:{method:'GET',isArray:true,params:{route:'Calendar',DoctorId:'@DoctorId'},timeout: 10000},
+      GetCommentList: {method:'GET',isArray: true,params:{route: 'GetCommentList'}, timeout:100000},
+      GetHealthCoachInfo: {method:'GET',params:{route: 'GetHealthCoachInfo', HealthCoachID:'@HealthCoachID'}, timeout:1000}
 		})
 	}
 	var Service = function(){
@@ -1983,6 +1985,26 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       deferred.reject(err);
     });
     return deferred.promise;
+  };
+//lrz 20151221
+self.GetHealthCoachInfo = function(id){
+        var deferred = $q.defer();
+        Data.Users.GetHealthCoachInfo({HealthCoachID:id}, function (data, headers) {
+              deferred.resolve(data);
+        }, function (err) {
+             deferred.reject(err);
+        });
+        return deferred.promise;
+}
+//lrz 20151221
+   self.GetCommentList = function (DoctorId ,CategoryCode, num, skip) {
+      var deferred = $q.defer();
+      Data.Users.GetCommentList({DoctorId:DoctorId,CategoryCode:CategoryCode, $orderby:"CommentTime desc", $top:num, $skip:skip}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+      return deferred.promise;
   };
 
   //TDy 20151106
