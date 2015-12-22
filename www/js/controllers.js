@@ -6319,27 +6319,54 @@ console.log($scope.reservation.AppointmentTime);
   console.log($scope.whichone);
   $scope.chart = null;
   $scope.isHiding = false;
-  //根据state传入的SortNo 从Service 预载入的列表中取出数据
-  $scope.index = RiskService.getIndexBySortNo($scope.whichone);
-  $scope.item = RiskService.getSingleRisk($scope.index);
+  if(RiskService.getRiskList() == [])  {
+    RiskService.initial();
+  }
   
+  $scope.Mlist = [];
+
+  var sortMlist = function(){
+     if($scope.item.M1show) {
+      $scope.item.M1.flist = [{name:'高血压发病率',f:$scope.item.M1.f1},
+      {name:'高血压五年死亡率',f:$scope.item.M1.f2},
+      {name:'心血管疾病',f:$scope.item.M1.f3},
+      {name:'中风十年发生率',f:$scope.item.M1.f4},
+      {name:'心衰率',f:$scope.item.M1.f5}];
+      $scope.Mlist.push($scope.item.M1);
+     }
+     if($scope.item.M2show) $scope.Mlist.push($scope.item.M2);
+     if($scope.item.M3show) {
+      $scope.item.M3.flist = [{name:'一年死亡率',f:$scope.item.M3.f1},
+      {name:'三年死亡率',f:$scope.item.M3.f2}];
+      $scope.Mlist.push($scope.item.M3);
+     }
+     console.log($scope.Mlist);
+  }
   // console.log($scope.myslide);
   // console.log($scope.riskSingle);
+
+
+
+    //根据state传入的SortNo 从Service 预载入的列表中取出数据
+  $scope.index = RiskService.getIndexBySortNo($scope.whichone);
+  $scope.item = RiskService.getSingleRisk($scope.index);
+  if(typeof($scope.item) != 'undefined') sortMlist();
+
   // 得到画图数据
-  if($scope.item.M1show != false)
-    $scope.chartData = RiskService.getGraphData('M1',$scope.index);
-  else if ($scope.item.M2show != false){
-    // $scope.myslide.slide(1,500);
-    $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
-  }
-  else{
-    // $scope.myslide.slide(2,500);
-    $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
-  }
+  // if($scope.item.M1show != false)
+  //   $scope.chartData = RiskService.getGraphData('M1',$scope.index);
+  // else if ($scope.item.M2show != false){
+  //   // $scope.myslide.slide(1,500);
+  //   $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
+  // }
+  // else{
+  //   // $scope.myslide.slide(2,500);
+  //   $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
+  // }
   
   console.log($scope.item);
 
-  AmCharts.makeChart('riskchart', $scope.chartData);
+  // AmCharts.makeChart('riskchart', $scope.chartData);
   // $scope.chartDone = true;
   // console.log($scope.chart);
   
@@ -6359,23 +6386,29 @@ console.log($scope.reservation.AppointmentTime);
   //slidebox控制
   $scope.$on('$ionicView.afterEnter',function(){
     
-    console.log($scope.myslide);
-    $timeout(5000);
-    if($scope.item.M1show == true){
-      null;      
-    }
-    // $scope.chartData = RiskService.getGraphData('M1',$scope.index);
-    else if ($scope.item.M2show == true){
-      // console.log('no hyper'); 
-      $scope.myslide.slide(1,50);
-    // $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
-    }
-    else{
-      $scope.myslide.slide(2,50);
-      // $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
-    }
+    $scope.slideHasChanged(0);
+    // console.log($scope.myslide);
+    // $timeout(5000);
+    // if($scope.item.M1show == true){
+    //   null;      
+    // }
+    // // $scope.chartData = RiskService.getGraphData('M1',$scope.index);
+    // else if ($scope.item.M2show == true){
+    //   // console.log('no hyper'); 
+    //   $scope.myslide.slide(1,50);
+    // // $scope.chartData = RiskService.getGraphData('M2',$scope.index);    
+    // }
+    // else{
+    //   $scope.myslide.slide(2,50);
+    //   // $scope.chartData = RiskService.getGraphData('M3',$scope.index);  
+    // }
   })
 
+$scope.$on('RisksGet',function(){
+  $scope.index = RiskService.getIndexBySortNo($scope.whichone);
+  $scope.item = RiskService.getSingleRisk($scope.index);
+   if(typeof($scope.item) != 'undefined') sortMlist();
+})
 
   $scope.slideHasChanged = function($index){
     var ii = $index;
@@ -6403,38 +6436,47 @@ console.log($scope.reservation.AppointmentTime);
     //           else break;
     //   }
 
-    switch(ii){
-      case 0: if($scope.item.M1show == true){
-                $scope.isHiding = false;
-                $scope.chartData    = RiskService.getGraphData('M1',$scope.index);
-                AmCharts.makeChart('riskchart', $scope.chartData); break;        
-              }
-              else {
-                  $scope.isHiding = true; break;
-              }
-              // $scope.chart.validateData();
-              // $scope.chart.validateNow(true,false);
-      case 1: if($scope.item.M2show == true){
-                $scope.isHiding = false;
-                $scope.chartData    = RiskService.getGraphData('M2',$scope.index);
-                AmCharts.makeChart('riskchart', $scope.chartData);break;        
-              }
-              else {
-                  $scope.isHiding = true; break;
-              }
-              // $scope.chart.dataProvider  = $scope.chartData.dataProvider;
-              // $scope.chart.validateData();
-              // $scope.chart.validateNow(true,false);
-      case 2: if($scope.item.M3show == true){
-                $scope.isHiding = false;
-                $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
-                AmCharts.makeChart('riskchart', $scope.chartData); 
-              }
-              else {
-                  $scope.isHiding = true; break;
-              }
-              // $scope.chart.validateData();
-              // $scope.chart.validateNow(true,false);
+    // switch(ii){
+    //   case 0: if($scope.item.M1show == true){
+    //             $scope.isHiding = false;
+    //             $scope.chartData    = RiskService.getGraphData('M1',$scope.index);
+    //             AmCharts.makeChart('riskchart', $scope.chartData); break;        
+    //           }
+    //           else {
+    //               $scope.isHiding = true; break;
+    //           }
+    //           // $scope.chart.validateData();
+    //           // $scope.chart.validateNow(true,false);
+    //   case 1: if($scope.item.M2show == true){
+    //             $scope.isHiding = false;
+    //             $scope.chartData    = RiskService.getGraphData('M2',$scope.index);
+    //             AmCharts.makeChart('riskchart', $scope.chartData);break;        
+    //           }
+    //           else {
+    //               $scope.isHiding = true; break;
+    //           }
+    //           // $scope.chart.dataProvider  = $scope.chartData.dataProvider;
+    //           // $scope.chart.validateData();
+    //           // $scope.chart.validateNow(true,false);
+    //   case 2: if($scope.item.M3show == true){
+    //             $scope.isHiding = false;
+    //             $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
+    //             AmCharts.makeChart('riskchart', $scope.chartData); 
+    //           }
+    //           else {
+    //               $scope.isHiding = true; break;
+    //           }
+    //           // $scope.chart.validateData();
+    //           // $scope.chart.validateNow(true,false);
+    // }
+
+    switch($scope.Mlist[ii].AssessmentType){
+      case 'M1' : $scope.chartData     = RiskService.getGraphData('M1',$scope.index);
+                        AmCharts.makeChart('riskchart', $scope.chartData); break;
+      case 'M2' : $scope.chartData     = RiskService.getGraphData('M2',$scope.index);
+                        AmCharts.makeChart('riskchart', $scope.chartData); break;
+      case 'M3' : $scope.chartData     = RiskService.getGraphData('M3',$scope.index);
+                        AmCharts.makeChart('riskchart', $scope.chartData); break;
     }
   }
 
