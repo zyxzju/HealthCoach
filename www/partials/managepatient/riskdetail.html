@@ -37,7 +37,7 @@
   <!-- </div> -->
 <!-- </div> -->
 
-<div class="card" ng-hide = "isHiding">
+<div class="card" >
   <!-- <div class="item item-text-wrap"> -->
      <div id="riskchart" ></div> 
 <!--   </div> -->
@@ -46,7 +46,27 @@
 
 <ion-slide-box on-slide-changed="slideHasChanged($index)"  delegate-handle="riskhandle">
 
-  <ion-slide>
+<ion-slide ng-repeat =" item in Mlist">
+<div class = "padding">
+      <div class="card" >
+
+        <div class="item item-divider">
+          <h2>{{item.AssessmentName}}风险描述<h2>
+        </div>
+        <div class="item item-text-wrap">
+
+          <h3>{{item.AssessmentName}}等级说明</h3>
+          <p>{{ item.Result }}</p>
+          
+          
+          <h3>我们的风险评估结果显示您的</h3>  
+          <p ng-repeat = "h in item.flist"> {{h.name}} {{h.f}} %</p>
+
+        </div>
+      </div>
+    </div>
+</ion-slide>
+  <!-- <ion-slide>
     <div class = "padding">
       <div class="card" >
 
@@ -99,11 +119,10 @@
           <h3>我们的风险评估结果显示您的</h3>
           <p>一年内心衰死亡率  {{item.M3.f1 | limitTo :4}}  ％</p>
           <p>三年内心衰死亡率  {{item.M3.f2 | limitTo :4}}  ％</p>
-          <!-- {{item.M2.Period}}  {{item.M2.Glucose}} mmol/L -->
       </div>
     </div>
   </div>
-  </ion-slide>
+  </ion-slide> -->
 
 
 </ion-slide-box>
