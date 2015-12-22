@@ -149,16 +149,16 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
   //   }
   // })
 
-  .state('coach.message',{
-    url:'/message',
-    views:{
-      'coach-message':{
-        templateUrl:'partials/individual/coach-message.html',
-        controller:'CoachMessageCtrl'
-      }
-    }
+  // .state('coach.message',{
+  //   url:'/message',
+  //   views:{
+  //     'coach-message':{
+  //       templateUrl:'partials/individual/coach-message.html',
+  //       controller:'CoachMessageCtrl'
+  //     }
+  //   }
 
-  })
+  // })
 
   .state('coach.home',{
     url:'/home',
@@ -171,7 +171,16 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     }
 
   })
-
+  .state('messages',{
+    url:'/messages',
+    templateUrl:'partials/individual/messages.html',
+    controller:'CoachMessageCtrl'
+  })
+  .state('messageDetail',{
+    url:'/messages/:messageType',
+    templateUrl:'partials/individual/detail-message.html',
+    controller:'CoachMessageDetailCtrl'
+  })  
   .state('commentList',{
     url:'/commentList',
     cache:false,

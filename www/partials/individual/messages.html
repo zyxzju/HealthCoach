@@ -1,0 +1,34 @@
+<ion-view hide-tabs view-title="消息" > 
+<!--   <ion-nav-bar class="bar-positive nav-title-slide-ios7">
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>
+  </ion-nav-bar>  -->
+  <ion-nav-buttons side="left">
+    <button class="button icon button-icon ion-arrow-left-c" ng-click="goToHome()"></button>
+  </ion-nav-buttons>
+  <ion-content start-y="300">
+    <div class="list">
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#/messages/system">
+        <i class="icon ion-android-settings" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#11c1f3;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">{{systemMessage.SendTime}}</span>
+        <p style="color:#000">{{systemMessage.Title}}</p>
+        <p style="width:90%">{{systemMessage.Description}}</p>    
+      </a>
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#/messages/appointmant">
+        <i class="icon ion-android-calendar" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#e66767;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">12月12日</span>
+        <p style="color:#000">预约信息</p>
+        <p style="width:90%">1234567</p>    
+      </a>
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#/messages/某人">
+        <i class="icon ion-android-settings" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#417D9A;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">12月12日</span>
+        <p style="color:#000">someone</p>
+        <p style="width:90%">ABC</p>    
+      </a>            
+    </div>  
+  </ion-content>     
+</ion-view>

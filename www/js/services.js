@@ -270,7 +270,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
                 GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000},
                 messageNum:{method:'GET', params:{route: 'messageNum',Reciever:'@Reciever',SendBy:'@SendBy'},timeout: 10000},
-                message:{method:'PUT', params:{route:'message'},timeout: 1000}       
+                message:{method:'PUT', params:{route:'message'},timeout: 10000},
+                GetDataByStatus:{method:'GET',isArray:true,params:{route:'GetDataByStatus',AccepterID:'@AccepterID',NotificationType:'@NotificationType',Status:'@Status',$top:'@top',$skip:'@skip'},timeout:10000}      
         });
     };
 	serve.abort = function($scope){
@@ -2733,7 +2734,16 @@ self.GetHealthCoachInfo = function(id){
         deferred.reject(err);
       });
       return deferred.promise;      
-    }    
+    }
+    self.GetDataByStatus = function (AccepterID,NotificationType,Status,top,skip){
+      var deferred = $q.defer();
+      Data.MessageInfo.GetDataByStatus({AccepterID:AccepterID,NotificationType:NotificationType,Status:Status,$top:top,$skip:skip}, function (data) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }         
     return self;
 }])
 //大师兄的弹窗业务service 可以随便调用

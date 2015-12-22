@@ -55,7 +55,6 @@
   font-size: 0.8rem;
   color: #666666;
   margin-top: 8px;
-  margin-left:30px;
   font-style: italic  
 }
 .item h5 {
@@ -103,7 +102,7 @@ hr.list:after {
   top: -10px;
   padding: 0px;
   margin:0;
-  background: #F3F3F3;
+  background: #FFF;
   color: #3d6399;
   font-size: 14px;
 }
