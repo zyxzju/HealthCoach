@@ -1,0 +1,53 @@
+<ion-view hide-tabs view-title="{{headerText}}">
+  <ion-content start-y="300" style="background-color:#F5F5F5">
+    <div ng-repeat="message in messages">
+      <p style="text-align:center;margin-bottom:0;color:#777;font-size:10px">{{message.SendTime}}</p>
+      <div class="card" style="margin-top:8px">
+        <div class="item item-body" style="padding:10px">
+          <h>{{message.Title}}</h>
+          <p style="margin-top:8px">{{message.Description}}</p>
+
+        </div>
+          <a href="#" class="item text-right" style="padding:10px">
+            
+             CLICK<span> <i class="icon ion-android-calendar"></i></span>
+          </a>
+      </div>      
+    </div>
+      <p style="text-align:center;margin-bottom:0;color:#777;font-size:10px">时间</p>
+      <div class="card" style="margin-top:8px">
+        <div class="item item-body" style="padding:10px">
+          <h>HEADER</h>
+          <p style="margin-top:8px">content bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</p>
+
+        </div>
+          <a href="#" class="item text-right" style="padding:10px">
+            
+             CLICK<span> <i class="icon ion-android-calendar"></i></span>
+          </a>
+      </div> 
+<!--     <div class="list">
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#">
+        <i class="icon ion-android-settings" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#11c1f3;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">12月12日</span>
+        <p style="color:#000">系统通知</p>
+        <p style="width:90%">好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字好多字</p>    
+      </a>
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#">
+        <i class="icon ion-android-calendar" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#e66767;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">12月12日</span>
+        <p style="color:#000">预约信息</p>
+        <p style="width:90%">1234567</p>    
+      </a>
+
+      <a class="item item-icon-left" style="padding-top:10px;padding-bottom:10px;padding-left:66px" href="#">
+        <i class="icon ion-android-settings" ng-class="" style="color:#FFF;width:44px;height:44px;background-color:#417D9A;margin-top:9px;padding-left:6px;border-radius:4px"></i>
+        <span class="item-note">12月12日</span>
+        <p style="color:#000">someone</p>
+        <p style="width:90%">ABC</p>    
+      </a>            
+    </div>   -->
+  </ion-content>     
+</ion-view>

@@ -1908,9 +1908,33 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
 
 }])
-.controller('CoachMessageCtrl',function(){ //LRZ
-
-})
+.controller('CoachMessageCtrl',['$state','$scope','MessageInfo','Storage', function($state,$scope,MessageInfo,Storage){ 
+  $scope.$on('$ionicView.enter', function() {
+    MessageInfo.GetDataByStatus(Storage.get('UID'),1,'{Status}',1,0)
+    .then(function(data){
+      console.log(data[0]);
+      $scope.systemMessage=data[0];
+    })  
+  });  
+  $scope.goToHome = function(){
+    $state.go('coach.home');
+  }
+}])
+.controller('CoachMessageDetailCtrl',['$state','$scope','$stateParams','MessageInfo','Storage', function($state,$scope,$stateparams,MessageInfo,Storage){ 
+  $scope.headerText =  $stateparams.messageType;
+  $scope.$on('$ionicView.enter', function() {
+    if($stateparams.messageType=='system'){
+      MessageInfo.GetDataByStatus(Storage.get('UID'),1,'{Status}',100,0)
+      .then(function(data){
+        console.log(data)
+        $scope.messages=data;
+      })       
+    }else{
+      $scope.messages=[];
+    }
+ 
+  });  
+}])
 .controller('myPatientCtrl', ['$rootScope', '$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','$ionicHistory','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($rootScope,$compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,$ionicHistory,Storage,userINFO,PageFunc,CONFIG,Data){
   var PIDlist=new Array();//PID列表
   var PIDlistLength=0,PIDlistLengthshow//PID列表长度
@@ -1961,12 +1985,8 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       scope: $scope,
     }).then(function(popover) {
       $scope.ranks=ranks;
-      $scope.popover = popover;
-      
-    }); 
-    $scope.$on('popover.hidden', function() {
-      console.log('hide');
-    });     
+      $scope.popover = popover;  
+    });    
   });
   var dataloading=function(){
     $ionicLoading.show({

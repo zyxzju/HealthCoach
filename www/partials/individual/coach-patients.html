@@ -17,6 +17,7 @@
     <ion-nav-buttons side="right">
       <a class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></a>
       <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+      <!-- <a class="button button-icon icon ion-chatbubble-working" href="#/messages"></a> -->
     </ion-nav-buttons>
 <!--     <ion-nav-buttons side="right">
       <button class="button button-icon icon ion-search " ng-click="openSearch()"></button>
@@ -56,7 +57,7 @@
             </div>  -->
             <!-- <div class="row " style="padding-right:0"> -->
               <!-- <div class="col"> -->
-                <h5>{{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span><span class="gender-and-age">{{patient.Age}} {{patient.GenderText[0]}}</span></h5>
+                <h5><span style="float:left;width:100px">{{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></span><span class="gender-and-age">{{patient.Age}} {{patient.GenderText[0]}}</span></h5>
               <!-- </div> -->
               <!-- <div class="col"> -->
                 <!-- <h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6> -->

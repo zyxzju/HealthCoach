@@ -12,7 +12,7 @@
     <ion-list>
       <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left2" ng-click="viewDetail(patient)" >
         <img src="{{patient.imageURL}}">
-        <h5>{{patient.name}}<span class="gender-and-age">{{patient.age}} {{patient.GenderText[0]}}</span></h5>
+        <h5><span style="float:left;width:100px">{{patient.name}}</span><span class="gender-and-age">{{patient.age}} {{patient.GenderText[0]}}</span></h5>
         <p style="white-space:wrap" >“{{patient.Description | limitTo:12}}{{patient.Description.length>12?'&hellip;':''}}” <span style="font-size:0.65rem;font-style: italic;margin-left:10px">{{patient.ApplyTime}}</span></p>
         <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
         <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>        
