@@ -1928,7 +1928,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   }; 
   //LRZ 20151105   
-  self.postDoctorDtlInfo_Single = function (userid,code,value) {
+self.postDoctorDtlInfo_Single = function (userid,code,value) {
     var temp = [{
                 "Doctor": userid,
                 "CategoryCode": "Contact",
@@ -1952,6 +1952,30 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };      
+self.postDoctorDtlInfo_byCode = function (userid,CategoryCode,ItemCode,value) {
+    var temp = [{
+                "Doctor": userid,
+                "CategoryCode": CategoryCode,
+                "ItemCode": ItemCode,
+                "ItemSeq": "1",
+                "Value": value,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "1",
+                "piTerminalName": "1",
+                "piTerminalIP": "1",
+                "piDeviceType": "1"
+              }
+    ];
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };   
   //LRZ 20151102
   self.getDocInfo = function (userid) {
     

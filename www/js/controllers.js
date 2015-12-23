@@ -545,7 +545,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
      });
    });
 
+   $scope.$watch('$viewContentLoaded', function() {   
+        GetHealthCoachInfo( Storage.get("UID") ); //获取专员个人信息
+        // GetCommentList(Storage.get("UID") ,''); //获取专员的2条评论(所有模块)
+  }); 
 
+
+    //restful获取专员个人信息
+  var GetHealthCoachInfo= function(HealthCoachID)
+   {
+     var promise =  Users.GetHealthCoachInfo(HealthCoachID); 
+     promise.then(function(data)
+     { 
+       $scope.HealthCoachInfo = data;
+       console.log(data);
+       if(($scope.HealthCoachInfo.imageURL=="")||($scope.HealthCoachInfo.imageURL==null)){
+            $scope.HealthCoachInfo.imageURL="img/DefaultAvatar.jpg";
+          }
+        else{ $scope.HealthCoachInfo.imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+$scope.HealthCoachInfo.imageURL;
+          }
+        $scope.$broadcast('scroll.refreshComplete'); 
+      },function(err) {   
+    });      
+  }
   //填表的预设数据 和需要填写的项目
 
   // date picker -------------------------------
@@ -650,8 +672,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         // else
           Users.postDoctorDtlInfo_Check($scope.userInfo.DtInfo).then(function(res){
             //console.log(res);
-              if(res.result == "数据插入成功")
-                $state.go('coach.home');
+              if(res.result == "数据插入成功"){
+                 Users.postDoctorDtlInfo_byCode(Storage.get("UID"),"Personal","Description",$scope.HealthCoachInfo.Description).then(function(res){
+                  if(res.result == "数据插入成功")  $state.go('coach.home');
+                 })
+              }
+                
             });                  
       }
 
@@ -1168,7 +1194,29 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    $scope.loadingDone = false;
+   $scope.$watch('$viewContentLoaded', function() {   
+        GetHealthCoachInfo( Storage.get("UID") ); //获取专员个人信息
+        // GetCommentList(Storage.get("UID") ,''); //获取专员的2条评论(所有模块)
+  }); 
 
+
+    //restful获取专员个人信息
+  var GetHealthCoachInfo= function(HealthCoachID)
+   {
+     var promise =  Users.GetHealthCoachInfo(HealthCoachID); 
+     promise.then(function(data)
+     { 
+       $scope.HealthCoachInfo = data;
+       console.log(data);
+       if(($scope.HealthCoachInfo.imageURL=="")||($scope.HealthCoachInfo.imageURL==null)){
+            $scope.HealthCoachInfo.imageURL="img/DefaultAvatar.jpg";
+          }
+        else{ $scope.HealthCoachInfo.imageURL=CONFIG.ImageAddressIP + CONFIG.ImageAddressFile+'/'+$scope.HealthCoachInfo.imageURL;
+          }
+        $scope.$broadcast('scroll.refreshComplete'); 
+      },function(err) {   
+    });      
+  }
    Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
       console.log(data);
@@ -1291,6 +1339,12 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       }  
 
   };
+
+
+
+  $scope.test = function(){
+    
+  }
   //点击保存上传更新
   $scope.onClickSave = function(){
     PageFunc.confirm("是否上传新信息","确认").then( 
@@ -1306,9 +1360,16 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
                 if(res.result == "数据插入成功"){
                   Users.postDoctorDtlInfo_Check($scope.userInfo.DtInfo).then(function(res){
                   //console.log(res);
-                  if(res.result == "数据插入成功")
-                  $rootScope.$broadcast("onClickSubmit");
-                  $state.go('coach.home');
+                  if(res.result == "数据插入成功"){
+                      Users.postDoctorDtlInfo_byCode(Storage.get("UID"),"Personal","Description",$scope.HealthCoachInfo.Description).then(function(res){
+                            if(res.result == "数据插入成功") {
+                                $rootScope.$broadcast("onClickSubmit");
+                                $state.go('coach.home');
+                            }                 
+                      })
+
+                  }
+
                   });                  
                 }
 
