@@ -1901,6 +1901,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       if(res){
             $scope.event.Status = 5;
             ScheduleService.postCalendar($scope.event);
+            $timeout(function(){
+               ScheduleService.cancelOneCalendar(eventB);
+            },100);
             $state.go('schedule');
       }
     })
