@@ -1496,7 +1496,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     for (var i = calendar.length - 1; i >= 0; i--) {
       var temp =  { };
       var flag = true;
-      
+      console.log(calendar[i].Status)
       var t = calendar[i].DateTime;
       if(calendar[i].Status == 2 || calendar[i].Status == 0 ) flag = false;
       //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
@@ -1532,12 +1532,19 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
             if(today.start.getTime() < start.getTime() && today.end.getTime() > end.getTime()){
               //today
-              console.log('is today')
-              console.log(todayToBeFinished);
+              
               if(calendar[i].Status == 1 || calendar[i].Status == 3 || calendar[i].Status == 4 || calendar[i].Status == 5) 
                 todayToBeFinished = todayToBeFinished + 1;
               if(calendar[i].Status == 5 )
                 todayHasFinished = todayHasFinished + 1; 
+            }
+
+            switch(calendar[i].Status){
+              case 1 : temp.color = "#a9e4ef";break;
+              case 2 : temp.color = "#B40431";break;
+              case 3 : temp.color = "#64b6ca";break;
+              case 4 : temp.color = "#3a87ad";break;
+              case 5 : temp.color = "#088A68";break; 
             }
             temp.id = calendar[i].SortNo; 
             temp.start = start;
