@@ -127,7 +127,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           getDrinkFrequency:{method:'GET',params:{route: 'Type/DrinkFrequency'},isArray:true, timeout: 10000},
           GetInsuranceType:{method:'GET',isArray:true, params:{route:'GetInsuranceType'},timeout:10000},
           Type:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
-          GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000}
+          GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000},
+          //lrz20151225 Api/v1/Dict/Type/{Category}
+          getTitleLevel:{method:'GET',isArray:true,params:{route:'Type/TitleLevel'},timeout:10000},
+          getSexType:{method:'GET',isArray:true,params:{route:'Type/getSexType'},timeout:10000},
+          getJobTitle:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
+          getDivisionTypes:{method:'GET',isArray:true,params:{route:'DivisionTypes'},timeout:10000},
+          getDivisionCodes:{method:'GET',isArray:true,params:{route:'Divisions',Type:'@Type'},timeout:10000}
     })
   }
   var BasicInfo = function () {//ZXF
@@ -1328,7 +1334,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
             }
           }        
       };
-      //不显示没填写的项目&& 异常项目 lrz20151103
+      //不显示没填写的项目&& 异常项目 
       for (var i = newRisks.length - 1; i >= 0; i--) {
         if(typeof(newRisks[i].M1) == 'undefined' 
           || typeof(newRisks[i].M1.SBP) == 'undefined' 
