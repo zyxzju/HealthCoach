@@ -130,8 +130,8 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000},
           //lrz20151225 Api/v1/Dict/Type/{Category}
           getTitleLevel:{method:'GET',isArray:true,params:{route:'Type/TitleLevel'},timeout:10000},
-          getSexType:{method:'GET',isArray:true,params:{route:'Type/getSexType'},timeout:10000},
-          getJobTitle:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
+          getSexType:{method:'GET',isArray:true,params:{route:'Type/SexType'},timeout:10000},
+          getJobTitle:{method:'GET',isArray:true,params:{route:'Type/JobTitle'},timeout:10000},
           getDivisionTypes:{method:'GET',isArray:true,params:{route:'DivisionTypes'},timeout:10000},
           getDivisionCodes:{method:'GET',isArray:true,params:{route:'Divisions',Type:'@Type'},timeout:10000}
     })
@@ -1747,14 +1747,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
    //LRZ 20151102
   self.postDoctorInfo = function (data) {
-    // console.log(data);
+    console.log("------------------------------")
+    console.log(data);
 
     
     var DoctorInfo = {
       "UserId": String(data.id),
       "UserName": String(data.name),
       "Birthday": String(data.birthday),
-      "Gender": (data.gender == '男' ? 1:2),
+      "Gender": data.gender.Type,
       "IDNo": String(data.idno),
       "InvalidFlag": 0,
       "piUserId": "1",
@@ -1861,10 +1862,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   self.postDoctorDtlInfo_Check = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
-      unitname:data.unitname,
-      jobTitle: data.jobTitle,
-      level: data.level,
-      dept: data.dept,
+      unitname:data.unitname.Type,
+      jobTitle: data.jobTitle.Type,
+      level: data.level.Type,
+      dept: data.dept.Type,
       photoAddress: data.photoAddress,
       photoAddress_Check: data.photoAddress_Check
     };
@@ -1934,54 +1935,54 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   }; 
   //LRZ 20151105   
-self.postDoctorDtlInfo_Single = function (userid,code,value) {
-    var temp = [{
-                "Doctor": userid,
-                "CategoryCode": "Contact",
-                "ItemCode": "Contact001_" + String(code),
-                "ItemSeq": "1",
-                "Value": value,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "sample string 8",
-                "piTerminalName": "sample string 9",
-                "piTerminalIP": "sample string 10",
-                "piDeviceType": "11"
-              }
-    ];
-    console.log(temp);
-    var deferred = $q.defer();
-    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
-      deferred.resolve(data);
-    }, function (err) {
-      deferred.reject(err);
-    });
-    return deferred.promise;
-  };      
-self.postDoctorDtlInfo_byCode = function (userid,CategoryCode,ItemCode,value) {
-    var temp = [{
-                "Doctor": userid,
-                "CategoryCode": CategoryCode,
-                "ItemCode": ItemCode,
-                "ItemSeq": "1",
-                "Value": value,
-                "Description": "null",
-                "SortNo": "1",
-                "piUserId": "1",
-                "piTerminalName": "1",
-                "piTerminalIP": "1",
-                "piDeviceType": "1"
-              }
-    ];
-    console.log(temp);
-    var deferred = $q.defer();
-    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
-      deferred.resolve(data);
-    }, function (err) {
-      deferred.reject(err);
-    });
-    return deferred.promise;
-  };   
+  self.postDoctorDtlInfo_Single = function (userid,code,value) {
+      var temp = [{
+                  "Doctor": userid,
+                  "CategoryCode": "Contact",
+                  "ItemCode": "Contact001_" + String(code),
+                  "ItemSeq": "1",
+                  "Value": value,
+                  "Description": "null",
+                  "SortNo": "1",
+                  "piUserId": "sample string 8",
+                  "piTerminalName": "sample string 9",
+                  "piTerminalIP": "sample string 10",
+                  "piDeviceType": "11"
+                }
+      ];
+      console.log(temp);
+      var deferred = $q.defer();
+      Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };      
+  self.postDoctorDtlInfo_byCode = function (userid,CategoryCode,ItemCode,value) {
+      var temp = [{
+                  "Doctor": userid,
+                  "CategoryCode": CategoryCode,
+                  "ItemCode": ItemCode,
+                  "ItemSeq": "1",
+                  "Value": value,
+                  "Description": "null",
+                  "SortNo": "1",
+                  "piUserId": "1",
+                  "piTerminalName": "1",
+                  "piTerminalIP": "1",
+                  "piDeviceType": "1"
+                }
+      ];
+      console.log(temp);
+      var deferred = $q.defer();
+      Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };   
   //LRZ 20151102
   self.getDocInfo = function (userid) {
     
@@ -2024,17 +2025,17 @@ self.postDoctorDtlInfo_byCode = function (userid,CategoryCode,ItemCode,value) {
     });
     return deferred.promise;
   };
-//lrz 20151221
-self.GetHealthCoachInfo = function(id){
-        var deferred = $q.defer();
-        Data.Users.GetHealthCoachInfo({HealthCoachID:id}, function (data, headers) {
-              deferred.resolve(data);
-        }, function (err) {
-             deferred.reject(err);
-        });
-        return deferred.promise;
-}
-//lrz 20151221
+  //lrz 20151221
+  self.GetHealthCoachInfo = function(id){
+          var deferred = $q.defer();
+          Data.Users.GetHealthCoachInfo({HealthCoachID:id}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+   //lrz 20151221
    self.GetCommentList = function (DoctorId ,CategoryCode, num, skip) {
       var deferred = $q.defer();
       Data.Users.GetCommentList({DoctorId:DoctorId,CategoryCode:CategoryCode, $orderby:"CommentTime desc", $top:num, $skip:skip}, function (data, headers) {
@@ -2044,7 +2045,52 @@ self.GetHealthCoachInfo = function(id){
       });
       return deferred.promise;
   };
-
+  //lrz 20151226
+  self.GetSexType  = function(){
+          var deferred = $q.defer();
+          Data.Dict.getSexType({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetTitleLevel = function(){
+          var deferred = $q.defer();
+          Data.Dict.getTitleLevel({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetJobTitle = function(){
+          var deferred = $q.defer();
+          Data.Dict.getJobTitle({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetDivisionTypes = function(){
+          var deferred = $q.defer();
+          Data.Dict.getDivisionTypes({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetDivisionCodes = function(code){
+          var deferred = $q.defer();
+          Data.Dict.getDivisionCodes({Type:code}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }        
   //TDy 20151106
   self.addnewpatient = function(DoctorId, PatientId,Module){
     var temp = [{

@@ -84,10 +84,14 @@ Dept
         <div class="input-label">
           性别
         </div>
-        <select ng-model="userInfo.BasicInfo.gender">
+<!--         <select ng-model="userInfo.BasicInfo.gender">
           <option>男</option>
           <option>女</option>
-        </select>
+        </select> -->
+
+      <select ng-options="item.Name for item in dict.SexType" ng-model="userInfo.BasicInfo.gender">
+        <option value="">请选择</option>
+      </select>
       </label>
 
 <!--       <a href="#" class="item item-icon-left item-icon-right">
@@ -116,10 +120,13 @@ Dept
         <div class="input-label">
           工作单位
         </div>
-        <select ng-model="userInfo.DtInfo.unitname">
+<!--         <select ng-model="userInfo.DtInfo.unitname">
           <option>海军总医院</option>
           <option>其他</option>
-        </select>
+        </select> -->
+        <select ng-options="item.Name for item in dict.UnitName" ng-model="userInfo.DtInfo.unitname">
+        <option value="">请选择</option>     
+        </select>   
       </label>
 
       <label class="item item-icon-left item-input-right item-select">
@@ -127,13 +134,16 @@ Dept
         <div class="input-label">
           职务
         </div>
-        <select ng-model="userInfo.DtInfo.jobTitle">
+<!--         <select ng-model="userInfo.DtInfo.jobTitle">
           <option>医士</option>
           <option>住院医师</option>
           <option>主治医师</option>
           <option>副主任医师</option>
           <option>主任医师</option>
-        </select>
+        </select> -->
+      <select ng-options="item.Name for item in dict.JobTitle" ng-model="userInfo.DtInfo.jobTitle">
+        <option value="">请选择</option>
+      </select>    
       </label>
 
       <label class="item item-icon-left item-input-right item-select">
@@ -141,10 +151,13 @@ Dept
         <div class="input-label">
           科室
         </div>
-        <select ng-model="userInfo.DtInfo.dept">
+      <select ng-options="item.Name for item in dict.Dept" ng-model="userInfo.DtInfo.dept">
+        <option value="">请选择</option>
+      </select>            
+<!--         <select ng-model="userInfo.DtInfo.dept">
           <option>心内科门诊</option>
           <option>内分泌科</option>
-        </select>
+        </select> -->
       </label> 
 
       <label class="item item-icon-left item-input-right item-select">
@@ -152,12 +165,15 @@ Dept
         <div class="input-label">
           职级
         </div>
-        <select ng-model="userInfo.DtInfo.level">
+<!--         <select ng-model="userInfo.DtInfo.level">
           <option>初级</option>
           <option>中级</option>
           <option>正高</option>
           <option>副高</option>
-        </select>
+        </select> -->
+         <select ng-options="item.Name for item in dict.TitleLevel" ng-model="userInfo.DtInfo.level">
+        <option value="">请选择</option>
+      </select>     
       </label>     
 
       <div class="item item-divider">个人简介</div> 
