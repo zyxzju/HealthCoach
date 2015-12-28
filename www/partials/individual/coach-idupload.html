@@ -20,10 +20,15 @@
     <div class="input-label">
       性别
     </div>
-    <select ng-model="userInfo.BasicInfo.gender">
-      <option>男</option>
-      <option>女</option>
-    </select>
+    <!-- <select ng-model="userInfo.BasicInfo.gender"> -->
+<!--       <option>男</option>
+      <option>女</option> -->
+
+      <!-- <option ng-repeat ="item in dict.SexType">{{item.Name}}</option> -->
+    <!-- </select> -->
+      <select ng-options="item.Name for item in dict.SexType" ng-model="userInfo.BasicInfo.gender">
+        <option value="">请选择</option>
+      </select>
   </label>
 
 
@@ -31,7 +36,7 @@
         <ionic-datepicker input-obj="datepickerObject">
         <div>
         <span>生日</span>
-        <span class="item-note ">
+        <span class="item-note">
           {{userInfo.BasicInfo.birthdayforshow}}
         </span>
       </div>
@@ -46,13 +51,16 @@
       <div class="input-label">
       工作单位
       </div>
-      <select ng-model="userInfo.DtInfo.unitname">
-        <option>海军总医院</option>
-        <option>其他</option>
+      <!-- <select ng-model="userInfo.DtInfo.unitname"> -->
+<!--         <option>海军总医院</option>
+        <option>其他</option> -->
 <!--         <option>浙医二院</option>
         <option>浙医一院</option> -->
+        <!-- <option ng-repeat ="item in dict.UnitName">{{item.Name}}</option> -->
+      <!-- </select> -->
+            <select ng-options="item.Name for item in dict.UnitName" ng-model="userInfo.DtInfo.unitname">
+        <option value="">请选择</option>
       </select>
-
     </label>
 
 
@@ -62,11 +70,14 @@
       <div class="input-label">
       科室
       </div>
-      <select ng-model="userInfo.DtInfo.dept">
-        <option>心内科门诊</option>
-        <option>内分泌科</option>
+      <!-- <select ng-model="userInfo.DtInfo.dept"> -->
+<!--         <option>心内科门诊</option>
+        <option>内分泌科</option> -->
+        <!-- <option ng-repeat = "item in dict.Dept">{{item.Name}}</option> -->
+      <!-- </select> -->
+      <select ng-options="item.Name for item in dict.Dept" ng-model="userInfo.DtInfo.dept">
+        <option value="">请选择</option>
       </select>
-
     </label>
 
     <label class="item item-input item-select" >
@@ -74,13 +85,17 @@
       <div class="input-label">
       职务
       </div>
-      <select ng-model="userInfo.DtInfo.jobTitle">
-        <option>医士</option>
+      <!-- <select ng-model="userInfo.DtInfo.jobTitle"> -->
+                    <select ng-options="item.Name for item in dict.JobTitle" ng-model="userInfo.DtInfo.jobTitle">
+              <option value="">请选择</option>
+            </select>
+<!--         <option>医士</option>
         <option>住院医师</option>
         <option>主治医师</option>
         <option>副主任医师</option>
-        <option>主任医师</option>
-      </select>
+        <option>主任医师</option> -->
+        <!-- <option ng-repeat = "item in dict.JobTitle">{{item.Name}}</option> -->
+      <!-- </select> -->
 
     </label>
 
@@ -89,14 +104,17 @@
       <div class="input-label">
       职级
       </div>
-      <select ng-model="userInfo.DtInfo.level">
+      <!-- <select ng-model="userInfo.DtInfo.level"> -->
         
-        <option>副高</option>
+<!--         <option>副高</option>
         <option>正高</option>
         <option>中级</option>
-        <option>初级</option>
+        <option>初级</option> -->
+        <!-- <option ng-repeat = "item in dict.TitleLevel">{{item.Name}}</option> -->
+      <!-- </select> -->
+      <select ng-options="item.Name for item in dict.TitleLevel" ng-model="userInfo.DtInfo.level">
+        <option value="">请选择</option>
       </select>
-
     </label>
 
 

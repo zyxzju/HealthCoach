@@ -482,71 +482,86 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
    // $scope.userInfo = JSON.parse(Storage.get("userInfo"));
    $scope.loadingDone = false;
    $scope.datepickerObject = {};
+   $scope.dict = {};
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
-   Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
-      var temp = data;
-      console.log(data);
-      $scope.userInfo.BasicInfo = {
-       name:temp.DoctorName ,
-       gender:temp.Gender==1?'男':'女',
-       birthday:temp.Birthday,
-       id:temp.DoctorId == null? Storage.get("UID"):temp.DoctorId ,
-       idno:temp.IDNo
-     }
-     switch(temp.Gender){
-      case '1' : $scope.userInfo.BasicInfo.gender = "男"; break;
-      case '2' : $scope.userInfo.BasicInfo.gender = "女"; break;
-      default : $scope.userInfo.BasicInfo.gender = " "
-     }
-     // var temp2 = String($scope.userInfo.BasicInfo.bithday);
-     // //console.log($scope.userInfo.BasicInfo.birthday);
-     var t = String($scope.userInfo.BasicInfo.birthday);
-     //console.log(t);
-      $scope.Info = {
-        name: $scope.userInfo.BasicInfo.name,
-        gender: $scope.userInfo.BasicInfo.gender==1?'男':'女',
-        birthday:$scope.userInfo.BasicInfo.birthday,
-        id: Storage.get('UID')
-      }
-      $scope.userInfo.BasicInfo.dateforshow = new Date(1979,0,1);
-      if (typeof($scope.userInfo.BasicInfo.birthday) == 'undefined' || $scope.userInfo.BasicInfo.birthday == null || $scope.userInfo.BasicInfo.birthday == 'null') $scope.userInfo.BasicInfo.birthdayforshow = "未设定";
-      else {
-        $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
 
-        $scope.userInfo.BasicInfo.dateforshow.setDate(t[6] + t[7])    ;
-        $scope.userInfo.BasicInfo.dateforshow.setMonth(t[4] + t[5])   ;
-        $scope.userInfo.BasicInfo.dateforshow.setMonth( $scope.userInfo.BasicInfo.dateforshow.getMonth() -1 )   ;
-        $scope.userInfo.BasicInfo.dateforshow.setFullYear(t[0] + t[1] + t[2] + t[3])  ;
-      }
-      // $scope.datepickerObject.inputDate = $scope.userInfo.BasicInfo.dateforshow;
-      // console.log( $scope.userInfo.BasicInfo.dateforshow);
-      
-      // console.log($scope.datepickerObject.inputDate);
-       Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
+   //从字典中搜索选中的对象。
+   var searchObj = function(code,array){
+      for (var i = 0; i < array.length; i++) {
+        if(array[i].Type == code) return array[i];
+      };
+      return "未填写";
+   }
+
+   var GetDocInfo = function(){
+     Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
         var temp = data;
         console.log(data);
-        $scope.userInfo.DtInfo = {
-          unitname: temp.UnitName,
-          jobTitle: temp.JobTitle,
-          level: temp.Level,
-          dept: temp.Dept,
-          photoAddress : temp.PhotoAddress,
-          photoAddress_Check : temp.ActivatePhotoAddr  //LRZ1104
+        $scope.userInfo.BasicInfo = {
+         name:temp.DoctorName ,
+         gender:searchObj(data.Gender,$scope.dict.SexType),
+         birthday:temp.Birthday,
+         id:temp.DoctorId == null? Storage.get("UID"):temp.DoctorId,
+         idno:temp.IDNo
+       }
+       console.log($scope.userInfo.BasicInfo.gender)
+       // switch(temp.Gender){
+       //  case '1' : $scope.userInfo.BasicInfo.gender = "男性"; break;
+       //  case '2' : $scope.userInfo.BasicInfo.gender = "女性"; break;
+       //  default : $scope.userInfo.BasicInfo.gender = " ";
+       // }
+       // var temp2 = String($scope.userInfo.BasicInfo.bithday);
+       // //console.log($scope.userInfo.BasicInfo.birthday);
+       var t = String($scope.userInfo.BasicInfo.birthday);
+       //console.log(t);
+        $scope.Info = {
+          name: $scope.userInfo.BasicInfo.name,
+          gender: $scope.userInfo.BasicInfo.gender==1?'男':'女',
+          birthday:$scope.userInfo.BasicInfo.birthday,
+          id: Storage.get('UID')
         }
-          console.log( $scope.userInfo.DtInfo);
-          
-          $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ 
-          (($scope.userInfo.DtInfo.photoAddress_Check) == null ?'DefaultAvatar.jpg':$scope.userInfo.DtInfo.photoAddress_Check);//LRZ1104
-          // console.log($scope.imgURI);
-           // var objStr=JSON.stringify($scope.userInfo);
-           // Storage.set("userInfo",objStr); 
-           initDatePicker($scope.userInfo.BasicInfo.dateforshow);  
-           $scope.loadingDone = true;
+        $scope.userInfo.BasicInfo.dateforshow = new Date(1979,0,1);
+        if (typeof($scope.userInfo.BasicInfo.birthday) == 'undefined' || $scope.userInfo.BasicInfo.birthday == null || $scope.userInfo.BasicInfo.birthday == 'null') $scope.userInfo.BasicInfo.birthdayforshow = "未设定";
+        else {
+          $scope.userInfo.BasicInfo.birthdayforshow = t[0] + t[1] + t[2] + t[3]  + '/' + t[4] + t[5] + '/' + t[6] + t[7];
+
+          $scope.userInfo.BasicInfo.dateforshow.setDate(t[6] + t[7])    ;
+          $scope.userInfo.BasicInfo.dateforshow.setMonth(t[4] + t[5])   ;
+          $scope.userInfo.BasicInfo.dateforshow.setMonth( $scope.userInfo.BasicInfo.dateforshow.getMonth() -1 )   ;
+          $scope.userInfo.BasicInfo.dateforshow.setFullYear(t[0] + t[1] + t[2] + t[3])  ;
+        }
+        // $scope.datepickerObject.inputDate = $scope.userInfo.BasicInfo.dateforshow;
+        // console.log( $scope.userInfo.BasicInfo.dateforshow);
+        
+        // console.log($scope.datepickerObject.inputDate);
+         Users.getDocDtlInfo(Storage.get("UID")).then(function(data,headers){
+          var temp = data;
+          console.log(data);
+          $scope.userInfo.DtInfo = {
+            unitname: searchObj(temp.UnitName,$scope.dict.UnitName),
+            jobTitle: searchObj(temp.JobTitle,$scope.dict.JobTitle),
+            level: searchObj(temp.Level,$scope.dict.TitleLevel),
+            dept: searchObj(temp.Dept,$scope.dict.Dept),
+            photoAddress : temp.PhotoAddress,
+            photoAddress_Check : temp.ActivatePhotoAddr  //LRZ1104
+          }
+            console.log( $scope.userInfo.DtInfo);
+            
+            $scope.imgURI = CONFIG.ImageAddressIP + CONFIG.ImageAddressFile_Check+'/'+ 
+            (($scope.userInfo.DtInfo.photoAddress_Check) == null ?'DefaultAvatar.jpg':$scope.userInfo.DtInfo.photoAddress_Check);//LRZ1104
+            // console.log($scope.imgURI);
+             // var objStr=JSON.stringify($scope.userInfo);
+             // Storage.set("userInfo",objStr); 
+             initDatePicker($scope.userInfo.BasicInfo.dateforshow);  
+             $scope.loadingDone = true;
+       });
      });
-   });
+  }
 
    $scope.$watch('$viewContentLoaded', function() {   
         GetHealthCoachInfo( Storage.get("UID") ); //获取专员个人信息
+        GetDict(); //获得填写表单
+        GetDocInfo(); //获得信息
         // GetCommentList(Storage.get("UID") ,''); //获取专员的2条评论(所有模块)
   }); 
 
@@ -570,6 +585,38 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   }
   //填表的预设数据 和需要填写的项目
 
+  var GetDict = function(){
+    $scope.dict.SexType = [{"Type":"1","Name":"男性"},{"Type":"2","Name":"女性"},{"Type":"3","Name":"其他"},{"Type":"4","Name":"未知"}];
+    // var promise = Users.GetSexType();
+    // promise.then(function(data){
+    //   $scope.dict.SexType  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });
+    $scope.dict.TitleLevel = [{"Type":"1","Name":"正高"},{"Type":"2","Name":"副高"},{"Type":"3","Name":"中级"},{"Type":"4","Name":"初级"}];
+    // var promise2 = Users.GetTitleLevel();
+    // promise2.then(function(data){
+    //   $scope.dict.TitleLevel  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });
+    $scope.dict.JobTitle = [{"Type":"1","Name":"主任医师"},{"Type":"2","Name":"副主任医师"},{"Type":"3","Name":"主治医师"},{"Type":"4","Name":"住院医师"}];
+    // var promise3 = Users.GetJobTitle();
+    // promise3.then(function(data){
+    //   $scope.dict.JobTitle  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });    
+
+    $scope.dict.Dept =  [{"Type":"210403","Name":"心内科门诊"},{"Type":"210103","Name":"内分泌科门诊"}];
+
+    $scope.dict.UnitName = [{Name:"海军总医院",Type:"HJZYY"}];
+
+
+  }
   // date picker -------------------------------
   var datePickerCallback = function (val) {
     if (typeof(val) === 'undefined') {
@@ -670,6 +717,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         //       $state.go('coach.i');
         //   });
         // else
+
           Users.postDoctorDtlInfo_Check($scope.userInfo.DtInfo).then(function(res){
             //console.log(res);
               if(res.result == "数据插入成功"){
@@ -1194,11 +1242,21 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
 
    $scope.userInfo = {BasicInfo:{},DtInfo:{}};
    $scope.loadingDone = false;
+   $scope.dict = {};
    $scope.$watch('$viewContentLoaded', function() {   
         GetHealthCoachInfo( Storage.get("UID") ); //获取专员个人信息
         // GetCommentList(Storage.get("UID") ,''); //获取专员的2条评论(所有模块)
+        GetDict();
+        GetDocInfo();
   }); 
-
+  
+  //从字典中搜索选中的对象。
+  var searchObj = function(code,array){
+      for (var i = 0; i < array.length; i++) {
+        if(array[i].Type == code) return array[i];
+      };
+      return "未填写";
+  }
 
     //restful获取专员个人信息
   var GetHealthCoachInfo= function(HealthCoachID)
@@ -1217,22 +1275,25 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       },function(err) {   
     });      
   }
-   Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
+
+  var GetDocInfo = function(){
+      Users.getDocInfo(Storage.get("UID")).then(function(data,headers){
       var temp = data;
-      console.log(data);
+      console.log(data.gender);
+      console.log($scope.dict.SexType);
       $scope.userInfo.BasicInfo = {
        name:temp.DoctorName ,
-       gender:temp.Gender==1?'男':'女',
+       gender:searchObj(temp.Gender,$scope.dict.SexType),
        birthday:temp.Birthday,
        id:temp.DoctorId,
        idno:temp.IDNo
      }
 
-    switch(temp.Gender){
-      case '1' : $scope.userInfo.BasicInfo.gender = "男"; break;
-      case '2' : $scope.userInfo.BasicInfo.gender = "女"; break;
-      default : $scope.userInfo.BasicInfo.gender = " "
-     }
+      // switch(temp.Gender){
+      //   case '1' : $scope.userInfo.BasicInfo.gender = "男"; break;
+      //   case '2' : $scope.userInfo.BasicInfo.gender = "女"; break;
+      //   default : $scope.userInfo.BasicInfo.gender = " "
+      //  }
      // var temp2 = String($scope.userInfo.BasicInfo.bithday);
      // //console.log($scope.userInfo.BasicInfo.birthday);
      var t = String($scope.userInfo.BasicInfo.birthday);
@@ -1251,14 +1312,14 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         var temp = data;
         // console.log(data);
         $scope.userInfo.DtInfo = {
-          unitname: temp.UnitName,
-          jobTitle: temp.JobTitle,
-          level: temp.Level,
-          dept: temp.Dept,
+          unitname: searchObj(temp.UnitName,$scope.dict.UnitName),
+          jobTitle: searchObj(temp.JobTitle,$scope.dict.JobTitle),
+          level:  searchObj(temp.Level,$scope.dict.TitleLevel),
+          dept:  searchObj(temp.Dept,$scope.dict.Dept),
           photoAddress : temp.PhotoAddress
         }
        // PageFunc.message(JSON.stringify($scope.userInfo.DtInfo),100000,Storage.get("UID"));
-        console.log( $scope.userInfo);
+        console.log($scope.userInfo);
         if(typeof($scope.userInfo.DtInfo.photoAddress) == 'undefined' || $scope.userInfo.DtInfo.photoAddress == "null" || $scope.userInfo.DtInfo.photoAddress == null)
          $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+'non.jpg';
         else $scope.imgURI = CONFIG.ImageAddressIP+CONFIG.ImageAddressFile+'/'+ $scope.userInfo.DtInfo.photoAddress;
@@ -1268,8 +1329,44 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         $scope.loadingDone = true;
            // var objStr=JSON.stringify($scope.userInfo);
            // Storage.set("userInfo",objStr);
+       });
      });
-   });
+  }
+
+  //填表的预设数据 和需要填写的项目
+
+  var GetDict = function(){
+    $scope.dict.SexType = [{"Type":"1","Name":"男性"},{"Type":"2","Name":"女性"},{"Type":"3","Name":"其他"},{"Type":"4","Name":"未知"}];
+    // var promise = Users.GetSexType();
+    // promise.then(function(data){
+    //   $scope.dict.SexType  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });
+    $scope.dict.TitleLevel = [{"Type":"1","Name":"正高"},{"Type":"2","Name":"副高"},{"Type":"3","Name":"中级"},{"Type":"4","Name":"初级"}];
+    // var promise2 = Users.GetTitleLevel();
+    // promise2.then(function(data){
+    //   $scope.dict.TitleLevel  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });
+    $scope.dict.JobTitle = [{"Type":"1","Name":"主任医师"},{"Type":"2","Name":"副主任医师"},{"Type":"3","Name":"主治医师"},{"Type":"4","Name":"住院医师"}];
+    // var promise3 = Users.GetJobTitle();
+    // promise3.then(function(data){
+    //   $scope.dict.JobTitle  = data;
+    //   console.log(data);
+    // },function(err){
+    //   // PageFunc.message("获得字典失败");
+    // });    
+
+    $scope.dict.Dept =  [{"Type":"210403","Name":"心内科门诊"},{"Type":"210103","Name":"内分泌科门诊"}];
+
+    $scope.dict.UnitName = [{Name:"海军总医院",Type:"HJZYY"}];
+
+
+  }  
 
    
 
