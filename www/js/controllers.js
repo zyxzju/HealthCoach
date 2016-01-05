@@ -3491,6 +3491,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     showDelay: 0
   });
 
+  $timeout(function(){
+    $ionicLoading.hide();
+  },10000);
 
   if ($stateParams.ListName != "" || typeof($stateParams.ListName) != "undefined")
   {
