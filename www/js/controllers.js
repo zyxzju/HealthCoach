@@ -3380,6 +3380,9 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     showDelay: 0
   });
   
+  $timeout(function(){
+    $ionicLoading.hide();
+  },10000);
   $scope.backtocoach=function(){
     $state.go('coach.patients');
   }
