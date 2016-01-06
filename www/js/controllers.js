@@ -2077,21 +2077,24 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       $scope.systemMessage=data[0];
     })  
   });  
-  $scope.goToHome = function(){
-    $state.go('coach.home');
-  }
+  // $scope.goToHome = function(){
+  //   $state.go('coach.home');
+  // }
 }])
 .controller('CoachMessageDetailCtrl',['$state','$scope','$stateParams','MessageInfo','Storage', function($state,$scope,$stateparams,MessageInfo,Storage){ 
-  $scope.headerText =  $stateparams.messageType;
   $scope.$on('$ionicView.enter', function() {
+    $scope.messages=[];
     if($stateparams.messageType=='system'){
+      $scope.headerText = '系统消息';
       MessageInfo.GetDataByStatus(Storage.get('UID'),1,'{Status}',100,0)
       .then(function(data){
         console.log(data)
         $scope.messages=data;
       })       
+    }else if($stateparams.messageType=='appointment'){
+      $scope.headerText = '预约消息';  
     }else{
-      $scope.messages=[];
+      $scope.headerText = '直接跳转聊天界面chatdetail？';
     }
  
   });  
