@@ -7337,7 +7337,7 @@ $scope.$on('RisksGet',function(){
 }])
 
 //GL 20151101 一级任务列表
-.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory','Storage', '$ionicLoading', function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory, Storage, $ionicLoading){
+.controller('TaskListCtrl', ['$scope', '$http', '$state', '$stateParams', 'PlanInfo', '$ionicPopup', '$ionicHistory','Storage', '$ionicLoading', "$rootScope",function($scope, $http, $state, $stateParams, PlanInfo, $ionicPopup, $ionicHistory, Storage, $ionicLoading,$rootScope){
     ////console.log($stateParams.tt);
     //alert(1);
     $scope.TaskList = {};
@@ -7355,8 +7355,9 @@ $scope.$on('RisksGet',function(){
     $scope.isloaded = false;
 
     //用于暂存的列表 lrz20160108
-    if(!$rootScope.AddList) $rootScope.AddList = new Array();
-    if(!$rootScope.DeleteList) $rootScope.DeleteList = new Array();
+    if(!$rootScope.TempList) $rootScope.TempList = {};
+    if(!$rootScope.TempList.AddList) $rootScope.TempList.AddList = new Array();
+    if(!$rootScope.TempList.DeleteList) $rootScope.TempList.DeleteList = new Array();
 
 
     //loading图标显示
@@ -7373,8 +7374,8 @@ $scope.$on('RisksGet',function(){
     });
 
     $scope.onClickBackward = function(){
-        $rootScope.AddList.length = 0;
-        $rootScope.DeleteList.length = 0;
+        $rootScope.TempList.AddList.length = 0;
+        $rootScope.TempList.DeleteList.length = 0;
         $ionicHistory.goBack();
     };
 
@@ -7640,34 +7641,50 @@ $scope.$on('RisksGet',function(){
     $scope.onClickSubmit = function(){
         //lrz20160108 从rootscope取出列表上传
         // $ionicHistory.goBack();
-        if($rootScope.AddList.length>0){
-          PlanInfo.SetTask($rootScope.AddList).then(function(data){
-              if(data.result=='数据插入成功'){
-                    $rootScope.AddList.length = 0;
 
-                    if($rootScope.DeleteList.length>0){
-                      PlanInfo.DeleteTask($rootScope.DeleteList).then(function(data){
-                        if(data.result=='数据插入成功'){
-                            $rootScope.DeleteList.length = 0;
+        console.log($rootScope.TempList.AddList);
+        console.log($rootScope.TempList.DeleteList);
+        if($rootScope.TempList.AddList.length>0){
+          console.log("有添加")
+          PlanInfo.SetTask($rootScope.TempList.AddList).then(function(data){
+              if(data.result=='数据插入成功'){
+                console.log("添加")
+                    $rootScope.TempList.AddList.length = 0;
+
+                    if($rootScope.TempList.DeleteList.length>0){
+                      console.log("有添加又有删除")
+                      PlanInfo.DeleteTask($rootScope.TempList.DeleteList).then(function(data){
+                        if(data.result=='数据删除成功'){
+                          console.log("删除")
+                             $rootScope.TempList.DeleteList.length = 0;
                              $ionicHistory.goBack();
                         }
                       })
                     }
 
+                    else {
+                       console.log("有添加没有删除")
+                      $ionicHistory.goBack(); 
+                    }
               }
           })
         }
         else{
-          if($rootScope.DeleteList.length>0){
-            PlanInfo.DeleteTask($rootScope.DeleteList).then(function(data){
-              if(data.result=='数据插入成功'){
-                  $rootScope.DeleteList.length = 0;
-                  $ionicHistory.goBack();                      
-              }
-            })
-          }
+            if($rootScope.TempList.DeleteList.length>0){
+              console.log("只有删除")
+              PlanInfo.DeleteTask($rootScope.TempList.DeleteList).then(function(data){
+                if(data.result=='数据删除成功'){
+                    console.log("deleted")
+                    $rootScope.TempList.DeleteList.length = 0;
+                    $ionicHistory.goBack();                      
+                }
+              })
+            }
 
-          else $ionicHistory.goBack();
+          else {
+            console.log("啥也没有")
+            $ionicHistory.goBack();
+          }
         }        
         
     }
@@ -7682,8 +7699,8 @@ $scope.$on('RisksGet',function(){
     $scope.task.list;
     var arry = new Array();
     //用于暂存的列表
-    if(!$rootScope.AddList) $rootScope.AddList = new Array();
-    if(!$rootScope.DeleteList) $rootScope.DeleteList = new Array();
+    if(!$rootScope.TempList.AddList) $rootScope.TempList.AddList = new Array();
+    if(!$rootScope.TempList.DeleteList) $rootScope.TempList.DeleteList = new Array();
     //体重测量与风险评估
     $scope.task.Title;
     if(Type == "TA")
@@ -7976,9 +7993,21 @@ $scope.$on('RisksGet',function(){
                              "SortNo":'1'});
         }
         if(AddList.length > 0){
-            $rootScope.AddList.concat(AddList);
+            // $rootScope.TempList.AddList.concat(AddList);
+            console.log(AddList);
+            
+            for (var i = AddList.length - 1; i >= 0; i--) {
+             $rootScope.TempList.AddList.push(AddList[i]);
+            };
+
+            console.log($rootScope.TempList.AddList);
             if (DeleteList.length > 0){
-                $rootScope.DeleteList.concat(DeleteList);
+                // $rootScope.TempList.DeleteList.concat(DeleteList);
+
+
+                  for (var i = DeleteList.length - 1; i >= 0; i--) {
+                   $rootScope.TempList.DeleteList.push(DeleteList[i]);
+                  };
                   if (localStorage.getItem("isManage") == "Yes")
                     {
                       window.location.href = "#/manage/taskList";
@@ -8004,7 +8033,9 @@ $scope.$on('RisksGet',function(){
         {
             if (DeleteList.length > 0)
             {
-                $rootScope.DeleteList.concat(DeleteList);
+                for (var i = DeleteList.length - 1; i >= 0; i--) {
+                   $rootScope.TempList.DeleteList.push(DeleteList[i]);
+                  };
                 if (localStorage.getItem("isManage") == "Yes")
                       {
                         window.location.href = "#/manage/taskList";
@@ -8262,8 +8293,8 @@ $scope.$on('RisksGet',function(){
     $scope.task.list;
 
     $scope.isloaded = false;
-    if(!$rootScope.AddList) $rootScope.AddList = new Array();
-    if(!$rootScope.DeleteList) $rootScope.DeleteList = new Array();
+    if(!$rootScope.TempList.AddList) $rootScope.TempList.AddList = new Array();
+    if(!$rootScope.TempList.DeleteList) $rootScope.TempList.DeleteList = new Array();
     //loading图标显示
     $ionicLoading.show({
         content: '加载中',
@@ -8654,9 +8685,13 @@ $scope.$on('RisksGet',function(){
                              "SortNo":'1'});
         }
         if(AddList.length > 0){
-            $rootScope.AddList.concat(AddList);
+            for (var i = AddList.length - 1; i >= 0; i--) {
+                   $rootScope.TempList.AddList.push(AddList[i]);
+            };
             if (DeleteList.length > 0){
-                $rootScope.DeleteList.concat(DeleteList);
+                  for (var i = DeleteList.length - 1; i >= 0; i--) {
+                         $rootScope.TempList.DeleteList.push(DeleteList[i]);
+                  };
                   if (localStorage.getItem("isManage") == "Yes")
                     {
                       window.location.href = "#/manage/taskList";
@@ -8682,7 +8717,9 @@ $scope.$on('RisksGet',function(){
         {
             if (DeleteList.length > 0)
             {
-                $rootScope.DeleteList.concat(DeleteList);
+                  for (var i = DeleteList.length - 1; i >= 0; i--) {
+                         $rootScope.TempList.DeleteList.push(DeleteList[i]);
+                  };
                 if (localStorage.getItem("isManage") == "Yes")
                       {
                         window.location.href = "#/manage/taskList";
@@ -8722,8 +8759,8 @@ $scope.$on('RisksGet',function(){
     $scope.task.Time;
     $scope.task.DeleteList = new Array();
     var TypeList = ["；用药剂量：", "；用药频次：", "；用药途径：", "；用药时间："];
-    if(!$rootScope.AddList) $rootScope.AddList = new Array();
-    if(!$rootScope.DeleteList) $rootScope.DeleteList = new Array();
+    if(!$rootScope.TempList.AddList) $rootScope.TempList.AddList = new Array();
+    if(!$rootScope.TempList.DeleteList) $rootScope.TempList.DeleteList = new Array();
     $scope.isloaded = false;
 
     //loading图标显示
@@ -9028,7 +9065,9 @@ $scope.$on('RisksGet',function(){
         // },function(data){              
         // });   
 
-        $rootScope.AddList.concat(obj);
+        for (var i = obj.length - 1; i >= 0; i--) {
+               $rootScope.TempList.AddList.push(obj[i]);
+        };
        
         $ionicHistory.goBack();
     }
@@ -9044,8 +9083,9 @@ $scope.$on('RisksGet',function(){
         //     }
         // },function(data){
         // });   
-
-        $rootScope.DeleteList.concat(obj);
+        for (var i = obj.length - 1; i >= 0; i--) {
+               $rootScope.TempList.DeleteList.push(obj[i]);
+        };
 
         $ionicHistory.goBack();
     }
