@@ -2073,10 +2073,41 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   $scope.$on('$ionicView.enter', function() {
     MessageInfo.GetDataByStatus(Storage.get('UID'),1,'{Status}',1,0)
     .then(function(data){
-      console.log(data[0]);
       $scope.systemMessage=data[0];
-    })  
-  });  
+    }) 
+    MessageInfo.GetDataByStatus(Storage.get('UID'),'appointment','{Status}',1,0)
+    .then(function(data){
+      $scope.appointmentMessage=data[0];
+    })     
+    MessageInfo.GetDataByStatus(Storage.get('UID'),2,'{Status}',9999,0)
+    .then(function(data){
+      var temp=[];var flag;
+      temp.push(data[0]);
+      for(i=1;i<data.length;i++){
+        flag=1;
+        for(j=0;j<temp.length;j++){
+          if(data[i].SenderID==temp[j].SenderID){
+            flag=0;break;
+          }
+        }
+        if(flag){
+          temp.push(data[i]);
+        } 
+      }
+      $scope.patientsMessages=temp;
+      temp=[];
+    })     
+  }); 
+  $scope.gotoChatDetail = function (message){
+    console.log(message)
+    Storage.set("PatientID",message.SenderID);
+    Storage.set("isManage","Yes");
+    Storage.set("PatientName",message.SenderName);
+    $state.go('manage.chat');
+    // Storage.set('PatientAge',message.Age);
+    // Storage.set('PatientGender',message.GenderText);     
+    // Storage.set("PatientPhotoAddress",message.photoAddress);
+  } 
   // $scope.goToHome = function(){
   //   $state.go('coach.home');
   // }
@@ -2095,8 +2126,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
       $scope.headerText = '预约消息';  
     }else{
       $scope.headerText = '直接跳转聊天界面chatdetail？';
-    }
- 
+    } 
   });  
 }])
 .controller('myPatientCtrl', ['$rootScope', '$compile', '$ionicScrollDelegate', '$ionicPopover','$cordovaBarcodeScanner','$filter','$ionicModal', '$ionicPopup','$ionicLoading','$scope', '$state', '$http','$timeout','$interval','$ionicHistory','Storage' ,'userINFO','PageFunc','CONFIG','Data' ,function($rootScope,$compile,$ionicScrollDelegate,$ionicPopover,$cordovaBarcodeScanner,$filter,$ionicModal, $ionicPopup,$ionicLoading,$scope, $state, $http,$timeout,$interval,$ionicHistory,Storage,userINFO,PageFunc,CONFIG,Data){
@@ -2129,20 +2159,20 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     }
   }
   // $scope.openpopover=function($event){     
-  //   // backbeforesearch();
-  //   $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
-  //     scope: $scope,
-  //   }).then(function(popover) {
-  //     $scope.popover = popover;
-  //     console.log(ranks);
-  //     $rootScope.ranks=ranks;
-  //     $compile($('#popcontent').contents())($scope);
-  //     var stopListening = $scope.$on('popover.hidden', function() {
-  //       stopListening();
-  //       $scope.popover.remove();
-  //     });
-  //   });
-  //   $timeout(function(){$scope.popover.show($event);},40);
+    //   // backbeforesearch();
+    //   $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
+    //     scope: $scope,
+    //   }).then(function(popover) {
+    //     $scope.popover = popover;
+    //     console.log(ranks);
+    //     $rootScope.ranks=ranks;
+    //     $compile($('#popcontent').contents())($scope);
+    //     var stopListening = $scope.$on('popover.hidden', function() {
+    //       stopListening();
+    //       $scope.popover.remove();
+    //     });
+    //   });
+    //   $timeout(function(){$scope.popover.show($event);},40);
   // }
   $scope.$on('$ionicView.enter', function() {
     $ionicPopover.fromTemplateUrl('partials/individual/rank-patients.html', {
