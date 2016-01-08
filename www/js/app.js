@@ -171,15 +171,23 @@ var ionicApp=angular.module('ionicApp', ['ionic','ionicApp.service', 'ionicApp.d
     }
 
   })
-  .state('messages',{
+  .state('coach.messages',{
     url:'/messages',
-    templateUrl:'partials/individual/messages.html',
-    controller:'CoachMessageCtrl'
+    views:{
+      'coach-message':{
+        templateUrl:'partials/individual/messages.html',
+        controller:'CoachMessageCtrl'
+      }
+    }    
   })
-  .state('messageDetail',{
+  .state('coach.messageDetail',{
     url:'/messages/:messageType',
-    templateUrl:'partials/individual/detail-message.html',
-    controller:'CoachMessageDetailCtrl'
+    views:{
+      'coach-message':{
+        templateUrl:'partials/individual/detail-message.html',
+        controller:'CoachMessageDetailCtrl'
+      }
+    }     
   })  
   .state('commentList',{
     url:'/commentList',
