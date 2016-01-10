@@ -3393,7 +3393,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
   // $scope.
 })
 
-.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory',  '$ionicLoading','$stateParams', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $ionicLoading, $stateParams, Storage,GetBasicInfo) {
+.controller('ModuleInfoCtrl',['$scope','$state','$http', '$ionicHistory',  '$ionicLoading','$stateParams', '$timeout', 'Storage','GetBasicInfo', function($scope,$state,$http, $ionicHistory, $ionicLoading, $stateParams, $timeout, Storage,GetBasicInfo) {
   
   $scope.$on('$ionicView.enter', function() {
   //   $http.get('partials/data1.json').success(function(data) {
