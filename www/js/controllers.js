@@ -7730,7 +7730,55 @@ $scope.$on('RisksGet',function(){
     var arry = new Array();
     //用于暂存的列表
     if(!$rootScope.TempList.AddList) $rootScope.TempList.AddList = new Array();
+
+    $rootScope.TempList.AddList.indexOf = function(obj){
+        for (var i = this.length - 1; i >= 0; i--) {
+          var flag_out = false;
+          var flag_in = true;
+          //数组中每一个对象
+          for (var name in obj) {
+            if (this[i][name] !== obj[name]) 
+              {
+                flag_in = false;
+                break;
+              }
+           };
+
+        if(flag_in) {
+          flag_out = true;
+          break;
+        }
+      }
+
+      return flag_out?1:-1;
+
+    }
+
     if(!$rootScope.TempList.DeleteList) $rootScope.TempList.DeleteList = new Array();
+    $rootScope.TempList.DeleteList.indexOf = function(obj){
+        for (var i = this.length - 1; i >= 0; i--) {
+          var flag_out = false;
+          var flag_in = true;
+          //数组中每一个对象
+          for (var name in obj) {
+            if (this[i][name] !== obj[name]) 
+              {
+                flag_in = false;
+                break;
+              }
+           };
+
+        if(flag_in) {
+          flag_out = true;
+          break;
+        }
+      }
+
+      return flag_out?1:-1;
+
+    }
+
+    console.log($rootScope.TempList.AddList.indexOf());
     //体重测量与风险评估
     $scope.task.Title;
     if(Type == "TA")
@@ -8027,7 +8075,15 @@ $scope.$on('RisksGet',function(){
             console.log(AddList);
             
             for (var i = AddList.length - 1; i >= 0; i--) {
-             $rootScope.TempList.AddList.push(AddList[i]);
+              //防止重复插入
+              console.log($rootScope.TempList.AddList)
+              console.log($rootScope.TempList.AddList.indexOf(AddList[i]))
+              if($rootScope.TempList.AddList.indexOf(AddList[i]) == -1){
+                console.log("没发现重复")
+                $rootScope.TempList.AddList.push(AddList[i]);
+              }
+              // $rootScope.TempList.AddList.push(AddList[i]);
+              else console.log('发现重复，不插入')
             };
 
             console.log($rootScope.TempList.AddList);
@@ -8036,6 +8092,7 @@ $scope.$on('RisksGet',function(){
 
 
                   for (var i = DeleteList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1)
                    $rootScope.TempList.DeleteList.push(DeleteList[i]);
                   };
                   if (localStorage.getItem("isManage") == "Yes")
@@ -8064,6 +8121,7 @@ $scope.$on('RisksGet',function(){
             if (DeleteList.length > 0)
             {
                 for (var i = DeleteList.length - 1; i >= 0; i--) {
+                  if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1)
                    $rootScope.TempList.DeleteList.push(DeleteList[i]);
                   };
                 if (localStorage.getItem("isManage") == "Yes")
@@ -8716,10 +8774,12 @@ $scope.$on('RisksGet',function(){
         }
         if(AddList.length > 0){
             for (var i = AddList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.AddList.indexOf(AddList[i]) == -1 )
                    $rootScope.TempList.AddList.push(AddList[i]);
             };
             if (DeleteList.length > 0){
                   for (var i = DeleteList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1 )
                          $rootScope.TempList.DeleteList.push(DeleteList[i]);
                   };
                   if (localStorage.getItem("isManage") == "Yes")
@@ -8748,6 +8808,7 @@ $scope.$on('RisksGet',function(){
             if (DeleteList.length > 0)
             {
                   for (var i = DeleteList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1 )
                          $rootScope.TempList.DeleteList.push(DeleteList[i]);
                   };
                 if (localStorage.getItem("isManage") == "Yes")
@@ -9096,6 +9157,7 @@ $scope.$on('RisksGet',function(){
         // });   
 
         for (var i = obj.length - 1; i >= 0; i--) {
+          if($rootScope.TempList.AddList.indexOf(AddList[i]) == -1 )
                $rootScope.TempList.AddList.push(obj[i]);
         };
        
@@ -9114,6 +9176,7 @@ $scope.$on('RisksGet',function(){
         // },function(data){
         // });   
         for (var i = obj.length - 1; i >= 0; i--) {
+          if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1 )
                $rootScope.TempList.DeleteList.push(obj[i]);
         };
 
