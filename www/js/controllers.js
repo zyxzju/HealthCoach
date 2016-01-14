@@ -2412,7 +2412,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         temp.SMSCount=parseInt(onedata.SMSCount);
         temp.Age='';temp.GenderText='';
         temp.PatientName=onedata.PatientName;
-        temp.PatientId=onedata.Id;
+        temp.PatientId=onedata.PatientId;
         temp.RemainingDays=onedata.RemainingDays;
         temp.Module=onedata.Module.replace(/模块\//g,' ');
         temp.Module=temp.Module.replace(/模块/,'');
