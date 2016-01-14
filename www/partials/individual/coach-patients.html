@@ -1,28 +1,12 @@
 <ion-view title="现有病人">
-
-<!--   <ion-header-bar align-title="middle" class="bar-positive">
-    <div class="buttons">
-      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
-    </div>  
-    <h1 class="title">现有病人</h1>
-        <div class="buttons">
-      <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a>
-    </div>
-  </ion-header-bar> -->
-  
-  <!-- <ion-nav-bar  style="z-index:100" class="bar-positive nav-title-slide-ios7"> -->
-    <ion-nav-buttons side="left">
-      <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
-    </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-      <a class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></a>
-      <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
-      <!-- <a class="button button-icon icon ion-chatbubble-working" href="#/messages"></a> -->
-    </ion-nav-buttons>
-<!--     <ion-nav-buttons side="right">
-      <button class="button button-icon icon ion-search " ng-click="openSearch()"></button>
-    </ion-nav-buttons> -->
-<!--   </ion-nav-bar> -->
+  <ion-nav-buttons side="left">
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <a class="button button-icon icon ion-android-more-vertical" ng-click="popover.show($event)"></a>
+    <!-- <a class="button button-icon icon ion-android-more-vertical" ng-click="openpopover($event)"></a> -->
+    <!-- <a class="button button-icon icon ion-chatbubble-working" href="#/messages"></a> -->
+  </ion-nav-buttons>
   <div class="bar bar-subheader item-input-inset bar-light">
     <div class="item-input-wrapper">
       <i style="color:#3d6399;font-size:1.6em" class="icon ion-android-search placeholder-icon"></i>
@@ -38,58 +22,32 @@
   <ion-content delegate-handle="myPatientScroll" class="has-subheader content-item-list" on-scroll="onScoll()">   
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <div ng-if="searchflag">
-      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark"> <b>搜索</b> <span style="color:#EF473A">{{query.PatientName}}<span></a>
-      <hr class="list" />
+      <a ng-click="onlineSearch()" class="button icon-left ion-android-search button-clear button-dark">
+        <b>搜索</b> <span style="color:#EF473A">{{query.PatientName}}<span></a>
+      <hr class="list"/>
     </div>
     <ion-list> 
       <div  collection-repeat="patient in patients |filter:byRange()|filter: query" collection-item-height="94px"  ng-click="PIDdetail(patient)" >
       <ion-item class="item-avatar-left2 item-margin " style="height:88px">
         <img ng-src="{{patient.photoAddress}}">
-        <!-- <div > -->
         <div class="row" style=" padding-left:65px;padding-bottom:0">
-          <div class="col-75">
-<!--             <div class="row " style="padding-right:0">
-              <div class="col-50"><h5>{{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></h5></div>
-              <div class="col-50"><h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6></div>
-            </div>
-            <div class="row">
-              <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
-            </div>  -->
-            <!-- <div class="row " style="padding-right:0"> -->
-              <!-- <div class="col"> -->
-                <h5><span style="float:left;width:100px">{{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></span><span class="gender-and-age">{{patient.Age}} {{patient.GenderText[0]}}</span></h5>
-              <!-- </div> -->
-              <!-- <div class="col"> -->
-                <!-- <h6 >{{patient.Age}}   {{patient.GenderText[0]}}</h6> -->
-              <!-- </div> -->
-            <!-- </div> -->
-            <!-- <div class="row"> -->
-              <!-- <div class="col-100"> -->
-                <p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p>
-              <!-- </div> -->
-            <!-- </div>  -->
+          <div class="col-80">
+            <h5><span style="float:left;width:100px">{{patient.PatientName}}<span ng-if="patient.SMSCount" class="badge1">{{patient.SMSCount}}</span></span><span class="gender-and-age">{{patient.Age}} {{patient.GenderText[0]}}</span></h5>
+            <p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p>
           </div>
-          <div class="col-25">
-            <!-- <div class="item-row"> -->
-              <!-- <div class="col-40"> -->
+          <div class="col-20">
                 <p style="font-size:0.9rem">依从率</p>
-                <h5 style="font-size:1.68rem" ng-style="{'color':(patient.ComplianceRate>50?'#33cd5f':'#fb6a1b')}">{{patient.ComplianceRate}}%</h5>
-              <!-- </div> -->
-            <!-- </div> -->
+                <h5 style="font-size:1.68rem;color:{{patient.CRcolor}}" >{{patient.ComplianceRate}}%</h5>
           </div>  
         </div>
-        <div class="item-row">
-          <p  class="planbox" style="color:#FFF" ng-if="patient.Status*patient.TotalDays*(patient.EndDate < 88880101)"><span ng-if="patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.RemainingDays=='0'">即将完成</span></p>
-          <!-- <p ng-if="!(patient.Status-0)" style="margin:0 2px 0 65px;width:100%;font-style:italic" >暂无计划</p>               -->
-          <!-- </div> -->
-          <div class="processbar-back" ng-style="{'display':(patient.Status=='0'|| patient.TotalDays=='0'?'none':'block')}" >
-          <div class="processbar" ng-style="{'width':patient.Process+'%'}" ></div>
+        <div ng-if="patient.havePlan" class="item-row">
+          <p  class="planbox" style="color:#FFF"><span ng-if="patient.RemainingDays">剩余{{patient.RemainingDays}}天</span><span ng-if="patient.RemainingDays=='0'">即将完成</span></p>
+          <div class="processbar-back">
+            <div class="processbar" style="width:{{patient.Process}}" ></div>
           </div>        
-        </div>         
-        <!-- </div> -->
+        </div>
       </ion-item>
-      </div>
-      
+      </div>  
     </ion-list>
   <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
   </ion-content>
