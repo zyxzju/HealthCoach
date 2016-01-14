@@ -2412,6 +2412,7 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
         temp.SMSCount=parseInt(onedata.SMSCount);
         temp.Age='';temp.GenderText='';
         temp.PatientName=onedata.PatientName;
+        temp.PatientId=onedata.Id;
         temp.RemainingDays=onedata.RemainingDays;
         temp.Module=onedata.Module.replace(/模块\//g,' ');
         temp.Module=temp.Module.replace(/模块/,'');
@@ -2422,7 +2423,6 @@ angular.module('appControllers', ['ionic','ionicApp.service', 'ngCordova','ionic
     }
     userINFO.GetPatientsList(14,PIDlistLength,orderConfig,filterConfig,DOCID,'{Module}','0','0')
     .then(function(data){
-
       decorate(data);
       if((PIDlist.length-PIDlistLength)==15){
         $scope.moredata = false;
