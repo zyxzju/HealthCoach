@@ -7544,8 +7544,8 @@ $scope.$on('RisksGet',function(){
         var promise = PlanInfo.GetTasks(PlanNo, "T");  
         promise.then(function(data) { 
           // console.log(data);
-          console.log($rootScope.TempList.AddList);
-          console.log($rootScope.TempList.DeleteList);
+          // console.log($rootScope.TempList.AddList);
+          // console.log($rootScope.TempList.DeleteList);
             for (var i = 0; i < data.length; i++)  
             {
                 if (data[i].Type == "TA")
@@ -7587,35 +7587,35 @@ $scope.$on('RisksGet',function(){
 
                 var temp_obj = {Code:data[i].Code};
                 // console.log(temp_obj);
-                console.log($rootScope.TempList.AddList.indexOf(temp_obj));
+                // console.log($rootScope.TempList.AddList.indexOf(temp_obj));
                 var inaddlist = $rootScope.TempList.AddList.indexOf(temp_obj);
                 var indeletelist = $rootScope.TempList.DeleteList.indexOf(temp_obj);
 
 
                 if (data[i].InvalidFlag === "1")
                 {
-                    console.log("服务器端有这个计划")
+                    // console.log("服务器端有这个计划")
                     data[i].ControlType = true;
                     if(indeletelist !== -1) {
-                      console.log("但是本地已经修改了没有这个计划")
+                      // console.log("但是本地已经修改了没有这个计划")
                       data[i].ControlType = false;
                     }
                     else {
-                      console.log("本地也有这个计划")
+                      // console.log("本地也有这个计划")
                       data[i].ControlType = true;
                     }
                 } 
                 else
                 {
-                  console.log("服务器端没有这个计划")
+                  // console.log("服务器端没有这个计划")
                     data[i].ControlType = false;
                     if(inaddlist !== -1) {
-                      console.log("但是本地已经修改了有这个计划")
+                      // console.log("但是本地已经修改了有这个计划")
                       data[i].ControlType = true;
                     }
                     else {
                       data[i].ControlType = false;
-                      console.log("本地也没有有这个计划")
+                      // console.log("本地也没有有这个计划")
                     }
                 } 
 
@@ -7832,20 +7832,20 @@ $scope.$on('RisksGet',function(){
         //lrz20160108 从rootscope取出列表上传
         // $ionicHistory.goBack();
 
-        console.log($rootScope.TempList.AddList);
-        console.log($rootScope.TempList.DeleteList);
+        // console.log($rootScope.TempList.AddList);
+        // console.log($rootScope.TempList.DeleteList);
         if($rootScope.TempList.AddList.length>0){
-          console.log("有添加")
+          // console.log("有添加")
           PlanInfo.SetTask($rootScope.TempList.AddList).then(function(data){
               if(data.result=='数据插入成功'){
-                console.log("添加")
+                // console.log("添加")
                     $rootScope.TempList.AddList.length = 0;
 
                     if($rootScope.TempList.DeleteList.length>0){
-                      console.log("有添加又有删除")
+                      // console.log("有添加又有删除")
                       PlanInfo.DeleteTask($rootScope.TempList.DeleteList).then(function(data){
                         if(data.result=='数据删除成功'){
-                          console.log("删除")
+                          // console.log("删除")
                              $rootScope.TempList.DeleteList.length = 0;
                              $ionicHistory.goBack();
                         }
@@ -7853,7 +7853,7 @@ $scope.$on('RisksGet',function(){
                     }
 
                     else {
-                       console.log("有添加没有删除")
+                       // console.log("有添加没有删除")
                       $ionicHistory.goBack(); 
                     }
               }
@@ -7861,10 +7861,10 @@ $scope.$on('RisksGet',function(){
         }
         else{
             if($rootScope.TempList.DeleteList.length>0){
-              console.log("只有删除")
+              // console.log("只有删除")
               PlanInfo.DeleteTask($rootScope.TempList.DeleteList).then(function(data){
                 if(data.result=='数据删除成功'){
-                    console.log("deleted")
+                    // console.log("deleted")
                     $rootScope.TempList.DeleteList.length = 0;
                     $ionicHistory.goBack();                      
                 }
@@ -7872,7 +7872,7 @@ $scope.$on('RisksGet',function(){
             }
 
           else {
-            console.log("啥也没有")
+            // console.log("啥也没有")
             $ionicHistory.goBack();
           }
         }        
@@ -7951,8 +7951,8 @@ $scope.$on('RisksGet',function(){
     //获取任务列表
     function GettaskList()
     {
-        console.log($rootScope.TempList.AddList);
-        console.log($rootScope.TempList.DeleteList);
+        // console.log($rootScope.TempList.AddList);
+        // console.log($rootScope.TempList.DeleteList);
         var promise = PlanInfo.GetTasks(PlanNo, Type + "0000");  
         promise.then(function(data) {         
             $scope.task.list = data; 
@@ -7970,35 +7970,35 @@ $scope.$on('RisksGet',function(){
                 // } 
                 var temp_obj = {Code:data[i].Code};
                 // console.log(temp_obj);
-                console.log($rootScope.TempList.AddList.indexOf(temp_obj));
+                // console.log($rootScope.TempList.AddList.indexOf(temp_obj));
                 var inaddlist = $rootScope.TempList.AddList.indexOf(temp_obj);
                 var indeletelist = $rootScope.TempList.DeleteList.indexOf(temp_obj);
 
 
                 if (data[i].InvalidFlag === "1")
                 {
-                    console.log("服务器端有这个计划"  + data[i].Code)
+                    // console.log("服务器端有这个计划"  + data[i].Code)
                     data[i].ControlType = true;
                     if(indeletelist !== -1) {
-                      console.log("但是本地已经修改了没有这个计划" + data[i].Code)
+                      // console.log("但是本地已经修改了没有这个计划" + data[i].Code)
                       data[i].ControlType = false;
                     }
                     else {
-                      console.log("本地也有这个计划" + data[i].Code)
+                      // console.log("本地也有这个计划" + data[i].Code)
                       data[i].ControlType = true;
                     }
                 } 
                 else
                 {
-                  console.log("服务器端没有这个计划" + data[i].Code)
+                  // console.log("服务器端没有这个计划" + data[i].Code)
                     data[i].ControlType = false;
                     if(inaddlist !== -1) {
-                      console.log("但是本地已经修改了有这个计划" + data[i].Code)
+                      // console.log("但是本地已经修改了有这个计划" + data[i].Code)
                       data[i].ControlType = true;
                     }
                     else {
                       data[i].ControlType = false;
-                      console.log("本地也没有有这个计划" + data[i].Code)
+                      // console.log("本地也没有有这个计划" + data[i].Code)
                     }
                 } 
 
@@ -8200,12 +8200,12 @@ $scope.$on('RisksGet',function(){
                 do{
                   indeletelist = $rootScope.TempList.DeleteList.indexOf(temp);
                   if(indeletelist != -1){
-                    console.log("想要添加的code出现在删除队列中，删除" + $scope.task.list[i].Code)
+                    // console.log("想要添加的code出现在删除队列中，删除" + $scope.task.list[i].Code)
                     $rootScope.TempList.DeleteList.splice(indeletelist,1);
                   }  
                 }while(indeletelist != -1);
                 
-                console.log('删除队列中已经没有想要添加的code')
+                // console.log('删除队列中已经没有想要添加的code')
                 // if(! $rootScope.TempList.DeleteList.indexOf(temp) == -1)
                 AddList.push({"PlanNo":PlanNo, 
                              "Type":$scope.task.list[i].Type, 
@@ -8223,12 +8223,12 @@ $scope.$on('RisksGet',function(){
                 do{
                   inaddlist = $rootScope.TempList.AddList.indexOf(temp);
                   if(inaddlist != -1){
-                    console.log("想要删除的code出现在添加队列中，删除（似乎没有必要地）" + $scope.task.list[i].Code)
+                    // console.log("想要删除的code出现在添加队列中，删除（似乎没有必要地）" + $scope.task.list[i].Code)
                     $rootScope.TempList.AddList.splice(inaddlist,1);
                   }  
                 }while(inaddlist != -1);
                 
-                console.log('添加队列中已经没有想要添加的code')
+                // console.log('添加队列中已经没有想要添加的code')
 
                 DeleteList.push({"PlanNo":PlanNo, 
                                  "Type":$scope.task.list[i].Type, 
@@ -8246,12 +8246,12 @@ $scope.$on('RisksGet',function(){
                 do{
                   indeletelist = $rootScope.TempList.DeleteList.indexOf(temp_up);
                   if(indeletelist != -1){
-                    console.log("上一级条目想要添加的code出现在删除队列中，删除" + temp_up.Code)
+                    // console.log("上一级条目想要添加的code出现在删除队列中，删除" + temp_up.Code)
                     $rootScope.TempList.DeleteList.splice(indeletelist,1);
                   }  
                 }while(indeletelist != -1);
                 
-                console.log('删除队列中已经没有想要添加的code')
+                // console.log('删除队列中已经没有想要添加的code')
             AddList.push({"PlanNo":PlanNo, 
                          "Type":Type, 
                          "Code":Type + "0000", 
@@ -8269,12 +8269,12 @@ $scope.$on('RisksGet',function(){
                 do{
                   inaddlist = $rootScope.TempList.AddList.indexOf(temp_up);
                   if(inaddlist != -1){
-                    console.log("想要删除的code出现在ADD队列中，删除（似乎没有必要地）" + temp_up.Code)
+                    // console.log("想要删除的code出现在ADD队列中，删除（似乎没有必要地）" + temp_up.Code)
                     $rootScope.TempList.AddList.splice(inaddlist,1);
                   }  
                 }while(inaddlist != -1);
                 
-                console.log('添加队列中已经没有想要删除的code')
+                // console.log('添加队列中已经没有想要删除的code')
 
             DeleteList.push({"PlanNo":PlanNo, 
                              "Type":Type, 
@@ -8290,11 +8290,12 @@ $scope.$on('RisksGet',function(){
               // console.log($rootScope.TempList.AddList)
               // console.log($rootScope.TempList.AddList.indexOf(AddList[i]))
               if($rootScope.TempList.AddList.indexOf(AddList[i]) == -1){
-                console.log("没发现重复")
+                // console.log("没发现重复")
                 $rootScope.TempList.AddList.push(AddList[i]);
               }
               // $rootScope.TempList.AddList.push(AddList[i]);
-              else console.log('发现重复，不插入')
+              else  {}
+                // console.log('发现重复，不插入')
             };
 
             // console.log($rootScope.TempList.AddList);
@@ -8304,10 +8305,11 @@ $scope.$on('RisksGet',function(){
 
                   for (var i = DeleteList.length - 1; i >= 0; i--) {
                     if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1){
-                      console.log("没发现重复")
+                      // console.log("没发现重复")
                       $rootScope.TempList.DeleteList.push(DeleteList[i]);
                     }
-                   else console.log('发现重复，不插入')
+                   else {}
+                    // console.log('发现重复，不插入')
                   };
                   if (localStorage.getItem("isManage") == "Yes")
                     {
@@ -8618,15 +8620,19 @@ $scope.$on('RisksGet',function(){
         var promise = PlanInfo.GetTasks(PlanNo, Type + "0000");  
         promise.then(function(data) {            
             $scope.task.list = data; 
+            console.log(data);
             for(var i=0; i < $scope.task.list.length; i++)
             {
+                var temp = {Code: $scope.task.list[i].Code}
                 if ($scope.task.list[i].InvalidFlag === "1")
                 {
                     $scope.task.list[i].ControlType = true;
+                    if($rootScope.TempList.DeleteList.indexOf(temp) != -1 ) $scope.task.list[i].ControlType = false;
                 } 
                 else
                 {
                     $scope.task.list[i].ControlType = false;
+                    if($rootScope.TempList.AddList.indexOf(temp) != -1 ) $scope.task.list[i].ControlType = true;
                 } 
                 arry[i] = $scope.task.list[i].ControlType;                    
             }
@@ -8663,17 +8669,22 @@ $scope.$on('RisksGet',function(){
             var piArry = new Array();
             var promise = PlanInfo.GetTasks(PlanNo, piType);  
             promise.then(function(data) {
+
                 if (data.length > 0)
                 {
+                  // console.log(data);
                     for(var i=0; i < data.length; i++)
                     {
+                        var temp2 = {Code: data[i].Code}
                         if (data[i].InvalidFlag === "1")
                         {
                             data[i].ControlType = true;
+                            if($rootScope.TempList.DeleteList.indexOf(temp2) != -1 )  data[i].ControlType = false;
                         } 
                         else
                         {
                             data[i].ControlType = false;
+                            if($rootScope.TempList.AddList.indexOf(temp2) != -1 )  data[i].ControlType = true;
                         } 
                         piArry[i] = data[i].ControlType;                                                       
                     }
@@ -8740,8 +8751,16 @@ $scope.$on('RisksGet',function(){
                 }
                 for (var i=0; i < $scope.task.secondlist.length; i++)
                 {
+                    var temp = {"Code":$scope.task.secondlist[i].Code};
+
                     if (($scope.task.secondlist[i].ControlType) && (!Arry2[i])) //插入数据
                     { 
+                        do{
+                            var t = $rootScope.TempList.DeleteList.indexOf(temp);
+                            if(t != -1) $rootScope.TempList.DeleteList.splice(t,1);
+                            var t = $rootScope.TempList.DeleteList.indexOf(temp);
+                        }while(t!=-1)
+
                         $scope.task.AddList.push({"PlanNo":PlanNo, 
                                      "Type":$scope.task.secondlist[i].Type, 
                                      "Code":$scope.task.secondlist[i].Code, 
@@ -8754,6 +8773,12 @@ $scope.$on('RisksGet',function(){
                     }
                     if((!$scope.task.secondlist[i].ControlType) && (Arry2[i])) //删除数据
                     {
+                        do{
+                            var t = $rootScope.TempList.AddList.indexOf(temp);
+                            if(t != -1) $rootScope.TempList.AddList.splice(t,1);
+                             t = $rootScope.TempList.AddList.indexOf(temp);
+                        }while(t!=-1)
+
                         $scope.task.DeleteList.push({"PlanNo":PlanNo, 
                                          "Type":$scope.task.secondlist[i].Type, 
                                          "Code":$scope.task.secondlist[i].Code, 
@@ -8761,8 +8786,15 @@ $scope.$on('RisksGet',function(){
                     }
                 }
                 
+                var piTemp = {"Code":piType};
                 if ((!FlagBefore) && (FlagNow)) //插入上级条目
                 {
+                    do{
+                        var t = $rootScope.TempList.DeleteList.indexOf(piTemp);
+                        if(t != -1) $rootScope.TempList.DeleteList.splice(t,1);
+                         t = $rootScope.TempList.DeleteList.indexOf(piTemp);
+                    }while(t!=-1)
+
                     $scope.task.AddList.push({"PlanNo":PlanNo, 
                                  "Type":Type, 
                                  "Code":piType, 
@@ -8784,6 +8816,12 @@ $scope.$on('RisksGet',function(){
                 }
                 if ((FlagBefore) && (!FlagNow)) //删除上级条目
                 {
+                    do{
+                        var t = $rootScope.TempList.AddList.indexOf(piTemp);
+                        if(t != -1) $rootScope.TempList.AddList.splice(t,1);
+                         t = $rootScope.TempList.AddList.indexOf(piTemp);
+                    }while(t!=-1)
+
                     $scope.task.DeleteList.push({"PlanNo":PlanNo, 
                                      "Type":Type, 
                                      "Code":piType, 
@@ -8802,6 +8840,9 @@ $scope.$on('RisksGet',function(){
                 {
                     $scope.task.detailList[index].OriginFlag[i] = $scope.task.secondlist[i].ControlType;
                 }
+
+                console.log($scope.task.DeleteList)
+                console.log($scope.task.AddList)
             }
         });
     }
@@ -8924,8 +8965,8 @@ $scope.$on('RisksGet',function(){
 
     $scope.Confirm = function()
     {
-        var AddList = new Array();
-        var DeleteList = new Array();
+        // var AddList = new Array();
+        // var DeleteList = new Array();
         var FlagBefore = false;
         var FlagNow = false;
         for (var i=0; i < arry.length; i++)
@@ -8946,9 +8987,17 @@ $scope.$on('RisksGet',function(){
         }
         for (var i=0; i < $scope.task.list.length; i++)
         {
+            var temp = {Code: $scope.task.list[i].Code};
+
             if (($scope.task.list[i].ControlType)) //插入数据
             { 
-                AddList.push({"PlanNo":PlanNo, 
+
+                     do{
+                        var t = $rootScope.TempList.DeleteList.indexOf(temp);
+                        if(t != -1) $rootScope.TempList.DeleteList.splice(t,1);
+                         t = $rootScope.TempList.DeleteList.indexOf(temp);
+                    }while(t!=-1)
+                $scope.task.AddList.push({"PlanNo":PlanNo, 
                              "Type":$scope.task.list[i].Type, 
                              "Code":$scope.task.list[i].Code, 
                              "SortNo":'1', 
@@ -8960,15 +9009,27 @@ $scope.$on('RisksGet',function(){
             }
             if((!$scope.task.list[i].ControlType) && (arry[i])) //删除数据
             {
-                DeleteList.push({"PlanNo":PlanNo, 
+                     do{
+                        var t = $rootScope.TempList.AddList.indexOf(temp);
+                        if(t != -1) $rootScope.TempList.AddList.splice(t,1);
+                         t = $rootScope.TempList.AddList.indexOf(temp);
+                    }while(t!=-1)
+                $scope.task.DeleteList.push({"PlanNo":PlanNo, 
                                  "Type":$scope.task.list[i].Type, 
                                  "Code":$scope.task.list[i].Code, 
                                  "SortNo":'1'});
             }
         }
+
+        temp = {Code:Type + "0000"};
         if ((!FlagBefore) && (FlagNow)) //插入上级条目
         {
-            AddList.push({"PlanNo":PlanNo, 
+              do{
+                  var t = $rootScope.TempList.DeleteList.indexOf(temp);
+                  if(t != -1) $rootScope.TempList.DeleteList.splice(t,1);
+                   t = $rootScope.TempList.DeleteList.indexOf(temp);
+              }while(t!=-1)
+            $scope.task.AddList.push({"PlanNo":PlanNo, 
                          "Type":Type, 
                          "Code":Type + "0000", 
                          "SortNo":'1', 
@@ -8981,20 +9042,25 @@ $scope.$on('RisksGet',function(){
         }
         if ((FlagBefore) && (!FlagNow)) //删除上级条目
         {
-            DeleteList.push({"PlanNo":PlanNo, 
+             do{
+                var t = $rootScope.TempList.AddList.indexOf(temp);
+                if(t != -1) $rootScope.TempList.AddList.splice(t,1);
+                 t = $rootScope.TempList.AddList.indexOf(temp);
+            }while(t!=-1)
+            $scope.task.DeleteList.push({"PlanNo":PlanNo, 
                              "Type":Type, 
                              "Code":Type + "0000", 
                              "SortNo":'1'});
         }
-        if(AddList.length > 0){
-            for (var i = AddList.length - 1; i >= 0; i--) {
-                    if($rootScope.TempList.AddList.indexOf(AddList[i]) == -1 )
-                   $rootScope.TempList.AddList.push(AddList[i]);
+        if($scope.task.AddList.length > 0){
+            for (var i = $scope.task.AddList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.AddList.indexOf($scope.task.AddList[i]) == -1 )
+                   $rootScope.TempList.AddList.push($scope.task.AddList[i]);
             };
-            if (DeleteList.length > 0){
-                  for (var i = DeleteList.length - 1; i >= 0; i--) {
-                    if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1 )
-                         $rootScope.TempList.DeleteList.push(DeleteList[i]);
+            if ($scope.task.DeleteList.length > 0){
+                  for (var i = $scope.task.DeleteList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.DeleteList.indexOf($scope.task.DeleteList[i]) == -1 )
+                         $rootScope.TempList.DeleteList.push($scope.task.DeleteList[i]);
                   };
                   if (localStorage.getItem("isManage") == "Yes")
                     {
@@ -9019,11 +9085,11 @@ $scope.$on('RisksGet',function(){
         }
         else
         {
-            if (DeleteList.length > 0)
+            if ($scope.task.DeleteList.length > 0)
             {
-                  for (var i = DeleteList.length - 1; i >= 0; i--) {
-                    if($rootScope.TempList.DeleteList.indexOf(DeleteList[i]) == -1 )
-                         $rootScope.TempList.DeleteList.push(DeleteList[i]);
+                  for (var i = $scope.task.DeleteList.length - 1; i >= 0; i--) {
+                    if($rootScope.TempList.DeleteList.indexOf($scope.task.DeleteList[i]) == -1 )
+                         $rootScope.TempList.DeleteList.push($scope.task.DeleteList[i]);
                   };
                 if (localStorage.getItem("isManage") == "Yes")
                       {
