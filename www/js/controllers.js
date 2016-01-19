@@ -9181,7 +9181,12 @@ $scope.$on('RisksGet',function(){
             var matchkey = {"Type":'TE'};
             var t = $rootScope.TempList.AddList.indexOf(matchkey);
             if(t!=-1){
-              data=$rootScope.TempList.AddList.slice(1);
+              data=[];
+              for(var i in $rootScope.TempList.AddList){
+                if($rootScope.TempList.AddList[i].Type=='TE' && $rootScope.TempList.AddList[i].Instruction!=""){
+                  data.push($rootScope.TempList.AddList[i]);
+                }
+              }
             }
             console.log(data)
             console.log($rootScope.TempList.AddList)
@@ -9808,19 +9813,21 @@ $scope.$on('RisksGet',function(){
 
       $rootScope.SMSCount=parseInt(data.result);
     },function(){
-      getSMSCount();
     });
   }
   var PID;
   var doc=Storage.get('UID');
   $scope.$on('$ionicView.enter', function(){
+    
     $scope.SMSCount=$rootScope.SMSCount;
     var pid=Storage.get('PatientID');
     if(pid!=PID){
       $scope.SMSCount=0;
       PID=pid;
     }
-    getSMSCount(doc,PID);
+    if($state.current.name!='manage.chat'){
+      getSMSCount(doc,PID);
+    }
   })
   // $scope.$on('$ionicView.enter', function(){
   //   $scope.SMSCount=0;
