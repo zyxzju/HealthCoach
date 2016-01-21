@@ -1,0 +1,108 @@
+<ion-view cache-view="false" title="临床信息">
+<!-- <div class="bar-subheader bar-stable">
+	<div class="row" style="padding:0px">
+		<div class="col-75">
+			<h3>{{Name}}      {{gender}}        {{age}}岁</h3>
+		</div>
+		<div  class="col-25 text-right"> 
+			<button class="button icon-right" ng-click="backtocoach()">返回主页</button>
+		</div>	
+	</div>
+</div> -->
+<ion-nav-bar class="bar-positive">
+    <ion-nav-buttons side="left">
+      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+<!-- <ion-head-bar class="bar-positive">
+    
+      <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    
+</ion-head-bar> -->
+
+<ion-content has-bouncing="false" class="content-item-list">
+
+
+	<div class="top-of-the-content">{{Name}}  {{gender}}  {{age}}</div>
+
+	<div class="row responsive-sm">
+		<div class="col-50">
+			
+				<select style="width:100%;height:44.5px;background-color:#f4f4f4;border:0px">
+					<option selected>海军总医院</option>
+				</select>
+        	
+		</div>
+		<div class="col-50 ">
+			
+				<!-- <p>就诊ID</p>
+				<label class="item-input-wrapper input-">
+					<input type="text" ng-model="HJZYYID">
+				</label> -->
+				<label class="item item-input" >
+              <span class="input" style="margin-right:16px"><b>ID</b></span>
+              <input type="text" ng-model="basicclinicinfo.HJZYYID" placeholder="就诊ID" >
+            </label>
+			
+		</div>
+	</div>
+
+	<div class="row responsive-sm" style="padding-top:0;padding-bottom:0">
+		<div class="col-75" style="padding-right:2%" >
+			<ionic-datepicker input-obj="datepickerObject" >
+			<button class="button button-block button-stable" >起始日期{{tt}}</button>
+			</ionic-datepicker>
+		</div>
+		<div class="col-25 ">
+			<button class="button button-block  button-assertive" ng-click="synclinicinfo()" >同步</button>
+		</div>
+	</div>
+
+	<ion-list >
+		<ion-item class="item-margin" ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
+		<div class="row">
+			<b >入院时间：{{item.DischargeDate}} </b>
+		</div>
+		<div class="row">
+			<b>出院时间：{{item.DischargeDate}} </b>		
+		</div>
+		<div class="row">
+			<b >就诊号：{{item.VisitId}}</b>
+		</div>
+		<div class="row">
+			<!-- <div class="col col-33">查看详情：
+			</div> -->
+			<div class="col-67">
+				<div class="button-bar">
+					<button class="button button-small button-outline button-positive" ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
+					<button class="button button-small button-outline button-positive"  ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
+					<button class="button button-small button-outline button-positive"  ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button>
+				</div>
+			</div>
+	    </div>		<!-- <option selected >查看详细信息</option>
+			<option ng-model='examValue' ng-change="openinfomodal(examValue)">检查信息</option>
+			<option ng-model='drugValue' ng-change="openinfomodal(drugValue)">用药信息</option>
+			<option >诊断信息</option> -->
+		</ion-item>
+	</ion-list>
+
+
+
+
+</ion-content>
+</ion-view>
+<!-- 
+<div class="row">
+	<div class="button-bar">
+		<a class="button button-block button-positive" href="#/tab/clinic/examinationinfo" ng-click="examdata2local()" >检查</a>
+		<a class="button button-block button-positive"  href="#/tab/clinic/druginfo" ng-click="drugdata2local()">用药</a>
+		<a class="button button-block button-positive" href="#/tab/clinic/DiagnosisInfo" ng-click="diagdata2local()">诊断</a>
+	</div>
+</div> -->
+
+
+
+
+
+
+

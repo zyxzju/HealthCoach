@@ -1,24 +1,80 @@
-/* Empty. Add your own CSS if you like */
+.item-avatar, .item-avatar .item-content, .item-avatar-left2, .item-avatar-left2 .item-content {
+  padding-left: 70px;
+  min-height: 70px; }
+  .item-avatar > img:first-child, .item-avatar .item-image, .item-avatar .item-content > img:first-child, .item-avatar .item-content .item-image, .item-avatar-left2 > img:first-child, .item-avatar-left2 .item-image, .item-avatar-left2 .item-content > img:first-child, .item-avatar-left2 .item-content .item-image {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    max-width: 46px;
+    max-height: 46px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; }
+.item-avatar-left2.item-complex, .item-thumbnail-left2.item-complex {
+  padding-top: 0;
+  padding-left: 0; }  
+.item-thumbnail-left2, .item-thumbnail-left2 .item-content {
+  margin:6px;
+  border:0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  padding: 8px 5px 5px 90px !important;
+  padding-left: 80px;
+  min-height: 88px; }
+  .item-thumbnail-left2 > img:first-child, .item-thumbnail-left2 .item-image, .item-thumbnail-left2 .item-content > img:first-child, .item-thumbnail-left2 .item-content .item-image {
+    position: absolute;
+    top: 7px;
+    left: 7px;
+    max-width: 75px;
+    max-height: 75px;
+    width: 100%;
+    height: 100%; } 
+
 .item h3 {
-  font-size: 1.3rem;
+  font-size: 0.8rem;
   font-weight: bold;
   color: #417D9A;
 }
 .item h2 {
   font-size: 1.2rem;
-  font-weight: bold;
-  
-  
+  font-weight: bold;   
 }
 .item h1 {
-  font-size: 1rem;
+  font-size: 1.23rem;
     color: #666666;
-    margin-top: 5.6px;
+    font-weight: bold; 
+    /*margin-top: 8px;*/
+    /*font-style: italic*/
+}
+/*.item h6 {
+  font-size: 0.8rem;
+  color: #666666;
+  margin-top: 8px;
+  font-style: italic
+}*/
+.gender-and-age{
+  font-size: 0.8rem;
+  color: #666666;
+  margin-top: 8px;
+  font-style: italic  
+}
+.item h5 {
+  font-size: 1.23rem;
+  color: #3d6399;
+  margin:0;
+}
+.top-of-the-content{
+  padding:5px 0 5px 12px;
+  background-color:#3d6399;
+  margin:0;
+  color:#FFFFFF;
+  font-size:1.4em
 }
 
-.item-thumbnail-left img {
-  border-radius: 10px;
-}
+.item-note-2 {
+  float: right;
+  color: #222;
+  font-size: 14px; }
+
 .item-row{
   display: -webkit-box;
   display: -webkit-flex;
@@ -29,12 +85,38 @@
   padding: 0px;
   width: 100%;
 }
-
-.processbar{
-	background-color:#417D9A;
-	height:100%;
+hr.list { 
+  border: 0; 
+  height: 0.1px; 
+  text-align: center;
+  background-image: -webkit-linear-gradient(left, #f0f0f0, #3d6399, #f0f0f0);
+  background-image: -moz-linear-gradient(left, #f0f0f0, #3d6399, #f0f0f0);
+  background-image: -ms-linear-gradient(left, #f0f0f0, #3d6399, #f0f0f0);
+  background-image: -o-linear-gradient(left, #f0f0f0, #3d6399, #f0f0f0); 
 }
-
+hr.list:after {
+  content: '列表缓存';
+  font-style: italic;
+  display: inline-block;
+  position: relative;
+  top: -10px;
+  padding: 0px;
+  margin:0;
+  background: #FFF;
+  color: #3d6399;
+  font-size: 14px;
+}
+.processbar{
+	background-color:#7aa8ea;
+	height:100%;
+  border-radius: 3px
+}
+.processbar-back{
+  margin-left:2px;margin-top:10px;border-radius: 3px;height:10px;background-color:#E6E6E6; border:0px;width:100%
+}
+.planbox{
+  border-radius: 5px;padding:0;margin-left:5px;text-align:center;width:110px;height:20px;background-color:#e66767
+}
 .markDisplay1
 {
   display:block;
@@ -71,7 +153,53 @@
  
 }
 
+.trial {
+  background-color: rgba(38,157,128,0.5);
+  /*border-top: 20px solid rgba(38,157,128,0.5);*/
+}
 
+.item-divider {
+  background-color: #EFEFD0;
+}
+
+
+
+.m3 {
+  background-color: rgba(38,157,128,0.1);
+  border-top: 20px solid #a9e4ef;
+}
+.m1 {
+  background-color: rgba(38,157,128,0.07);
+  border-top: 20px solid #47a8bd;
+}
+.m2 {
+  background-color: rgba(38,157,128,0.04);
+  border-top: 20px solid #64b6ca;
+}
+
+
+.mono_font{
+ font-size:14px;
+ color: #2e5eaa; padding:5px;
+ text-align:center; 
+ font-weight:bold;
+}
+.time_font {
+  color:#64b6ac;
+  line-height:25px;
+}
+#riskchart {#riskchart {
+  width   : 100%;
+  height    : 250px;
+  font-size : 15px;
+  display: inline;
+  background-color: #EFEFD0;
+} 
+  width: 100%;
+  height: 300px;
+  background-color: #EFEFD0;
+ 
+}
 #chartdiv2 {#chartdiv2 {
   width   : 100%;
   height    : 250px;
@@ -82,3 +210,73 @@
   height: 250px;
   background-color: #F7F4EA;
 }
+
+#chartdiv3 {
+  width: 100%;
+  height: 400px;
+  font-size : 11px;
+}
+//-------------------------------------------------------------//
+.content-item-list{
+  background-color:#F7F7F7;
+  padding-top:0 !important;
+}
+.item-margin{
+  padding:2px;
+  margin:6px;
+  border:0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+
+}
+.bar-shadow{
+  position: absolute;
+  top: 40px;
+  z-index:99;
+  display: block;
+  /*-moz-box-shadow:0px 4px 5px #999;*/
+  /*-webkit-box-shadow:0px 4px 5px #999;*/
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.35);
+  /*box-shadow:0px 4px 5px #999;*/
+  width: 100%;height:4px;
+  background-color: transparent; 
+}
+.sub-bar-shadow{
+  position: absolute;
+  top: 85px;
+  z-index:99;
+  display: block;
+/*  -moz-box-shadow:0px 3px 4px #999;
+  -webkit-box-shadow:0px 3px 4px #999;
+  box-shadow:0px 3px 4px #999;*/
+  box-shadow: 1px 2px 2px rgba(0, 0, 0, 0.3);
+  width: 100%;height:3px;
+  background-color: transparent; 
+}
+.footer-shadow{
+  position: absolute;
+  bottom: 46px;
+  z-index:99;
+  display: block;
+  box-shadow: -1px -2px 2px rgba(0, 0, 0, 0.3);
+  width: 100%;height:3px;
+  background-color: #f8f8f8; 
+}
+.badge1 {
+  margin-top:5px;
+  z-index: 1;
+  display: inline-block;
+  padding: 4px 4px;
+  border-radius: 8px;
+  vertical-align: top;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 5px;
+  line-height: 7px; 
+  background-color: #ef473a;
+  color: #fff;}
+  .badge1:empty {
+    display: none; }
+.icon-gray{
+  color:#AAAAAA;
+}
+

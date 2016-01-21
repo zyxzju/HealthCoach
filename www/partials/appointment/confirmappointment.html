@@ -1,0 +1,91 @@
+<ion-view cache-view="false" title="确认患者预约">
+	
+	<ion-nav-bar class="bar-positive nav-title-slide-ios7">
+		<ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button>
+		   
+	<!-- 	<a class="button button-clear icon-right ion-arrow-up-a" ng-click="scrollTop()">        
+        </a>
+        <a class="button button-clear icon-right ion-arrow-down-a" ng-click="scrollBottom()"></a> -->
+	</ion-nav-bar>
+	<ion-content scroll='true'>
+		<div class = "list item-list">
+			<div class="item item-divider ">
+				患者信息
+			</div>
+			<label class="item item-input  trial">
+				姓名:<input type="text" ng-model="patient.name" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				年龄:<input type="text" ng-model="patient.age" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				模块:<input type="text" ng-model="patient.module" disabled="disabled">
+			</label>
+			<label class="item item-input">
+				预约简介:<input type="text" ng-model="patient.Description" disabled="disabled">
+			</label>
+			<div class="item item-divider ">
+				专员信息
+			</div>
+			<label class="item item-input trial">
+				姓名:<input type="text" ng-model="healthcoach.name" disabled="disabled">
+			</label>
+			<div class="item item-divider ">
+				预约事项
+			</div>
+			<label class="item item-input">
+				预约时间:
+				<!-- <input type="text" ng-model="healthcoach.Time" ng-click="openModal()"> -->
+				<button class="button button-block button-clear" ng-click="openModal()">{{healthcoach.Time}}</button>
+			</label>
+			
+			<label class="item item-input">
+				预约地点:<input type="text" ng-model="healthcoach.Add">
+			</label>
+		</div>
+		<div class='row responsive-sm'>
+			<div class='col col-33 col-offset-33'>
+				<button class="button  button-block button-primary button-stable"
+				ng-click="confirm()">确认预约</button>
+			</div>
+	</ion-content>
+</ion-view>
+<script id="my-modal3.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class = "bar-positive">
+      <div class="button button-clear" ng-click = "onClickConfirm()">确认</div>
+      <h1 class="title">添加日程</h1>
+      <div class="button button-clear" ng-click = "onClickCancel()">取消 </div>
+    </ion-header-bar>
+    <ion-content class ="padding">
+      <div class ="calendar-modal"ui-calendar="uiConfig.calendar2" class="span8 calendar" ng-model="eventSources" ng-if = "loadingDone2" ></div>
+
+      <div class="item item-divider item-divider-calm"> 新增 </div> 
+
+
+
+  <ionic-datepicker input-obj="datepickerObject">
+   <label class="item">
+    <span>
+      选择新的时间(仅限未来30天)
+    </span>
+        <span class="item-note">
+          {{data.selectedDate}}
+        </span>
+     
+  </label>       
+        
+   </ionic-datepicker>
+  <label class="item item-input item-select">
+    <div class="input-label">
+      选择时间
+    </div>
+    <select ng-model = "data.selectedTime">
+      <option selected>上午</option>
+      <option >下午</option>
+      <option >晚上</option>
+    </select>
+  </label>
+    </ion-content>
+  </ion-modal-view>
+</script>

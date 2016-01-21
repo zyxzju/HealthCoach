@@ -1,12 +1,17 @@
 <ion-view view-title="计划设定">
-	<ion-nav-buttons side="primary">
-		<button class="button icon-left ion-chevron-left button-clear button-white" href="#/addpatient/create">
-		</button>
-	</ion-nav-buttons>
-	
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<a class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+			</a>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button button-icon ion-checkmark-round" ng-click="onClickSubmit()" ng-if="isloaded"></button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
 	<ion-content>	
 
-		<div style="font-size:15px;color:blue; padding:10px;text-align:center; font-weight:bold">
+		<div class ="mono_font">
 		结束日期
 		</div>
 		<label class="item item-input">
@@ -14,7 +19,7 @@
 			<input type="date" ng-model="TaskList.EndDate" ng-change = "SetEndDate()">
 		</label>
 
-		<div style="font-size:15px;color:blue; padding:10px;text-align:center; font-weight:bold">
+		<div class ="mono_font">
 		预期目标
 		</div>			
 		
@@ -38,23 +43,17 @@
 			<input type="text" ng-model = "TaskList.Weight" ng-blur="SetTarget('Weight')">
 		</label>		
 		
-		<div style="font-size:15px;color:blue;padding:10px;text-align:center; font-weight:bold">
+		<div class ="mono_font">
 		任务
 		</div>
 				
 		<div class="list">
-			<a class="item item-icon-right" ng-repeat="item in TaskList.taskList" href="#/addpatient/{{item.Type}}">         
-	        {{item.Name}}
-	        <div class="markDisplay{{item.InvalidFlag}}">
-	        	<i class="icon ion-ios-checkmark-empty"></i>
-	        </div>
+			<a class="item item-icon-left item-icon-right" ng-repeat="item in TaskList.taskList" href="#/manage/{{item.Type}}"> 
+			<i class="{{item.Description}}"></i>        
+	        {{item.Name}}	        
+	        <i class="icon ion-ios-checkmark-empty" ng-if = "item.ControlType"></i>
+	        <i ng-if = "!item.ControlType"></i>	        
 	        </a>       
-        </div>			
-						
-		<!-- <div style="text-align:center;padding:20px;">
-			<button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="StartPlan()">
-			<span style="font-size:15px;color:blue;font-weight:bold">开始计划</span>
-			</button>
-		</div>	 -->				
+        </div>																
 	</ion-content>
 </ion-view>

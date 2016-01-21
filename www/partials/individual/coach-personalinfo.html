@@ -1,9 +1,12 @@
 <ion-view view-title="个人信息" hide-nav-bar="true">
-  <ion-header-bar>
-    <button class="button button-icon icon ion-arrow-left-a" ng-click="onClickBackward()">返回</button>
+  <ion-header-bar class="bar bar-positive">
+    <button class="button button-icon icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
     <div class="h1 title">个人信息</div>
 
-        <button class="button button-icon icon ion-compose" ng-click="onClickSave()">保存</button>
+        <button class="button button-icon icon ion-checkmark-round" ng-click="onClickSave()"></button>
+
+<!--           <button class="button button-icon icon ion-person" ng-click="test()"></button> -->
+
   </ion-header-bar>
 
 <!--   <ion-nav-bar class="bar-balanced nav-title-slide-ios7">
@@ -48,50 +51,142 @@ Dept
 
 
 
-  <ion-content>
+  <ion-content >
 
     <div class="list">
-      <a href="#" class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
+      <div class="item item-thumbnail-left item-icon-right" ng-click = "onClickChangeHead()">
         <img src="{{imgURI}}" alt="Avatar">
     <!--     <h2>Item 07</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore necessitatibus, facilis nihil illo eligendi ipsum blanditiis repellat eveniet obcaecati at. Esse est porro, odit, maiores dolorum provident earum error omnis.</p> -->
         <i class="icon ion-chevron-right"></i>
 
-      </a>
+      </div>
 
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
+      <div  class="item item-icon-left item-icon-right" ng-click = "onClickEditName()" >
         <i class="icon ion-person"></i>
         {{userInfo.BasicInfo.name}}
         <i class="icon ion-chevron-right"></i>
-      </a>
+      </div>
 
-      <ionic-datepicker input-obj="datepickerObject">
-      <a href="#" class="item item-icon-left item-icon-right" >
+      <ionic-datepicker input-obj="datepickerObject" ng-if = "loadingDone">
+      <div  class="item item-icon-left item-icon-right" >
         
         <i class="icon ion-calendar"></i>
         {{userInfo.BasicInfo.birthdayforshow}}
         <i class="icon ion-chevron-right"></i>
-
-      </a>
+        
+      </div>
       </ionic-datepicker>
       
-      <a href="#" class="item item-icon-left item-icon-right" ng-click = "onClickEditGender()">
+      <label class="item item-icon-left item-input-right item-select">
         <i class="icon ion-male" ng-show="userInfo.BasicInfo.gender == '男'"></i>
         <i class="icon ion-female" ng-show="userInfo.BasicInfo.gender != '男'"></i>
-       {{userInfo.BasicInfo.gender}}
+        <div class="input-label">
+          性别
+        </div>
+<!--         <select ng-model="userInfo.BasicInfo.gender">
+          <option>男</option>
+          <option>女</option>
+        </select> -->
+
+      <select ng-options="item.Name for item in dict.SexType" ng-model="userInfo.BasicInfo.gender">
+        <option value="">请选择</option>
+      </select>
+      </label>
+
+<!--       <a href="#" class="item item-icon-left item-icon-right">
+        <i class="icon ion-male" ng-show="userInfo.BasicInfo.gender == '男'"></i>
+        <i class="icon ion-female" ng-show="userInfo.BasicInfo.gender != '男'"></i>
+       {{userInfo.BasicInfo.gender}} -->
 <!--         <span class="item-note">
           Record
         </span> -->
-        <i class="icon ion-chevron-right"></i>
-      </a>
+<!--         <select ng-model="userInfo.BasicInfo.gender">
+          <option> 男 </option>
+          <option> 女 </option>
+        </select>
+      </a> -->
 
-      <a href="#" class="item">
+ <!--      <a href="#" class="item">
         ID No.
         <span class="badge badge-balanced">{{userInfo.BasicInfo.id}}</span>
-      </a>
+      </a> -->
       <div class="item item-divider">详细信息</div>
     
- <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
+
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-home" ></i>
+        <div class="input-label">
+          工作单位
+        </div>
+<!--         <select ng-model="userInfo.DtInfo.unitname">
+          <option>海军总医院</option>
+          <option>其他</option>
+        </select> -->
+        <select ng-options="item.Name for item in dict.UnitName" ng-model="userInfo.DtInfo.unitname">
+        <option value="">请选择</option>     
+        </select>   
+      </label>
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-person"></i>
+        <div class="input-label">
+          职务
+        </div>
+<!--         <select ng-model="userInfo.DtInfo.jobTitle">
+          <option>医士</option>
+          <option>住院医师</option>
+          <option>主治医师</option>
+          <option>副主任医师</option>
+          <option>主任医师</option>
+        </select> -->
+      <select ng-options="item.Name for item in dict.JobTitle" ng-model="userInfo.DtInfo.jobTitle">
+        <option value="">请选择</option>
+      </select>    
+      </label>
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-ios-pulse-strong" ></i>
+        <div class="input-label">
+          科室
+        </div>
+      <select ng-options="item.Name for item in dict.Dept" ng-model="userInfo.DtInfo.dept">
+        <option value="">请选择</option>
+      </select>            
+<!--         <select ng-model="userInfo.DtInfo.dept">
+          <option>心内科门诊</option>
+          <option>内分泌科</option>
+        </select> -->
+      </label> 
+
+      <label class="item item-icon-left item-input-right item-select">
+        <i class="icon ion-arrow-graph-up-left" ></i>
+        <div class="input-label">
+          职级
+        </div>
+<!--         <select ng-model="userInfo.DtInfo.level">
+          <option>初级</option>
+          <option>中级</option>
+          <option>正高</option>
+          <option>副高</option>
+        </select> -->
+         <select ng-options="item.Name for item in dict.TitleLevel" ng-model="userInfo.DtInfo.level">
+        <option value="">请选择</option>
+      </select>     
+      </label>     
+
+      <div class="item item-divider">个人简介</div> 
+          <label class="item item-input">
+            <textarea placeholder="个人简介" ng-model = "HealthCoachInfo.Description">
+                       
+            </textarea>
+
+            <!-- <input type="text" placeholder="个人简介"> -->
+          </label>    
+
+          <!-- {{HealthCoachInfo.Description}}                -->
+<!--  <a href="#" class="item item-icon-left item-icon-right"  ng-click ="onClickEditUnitName()">
         <i class="icon ion-calendar"></i>
          {{userInfo.DtInfo.unitname}}
   
@@ -115,7 +210,7 @@ Dept
         <i class="icon ion-calendar"></i>
        {{userInfo.DtInfo.dept}}
         <i class="icon ion-chevron-right"></i>
-      </a>
+      </a> -->
       
 </div>
 

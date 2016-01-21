@@ -1,0 +1,149 @@
+<ion-view title="风险评估">
+
+<ion-nav-bar class="bar-positive nav-title-slide-ios7"> 
+    <ion-nav-back-button class="button-icon ion-arrow-left-c">
+    </ion-nav-back-button>  
+<!--   <ion-nav-buttons side="left">
+    <button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
+  </ion-nav-buttons> -->
+</ion-nav-bar>
+  <!-- <div class="bar-shadow"></div>  -->
+<ion-content>
+<!-- <ion-slide-box on-slide-changed="slideHasChanged($index)">
+  <ion-slide>
+    <div><div class="card">
+  <div class="item item-divider">
+    <b>高血压风险评估</b>
+  </div>
+  <div class="item item-text-wrap">
+    <div id="chartdiv2"></div>
+  </div>
+</div></div>
+  </ion-slide>
+  <ion-slide>
+    <div class="box yellow"><h1>YELLOW</h1></div>
+  </ion-slide>
+  <ion-slide>
+    <div class="box pink"><h1>PINK</h1></div>
+  </ion-slide>
+</ion-slide-box>
+ -->
+
+
+<!-- <div class="card"> -->
+  <!-- <div class="item item-text-wrap"> -->
+    
+    <!-- <div id="chartdiv"></div>                                -->
+  <!-- </div> -->
+<!-- </div> -->
+
+<div class="card" >
+  <!-- <div class="item item-text-wrap"> -->
+     <div id="riskchart" ></div> 
+<!--   </div> -->
+</div>
+
+
+<ion-slide-box on-slide-changed="slideHasChanged($index)"  delegate-handle="riskhandle">
+
+<ion-slide ng-repeat =" item in Mlist">
+<div class = "padding">
+      <div class="card" >
+
+        <div class="item item-divider">
+          <h2>{{item.AssessmentName}}风险描述<h2>
+        </div>
+        <div class="item item-text-wrap">
+
+          <h3>{{item.AssessmentName}}等级说明</h3>
+          <p>{{ item.Result }}</p>
+          
+          
+          <h3>我们的风险评估结果显示您的</h3>  
+          <p ng-repeat = "h in item.flist"> {{h.name}} {{h.f}} %</p>
+
+        </div>
+      </div>
+    </div>
+</ion-slide>
+  <!-- <ion-slide>
+    <div class = "padding">
+      <div class="card" >
+
+        <div class="item item-divider">
+          <h2>高血压风险描述<h2>
+        </div>
+        <div class="item item-text-wrap">
+
+          <h3>高血压等级说明</h3>
+          <p>{{ item.M1.Result }}</p>
+          
+          
+          <h3>我们的风险评估结果显示您的</h3>  
+          <p>高血压发病率     {{item.M1.f1 }}  ％</p>
+          <p>高血压五年死亡率  {{item.M1.f2 }}　％</p>
+          <p>心血管疾病       {{item.M1.f3 }}　％</p>
+          <p>中风十年发生率    {{item.M1.f4 }}　％</p>
+          <p>心衰率           {{item.M1.f5 }}　％</p>
+
+        </div>
+      </div>
+    </div>
+  </ion-slide>
+
+  <ion-slide >
+    <div class = "padding">
+      <div class="card" >
+        <div class="item item-divider">
+          <h2>糖尿病风险描述</h2>
+        </div>
+        <div class="item item-text-wrap">
+            <h3>糖尿病等级说明</h3>
+            <p>{{item.M2.Result}}</p>
+            <p>{{item.M2.Period}}</p> 
+            <p>{{item.M2.Glucose}} mmol/L</p> 
+        </div>
+    </div>
+  </div>
+  </ion-slide>
+
+  <ion-slide>
+    <div class = "padding">
+      <div class="card" >
+      <div class="item item-divider">
+        <h2>心衰风险描述</h2>
+      </div>
+      <div class="item item-text-wrap">
+          <h3>NYHA心衰等级说明</h3>
+          <p>{{item.M3.Result}}</p>
+          <h3>我们的风险评估结果显示您的</h3>
+          <p>一年内心衰死亡率  {{item.M3.f1 | limitTo :4}}  ％</p>
+          <p>三年内心衰死亡率  {{item.M3.f2 | limitTo :4}}  ％</p>
+      </div>
+    </div>
+  </div>
+  </ion-slide> -->
+
+
+</ion-slide-box>
+
+
+</ion-content>     
+</ion-view >
+<!--  <ion-footer-bar 
+    class =" item-input-inset bar-light">
+    <label class="item-input-wrapper">
+      <i class="icon ion-add placeholder-icon"></i>
+      <input type="tex" ng-model="suggestion" placeholder="专员建议">
+    </label>
+ </ion-footer-bar>  -->
+
+<!-- <ion-footer-bar align-title="left" class="bar-assertive">
+  <div class="buttons">
+    <button class="button">Left Button</button>
+  </div>
+  <h1 class="title">Title!</h1>
+  <div class="buttons" ng-click="doSomething()">
+    <button class="button">Right Button</button>
+  </div>
+</ion-footer-bar> -->

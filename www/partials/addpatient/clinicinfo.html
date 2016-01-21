@@ -1,46 +1,43 @@
-<ion-nav-view >
-<ion-header-bar>
-    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="onClickBackward()"></a>
-    <h2 class="title">临床信息</h2>
+<ion-view title="临床信息">
+<!-- <ion-nav-bar class="bar-positive nav-title-slide-ios7"> -->
+    <!-- <ion-nav-back-button class="button-icon ion-arrow-left-c"></ion-nav-back-button> -->
     <!-- <a class="button icon-right ion-chevron-right button-clear button-dark" ng-click="onClickForward()"></a> -->
-</ion-header-bar>
-
-<ion-content class="padding">
-<div class="row">
-	<div class="col">
-		<div class="item item-select">
-			医院 
-			<select>
-				<option selected>海军总医院</option>
-			</select>
+<!-- </ion-nav-bar> -->
+<div class="bar-shadow"></div>
+<ion-content class="content-item-list">
+	<div class="row responsive-sm">
+		<div class="col-50">
+			<div class="item item-select" style="height:52px">
+				<select>
+					<option selected>海军总医院</option>
+				</select>
+			</div>
+		</div>
+		<div class="col-50 ">
+			<div class="item item-input-inset">
+				<p>就诊ID</p>
+				<label class="item-input-wrapper">
+					<input type="text" ng-model="SyncInfo.userid">
+				</label>				
+			</div>
 		</div>
 	</div>
-	<div class="col ">
-		<div class="item item-input-inset">
-			<p>就诊ID</p>
-			<label class="item-input-wrapper">
-				<input type="text" ng-model="SyncInfo.userid">
-			</label>
-			
-		</div>
+
+	<div class="row responsive-sm" style="padding-bottom:0">
+		<div class="col-75" style="padding-right:2%">
+			<ionic-datepicker input-obj="datepickerObject" >
+			<button class="button button-block button-stable" >起始日期{{tt}}</button>
+		</ionic-datepicker>
+
 	</div>
-</div>
+		<div class="col-25 ">
+			<button class="button button-block button-assertive" ng-click="synclinicinfo()" >同步</button>
+		</div>
 
-<div class="row">
-	<div class="row">
-	<div class="col ">
-
-		<ionic-datepicker input-obj="datepickerObject"class="col col=80 " >
-		<button class="button button-block button-positive" >起始日期{{tt}}</button>
-	</ionic-datepicker>
-
-</div>
-	<div class="col ">
-<button class="button button-block button-positive" ng-click="synclinicinfo()" >同步</button>
-</div>
-</div>
-</div>
-<button ng-click="NextPage()" class="button button-block button-positive">下一步</button>
+	</div>
+	<div class="row" style="padding-top:0;padding-bottom:0">
+		<button ng-click="NextPage()" class="button button-block button-positive">下一步</button>
+	</div>
 <!-- 	<div class="col ">
 		<div class="item item-select">
 			就诊日期 
@@ -60,52 +57,39 @@
 </div> -->
 
 
-<div style="width: 100% ">
-	<ion-nav-view name="clinicinfo" style="height=100px;border-style: ridge">
-
-<ion-list >
-<!--     <ion-item ng-repeat='item in clinicinfo' >
-
- <h2>{{item.Time}}</h2>
- <h2>{{item.Event}}</h2>
-
-    </ion-item> -->
 
 
-<ion-item ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
-<div class="row">
-	<h2 class="col col-50">入院时间：{{item.AdmissionDate}}</h2>
-	<h2 class="col col-50">出院时间：{{item.DischargeDate}} </h2>
-</div>
 
-<div class="row">
-	<a class="col col-50"  >就诊号：<h2 ng-model="SyncInfo.visitedid">{{item.VisitId}}</h2></a>
-<div class="col col-50">查看详情：<button ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
-<button ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
-<button ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button></div>
-		<!-- <option selected >查看详细信息</option>
-		<option ng-model='examValue' ng-change="openinfomodal(examValue)">检查信息</option>
-		<option ng-model='drugValue' ng-change="openinfomodal(drugValue)">用药信息</option>
-		<option >诊断信息</option> -->
-	
-</div>
-<!-- 
-<div class="row"> ng-click="openinfomodal()"
-<h2 class="col col-50">开始时间：{{item.StartDateTime}}</h2>
-<h2 class="col col-50">结束时间：{{item.StopDateTime}} </h2>
-</div>
-<div class="row">
-<h2 class="col col-50">给药频率：{{item.Frequency}} </h2>
-</div> -->
-</ion-item>
-
+<ion-list>
+	<ion-item class="item-margin" ng-repeat='item in cliniclist | orderBy : "-AdmissionDate"'  >
+	<div class="row">
+		<h2 >入院时间：{{item.AdmissionDate}}</h2>
+	</div>
+	<div class="row">
+		<h2 >出院时间：{{item.DischargeDate}} </h2>
+	</div>
+	<div class="row">
+		<h2 ng-model="SyncInfo.visitedid">就诊号:{{item.VisitId}}</h2>
+	</div>
+	<!-- <div class="row">
+		<a class="col col-50"  >就诊号：<h2 ng-model="SyncInfo.visitedid">{{item.VisitId}}</h2></a>
+	</div> -->
+	<div class="col-67">
+		<div class="button-bar">
+			<button class="button button-small button-outline button-positive" ng-click="openexaminfomodal(cliniclist.indexOf(item))">检查</button> 
+			<button class="button button-small button-outline button-positive" ng-click="opendruginfomodal(cliniclist.indexOf(item))">用药</button> 
+			<button class="button button-small button-outline button-positive" ng-click="opendiaginfomodal(cliniclist.indexOf(item))">诊断</button></div>
+		</div>
+	</div>
+	</ion-item>
+<ion-list>
 
 
 
 
 
 </ion-content>
-</ion-nav-view>
+</ion-view>
 <!-- 
 <div class="row">
 	<div class="button-bar">

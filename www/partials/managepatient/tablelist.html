@@ -1,0 +1,94 @@
+<ion-view  cache-view="false" title="计划情况">
+<ion-nav-bar  class="bar-positive">
+    <ion-nav-buttons side="left">
+        <button class="button icon button-icon ion-android-home" ng-click="backtocoach()"></button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+<div class="footer-shadow"></div>
+<ion-content has-bouncing="false" class="content-item-list"> 
+  <div class="top-of-the-content">{{Name}}  {{gender}}  {{age}}</div>
+<style>
+#table{
+.col {
+  border: solid 1px #C0C0C0;
+  border-bottom-style: none;
+  border-right-style: none;
+}
+
+.col:last-child {
+  border-right: solid 1px #C0C0C0;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px #C0C0C0;
+}
+}
+</style>
+<div>
+  <div has-bouncing="false" class="button-bar ">
+   <a class="button"  href="#/manage/plan" >依从率图</a>
+   <a class="button"  href="#/Independent/table" ng-click="showvitalsigns()" ng-style="tablestyle"> 体征表</a> 
+   <a class="button"  href="#/Independent/risk" >风险评估</a>
+ </div>
+ <div style="padding:5px">
+<div class="row item-margin responsive-sm" style="border:#E3E3E3 1px solid;margin:0;background-color:#FFFFFF">
+  <div class="col-80"> 
+    <div  class="item-row">
+      <div class="col-50 text-center">
+        <ionic-datepicker input-obj="datepickerObject">
+        <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">起始日期</h4>
+        
+          <div  ng-click="setStart()" class ="mono_font">{{selectedstartdate}}</div>
+        </ionic-datepicker>
+      </div>  
+      <div class="col-50  text-center">
+        <ionic-datepicker input-obj="datepickerObject" >
+        <h4 style="background-color:#DDDDDD;margin:0;padding:3px 0 3px 0;font-size:1em">结束日期</h4>
+        
+          <div ng-click="setEnd()"  class ="mono_font">{{selecrtedenddate}}</div>
+        </ionic-datepicker>
+      </div>
+    </div> 
+  </div> 
+  <div class="col-20">
+    <button style="padding:0;margin:0;width:100%"  class="button button-assertive" ng-click="bowerdata()">查询</button>
+  </div>
+</div>
+<!-- <div class="row" style="padding-bottom:0;margin-bottom:0"> -->
+  <!-- <button style="padding:0;margin-bottom:0;margin-top:4px"  class="button button-block button-stable" ng-click="bowerdata()"><h3>查询</h3></button> -->
+<!-- </div> -->
+<!-- </div> -->
+<!-- </div>	 -->
+
+
+<!-- table -->
+<div class="item-margin" style="min-height:250px;background-color:#FFFFFF;margin-left:0px;margin-right:0px">
+<div class="row text-center" style="border-bottom:#CCCCCC 1px solid" id="table">
+  <div class="col-20"><b>日期</b></div>
+  <div class="col-20"><b>时间</b></div>
+  <div class="col-20"><b>体征</b></div>
+  <div class="col-20"><b>值</b></div>
+  <div class="col-20"><b>单位</b></div>
+</div>
+<div ng-if=displaytable style="text-align:center"><b>期间无体征数据</b></div>
+
+<ion-list  ng-repeat='item in allsigns |orderBy : "-RecordDate" track by $index'>
+
+  
+
+
+
+<div class="row text-center" ng-style="getbackgroundcolor($index)">
+  <div class="col">{{item.RecordDate}}</div>
+  <div class="col">{{item.RecordTime}}</div>
+  <div class="col">{{item.Name}}</div>
+  <div class="col">{{item.Value}}</div>
+  <div class="col">{{item.Unit}}</div>
+</div>
+</div>
+
+
+  </ion-list>
+
+</ion-content> 
+</ion-view >

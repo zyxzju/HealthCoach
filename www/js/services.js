@@ -19,10 +19,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 }])
 
 .constant('CONFIG', {
-
-  baseUrl: 'http://10.12.43.72:9000/Api/v1/',  //RESTful 服务器
+ 
+  baseUrl: 'http://121.43.107.106:9000/Api/v1/',  //RESTful 服务器  121.43.107.106:9000
   ImageAddressIP: "http://121.43.107.106:8088",
   ImageAddressFile : "/PersonalPhoto",
+  ImageAddressFile_Check : "/PersonalPhotoCheck",  //lrz20151104
+  wsServerIP : "ws://" + "121.43.107.106" + ":4141",
   // ImageAddress = ImageAddressIP + ImageAddressFile + "/" + DoctorId + ".jpg";
   consReceiptUploadPath: 'cons/receiptUpload',
   userResUploadPath: 'user/resUpload',
@@ -85,19 +87,31 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       getUID:{method:'GET',params:{route:'UID', Type: '@Type', Name: '@Name'}, timeout:10000},
       UID:{method:'GET',params:{route:'UID'},timeout:10000},
 			Activition:{method:'POST',params:{route:'Activition'},timeout:10000},//用户注册后激活
-      GetPatientsList:{method:'GET',params:{route:'GetPatientsList',DoctorId:'@DoctorId',ModuleType:'@ModuleType',Plan:'@Plan',Compliance:'@Compliance',Goal:'@Goal'},timeout:20000},
+      Roles:{method:'GET',params:{route:'Roles',UserId:'@UserId'},timeout:10000,isArray:true},
+      GetAppoitmentPatientList:{method:'GET',params:{route:'GetAppoitmentPatientList',$top:'@top',$skip:'@skip',$orderby:'@orderby',$filter:'@filter', healthCoachID:'@healthCoachID',Status:'@Status'},timeout:10000,isArray:true},
+      GetPatientsList:{method:'GET',params:{route:'GetPatientsPlan',$top:'@top',$skip:'@skip',$orderby:'@orderby',$filter:'@filter', DoctorId:'@DoctorId',Module:'@ModuleType',VitalType:'@VitalType',VitalCode:'@VitalCode'},timeout:10000,isArray:true},
       BasicInfo:{method:'GET',params:{route:'@route'},timeout:10000}, 
       PatientBasicInfo:{method:'POST',params:{route:'BasicInfo'},timeout:10000},
+      PhoneNo:{method:'GET',params:{route:'PhoneNo',UserId:'@UserId'},timeout:10000},
       PatientBasicDtlInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
-      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000}
+      setPatientDetailInfo:{method:'POST',params:{route:'BasicDtlInfo'},timeout:10000},
+      getiHealthCoachList:{method:'GET',params:{route:'HealthCoaches',PatientId:'@PatientId'},timeout:10000,isArray:true},
+      ReserveHealthCoach:{method:'POST',params:{route:'ReserveHealthCoach'},timeout:10000},//预约
+      getHealthCoachInfo:{method:'GET',params:{route:'GetHealthCoachInfo',HealthCoachID:'@HealthCoachID'},timeout:10000},//预约
+      GetCalendar:{method:'GET',isArray:true,params:{route:'Calendar',DoctorId:'@DoctorId'},timeout: 10000},
+      GetCommentList: {method:'GET',isArray: true,params:{route: 'GetCommentList'}, timeout:100000},
+      GetHealthCoachInfo: {method:'GET',params:{route: 'GetHealthCoachInfo', HealthCoachID:'@HealthCoachID'}, timeout:1000}
 		})
 	}
 	var Service = function(){
 		return $resource(CONFIG.baseUrl + ':path/:route',{
 			path:'Service',
 		},{
-            sendSMS:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',phoneNo:'@phoneNo',smsType:'@smsType'}, timeout: 10000},
+            sendSMS_lzn:{method:'POST',params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType',content:'@content'}, timeout: 10000},
+            sendSMS:{method:'POST',headers:{token:getToken()}, params:{route: 'sendSMS',mobile:'@mobile',smsType:'@smsType',content:'{content}'}, timeout: 10000},
+            PushNotification:{method:'GET',params:{route:'PushNotification',platform:'@platform',Alias:'@Alias',notification:'@notification',title:'@title',id:'@id'},timeout:10000},
             checkverification:{method:'POST',headers:{token:getToken()}, params:{route: 'checkverification', mobile:'@mobile',smsType: '@smsType', verification:'@verification'},timeout: 10000},
+
 		})
 	}	
   var Dict = function(){
@@ -112,7 +126,14 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           getDietHabbit:{method:'GET',params:{route: 'Type/DietHabbit'},isArray:true, timeout: 10000},
           getDrinkFrequency:{method:'GET',params:{route: 'Type/DrinkFrequency'},isArray:true, timeout: 10000},
           GetInsuranceType:{method:'GET',isArray:true, params:{route:'GetInsuranceType'},timeout:10000},
-          GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000}
+          Type:{method:'GET',isArray:true,params:{route:'Type/Category'},timeout:10000},
+          GetNo:{method:'GET',params:{route:'GetNo',NumberingType:'@NumberingType',TargetDate:'@TargetDate'},timeout:10000},
+          //lrz20151225 Api/v1/Dict/Type/{Category}
+          getTitleLevel:{method:'GET',isArray:true,params:{route:'Type/TitleLevel'},timeout:10000},
+          getSexType:{method:'GET',isArray:true,params:{route:'Type/SexType'},timeout:10000},
+          getJobTitle:{method:'GET',isArray:true,params:{route:'Type/JobTitle'},timeout:10000},
+          getDivisionTypes:{method:'GET',isArray:true,params:{route:'DivisionTypes'},timeout:10000},
+          getDivisionCodes:{method:'GET',isArray:true,params:{route:'Divisions',Type:'@Type'},timeout:10000}
     })
   }
   var BasicInfo = function () {//ZXF
@@ -122,7 +143,12 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
                 // GetSignsDetailByPeriod: {method:'GET', params:{route: 'VitalSigns'}, timeout: 10000}
               });
   };
-
+  var BasicDtlInfo = function () {
+      return $resource(CONFIG.baseUrl + ':path/:UserId/BasicDtlInfo',{path:'Users',UserId:'@UserId'},
+      { 
+        GetBasicDtlInfo:{method:'GET',timeout:10000}
+      })
+    };
   var HJZYYID = function () {//ZXF
         return $resource(CONFIG.baseUrl + ':path/:route', {path:'ClinicInfo',route:'GetLatestHUserIdByHCode',UserId:"@UserId",HospitalCode:'@HospitalCode'},
         {
@@ -191,7 +217,15 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // POST Api/v1/RiskInfo/PsParameters
         postPsParameters:{method:'POST',params:{route:'PsParameters'},timeout:10000}, 
         // GET Api/v1/RiskInfo/GetMaxSortNo?UserId={UserId}
-        getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000} 
+        getMaxSortNo:{method:'GET',params:{route:'GetMaxSortNo',UserId:'@UserId'},timeout:10000},
+        // POST Api/v1/RiskInfo/AddM1Risk?PatientId={PatientId}&RecordDate={RecordDate}&RecordTime={RecordTime}&piUserId={piUserId}&piTerminalName={piTerminalName}&piTerminalIP={piTerminalIP}&piDeviceType={piDeviceType} 
+        AddM1Risk:{method:'POST',param:{route:'AddM1Risk',PatientId:'@PatientId',RecordDate:'@RecordDate',RecordTime:'@RecordTime',piUserId:'@piUserId',piTerminalName:'@piTerminalName',piTerminalIP:'@piTerminalIP',piDeviceType:'@piDeviceType'},timeout:20000},
+        // POST Api/v1/RiskInfo/AddM3Risk?PatientId={PatientId}&RecordDate={RecordDate}&RecordTime={RecordTime}&piUserId={piUserId}&piTerminalName={piTerminalName}&piTerminalIP={piTerminalIP}&piDeviceType={piDeviceType}         
+        AddM3Risk:{method:'POST',param:{route:'AddM3Risk',PatientId:'@PatientId',RecordDate:'@RecordDate',RecordTime:'@RecordTime',piUserId:'@piUserId',piTerminalName:'@piTerminalName',piTerminalIP:'@piTerminalIP',piDeviceType:'@piDeviceType'},timeout:20000},
+        // GET Api/v1/RiskInfo/M1RiskInput?UserId={UserId} 
+        getM1Input:{method:'GET',params:{route:'M1RiskInput',UserId:'@UserId'},timeout:10000},
+        // GET Api/v1/RiskInfo/M3RiskInput?UserId={UserId} 
+        getM3Input:{method:'GET',params:{route:'M3RiskInput',UserId:'@UserId'},timeout:10000}
     })
   }
 
@@ -201,13 +235,51 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               SetPlan: {method:'POST', params:{route: 'Plan'},timeout: 10000}, 
               GetPlanList: {method:'GET', isArray:true, params:{route: 'Plan'},timeout: 10000},
               SetTask: {method:'POST', params:{route: 'Task'},timeout: 10000},
-              DeleteTask: {method:'DELETE', params:{route: 'Task'},timeout: 10000},
+              DeleteTask: {method:'POST', params:{route: 'deleteTask'},timeout: 10000},
               GetTasks: {method:'GET', isArray:true, params:{route: 'Tasks'},timeout: 10000},   //有标志位 
               GetTarget: {method:'GET', params:{route: 'Target'},timeout: 10000},
-              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000}
+              SetTarget: {method:'POST', params:{route: 'Target'},timeout: 10000},
+              PostCalendar:{method:'POST',params:{route:'Calendar'},timeout: 10000},
           });
       };
 
+    //ZXF的
+  var PlanInfo1 = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'Plan',PatientId:'@PatientId',PlanNo:'@PlanNo',Module:'@Module',Status:'@Status'},
+        {
+              
+              GetplaninfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+
+  var PlanchartInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'PlanInfo',route:'PlanInfoChart'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              
+              GetchartInfobyPlanNo:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+      };
+  var VitalSigns=function(){
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'VitalInfo',route:'VitalSigns',UserId:'@UserId',StartDate:'@StartDate',EndDate:'@EndDate'},//,UserId:'@UserId',PlanNo:'@PlanNo',StartDate:'@StartDate',EndDate:'@EndDate',ItemType:'@ItemType',ItemCode:'@ItemCode'
+        {
+              // GET Api/v1/VitalInfo/VitalSigns?UserId={UserId}&StartDate={StartDate}&EndDate={EndDate}
+              GetVitalSignsbydate:{method:'GET', timeout: 10000, isArray:true},
+              // PlanInfoChart: {method:'GET', params:{route: 'PlanInfoChart'},timeout: 10000, isArray:true}
+            });
+
+      }
+  var MessageInfo = function () {
+        return $resource(CONFIG.baseUrl + ':path/:route', {path:'MessageInfo'},
+              {
+                submitSMS: {method:'POST', params:{route: 'message'},timeout: 10000},
+                GetSMSDialogue:{method:'GET', isArray:true, params:{route: 'messages'},timeout: 10000},
+                messageNum:{method:'GET', params:{route: 'messageNum',Reciever:'@Reciever',SendBy:'@SendBy'},timeout: 10000},
+                message:{method:'PUT', params:{route:'message'},timeout: 10000},
+                GetDataByStatus:{method:'GET',isArray:true,params:{route:'GetDataByStatus',AccepterID:'@AccepterID',NotificationType:'@NotificationType',Status:'@Status',$top:'@top',$skip:'@skip'},timeout:10000}      
+        });
+    };
 	serve.abort = function($scope){
 		abort.resolve();
         $interval(function () {
@@ -216,6 +288,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.Service = Service();
         serve.Dict = Dict();
         serve.BasicInfo = BasicInfo();
+        serve.BasicDtlInfo = BasicDtlInfo();
         serve.HJZYYID = HJZYYID();
         serve.ClinicalInfoList = ClinicalInfoList();
         serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -224,12 +297,17 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         serve.druginfo = druginfo();
         serve.RiskInfo = RiskInfo();
         serve.PlanInfo = PlanInfo(); 
+        serve.PlanInfo1 = PlanInfo1();
+        serve.PlanchartInfo = PlanchartInfo();
+        serve.VitalSigns = VitalSigns();
+        serve.MessageInfo = MessageInfo();
         }, 0, 1);  
 	}
     serve.Users = Users();
     serve.Service = Service();
     serve.Dict = Dict();
     serve.BasicInfo = BasicInfo();
+    serve.BasicDtlInfo = BasicDtlInfo();
     serve.HJZYYID = HJZYYID();
     serve.ClinicalInfoList = ClinicalInfoList();
     serve.ClinicInfoDetail = ClinicInfoDetail();
@@ -237,14 +315,27 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     serve.diaginfo = diaginfo();
     serve.druginfo = druginfo();
     serve.RiskInfo = RiskInfo();
-    serve.PlanInfo = PlanInfo(); 
+    serve.PlanInfo = PlanInfo();
+    serve.PlanInfo1 = PlanInfo1();
+    serve.PlanchartInfo = PlanchartInfo();
+    serve.VitalSigns = VitalSigns(); 
+    serve.MessageInfo = MessageInfo();
     return serve;
 }])
 
 .factory('userservice',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){	 //XJZ
 	var serve = {};
     var phoneReg=/^(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
-
+    serve.Roles = function (_UserId){
+      var deferred = $q.defer();
+      Data.Users.Roles({UserId:_UserId},
+        function(data){
+          deferred.resolve(data);
+        },function(err){
+          deferred.reject(err);
+        });
+      return deferred.promise;
+    }
     serve.userLogOn = function(_PwType,_username,_password,_role){
         if(!phoneReg.test(_username)){
         	return 7; 
@@ -275,14 +366,36 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
         return deferred.promise;
     }
-
+    // LZN 20151120
+    serve.sendSMS_lzn = function(arr){
+       var deferred = $q.defer();
+        Data.Service.sendSMS_lzn(arr,
+        function(data,headers){
+          deferred.resolve(data);
+        },
+        function(err){
+          deferred.reject(err);   
+        });
+        return deferred.promise;
+    }
+     // LZN 20151120
+    serve.PushNotification = function(arr){
+      var deferred = $q.defer();
+      Data.Service.PushNotification(arr,function (data,headers){
+        deferred.resolve(data);
+        },
+        function(err){
+          deferred.reject(err);
+      })
+      return deferred.promise;
+    }
     serve.sendSMS = function( _phoneNo,_smsType){
         if(!phoneReg.test(_phoneNo)){
         	return 7; 
         }
         
         var deferred = $q.defer();
-        Data.Service.sendSMS({phoneNo: _phoneNo, smsType:_smsType},
+        Data.Service.sendSMS({mobile: _phoneNo, smsType:_smsType},
        	function(data,status){
        		deferred.resolve(data,status);
        	},
@@ -326,40 +439,6 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     		})
     	return deferred.promise;
     }
-
-
-    //var passReg1=/([a-zA-Z]+[0-9]+|[0-9]+[a-zA-Z]+)/;
-    //var passReg2=/^.[A-Za-z0-9]+$/;
-	// var isPassValid = function(pass){
-		// if(pass.length >18  ||  pass.length<6){
-			// return 4;
-		// }else if(!passReg1.test(pass)){
-			// return 5;
-		// }else if(!passReg2.test(pass)){
-            // return 6;
-		// }else{
-			// return 0;
-		// }
-	// }
-	// serve.isTokenValid = function(){
-		// var isToken=Storage.get('token');
-		// if(isToken==null){
-			// return 0;
-		// }else{
-			// $http({
-				// method:'GET',
-				// url:'',
-				// headers:{token:isToken},
-			// })
-			// .success(function(data,status,headers,config){
-
-			// })
-			// .error(function(data,status,headers,config){
-
-			// });
-		// }
-	// }
-
 	return serve;
 }])
 .factory('userINFO',['$http','$q' , 'Storage','Data', function($http,$q,Storage,Data){
@@ -376,10 +455,10 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
-    serve.GetPatientsList = function(_DoctorId,_ModuleType,_Plan,_Compliance,_Goal){
-        var deferred = $q.defer();   
-        Data.Users.GetPatientsList({DoctorId:_DoctorId,ModuleType:_ModuleType,Plan:_Plan,Compliance:_Compliance,Goal:_Goal},
-        function(data,hearders,status){ 
+    serve.GetPatientsList = function(top,skip,orderby,filter,_DoctorId,_Module,_VitalType,_VitalCode){
+        var deferred = $q.defer(); 
+        Data.Users.GetPatientsList({$top:top,$skip:skip,$orderby:orderby,$filter:filter,DoctorId:_DoctorId,Module:_Module,VitalType:_VitalType,VitalCode:_VitalCode},
+        function(data){ 
             deferred.resolve(data);
         },
         function(err){
@@ -387,6 +466,17 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         });
         return deferred.promise;
     }
+    serve.GetAppoitmentPatientList = function(top,skip,orderby,filter,_healthCoachID,_Status){
+        var deferred = $q.defer(); 
+        Data.Users.GetAppoitmentPatientList({$top:top,$skip:skip,$orderby:orderby,$filter:filter,healthCoachID:_healthCoachID,Status:_Status},
+        function(data){ 
+            deferred.resolve(data);
+        },
+        function(err){
+            deferred.reject(err);
+        });
+        return deferred.promise;      
+   }
     return serve;    
 }])
 .factory('loading',['$interval','$ionicLoading', function($interval,$ionicLoading){
@@ -471,7 +561,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
 	return jpushServiceFactory;
 }])
-//照相机服务 LRZ 20151102
+//照相机服务 LRZ 20151104
 .factory('Camera', ['$q','$cordovaCamera','CONFIG', '$cordovaFileTransfer',function($q,$cordovaCamera,CONFIG,$cordovaFileTransfer) { //LRZ
  
   return {
@@ -479,7 +569,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
 
       var options = { 
           quality : 75, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 1, 
           allowEdit : true,
           encodingType: 0,
@@ -492,7 +582,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
      var q = $q.defer();
 
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
@@ -506,7 +596,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     getPictureFromPhotos: function(){
       var options = { 
           quality : 75, 
-          destinationType : 0, 
+          destinationType : 1, 
           sourceType : 0, 
           allowEdit : true,
           encodingType: 0,
@@ -516,7 +606,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         //从相册获得的照片不能被裁减 调研~
      var q = $q.defer();
       $cordovaCamera.getPicture(options).then(function(imageData) {
-          imgURI = "data:image/jpeg;base64," + imageData;
+          imgURI = imageData;
           // console.log("succeed" + imageData);
           q.resolve(imgURI);
       }, function(err) {
@@ -527,13 +617,13 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       return q.promise; //return a promise      
     },
 
-    uploadPicture : function(imgURI,userid){
+    uploadPicture : function(imgURI,fileName){
         // document.addEventListener('deviceready', onReadyFunction,false);
         // function onReadyFunction(){
           var uri = encodeURI(CONFIG.ImageAddressIP + "/upload.php");
           var options = {
             fileKey : "file",
-            fileName : userid + ".jpg",
+            fileName : fileName,
             chunkedMode : true,
             mimeType : "image/jpeg"
           };
@@ -544,11 +634,51 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
               console.log("Code = " + r.responseCode);
               console.log("Response = " + r.response);
               console.log("Sent = " + r.bytesSent);
+              r.res = true;
               q.resolve(r);        
-            }, function(err){
+            }, function(error){
               alert("An error has occurred: Code = " + error.code);
               console.log("upload error source " + error.source);
               console.log("upload error target " + error.target);
+              error.res = false;         
+              q.resolve(error); 
+            }, function (progress) {
+              console.log(progress);
+            })
+
+            ;
+          return q.promise;  
+        // }
+
+
+        // var ft = new FileTransfer();
+        // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
+      
+    },
+    uploadPicture_Check : function(imgURI,fileName){
+        // document.addEventListener('deviceready', onReadyFunction,false);
+        // function onReadyFunction(){
+          var uri = encodeURI(CONFIG.ImageAddressIP + "/upload_check.php");
+          var options = {
+            fileKey : "file",
+            fileName : fileName,
+            chunkedMode : true,
+            mimeType : "image/jpeg"
+          };
+          var q = $q.defer();
+          // console.log("jinlaile");
+          $cordovaFileTransfer.upload(uri,imgURI,options)
+            .then( function(r){
+              console.log("Code = " + r.responseCode);
+              console.log("Response = " + r.response);
+              console.log("Sent = " + r.bytesSent);
+              r.res = true;
+              q.resolve(r);        
+            }, function(error){
+              alert("An error has occurred: Code = " + error.code);
+              console.log("upload error source " + error.source);
+              console.log("upload error target " + error.target);
+              error.res = false;
               q.resolve(error);          
             }, function (progress) {
               console.log(progress);
@@ -563,27 +693,26 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         // $cordovaFileTransfer.upload(imgURI, uri, win, fail, options);
       
     },
+    downloadPicture: function(url,userid){ 
 
-  downloadPicture: function(url,userid){ 
+      var q = $q.defer();
+      var targetPath = cordova.file.documentsDirectory + userid+".jpg";
+      var trustHosts = true;
+      var options = {};
 
-    var q = $q.defer();
-    var targetPath = cordova.file.documentsDirectory + userid+".jpg";
-    var trustHosts = true;
-    var options = {};
+      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+        .then(function(r) {
+          q.resolve(r);  
+        }, function(err) {
+          q.resolve(err); 
+        }, function (progress) {
+        });
 
-    $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-      .then(function(r) {
-        q.resolve(r);  
-      }, function(err) {
-        q.resolve(err); 
-      }, function (progress) {
-      });
+      return q.promise;  
+    }
 
-    return q.promise;  
+
   }
-
-
-}
   
 }])
 
@@ -686,30 +815,952 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         deferred.reject(err);
       });
       return deferred.promise;       
-    }
+    },
+    postQuestionM1: function(data,userid){
+      var t = new Date();
+      var t1 = String(t.getFullYear());
+      var t2 = String(t.getDate());
+      var t3 = String(t.getMonth() + 1);
+      var t4 = String(t.getHours());
+      var t5 = String(t.getMinutes());
+
+      var RecordDate = t1 + (t3.length == 2? t3: '0' + t3) +   (t2.length == 2? t2: '0' + t2) ;
+      var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
+      var deferred = $q.defer();
+
+        Data.RiskInfo.AddM1Risk({route:'AddM1Risk',PatientId:userid,RecordDate:RecordDate,RecordTime:'2241',piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'},data,function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    postQuestionM3: function(data,userid){
+      var t = new Date();
+      var t1 = String(t.getFullYear());
+      var t2 = String(t.getDate());
+      var t3 = String(t.getMonth() +1 );
+      var t4 = String(t.getHours());
+      var t5 = String(t.getMinutes());
+
+      var RecordDate = t1 + (t3.length == 2? t3: '0' + t3) +   (t2.length == 2? t2: '0' + t2) ;
+      var RecordTime = (t4.length == 2? t4: '0' + t4) + (t5.length == 2? t5: '0' + t5);
+
+      var deferred = $q.defer();
+
+        Data.RiskInfo.AddM3Risk({route:'AddM3Risk',PatientId:userid,RecordDate:RecordDate,RecordTime:RecordTime,piUserId:'1',piTerminalName:'1',piTerminalIP:'1',piDeviceType:'1'}, data,function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },
+    getQuestionM1: function(userid){
+
+      var deferred = $q.defer();
+        Data.RiskInfo.getM1Input({UserId:userid},function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    },  
+    getQuestionM3: function(userid){
+
+      var deferred = $q.defer();
+        Data.RiskInfo.getM3Input({UserId:userid},function (data, headers) {
+        // console.log(data);
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise; 
+    }  
 
   }
 }])
 
+
+//LRZ20151113 风险评估service
+.factory('RiskService',['Patients','Data','Storage','$rootScope',function(Patients, Data, Storage,$rootScope){
+  var self = this;
+  // 风险评估列表
+  var riskList = [];
+  //高血压风险的画图数据   
+  var graphData_hy = {
+        "type": "serial",
+        "theme": "light",
+          "dataProvider": [{
+              "type": "收缩压 (mmHg)",
+              "state1": 40+80,
+              "state2": 20,
+              "state3": 20,
+              "state4": 20,
+              "state5": 20,
+              "now": 0, //params
+              "target": 120               //params
+
+          }, {
+              "type": "舒张压 (mmHg)",
+              "state1": 20+80,
+              "state2": 20,
+              "state3": 20,
+              "state4": 20,
+              "state5": 20,
+              "now":  0,         //params
+              "target": 100             //params
+          }],
+          "valueAxes": [{
+              "stackType": "regular",
+              "axisAlpha": 0.3,
+              "gridAlpha": 0,
+              "minimum" :80
+          }],
+          "startDuration": 0.1,
+          "graphs": [{
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b><120 mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很安全",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state1"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>120-140mmHg</b></span>",
+              "fillAlphas": 0.8,
+             // "labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "正常",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state2"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>140-160mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "良好",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state3"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>160-180mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "很危险",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state4"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>180mmHg</b></span>",
+              "fillAlphas": 0.8,
+              //"labelText": "[[value]]",
+              "lineAlpha": 0.3,
+              "title": "极度危险",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state5"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 5,
+              "labelText": "[[value]]"+" 当前",
+              "clustered": false,
+              "lineAlpha": 1.5,
+              "stackable": false,
+              "columnWidth": 0.618,
+              "noStepRisers": true,
+              "title": "当前",
+              "type": "step",
+              "color": "#000000",
+              "valueField": "now"      
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 0,
+              "columnWidth": 0.618,
+              // "labelText": "[[value]]"+"目标",
+              "clustered": false,
+              "lineAlpha": 0.3,
+              "stackable": false,
+              "noStepRisers": true,
+              "title": "目标",
+              "type": "step",
+              "color": "#00FFCC",
+              "valueField": "target"      
+          }],
+          "categoryField": "type",
+          "categoryAxis": {
+              "gridPosition": "start",
+              "axisAlpha": 80,
+              "gridAlpha": 0,
+              "position": "left"
+          },
+          "export": {
+            "enabled": true
+           }
+      };
+  //糖尿病风险的画图数据
+  var graphData_diab = {
+          "type": "serial",
+          "theme": "light",
+          
+          "autoMargins": true,
+          "marginTop": 30,
+          "marginLeft": 80,
+          "marginBottom": 30,
+          "marginRight": 50,
+          "dataProvider": [{
+              "category": "血糖浓度  (mmol/L)",
+              "excelent": 4.6,
+              "good": 6.1-4.6,
+              "average": 7.2-6.1,
+              "poor": 8.8-7.2,
+              "bad": 13.1-8.8,
+              "verybad": 20 - 13.1,
+              "bullet": 0
+          }],
+          "valueAxes": [{
+              "maximum": 20,
+              "stackType": "regular",
+              "gridAlpha": 0,
+              "offset":10,
+              "minimum" :3
+
+          }],
+          "startDuration": 0.13,
+          "graphs": [ {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#4ede39",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "excelent"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>4.6 -6.1 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#60b95d",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "good"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>6.1-7.2 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f9c80e",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "average"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>7.2-8.8 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#f88624",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "poor"
+          }, {
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#e76b74",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "bad"
+          },{
+            "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>8.8-9 mmol/L</b></span>",
+              "fillAlphas": 0.8,
+              "lineColor": "#ea526f",
+              "showBalloon": true,
+              "type": "column",
+              "valueField": "verybad"
+          }, {
+              "balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>>9 mmol/L</b></span>",
+              "clustered": false,
+              "columnWidth": 0.5,
+              "noStepRisers": true,
+              "lineThickness": 5,
+              "fillAlphas": 0,
+              "labelText": "[[value]]"+" 当前",
+              "lineColor": "#000000", 
+              "stackable": false,
+              "showBalloon": true,
+              "type": "step",
+              "valueField": "bullet"
+          }],
+          "rotate": false,
+          "columnWidth": 1,
+          "categoryField": "category",
+          "categoryAxis": {
+              "gridAlpha": 0,
+              "position": "left",
+             
+          }
+      };
+      
+  //心衰风险的画图数据
+  var graphData_hf = {
+        "type": "serial",
+        "theme": "light",
+          "dataProvider": [{
+              "type": "一年死亡风险 (%)",
+              "state1": 4.8,
+              "state2": 17.5-4.8,
+              "state3": 42.7-17.5,
+              "state4": 62.5-42.7,
+              "state5": 84.2-62.5,
+              "now": 0, //params
+              "target": 0               //params
+
+          }, {
+              "type": "三年死亡风险 (%)",
+              "state1": 12.2,
+              "state2": 39.7-12.2,
+              "state3": 75.6-39.7,
+              "state4": 90.8-75.6,
+              "state5": 98.5-90.8,
+              "now":  0,         //params
+              "target": 0             //params
+          }],
+          "valueAxes": [{
+              "stackType": "regular",
+              "axisAlpha": 0.3,
+              "gridAlpha": 0,
+              "minimum" :0
+          }],
+          "startDuration": 0.1,
+          "graphs": [{
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>很安全</b></span>",
+              "fillAlphas": 0.8,
+              "labelText": "",
+              "lineAlpha": 0.3,
+              "title": "很安全",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state1"
+          }, {
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>正常</b></span>",
+              "fillAlphas": 0.8,
+              "labelText": " ",
+              "lineAlpha": 0.3,
+              "title": "",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state2"
+          }, {
+              "balloonText": "<span style='font-size:14px'>[[category]]: <b>良好</b></span>",
+              "fillAlphas": 0.8,
+              "labelText": "",
+              "lineAlpha": 0.3,
+              "title": "",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state3"
+          }, {
+             "balloonText": "<span style='font-size:14px'>[[category]]: <b>危险</b></span>",
+              "fillAlphas": 0.8,
+              "labelText": "",
+              "lineAlpha": 0.3,
+              "title": "",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state4"
+          }, {
+              "balloonText": "<br><span style='font-size:14px'>[[category]]: <b>极度危险</b></span>",
+              "fillAlphas": 0.8,
+              "labelText": "",
+              "lineAlpha": 0.3,
+              "title": "",
+              "type": "column",
+              "color": "#000000",
+              "columnWidth": 0.618,
+              "valueField": "state5"
+          }, {
+              // "balloonText": "<b>[[title]]</b><br><span style='font-size:40px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 5,
+              "labelText": "[[value]]"+"  %  当前",
+              "clustered": false,
+              "lineAlpha": 1.5,
+              "stackable": false,
+              "columnWidth": 0.618,
+              "noStepRisers": true,
+              "title": "当前",
+              "type": "step",
+              "color": "#000000",
+              "valueField": "now"      
+          }, {
+              //"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+              "fillAlphas": 0,
+              "columnWidth": 0.5,
+              "lineThickness": 0,
+              "columnWidth": 0.618,
+              // "labelText": "[[value]]"+"目标",
+              "clustered": false,
+              "lineAlpha": 0.3,
+              "stackable": false,
+              "noStepRisers": true,
+              "title": "目标",
+              "type": "step",
+              "color": "#00FFCC",
+              "valueField": "target"      
+          }],
+          "categoryField": "type",
+          "categoryAxis": {
+              "gridPosition": "start",
+              "axisAlpha": 80,
+              "gridAlpha": 0,
+              "position": "left"
+          },
+          "export": {
+            "enabled": true
+           }
+    };
+
+  self.getGraphData = function(module,index){
+    // console.log("1");
+    var temp = {};
+
+    switch(module){
+      case 'M1': temp = graphData_hy;
+                 // console.log(temp); 
+                 temp.dataProvider[0].now = riskList[index].M1.SBP;
+                 temp.dataProvider[1].now = riskList[index].M1.DBP;
+                 temp.valueAxes[0].minimum = (riskList[index].M1.DBP < 80) ? parseInt(riskList[index].M1.DBP) - 10 : 80;
+                 // temp.valueAxes[0].maximum = parseInt(riskList[index].M1.SBP) + 20;
+                 break;
+      case 'M2': temp = graphData_diab; 
+                 temp.dataProvider[0].bullet = riskList[index].M2.Glucose;
+                 temp.valueAxes[0].maximum = parseInt(riskList[index].M2.Glucose) + 1.3;
+                 break;
+      case 'M3': temp = graphData_hf;
+                 temp.dataProvider[0].now = riskList[index].M3.f1;
+                 temp.dataProvider[1].now = riskList[index].M3.f2;
+                 temp.valueAxes[0].maximum = (riskList[index].M3.f2 > riskList[index].M3.f1)  ? riskList[index].M3.f2 *4:riskList[index].M3.f1 *4 ;
+    };
+    return temp;
+  }
+
+  self.getIndexBySortNo = function(sortno){
+      for (var i = riskList.length - 1; i >= 0; i--) {
+        if(riskList[i].num == sortno) {
+          var temp = i;
+          // console.log("得到了这一条数据");
+          // console.log(riskList[temp]);
+          break;
+        }
+      };
+      return temp;
+  }
+  self.getRiskList = function(){
+    // console.log("riskList");
+    return riskList;
+  }
+ self.getSingleRisk = function(no){
+    return riskList[no];
+  }
+  var sortList = function(risks){
+    console.log("start sorting lists");
+    //先整理列表的模块名
+    for (var i = risks.length - 1; i >= 0; i--) {
+          switch (risks[i].AssessmentType){
+            case 'M1' : risks[i].AssessmentName = "高血压模块";       
+                        var temp = risks[i].Result.split("||",8);
+                        //分割字符串 获得血压数据 SBP||DBP||5 factors
+                        risks[i].Result = temp[0];
+                        risks[i].SBP = temp[1];
+                        risks[i].DBP = temp[2];
+                        risks[i].f1 = temp[3];
+                        risks[i].f2 = temp[4];
+                        risks[i].f3 = temp[5];
+                        risks[i].f4 = temp[6];
+                        risks[i].f5 = temp[7];
+                        break;
+            case 'M2' : risks[i].AssessmentName = "糖尿病模块";
+                        //分割字符串 获得血糖数据 结果||测量时间||血糖值
+                        var temp = risks[i].Result.split("||",3);
+                        risks[i].Result = temp[0];
+                        risks[i].Period = temp[1];
+                        risks[i].Glucose = temp[2];
+                        break;
+            case 'M3' : risks[i].AssessmentName = "心衰模块"; 
+                      //分割字符串 获得血糖数据 分级||填表结果||blablabla
+                        var temp = risks[i].Result.split("||",3);
+                        risks[i].Result = temp[0];
+                        risks[i].f1 = temp[1];
+                        risks[i].f2 = temp[2];                   
+          } 
+      };
+      //将同一个number 的整合到 一个对象中
+      var newRisks = [];
+      for (var i = 0; i <= risks.length - 1; i++) {
+          if(i == 0) {
+            switch(risks[i].AssessmentType){
+                case 'M1' : var temp = {num: risks[i].SortNo, M1:risks[i],M2:undefined,M3:undefined};break;
+                case 'M2' : var temp = {num: risks[i].SortNo, M2:risks[i],M1:undefined,M3:undefined};break;
+                case 'M3' : var temp = {num: risks[i].SortNo, M3:risks[i],M2:undefined,M1:undefined};
+            }
+            newRisks.push(temp);
+          }
+          else{
+            if(risks[i].SortNo == newRisks[newRisks.length-1].num){
+                switch(risks[i].AssessmentType){
+                  case 'M1' : newRisks[newRisks.length-1].M1 = risks[i];break;
+                  case 'M2' : newRisks[newRisks.length-1].M2 = risks[i];break;
+                  case 'M3' : newRisks[newRisks.length-1].M3 = risks[i];
+                }
+            }
+            else{
+                switch(risks[i].AssessmentType){
+                  case 'M1' : var temp = {num: risks[i].SortNo, M1:risks[i]};break;
+                  case 'M2' : var temp = {num: risks[i].SortNo, M2:risks[i]};break;
+                  case 'M3' : var temp = {num: risks[i].SortNo, M3:risks[i]};
+                }
+                newRisks.push(temp);            
+            }
+          }        
+      };
+      //不显示没填写的项目&& 异常项目 
+      for (var i = newRisks.length - 1; i >= 0; i--) {
+        if(typeof(newRisks[i].M1) == 'undefined' 
+          || typeof(newRisks[i].M1.SBP) == 'undefined' 
+          || typeof(newRisks[i].M1.DBP) == 'undefined')
+          {
+            newRisks[i].M1show = false;
+            newRisks[i].M1 = {Result: "您本次没有进行高血压的风险评估"};
+          }
+        else  {
+          newRisks[i].M1show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M1.AssessmentTime;
+        }
+        if(typeof(newRisks[i].M2) == 'undefined' || 
+           typeof(newRisks[i].M2.AssessmentTime) == 'undefined' ||
+           typeof(newRisks[i].M2.Period) == 'undefined' ||
+           typeof(newRisks[i].M2.Glucose) == 'undefined')
+          {
+            newRisks[i].M2show = false;
+            newRisks[i].M2 = {Result :"您本次没有进行糖尿病的风险评估"};
+          }
+        else{
+          newRisks[i].M2show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M2.AssessmentTime;
+        } 
+          
+
+        if(typeof(newRisks[i].M3) == 'undefined' || 
+           typeof(newRisks[i].M3.AssessmentTime) == 'undefined' ||
+           typeof(newRisks[i].M3.f1) == 'undefined' ||
+           typeof(newRisks[i].M3.f2) == 'undefined')
+          {
+            newRisks[i].M3show = false;
+            newRisks[i].M3 = {Result :"您本次没有进行心衰的风险评估"};
+          }
+        else{
+          newRisks[i].M3show = true;
+          newRisks[i].AssessmentTime = newRisks[i].M3.AssessmentTime;
+        } 
+      };
+      // console.log(newRisks);
+      console.log("finished sorting lists");    
+      return newRisks;
+  }
+
+  self.initial = function(){
+    console.log("service初始化");
+    var pid = Storage.get('PatientID');
+    // var pid = "PID201506170002";
+    console.log("service从LS取出了pid" + pid);
+    //得到所有的数据
+    Patients.getEvalutionResults(pid).then(function(data){
+      //没有数据或者取失败广播告诉controller取不出来了
+      // console.log(data);
+      if(data == [] || data == null ){
+        console.log("service从WS取数据失败----broadcasting");
+        $rootScope.$broadcast("RisksGetFail");
+        return ;
+      }
+      else{
+        console.log("service从WS取数据成功----broadcasting");
+        //整理列表 按照 什么 排好
+        riskList = sortList(data);
+        // console.log(riskList);
+        //广播告诉controller 可以取了
+        $rootScope.$broadcast("RisksGet");        
+      }
+
+    });
+  }
+
+  
+  return self;
+
+}])
+
+//LRZ20151123
+.factory('ScheduleService',['Data','Storage','$rootScope','$q','$ionicLoading','$timeout',function(Data,Storage,$rootScope,$q,$ionicLoading,$timeout){
+
+  var self = this;
+  var calendar = [];
+  var events = [];
+  var count = 0;
+  var todayHasFinished = 0;
+  var todayToBeFinished = 0;
+  var postCalendar = function(data){
+    var deferred = $q.defer();
+    Data.PlanInfo.PostCalendar(data, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+
+    // Data.PlanInfo.PostCalendar(data).then(function(promise){
+    //   if(promise.result == "数据插入成功"){
+    //     $rootScope.$broadcast("newCanlendar");
+    //   }
+    //   else{
+    //     $rootScope.$broadcast("newCanlendar");
+    //   }
+    // });
+  }
+  var phoneheight = (window.innerHeight > 0) ? window.innerHeight : screen.height;
+  var calendarConfig = {
+      calendar:{
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        height: phoneheight*0.818,
+        lang: 'zh-cn',
+        scrollTime: '8:00:00',
+        buttonIcons: false, 
+        weekNumbers: false,
+        editable: true,
+        eventLimit: true
+      },
+    calendar2:{
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        height: 300,
+        lang: 'zh-cn',
+        scrollTime: '8:00:00',
+        buttonIcons: false, 
+        weekNumbers: false,
+        editable: true,
+        eventLimit: true
+      },      
+  };
+  var getCalendar = function(did){
+    var deferred = $q.defer();
+    Data.Users.GetCalendar({DoctorId:did}, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+
+    // Data.PlanInfo.GetCalendar({DoctorId:did}).then(function(promise){
+    //   if(promise.result != []){
+    //     calendar = promise;
+    //     $rootScope.$broadcast("GotCanlendar");
+    //   }
+    //   else{
+    //     $rootScope.$broadcast("GotCanlendarFail");
+    //   }
+    // });
+  }
+
+  //将calendar的信息整理成日历能显示的样子
+  // (they are id, title, url, start, end, allDay, and className).
+  var sortCalendar = function(){
+    events = [];
+    var today = {};
+    today.start = new Date();
+    today.start.setHours(0,0,0,0);
+
+    today.end = new Date();
+    today.end.setHours(23, 59, 59, 59);    
+    console.log(today);
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      var temp =  { };
+      var flag = true;
+      console.log(calendar[i].Status)
+      var t = calendar[i].DateTime;
+      if(calendar[i].Status == 2 || calendar[i].Status == 0 ) flag = false;
+      //YYYYMMDD如果不满足就不是这个格式 或者是错误的数据 直接不进入events 数组了
+      
+      if(t.length == 8){
+
+            if(calendar[i].Period == "上午"){
+                var start_hour = 8;
+                var end_hour = 11;
+            }
+            else if (calendar[i].Period == "下午"){
+                var start_hour = 14;
+                var end_hour = 17;
+            }
+            else if (calendar[i].Period == "晚上"){
+                var start_hour = 18;
+                var end_hour = 21;
+            }
+            else {
+                var flag = false;        
+            }
+
+            // var datetime = new Date(t[0]+t[1]+t[2]+t[3], t[4]+t[5],t[6]+t[7]); 
+            // var start = datetime;
+            // var end = datetime;  
+
+            var start = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],start_hour,0);
+
+            var end = new Date(t[0]+t[1]+t[2]+t[3], String(parseInt(t[4]+t[5])-1),t[6]+t[7],end_hour,0);
+
+            //判断是否是今天 以及是否是未完成的日历
+
+
+            if(today.start.getTime() < start.getTime() && today.end.getTime() > end.getTime()){
+              //today
+              
+              if(calendar[i].Status == 1 || calendar[i].Status == 3 || calendar[i].Status == 4 || calendar[i].Status == 5) 
+                todayToBeFinished = todayToBeFinished + 1;
+              if(calendar[i].Status == 5 )
+                todayHasFinished = todayHasFinished + 1; 
+            }
+
+            switch(calendar[i].Status){
+              case 1 : temp.color = "#a9e4ef";break;
+              case 2 : temp.color = "#B40431";break;
+              case 3 : temp.color = "#64b6ca";break;
+              case 4 : temp.color = "#3a87ad";break;
+              case 5 : temp.color = "#088A68";break; 
+            }
+            temp.id = calendar[i].SortNo; 
+            temp.start = start;
+            temp.end = end;
+            temp.url = '#/schedule/' +calendar[i].DateTime + '/'+calendar[i].Period +'/'+calendar[i].SortNo;
+            // temp.stick = true;
+            temp.title = calendar[i].Description.split("||",4)[0];
+
+
+            if(flag)events.push(temp);
+      }
+      
+
+
+    };
+  }
+
+
+  self.getTodayProgress = function(){
+      return {
+        'todayHasFinished' : todayHasFinished,
+        'todayToBeFinished' : todayToBeFinished
+      };
+  }
+  self.cancelOneCalendar = function(data){
+
+    var temp =  {
+      "DoctorId": Storage.get("UID"),
+      "DateTime": data.DateTime,
+      "Period": data.Period,
+      "SortNo": data.SortNo,
+      "Description": data.Description,
+      "Status": 0,
+      "Redundancy": "1",
+      "revUserId": "1",
+      "TerminalName": "1",
+      "TerminalIP": "1",
+      "DeviceType": 11
+    }
+
+
+    var deferred = $q.defer();   
+    postCalendar(temp).then(function(promise){
+          if(promise.result == "数据插入成功"){
+            console.log(promise)
+            var temp = $ionicLoading.show({
+            template:  '取消日程成功',
+          });
+
+            $timeout(function(){
+              $ionicLoading.hide();
+            },1500)
+
+            deferred.resolve({});
+
+            $rootScope.$broadcast("newCanlendar");
+          }
+          else{
+
+            $rootScope.$broadcast("GotCanlendarFail");
+            deferred.resolve({});
+
+          }
+    });    
+    return deferred.promise;
+  }
+
+  //FOR TEST
+  self.postCalendar = function(data){
+    // count = 23;
+    // var t = new Date();
+
+    // 没有预约0，正在处理1，预约失败2，加好友成功3，预约成功4
+    var temp =  {
+      "DoctorId": Storage.get("UID"),
+      "DateTime": data.DateTime,
+      "Period": data.Period,
+      "SortNo": 0,
+      "Description": data.Description,
+      "Status": data.Status,
+      "Redundancy": "1",
+      "revUserId": "1",
+      "TerminalName": "1",
+      "TerminalIP": "1",
+      "DeviceType": "1"
+    }
+    // console.log(temp);
+    postCalendar(temp).then(function(promise){
+      if(promise.result == "数据插入成功"){
+        console.log(promise)
+        var temp = $ionicLoading.show({
+        template:  '修改日程成功',
+      });
+        $timeout(function(){
+          $ionicLoading.hide();
+        },1500)
+        $rootScope.$broadcast("newCanlendar");
+      }
+      else{
+        $rootScope.$broadcast("GotCanlendarFail");
+      }
+    });
+
+  }
+
+  self.initialize = function(){
+    todayHasFinished = 0 ; 
+    todayToBeFinished = 0 ;
+    getCalendar(Storage.get("UID")).then(function(promise){
+      if(promise.result != []){
+        // console.log(promise)
+        calendar = promise;
+
+        sortCalendar();
+        // console.log(events);
+        $rootScope.$broadcast("GotCanlendar");
+      }
+      else{
+        $rootScope.$broadcast("GotCanlendarFail");
+      }
+    });
+  }
+
+  self.getEventByParams = function(params){
+    console.log(params);
+
+    // for (var i = events.length - 1; i >= 0; i--) {
+    //   if(events[i].id == params.SortNo){
+    //       // console.log(events[i]);
+    //       var tempDate = events[i].start.toLocaleDateString().split("/",3);
+    //       var t =  tempDate[0] + 
+    //       (tempDate[1].length==2 ? tempDate[1] : '0' +tempDate[1])  + 
+    //       (tempDate[2].length==2 ? tempDate[2] : '0' +tempDate[2]) ;
+    //       // console.log(t)
+    //       if(t == params.Date){
+    //         console.log(events[i].start.getHours());
+    //         if((events[i].start.getHours() == 8 && params.Period == "上午") || (events[i].start.getHours() ==14 && params.Period == "下午")  || (events[i].start.getHours() ==18 && params.Period == "晚上") ){
+    //            return events[i];
+    //         }
+    //       }
+    //   }
+
+    // };
+
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      if(calendar[i].SortNo == params.SortNo && calendar[i].Period == params.Period && calendar[i].DateTime == params.Date)
+        return calendar[i];
+    };
+    return undefined;
+  }
+
+   self.getCalendarByParams = function(params){
+    console.log(params);
+    for (var i = calendar.length - 1; i >= 0; i--) {
+      if(calendar[i].Description == params.Description && calendar[i].Period == params.Period && calendar[i].DateTime == params.DateTime)
+        return calendar[i];
+    };
+    return undefined;
+  }
+  
+  self.getCanlendar = function(){
+    return calendar;
+  }
+
+  self.getEvents = function(){
+    return events;
+  }
+  
+  self.getConfig = function(){
+    return calendarConfig;
+  }
+
+  self.getDates = function(){
+    var tempDate = new Date();
+
+    var dates = [];
+
+    for (var i = 0; i < 30; i++) {
+      tempDate.setDate(tempDate.getDate()+1); 
+      // console.log(tempDate);
+      var t = new Date(tempDate);
+      dates.push(t);
+      // console.log(dates);
+    };
+
+    return dates;
+  }
+  return self;
+}])
+
 //用户类LRZ 调用DATA 主要负责和服务器互动 会改
-.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { //LRZ
+.factory('Users', ['$q', '$http', 'Data','Storage','$resource','CONFIG',function ($q, $http, Data,Storage,$resource,CONFIG) { 
   var self = this;
 
-//LRZ 20151102
+   //LRZ 20151102
   self.postDoctorInfo = function (data) {
-    // console.log(data);
+    console.log("------------------------------")
+    console.log(data);
 
     
     var DoctorInfo = {
       "UserId": String(data.id),
       "UserName": String(data.name),
       "Birthday": String(data.birthday),
-      "Gender": (data.gender == '男' ? 1:2),
+      "Gender": data.gender.Type,
       "IDNo": String(data.idno),
       "InvalidFlag": 0,
-      "piUserId": "蛤蛤蛤",
-      "piTerminalName": "蛤蛤蛤",
-      "piTerminalIP": "蛤蛤蛤",
+      "piUserId": "1",
+      "piTerminalName": "1",
+      "piTerminalIP": "1",
       "piDeviceType": 2
     };
     var deferred = $q.defer();
@@ -720,7 +1771,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+  //LRZ 20151102
   self.postDoctorDtlInfo = function (data) {
     var DoctorInfo = {
       UserId: Storage.get('UID'),
@@ -731,7 +1782,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
       photoAddress: data.photoAddress
     };
 
-  var temp = [{
+    var temp = [{
                 "Doctor": DoctorInfo.UserId,
                 "CategoryCode": "Contact",
                 "ItemCode": "Contact001_4",
@@ -807,7 +1858,132 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   };
-//LRZ 20151102
+  //LRZ 20151110
+  self.postDoctorDtlInfo_Check = function (data) {
+    var DoctorInfo = {
+      UserId: Storage.get('UID'),
+      unitname:data.unitname.Type,
+      jobTitle: data.jobTitle.Type,
+      level: data.level.Type,
+      dept: data.dept.Type,
+      photoAddress: data.photoAddress,
+      photoAddress_Check: data.photoAddress_Check
+    };
+
+    var temp = [
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_5",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.unitname,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"    
+                },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_6",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.jobTitle,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"   
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_7",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.level,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              },
+              {
+                "Doctor": DoctorInfo.UserId,
+                "CategoryCode": "Contact",
+                "ItemCode": "Contact001_8",
+                "ItemSeq": "1",
+                "Value": DoctorInfo.dept,
+                "Description": "null",
+                "SortNo": "1",
+                "piUserId": "sample string 8",
+                "piTerminalName": "sample string 9",
+                "piTerminalIP": "sample string 10",
+                "piDeviceType": "11"  
+              }
+    ];
+
+    console.log(temp);
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }; 
+  //LRZ 20151105   
+  self.postDoctorDtlInfo_Single = function (userid,code,value) {
+      var temp = [{
+                  "Doctor": userid,
+                  "CategoryCode": "Contact",
+                  "ItemCode": "Contact001_" + String(code),
+                  "ItemSeq": "1",
+                  "Value": value,
+                  "Description": "null",
+                  "SortNo": "1",
+                  "piUserId": "sample string 8",
+                  "piTerminalName": "sample string 9",
+                  "piTerminalIP": "sample string 10",
+                  "piDeviceType": "11"
+                }
+      ];
+      console.log(temp);
+      var deferred = $q.defer();
+      Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };      
+  self.postDoctorDtlInfo_byCode = function (userid,CategoryCode,ItemCode,value) {
+      var temp = [{
+                  "Doctor": userid,
+                  "CategoryCode": CategoryCode,
+                  "ItemCode": ItemCode,
+                  "ItemSeq": "1",
+                  "Value": value,
+                  "Description": "null",
+                  "SortNo": "1",
+                  "piUserId": "1",
+                  "piTerminalName": "1",
+                  "piTerminalIP": "1",
+                  "piDeviceType": "1"
+                }
+      ];
+      console.log(temp);
+      var deferred = $q.defer();
+      Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };   
+  //LRZ 20151102
   self.getDocInfo = function (userid) {
     
     // Storage.set(13131313,userid);
@@ -843,6 +2019,132 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     var deferred = $q.defer();
     temp.myTrialGET({}, function (data, headers) {
       // console.log("获得了数据"+data)
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  //lrz 20151221
+  self.GetHealthCoachInfo = function(id){
+          var deferred = $q.defer();
+          Data.Users.GetHealthCoachInfo({HealthCoachID:id}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+   //lrz 20151221
+   self.GetCommentList = function (DoctorId ,CategoryCode, num, skip) {
+      var deferred = $q.defer();
+      Data.Users.GetCommentList({DoctorId:DoctorId,CategoryCode:CategoryCode, $orderby:"CommentTime desc", $top:num, $skip:skip}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+      return deferred.promise;
+  };
+  //lrz 20151226
+  self.GetSexType  = function(){
+          var deferred = $q.defer();
+          Data.Dict.getSexType({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetTitleLevel = function(){
+          var deferred = $q.defer();
+          Data.Dict.getTitleLevel({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetJobTitle = function(){
+          var deferred = $q.defer();
+          Data.Dict.getJobTitle({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetDivisionTypes = function(){
+          var deferred = $q.defer();
+          Data.Dict.getDivisionTypes({}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }
+  self.GetDivisionCodes = function(code){
+          var deferred = $q.defer();
+          Data.Dict.getDivisionCodes({Type:code}, function (data, headers) {
+                deferred.resolve(data);
+          }, function (err) {
+               deferred.reject(err);
+          });
+          return deferred.promise;
+  }        
+  //TDy 20151106
+  self.addnewpatient = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Doctor": DoctorId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Patient",
+      "ItemSeq": 1,
+      "Value": PatientId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    }];
+    var deferred = $q.defer();
+    Data.Users.postDoctorDtlInfo(temp, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  //TDy 20151106
+  self.addnewhealthcoach = function(DoctorId, PatientId,Module){
+    var temp = [{
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "Doctor",
+      "ItemSeq": 1,
+      "Value": DoctorId,
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2  
+    },
+    {
+      "Patient": PatientId,
+      "CategoryCode": "H"+Module,
+      "ItemCode": "InvalidFlag",
+      "ItemSeq": 1,
+      "Value": "0",
+      "Description": "null",
+      "SortNo": 1,
+      "piUserId": DoctorId,
+      "piTerminalName": "sample string 9",
+      "piTerminalIP": "sample string 10",
+      "piDeviceType": 2 
+    }];
+    var deferred = $q.defer();
+    Data.Users.setPatientDetailInfo(temp, function (data, headers) {
       deferred.resolve(data);
     }, function (err) {
       deferred.reject(err);
@@ -914,13 +2216,39 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           });
         return deferred.promise;
   };
-  
+   // LZN 20151116 预约
+  self.getAppointmentByPatientID = function(_healthCoachID,_Status,PatientID) {
+    var Filter3 = "PatientID eq " + "'" + PatientID + "'";
+    var filter3 = $resource(CONFIG.baseUrl + ':path/:route',{
+      path:'Users',
+    },{
+        getAppointmentByPatientID:{method:'GET',params:{route: 'GetAppoitmentPatientList',healthCoachID:'@healthCoachID',Status:'@Status',$filter:Filter3},isArray:true,timeout:10000},
+    });
+    var deferred = $q.defer();
+    filter3.getAppointmentByPatientID({healthCoachID:_healthCoachID,Status:_Status,PatientID:PatientID},
+      function (data,status){
+        deferred.resolve(data);
+      },
+      function (err){
+        deferred.reject(err);
+      });
+    return deferred.promise;
+  };
+  // LZN 20151117
+  self.getHealthCoachInfo = function(_HealthCoachID) {
+     var deferred = $q.defer();
+      Data.Users.getHealthCoachInfo({HealthCoachID:_HealthCoachID},
+        function (data,headers) {
+          deferred.resolve(data);
+      },function (err) {
+          deferred.reject(err);
+      });
+      return deferred.promise;
+  };
+
   //TDY 20151030
   self.getYesNoType = function(){
      var deferred = $q.defer();
-/*     do
-     {
-*/ 
       Data.Dict.getYesNoType({},
           function(data,status){
             var check = {results: data};
@@ -1041,9 +2369,9 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicInfo = function (arr){
+  self.PatientBasicInfo = function (arr){
     var deferred = $q.defer();
-    Data.Users.BasicInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicInfo(arr,function (data,headers) {
       deferred.resolve(data);
       }, function (err) {
           deferred.reject(err);
@@ -1066,12 +2394,33 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
   };
 
   //LZN 20151030
-  self.BasicDtlInfo = function(arr){
+  self.PatientBasicDtlInfo = function(arr){
     var deferred = $q.defer();
-    Data.Users.BasicDtlInfo(arr,function (data,headers) {
+    Data.Users.PatientBasicDtlInfo(arr,function (data,headers) {
     deferred.resolve(data);
     }, function (err) {
          deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+   self.PhoneNo = function(_UserId){
+    var deferred = $q.defer();
+    Data.Users.PhoneNo({UserId:_UserId},function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+        deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+   
+    // LZN 20151118 预约
+  self.ReserveHealthCoach = function(arr){
+    var deferred = $q.defer();
+    Data.Users.ReserveHealthCoach(arr,function (data,headers){
+      deferred.resolve(data);
+    },function (err){
+      deferred.reject(err);
     });
     return deferred.promise;
   };
@@ -1091,6 +2440,22 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     });
     return deferred.promise;
   }
+
+  self.Type = function(_Category){
+    var deferred = $q.defer();
+    Data.Dict.Type({Category:_Category},function (data,headers) {
+      deferred.resolve(data);
+    },function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
+ 
+
+
+
+
+
   self.GetNo = function(_NumberingType,_TargetDate){
     var deferred = $q.defer();
     Data.Dict.GetNo({NumberingType:_NumberingType,TargetDate:_TargetDate},function (data,headers) {
@@ -1223,6 +2588,31 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return deferred.promise;
   };
   
+  self.getiHealthCoachList = function(PatientId){
+    var deferred = $q.defer();
+    Data.Users.getiHealthCoachList({PatientId:PatientId},function(data,headers){
+      deferred.resolve(data);
+    },function(err){
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+
+  return self;
+}])
+
+// LZN 20151103
+.factory('BasicDtlInfo',['$q','$http','Data',function($q,$http,Data){
+  var self = this;
+  self.GetBasicDtlInfo = function(_UserId){
+    var deferred = $q.defer();
+    Data.BasicDtlInfo.GetBasicDtlInfo({UserId:_UserId},function (data,headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  }
   return self;
 }])
 
@@ -1338,6 +2728,107 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
     return self;
 }])
 
+//ZXF 20151102
+.factory('GetVitalSigns', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetVitalSignsbydate = function (UserId,StartDate,EndDate) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.VitalSigns.GetVitalSignsbydate({UserId:UserId,StartDate:StartDate,EndDate:EndDate}, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanchartInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetchartInfobyPlanNo = function (arr) {//UserId,PlanNo,StartDate,EndDate,ItemType,ItemCode
+    var deferred = $q.defer();
+    Data.PlanchartInfo.GetchartInfobyPlanNo(arr, function (data, headers) {//{UserId:UserId,PlanNo:PlanNo,StartDate:StartDate,EndDate:EndDate,ItemType:ItemType,ItemCode:ItemCode}
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+//ZXF 20151102
+.factory('GetPlanInfo', ['$q', '$http', 'Data', function ( $q,$http, Data) {
+  var self = this;
+  self.GetplaninfobyPlanNo = function (arr) {
+    var deferred = $q.defer();
+    Data.PlanInfo1.GetplaninfobyPlanNo(arr, function (data, headers) {
+      deferred.resolve(data);
+    }, function (err) {
+      deferred.reject(err);
+    });
+    return deferred.promise;
+  };
+  return self;
+}])
+
+// --------交流-苟玲----------------
+.factory('MessageInfo', ['$q', '$http', 'Data',function ( $q,$http, Data) {
+    var self = this;
+    self.submitSMS = function (SendBy,Content,Receiver,piUserId,piTerminalName,piTerminalIP,piDeviceType) {
+      var deferred = $q.defer();
+      Data.MessageInfo.submitSMS({SendBy:SendBy,Content:Content,Receiver:Receiver,piUserId:piUserId,piTerminalName:piTerminalName,piTerminalIP:piTerminalIP,piDeviceType:piDeviceType}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+      deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    self.GetSMSDialogue = function (Reciever,SendBy,top,skip) {
+      var deferred = $q.defer();
+      Data.MessageInfo.GetSMSDialogue({Reciever:Reciever,SendBy:SendBy, $orderby:"SendDateTime desc", $top:top,$skip:skip}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;
+    };
+
+    self.messageNum = function (Reciever,SendBy){
+      var deferred = $q.defer();
+      Data.MessageInfo.messageNum({Reciever:Reciever,SendBy:SendBy}, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }
+    self.messageRead = function (SendBy,Reciever){
+      var deferred = $q.defer();
+      var params={
+        "SendBy": SendBy,
+        "Receiver": Reciever,
+      }
+      Data.MessageInfo.message(params, function (data, headers) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }
+    self.GetDataByStatus = function (AccepterID,NotificationType,Status,top,skip){
+      var deferred = $q.defer();
+      Data.MessageInfo.GetDataByStatus({AccepterID:AccepterID,NotificationType:NotificationType,Status:Status,$top:top,$skip:skip}, function (data) {
+        deferred.resolve(data);
+      }, function (err) {
+        deferred.reject(err);
+      });
+      return deferred.promise;      
+    }         
+    return self;
+}])
 //大师兄的弹窗业务service 可以随便调用
 .factory('PageFunc', ['$ionicPopup', '$ionicScrollDelegate', '$ionicSlideBoxDelegate', '$ionicModal', '$timeout', function ($ionicPopup, $ionicScrollDelegate, $ionicSlideBoxDelegate, $ionicModal, $timeout) {
   return {
@@ -1349,7 +2840,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         template: _msg,  // String (optional). The html template to place in the popup body.
         // templateUrl: '',  // String (optional). The URL of an html template to place in the popup   body.
         okText: '确认',  // String (default: 'OK'). The text of the OK button.
-        okType: 'button-energized'  // String (default: 'button-positive'). The type of the OK button.
+        okType: 'button-assertive'  // String (default: 'button-positive'). The type of the OK button.
       });
 
       if (_time) {
@@ -1375,7 +2866,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // confirmPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -1397,7 +2888,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -1419,7 +2910,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
         cancelText: '取消', // String (default: 'Cancel'). The text of the Cancel button.
         cancelType: 'button-default', // String (default: 'button-default'). The type of the Cancel button.
         okText: '确定',
-        okType: 'button-energized'
+        okType: 'button-assertive'
       });
 
       // promptPopup.then(function(res) {  // true if press 'OK' button, false if 'Cancel' button
@@ -1447,7 +2938,7 @@ angular.module('ionicApp.service', ['ionic','ngResource','ngCordova'])
           }
         }, {
           text: '确定',
-          type: 'button-positive',
+          type: 'button-assertive',
           onTap: function(e) {
             // Returning a value will cause the promise to resolve with the given value.
             // console.log($scope.ince.selected);  // 这里不能单纯用$scope.ince, 必须用对象

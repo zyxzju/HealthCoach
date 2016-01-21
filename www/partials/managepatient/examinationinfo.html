@@ -1,0 +1,33 @@
+<ion-modal-view>
+<ion-header-bar align-title="middle" class="bar-positive">
+<div class="buttons">
+  <button class="button" ng-click="closeexamModal()">返回</button>
+</div>
+<h1 class="title">检查信息</h1>
+
+</ion-header-bar>
+<ion-content scroll='true'>
+<ion-list >
+<ion-item  ng-if=show>
+<h2>无检查数据</h2>
+</ion-item>
+<ion-item ng-repeat='item in Examinationinfo track by $index' >
+  <h2 style="white-space:pre-wrap">
+    检查时间：{{item.ExamDate}}
+  </h2>
+  <h2 style="white-space:pre-wrap">
+    检查项目：{{item.ExamTypeName}}
+  </h2>
+  <h2 style="white-space:{{descstyle[$index]}}"  ng-click="showalldesc($index)">
+    检查描述：{{item.Description}}
+  </h2>
+  <h2 style="white-space:{{resultstyle[$index]}}" ng-click="showallresult($index)">
+    检查结果：{{item.Impression}}
+  </h2>
+</ion-item>
+
+
+</ion-list>
+</ion-content>
+</ion-modal-view>
+

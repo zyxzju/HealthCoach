@@ -1,55 +1,23 @@
 <ion-view title="新患者">
-  <ion-header-bar class="bar-balanced">
-    <h2 class="title">Patient List</h2>
-    <button class ="button button-icon ion-minus-circled" ng-click ="data.showDelete = !data.showDelete; showReorder = false;"></button>
-    <button class ="button button-icon ion-navicon" ng-click ="data.showReorder = !data.showReorder; showDelete = false;"></button>
-  </ion-header-bar>
-  <div class="bar bar-subheader item-input-inset bar-light" style="padding:0px !important">
-    <div style="width:50%" class="item item-input item-select">
-      <div class="input-label">
-        筛选
-      </div>
-      <select>
-        <option>Blue</option>
-        <option selected="">Green</option>
-        <option>Red</option>
-      </select>
-    </div>
-    <div style="width:51%" class="item item-input item-select">
-      <div class="input-label">
-        排序
-      </div>
-      <select>
-        <option>Blue</option>
-        <option selected="">Red</option>
-        <option>Red</option>
-      </select>
-    </div>
+  <ion-nav-buttons side="left">
+    <button class="button button-icon icon ion-qr-scanner " ng-click="QRscan()"></button>
+  </ion-nav-buttons>
+  <div class="bar bar-subheader item-input-inset bar-light text-center" style="padding:0px ">
+      <a ng-style="select1" class="item col-50 " ng-click="openpopover($event,0)">{{f.module}} <i class="icon ion-android-arrow-dropdown"></i></a>
+      <a ng-style="select2" class="item col-50 " style="border-right: 0px" ng-click="openpopover($event,1)">{{f.Status}} <i class="icon ion-android-arrow-dropdown"></i></a>
   </div>
-  <ion-content class="has-subheader" padding="true">       
+  <div class="sub-bar-shadow"></div>
+  <ion-content class="has-subheader content-item-list">       
     <ion-refresher on-refresh="doRefresh()"></ion-refresher>
     <ion-list>
-      <ion-item style="padding:0" ng-repeat="patient in patients track by $index" class="item-thumbnail-left "  >
-        <img ng-src="img/male.png">
-        <div Style="padding-top:10px">
-            <div class="item-row ">
-              <div class="col-50"><h3><!--<i class="icon ion-chevron-right"></i>-->  {{patient.UserName}} </h3></div>
-              <div class="col-50"><h1>{{patient.Age}}岁      {{patient.GenderText}}</h1></div>
-            </div>
-            <div class="item-row">
-              <div class="col-100"><p><i class="icon ion-pie-graph"></i> {{patient.Module}}</p></div>
-            </div>               
-            <div class="item-row">
-              <div class="col-50"><p><i class="icon ion-calendar"></i> 已预约</p></div>
-              <div class="col-50"><p>2015-10-27</p></div>
-            </div>
-        </div>
-        <ion-option-button class="button-assertive"ng-click="onItemDelete(index)">
-          <i class="icon ion-close-circled"></i>
-        </ion-option-button>
+      <ion-item ng-repeat="patient in patients track by $index" class="item-thumbnail-left2" ng-click="viewDetail(patient)" >
+        <img src="{{patient.imageURL}}">
+        <h5><span style="float:left;width:100px">{{patient.name}}</span><span class="gender-and-age">{{patient.age}} {{patient.GenderText[0]}}</span></h5>
+        <p style="white-space:wrap" >“{{patient.Description | limitTo:12}}{{patient.Description.length>12?'&hellip;':''}}” <span style="font-size:0.65rem;font-style: italic;margin-left:10px">{{patient.ApplyTime}}</span></p>
+        <p ng-if="!(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#fb6a1b"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>
+        <p ng-if="(patient.AppointmentStatus-1)"><span style="color:#444"><i ng-if="patient.module" class="icon ion-pie-graph"></i> {{patient.Module}} </span><span style="color:#689f38"> {{patient.AppointmentText}} <span style="font-style: italic">{{patient.AppointmentTime}}</span></span></p>        
       </ion-item>
     </ion-list>
     <ion-infinite-scroll ng-if="!moredata" on-infinite="loadMore()" distance="15%" ></ion-infinite-scroll>
-    <!-- <a class="button button-block button-stable" ng-click="showdata()">patients</a> -->
   </ion-content>
 </ion-view>

@@ -1,0 +1,107 @@
+<ion-view view-title="Calendar" hide-nav-bar="true">
+
+<ion-header-bar class="bar bar-positive">
+  <button class="button button-icon icon ion-arrow-left-c" ng-click="onClickBackward()"></button>
+  <div class="h1 title">个人日程</div>
+</ion-header-bar>
+
+
+<ion-content>
+    <div class = "list card">
+      <div class = "item item-divider">
+    
+            本次预约时间为：
+            {{event.DateTime}}  的  {{event.Period}}
+      </div>
+
+        <ion-list>
+          <div class="item item-icon-left " >
+              <i class="icon ion-person"> </i>
+              患者姓名
+              <span class="item-note-2">
+                 {{ eventdetail[0] }}
+              </span>
+               
+          </div>
+          <div class="item item-icon-left" >
+              <i class="icon ion-calendar"> </i>
+                患者年龄               
+                <span class="item-note-2">
+                 {{ eventdetail[1] }}
+                  </span>
+               
+          </div>
+          <div class="item item-icon-left">
+              <i class="icon ion-ios-pulse-strong"> </i>
+              疾病模块               
+              <span class="item-note-2">
+               {{ eventdetail[2] }}
+                </span>
+               
+          </div>
+          <div class="item item-icon-left item-text-wrap" >
+              <i class="icon ion-ios-list"> </i>
+              患者自述               
+              
+               <p>{{ eventdetail[3] }}</p>
+         
+               
+          </div>          
+        </ion-list>
+    </div>
+    <div class="padding">
+    
+      <span class="button button-block button-stable icon-left ion-wrench" ng-click = "onClickChangeApp()">修改时间</span>
+
+      <span class="button button-block button-assertive icon-left ion-trash-a" ng-click = "onClickCancelApp()">取消预约</span>
+
+      <span class="button button-block button-positive icon-left ion-checkmark-round" ng-click = "onClickFinishApp()">
+        完成任务</span>
+
+      
+    </div>
+</ion-content>
+
+
+<script id="my-modal-2.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class = "bar-positive">
+      <div class="button button-clear" ng-click = "onClickConfirm()">确认</div>
+      <h1 class="title">修改时间</h1>
+      <div class="button button-clear" ng-click = "onClickCancel()">取消</div>
+    </ion-header-bar>
+    <ion-content class ="padding">
+
+      <div class="item item-divider item-divider-calm"> 本次预约修改为 </div> 
+
+
+
+
+
+ <ionic-datepicker input-obj="datepickerObject">
+   <label class="item">
+    <span>
+      选择新的时间(仅限未来30天)
+    </span>
+        <span class="item-note">
+          {{event.DateTime}}
+        </span>
+     
+  </label>       
+        
+   </ionic-datepicker>
+
+
+  <label class="item item-input item-select">
+    <div class="input-label">
+      选择时间
+    </div>
+    <select ng-model = "event.Period">
+      <option selected>上午</option>
+      <option >下午</option>
+      <option >晚上</option>
+    </select>
+  </label>
+    </ion-content>
+  </ion-modal-view>
+</script>

@@ -1,0 +1,31 @@
+<ion-view cache-view="false" view-title="药物列表">
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<button class="button button-icon ion-arrow-left-c" ng-click="onClickBackward()">
+			</button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button" ng-click="addItem()">添加</button>
+			<button class="button" ng-click="Confirm()" ng-if="isloaded">保存</button>			
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<div class="bar-shadow"></div>
+	<ion-content>
+		<div class = "list">			
+ 			<div class="list card" ng-repeat = "item in task.list">
+      			<div class="item item-divider item-icon-right" style="background:rgba(183, 203, 237, 0.34)">      		
+					<b>{{item.Description}}</b>
+					<div ng-click="EditTask(item)">
+				    	<i class="icon ion-edit" style="margin-right:40px;"></i>	
+					</div>
+					<div ng-click="RemoveItem(item)">
+				    	<i class="icon ion-ios-minus"></i>
+					</div>							
+      			</div>
+      			<div class="item item-body " >       			
+         		{{item.OptionCategory}}                 	
+      			</div>
+    		</div>
+		</div>
+	</ion-content>
+</ion-view>

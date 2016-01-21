@@ -1,0 +1,26 @@
+<ion-view  cache-view="false" title="计划列表">
+	<ion-nav-bar class="bar-positive">
+		<ion-nav-buttons side="primary">
+			<button class="button icon button-icon ion-android-home" ng-click="onClickBackward()"></button>
+		</ion-nav-buttons>
+		<ion-nav-buttons side="secondary">
+			<button class="button icon button-icon ion-checkmark-round" ng-click="backtomain()" ng-if="isloaded"></button>
+		</ion-nav-buttons>
+	</ion-nav-bar>
+	<ion-content has-bouncing="false">
+		<div class="top-of-the-content">{{Name}}  {{gender}}  {{age}}</div>	
+		<div class="list">
+			<div class="item" ng-repeat = "item in create.PlanList" style="background-color:#FBFCFF;color:{{item.Status}}">
+				<a class="item item-icon-right" href="#/manage/taskList" ng-click="SavePlanNo(item.PlanNo)">    
+					{{item.PlanName}}{{item.StartDate}}{{item.EndDate}} 
+					<i class="icon ion-chevron-right"></i>
+		        </a> 
+	        </div>          	                          
+    	</div>
+    	<div style="text-align:center;padding:20px;">
+	        <button class="button button-outline button-positive" style="width:100px;height:30px;" ng-click="CreatePlan()" ng-if="create.AddFlag" >
+	        	<span style="font-size:15px;color:blue;font-weight:bold">添加计划</span>
+	        </button>
+        </div>     	
+    </ion-content>	
+</ionic view>
